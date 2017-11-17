@@ -15,6 +15,8 @@
 #define TIME_MAX 5000.
 
 class LedControl;
+class KnobControl;
+class DataWheelControl;
 
 class VMPCWDL : public IPlug
 {
@@ -44,9 +46,9 @@ private:
 
   IBitmapOverlayControl* mAboutBox;
   IControl* mKeyboard;
-  IControl* mDataWheel;
-  IControl* mRecKnob;
-  IControl* mVolKnob;
+  DataWheelControl* mDataWheel;
+  KnobControl* mRecKnob;
+  KnobControl* mVolKnob;
   LedControl* mLedPanel;
   IMidiQueue mMidiQueue;
 

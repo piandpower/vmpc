@@ -36,11 +36,11 @@ enum EParams
 };
 
 VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
-  : IPLUG_CTOR(kNumParams, kNumPrograms, instanceInfo),
-    mSampleRate(44100.),
-    mNumHeldKeys(0),
-    mKey(-1),
-    mActiveVoices(0)
+	: IPLUG_CTOR(kNumParams, kNumPrograms, instanceInfo),
+	mSampleRate(44100.),
+	mNumHeldKeys(0),
+	mKey(-1),
+	mActiveVoices(0)
 
 {
 
@@ -53,52 +53,52 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 
 	TRACE;
 
-  mTable = new double[TABLE_SIZE];
+	mTable = new double[TABLE_SIZE];
 
-  for (int i = 0; i < TABLE_SIZE; i++)
-  {
-    mTable[i] = sin( i/double(TABLE_SIZE) * 2. * M_PI);
-    //printf("mTable[%i] %f\n", i, mTable[i]);
-  }
+	for (int i = 0; i < TABLE_SIZE; i++)
+	{
+		mTable[i] = sin(i / double(TABLE_SIZE) * 2. * M_PI);
+		//printf("mTable[%i] %f\n", i, mTable[i]);
+	}
 
-  mOsc = new CWTOsc(mTable, TABLE_SIZE);
-  mEnv = new CADSREnvL();
+	mOsc = new CWTOsc(mTable, TABLE_SIZE);
+	mEnv = new CADSREnvL();
 
-  memset(mKeyStatus, 0, 128 * sizeof(bool));
+	memset(mKeyStatus, 0, 128 * sizeof(bool));
 
-  //arguments are: name, defaultVal, minVal, maxVal, step, label
-  GetParam(kAttack)->InitDouble("Amp Attack", ATTACK_DEFAULT, TIME_MIN, TIME_MAX, 0.001);
-  GetParam(kDecay)->InitDouble("Amp Decay", DECAY_DEFAULT, TIME_MIN, TIME_MAX, 0.001);
-  GetParam(kSustain)->InitDouble("Amp Sustain", 1., 0., 1., 0.001);
-  GetParam(kRelease)->InitDouble("Amp Release", RELEASE_DEFAULT, TIME_MIN, TIME_MAX, 0.001);
+	//arguments are: name, defaultVal, minVal, maxVal, step, label
+	GetParam(kAttack)->InitDouble("Amp Attack", ATTACK_DEFAULT, TIME_MIN, TIME_MAX, 0.001);
+	GetParam(kDecay)->InitDouble("Amp Decay", DECAY_DEFAULT, TIME_MIN, TIME_MAX, 0.001);
+	GetParam(kSustain)->InitDouble("Amp Sustain", 1., 0., 1., 0.001);
+	GetParam(kRelease)->InitDouble("Amp Release", RELEASE_DEFAULT, TIME_MIN, TIME_MAX, 0.001);
 
-  IGraphics* pGraphics = MakeGraphics(this, kWidth, kHeight);
-  pGraphics->AttachBackground(BG_ID, BG_FN);
+	IGraphics* pGraphics = MakeGraphics(this, kWidth, kHeight);
+	pGraphics->AttachBackground(BG_ID, BG_FN);
 
-  //                    C#     D#          F#      G#      A#
-  int coords[12] = { 0, 7, 12, 20, 24, 36, 43, 48, 56, 60, 69, 72 };
-  //mKeyboard = new IKeyboardControl(this, kKeybX, kKeybY, 48, 5, &regular, &sharp, coords);
-  auto dataWheels = pGraphics->LoadIBitmap(DATAWHEEL_ID, DATAWHEEL_FN);
-  mDataWheel = new DataWheelControl(this, dataWheels);
-  pGraphics->AttachControl(mDataWheel);
-  auto knobs = pGraphics->LoadIBitmap(RECKNOB_ID, RECKNOB_FN);
-  mRecKnob = new KnobControl(this, 0, knobs);
-  knobs = pGraphics->LoadIBitmap(VOLKNOB_ID, VOLKNOB_FN);
-  mVolKnob = new KnobControl(this, 1, knobs);
-  pGraphics->AttachControl(mRecKnob);
-  pGraphics->AttachControl(mVolKnob);
+	//                    C#     D#          F#      G#      A#
+	int coords[12] = { 0, 7, 12, 20, 24, 36, 43, 48, 56, 60, 69, 72 };
+	//mKeyboard = new IKeyboardControl(this, kKeybX, kKeybY, 48, 5, &regular, &sharp, coords);
+	mLedPanel = new LedControl(this, pGraphics);
+	mLedPanel->setPadBankA(true);
+	pGraphics->AttachControl(mLedPanel);
 
-  mLedPanel = new LedControl(this, pGraphics);
-  mLedPanel->setPadBankA(true);
-  pGraphics->AttachControl(mLedPanel);
+	auto dataWheels = pGraphics->LoadIBitmap(DATAWHEEL_ID, DATAWHEEL_FN);
+	mDataWheel = new DataWheelControl(this, dataWheels);
+	pGraphics->AttachControl(mDataWheel);
+	auto knobs = pGraphics->LoadIBitmap(RECKNOB_ID, RECKNOB_FN);
+	mRecKnob = new KnobControl(this, 0, knobs);
+	knobs = pGraphics->LoadIBitmap(VOLKNOB_ID, VOLKNOB_FN);
+	mVolKnob = new KnobControl(this, 1, knobs);
+	pGraphics->AttachControl(mRecKnob);
+	pGraphics->AttachControl(mVolKnob);
 
-  //IBitmap about = pGraphics->LoadIBitmap(ABOUTBOX_ID, ABOUTBOX_FN);
-  //mAboutBox = new IBitmapOverlayControl(this, 100, 100, &about, IRECT(540, 250, 680, 290));
-  //pGraphics->AttachControl(mAboutBox);
-  AttachGraphics(pGraphics);
+	//IBitmap about = pGraphics->LoadIBitmap(ABOUTBOX_ID, ABOUTBOX_FN);
+	//mAboutBox = new IBitmapOverlayControl(this, 100, 100, &about, IRECT(540, 250, 680, 290));
+	//pGraphics->AttachControl(mAboutBox);
+	AttachGraphics(pGraphics);
 
-  //MakePreset("preset 1", ... );
-  MakeDefaultPreset((char *) "-", kNumPrograms);
+	//MakePreset("preset 1", ... );
+	MakeDefaultPreset((char *) "-", kNumPrograms);
 }
 
 VMPCWDL::~VMPCWDL()
