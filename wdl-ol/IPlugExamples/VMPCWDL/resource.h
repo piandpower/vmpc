@@ -49,22 +49,29 @@
 #define PLUG_DOES_STATE_CHUNKS 0
 
 // Unique IDs for each image resource.
-#define KNOB_ID       101
-#define BG_ID         102
-#define ABOUTBOX_ID   103
-#define WHITE_KEY_ID  104
-#define BLACK_KEY_ID  105
+#define BG_ID         	102
+#define GRID_ID			106
+#define LED_GREEN_ID	107
+#define LED_RED_ID		108
+#define DATAWHEEL_ID	109
+#define SLIDER_ID		110
+#define RECKNOB_ID		111
+#define VOLKNOB_ID		112
 
 // Image resource locations for this plug.
-#define KNOB_FN       "resources/img/knob.png"
-#define BG_FN         "resources/img/bg.png"
-#define ABOUTBOX_FN   "resources/img/about.png"
-#define WHITE_KEY_FN  "resources/img/wk.png"
-#define BLACK_KEY_FN  "resources/img/bk.png"
+#define BG_FN			"resources/img/bg.png"
+#define GRID_FN			"resources/img/pixelgrid.png"
+#define LED_GREEN_FN	"resources/img/led_green.png"
+#define LED_RED_FN		"resources/img/led_red.png"
+#define DATAWHEEL_FN	"resources/img/datawheels.png"
+#define SLIDER_FN		"resources/img/sliders.png"
+#define RECKNOB_FN		"resources/img/recknobs.png"
+#define VOLKNOB_FN		"resources/img/volknobs.png"
 
 // GUI default dimensions
-#define GUI_WIDTH   700
-#define GUI_HEIGHT  300
+#define GUI_WIDTH   1298
+#define GUI_HEIGHT  994
+
 
 // on MSVC, you must define SA_API in the resource editor preprocessor macros as well as the c++ ones
 #if defined(SA_API) && !defined(OS_IOS)

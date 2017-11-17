@@ -671,6 +671,7 @@ void Cleanup()
 #ifdef OS_WIN
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdParam, int nShowCmd)
 {
+	SetProcessDPIAware();
   // first check to make sure this is the only instance running
   // http://www.bcbjournal.org/articles/vol3/9911/Single-instance_applications.htm
   try
