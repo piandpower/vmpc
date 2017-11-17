@@ -1,0 +1,26 @@
+﻿  baseiids.cpp
+  classfactory.cpp
+  fatomic.cpp
+  fbitset.cpp
+  fbuffer.cpp
+  fcpu.cpp
+  fdebug.cpp
+  fdynlib.cpp
+  finitializer.cpp
+  fmemory.cpp
+  fobject.cpp
+  fpoint.cpp
+  frect.cpp
+  fstreamer.cpp
+  fstring.cpp
+..\source\fstring.cpp(1494): warning C4302: 'type cast': truncation from 'LPWSTR' to 'Steinberg::char16'
+..\source\fstring.cpp(1517): warning C4302: 'type cast': truncation from 'LPWSTR' to 'Steinberg::char16'
+..\source\fstring.cpp(1542): warning C4302: 'type cast': truncation from 'LPSTR' to 'Steinberg::char8'
+..\source\fstring.cpp(1554): warning C4302: 'type cast': truncation from 'LPSTR' to 'Steinberg::char8'
+  fthread.cpp
+  timer.cpp
+  updatehandler.cpp
+  conststringtable.cpp
+  funknown.cpp
+  Generating Code...
+  base.vcxproj -> C:\Users\Izmar\git\wdl-ol\VST3_SDK\base\win\x64\Debug\base.lib

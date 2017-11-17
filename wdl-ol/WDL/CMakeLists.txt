@@ -1,0 +1,179 @@
+add_subdirectory(zlib)
+add_subdirectory(libpng)
+add_subdirectory(jnetlib)
+add_subdirectory(eel2)
+add_subdirectory(plush2)
+add_subdirectory(rtaudiomidi)
+add_subdirectory(lice)
+add_subdirectory(IPlug)
+
+SET(WDL_SRC
+	audiobuffercontainer.cpp
+	besselfilter.cpp
+	convoengine.cpp
+	des.cpp
+	filebrowse.cpp
+	lameencdec.cpp
+	projectcontext.cpp
+	resample.cpp
+	rfb_client.cpp
+	rng.cpp
+	scsrc.cpp
+	sha.cpp
+	shm_connection.cpp
+	shm_msgreply.cpp
+	md5.c
+	blowfish.c
+	fft.c
+	timing.c
+)
+
+SET(SWELL
+    swell/swell.cpp
+    swell/swell-kb.mm
+    swell/swell-gdi.mm
+    swell/swell-ini.cpp
+    swell/swell-miscdlg.mm
+    swell/swell-appstub.mm
+)
+
+SET(WDL_HEADERS
+	adpcm_decode.h
+	adpcm_encode.h
+	assocarray.h
+	audiobuffercontainer.h
+	base64encdec.h
+	besselfilter.h
+	blowfish.h
+	chunkalloc.h
+	circbuf.h
+	convoengine.h
+	db2val.h
+	denormal.h
+	des.h
+	destroycheck.h
+	dirscan.h
+	fastqueue.h
+	ffmpeg.h
+	fft.h
+	filebrowse.h
+	filename.h
+	fileread.h
+	filewrite.h
+	heapbuf.h
+	lameencdec.h
+	lineparse.h
+	mergesort.h
+	MersenneTwister.h
+	mp3write.h
+	mutex.h
+	pcmfmtcvt.h
+	poollist.h
+	projectcontext.h
+	ptrlist.h
+	queue.h
+	reminder.h
+	resample.h
+	rfb_client.h
+	rng.h
+	rpool.h
+	scalafile.h
+	scsrc.h
+	sha.h
+	sharedpool.h
+	shm_connection.h
+	shm_msgreply.h
+	simple_pitchshift.h
+	simple_pitchshift2.h
+	sinewavegen.h
+	stringpool.h
+	timing.h
+	verbengine.h
+	vorbisencdec.h
+	wavwrite.h
+	wdlcstring.h
+	wdlendian.h
+	wdlstring.h
+	wdltypes.h
+	adpcm_decode.h
+	adpcm_encode.h
+	assocarray.h
+	audiobuffercontainer.h
+	base64encdec.h
+	besselfilter.h
+	blowfish.h
+	chunkalloc.h
+	circbuf.h
+	convoengine.h
+	db2val.h
+	denormal.h
+	des.h
+	destroycheck.h
+	dirscan.h
+	fastqueue.h
+	ffmpeg.h
+	fft.h
+	filebrowse.h
+	filename.h
+	fileread.h
+	filewrite.h
+	heapbuf.h
+	lameencdec.h
+	lineparse.h
+	mergesort.h
+	MersenneTwister.h
+	mp3write.h
+	mutex.h
+	pcmfmtcvt.h
+	poollist.h
+	projectcontext.h
+	ptrlist.h
+	queue.h
+	reminder.h
+	resample.h
+	rfb_client.h
+	rng.h
+	rpool.h
+	scalafile.h
+	scsrc.h
+	sha.h
+	sharedpool.h
+	shm_connection.h
+	shm_msgreply.h
+	simple_pitchshift.h
+	simple_pitchshift2.h
+	sinewavegen.h
+	stringpool.h
+	timing.h
+	verbengine.h
+	vorbisencdec.h
+	wavwrite.h
+	wdlcstring.h
+	wdlendian.h
+	wdlstring.h
+	wdltypes.h
+	md5.h
+)
+
+if(WIN32)
+	SET(WDL_SRC
+		${WDL_SRC}
+		#win7filedialog.cpp
+		win32_utf8.c
+	)
+	SET(WDL_HEADERS
+		${WDL_HEADERS}
+		win32_utf8.h
+		win7filedialog.h
+	)
+else(WIN32)
+	SET(WDL_SRC
+		${WDL_SRC}
+		${SWELL}
+	)
+
+	set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static")
+endif(WIN32)
+
+add_library(wdl ${WDL_SRC} ${WDL_HEADERS} )
+target_link_libraries(wdl lice iplug jnet png zlib rtam)
