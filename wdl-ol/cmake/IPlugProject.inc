@@ -210,8 +210,8 @@ MACRO(create_example name)
 		set_plug_props(${PLUGNAMEVST3} "VST3_API=1")
 		target_link_libraries(${PLUGNAMEVST3} vst3)
 		if(MSVC)
-		set(CMAKE_MODULE_LINKER_FLAGS
-			"${CMAKE_MODULE_LINKER_FLAGS_INIT} /DEF:IPlugVST3.def")
+		set_target_properties(
+		${PLUGNAMEVST3} PROPERTIES LINK_FLAGS "/DEF:IPlugVST3.def")
 		endif()
 	endif()
 	
