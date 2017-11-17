@@ -145,7 +145,7 @@ MACRO(create_example name)
 			set_target_properties(${PLUGNAMESA} PROPERTIES 
 			 	LINK_FLAGS_DEBUG 	"/SUBSYSTEM:WINDOWS"
 				LINK_FLAGS_RELEASE 	"/SUBSYSTEM:WINDOWS")
-				
+			target_compile_options(${PLUGNAMESA} PRIVATE "/MD$<$<CONFIG:Debug>:d>")
 			target_link_libraries(${PLUGNAMESA} asio)
 
 		elseif(APPLE)
@@ -199,6 +199,7 @@ MACRO(create_example name)
 		add_library(${PLUGNAMEVST}  MODULE ${${PN_SRC}} ${${PN_HDR}} ${IPC_VST} )
         set_bundle(${PLUGNAMEVST} "${PLIST_PATHVST}" "vst" )
 		set_plug_props(${PLUGNAMEVST} "VST_API=1 VST_FORCE_DEPRECATED")
+		target_compile_options(${PLUGNAMEVST} PRIVATE "/MD$<$<CONFIG:Debug>:d>")
 	endif()
 
 	#-------------------------------------------------------------------------------------
@@ -212,6 +213,7 @@ MACRO(create_example name)
 		if(MSVC)
 		set_target_properties(
 		${PLUGNAMEVST3} PROPERTIES LINK_FLAGS "/DEF:IPlugVST3.def")
+		target_compile_options(${PLUGNAMEVST3} PRIVATE "/MD$<$<CONFIG:Debug>:d>")
 		endif()
 	endif()
 	

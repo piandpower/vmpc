@@ -11,15 +11,6 @@ SET(RTAM_HEADERS
 )
 
 if(WIN32)
-   if(MSVC)
-#      add_definitions(-DWIN32_LEAN_AND_MEAN)
-      add_definitions(-D_CRT_SECURE_NO_WARNINGS -D__WINDOWS_MM__)
-	    #add_compile_options(/MD)
-   endif(MSVC)
-endif(WIN32)
-
-
-if(WIN32)
 	SET(RTAM_SRC
 		${RTAM_SRC}
 	)
@@ -33,3 +24,10 @@ endif(WIN32)
 
 add_library(rtam ${RTAM_SRC} ${RTAM_HEADERS} )
 
+if(WIN32)
+   if(MSVC)
+#      add_definitions(-DWIN32_LEAN_AND_MEAN)
+      add_definitions(-D_CRT_SECURE_NO_WARNINGS -D__WINDOWS_MM__)
+		target_compile_options(rtam PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+   endif(MSVC)
+endif(WIN32)

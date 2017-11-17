@@ -84,3 +84,9 @@ endif(WIN32)
 
 add_library(vst3 ${VST3_SRC} ${VST3_HEADERS} )
 
+if(WIN32)
+   if(MSVC)
+		target_compile_options(vst3 PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+   endif(MSVC)
+endif(WIN32)
+

@@ -25,12 +25,14 @@ file(
     "${_src_root_path}/*.hpp*"
 )
 
-if(MSVC)
-  #add_compile_options(/MD)
-	configure_msvc_runtime()
-endif(MSVC)
-
 add_library(ctoot ${_source_list})
+
+if(MSVC)
+	set_target_properties(ctoot PROPERTIES COMPILE_FLAGS_RELEASE "/MD")
+	set_target_properties(ctoot PROPERTIES COMPILE_FLAGS_DEBUG "/MDd")
+  add_compile_options(/MP)
+	#configure_msvc_runtime()
+endif(MSVC)
 
 foreach(_source IN ITEMS ${_source_list})
     get_filename_component(_source_path "${_source}" PATH)

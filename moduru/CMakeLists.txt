@@ -20,18 +20,19 @@ file(
     "${_src_root_path}/*.hpp*"
 )
 
-if(MSVC)
-  #add_compile_options(/MD)
-	configure_msvc_runtime()
-endif(MSVC)
-
-
 if(APPLE)
   set(CMAKE_OSX_ARCHITECTURES "x86_64;i386")
   set(CMAKE_CXX_STANDARD 14)
 endif(APPLE)
 
 add_library(moduru ${_source_list})
+
+if(MSVC)
+	set_target_properties(moduru PROPERTIES COMPILE_FLAGS_RELEASE "/MD")
+	set_target_properties(moduru PROPERTIES COMPILE_FLAGS_DEBUG "/MDd")
+  add_compile_options(/MP)
+	#configure_msvc_runtime()
+endif(MSVC)
 
 foreach(_source IN ITEMS ${_source_list})
     get_filename_component(_source_path "${_source}" PATH)

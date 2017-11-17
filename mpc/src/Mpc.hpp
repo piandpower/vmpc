@@ -8,6 +8,7 @@ namespace mpc {
 
 	namespace ui {
 		class UserDefaults;
+		class Uis;
 	}
 
 	namespace ctootextensions {
@@ -35,7 +36,9 @@ namespace mpc {
 	{
 	
 	private:
-		std::shared_ptr<mpc::ui::UserDefaults> userDefaults;
+		std::shared_ptr<mpc::ui::Uis> uis;
+
+	private:
 		std::shared_ptr<mpc::audiomidi::EventHandler> eventHandler;
 		std::shared_ptr<mpc::sequencer::Sequencer> sequencer;
 		std::shared_ptr<mpc::sampler::Sampler> sampler;
@@ -43,17 +46,24 @@ namespace mpc {
 
 	public:
 		void init();
+		void startMidi();
+
+	public:
+		std::weak_ptr<ui::Uis> getUis();
+
+	public:
 		std::weak_ptr<mpc::sequencer::Sequencer> getSequencer();
 		std::weak_ptr<mpc::sampler::Sampler> getSampler();
-		void loadSound(bool replace);
-		void loadProgram();
-		void importLoadedProgram();
-		void startMidi();
 		mpc::ctootextensions::MpcSoundPlayerChannel* getDrum(int i);
 		mpc::ctootextensions::MpcBasicSoundPlayerChannel* getBasicPlayer();
 		std::weak_ptr<mpc::audiomidi::AudioMidiServices> getAudioMidiServices();
 		std::vector<mpc::ctootextensions::MpcSoundPlayerChannel*> getDrums();
 		std::weak_ptr<mpc::audiomidi::EventHandler> getEventHandler();
+
+	public:
+		void loadSound(bool replace);
+		void loadProgram();
+		void importLoadedProgram();
 
 	public:
 		Mpc();

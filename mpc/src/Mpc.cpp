@@ -1,5 +1,7 @@
 #include <Mpc.hpp>
 
+#include <ui/Uis.hpp>
+
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audiomidi/EventHandler.hpp>
 
@@ -29,6 +31,8 @@ Mpc::Mpc()
 void Mpc::init()
 {
 
+	uis = make_shared<ui::Uis>();
+
 	sequencer = make_shared<mpc::sequencer::Sequencer>(this);
 	moduru::Logger::l.log("sequencer created.\n");
 
@@ -52,6 +56,10 @@ void Mpc::init()
 
 	audioMidiServices->startTestMode();
 	moduru::Logger::l.log("audioMidiServices test mode started.\n");
+}
+
+weak_ptr<ui::Uis> Mpc::getUis() {
+	return uis;
 }
 
 weak_ptr<mpc::sequencer::Sequencer> Mpc::getSequencer()
