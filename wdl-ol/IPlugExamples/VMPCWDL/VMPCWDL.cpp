@@ -6,6 +6,7 @@
 #include "IKeyboardControl.h"
 
 #include "source/DataWheelControl.hpp"
+#include "source/KnobControl.hpp"
 
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/Sequence.hpp>
@@ -73,18 +74,18 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
   IGraphics* pGraphics = MakeGraphics(this, kWidth, kHeight);
   pGraphics->AttachBackground(BG_ID, BG_FN);
 
-//  IBitmap knob = pGraphics->LoadIBitmap(KNOB_ID, KNOB_FN, kKnobFrames);
-  //IText text = IText(14);
-//  IBitmap regular = pGraphics->LoadIBitmap(WHITE_KEY_ID, WHITE_KEY_FN, 6);
-//  IBitmap sharp   = pGraphics->LoadIBitmap(BLACK_KEY_ID, BLACK_KEY_FN);
-
   //                    C#     D#          F#      G#      A#
   int coords[12] = { 0, 7, 12, 20, 24, 36, 43, 48, 56, 60, 69, 72 };
   //mKeyboard = new IKeyboardControl(this, kKeybX, kKeybY, 48, 5, &regular, &sharp, coords);
   auto dataWheels = pGraphics->LoadIBitmap(DATAWHEEL_ID, DATAWHEEL_FN);
   mDataWheel = new DataWheelControl(this, dataWheels);
   pGraphics->AttachControl(mDataWheel);
-  //pGraphics->AttachControl(mKeyboard);
+  auto knobs = pGraphics->LoadIBitmap(RECKNOB_ID, RECKNOB_FN);
+  mRecKnob = new KnobControl(this, 0, knobs);
+  knobs = pGraphics->LoadIBitmap(VOLKNOB_ID, VOLKNOB_FN);
+  mVolKnob = new KnobControl(this, 1, knobs);
+  pGraphics->AttachControl(mRecKnob);
+  pGraphics->AttachControl(mVolKnob);
 
   //IBitmap about = pGraphics->LoadIBitmap(ABOUTBOX_ID, ABOUTBOX_FN);
   //mAboutBox = new IBitmapOverlayControl(this, 100, 100, &about, IRECT(540, 250, 680, 290));

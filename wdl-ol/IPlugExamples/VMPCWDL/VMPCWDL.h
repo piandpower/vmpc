@@ -43,6 +43,8 @@ private:
   IBitmapOverlayControl* mAboutBox;
   IControl* mKeyboard;
   IControl* mDataWheel;
+  IControl* mRecKnob;
+  IControl* mVolKnob;
   IMidiQueue mMidiQueue;
 
   int mActiveVoices;
