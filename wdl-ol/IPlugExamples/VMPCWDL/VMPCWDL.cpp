@@ -7,6 +7,7 @@
 
 #include "source/DataWheelControl.hpp"
 #include "source/KnobControl.hpp"
+#include "source/LedControl.hpp"
 
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/Sequence.hpp>
@@ -86,6 +87,10 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
   mVolKnob = new KnobControl(this, 1, knobs);
   pGraphics->AttachControl(mRecKnob);
   pGraphics->AttachControl(mVolKnob);
+
+  mLedPanel = new LedControl(this, pGraphics);
+  mLedPanel->setPadBankA(true);
+  pGraphics->AttachControl(mLedPanel);
 
   //IBitmap about = pGraphics->LoadIBitmap(ABOUTBOX_ID, ABOUTBOX_FN);
   //mAboutBox = new IBitmapOverlayControl(this, 100, 100, &about, IRECT(540, 250, 680, 290));

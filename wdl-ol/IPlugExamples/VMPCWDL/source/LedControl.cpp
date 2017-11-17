@@ -7,11 +7,11 @@
 
 //#include <moduru/file/File.hpp>
 
-LedControl::LedControl(IPlugBase* pPlug) 
+LedControl::LedControl(IPlugBase* pPlug, IGraphics* pGraphics) 
 	: IPanelControl(pPlug, *Constants::PLUG_RECT(), Constants::LCD_OFF())
 {
-	ledGreen = pPlug->GetGUI()->LoadIBitmap(LED_GREEN_ID, LED_GREEN_FN);
-	ledRed = pPlug->GetGUI()->LoadIBitmap(LED_RED_ID, LED_RED_FN);
+	ledGreen = pGraphics->LoadIBitmap(LED_GREEN_ID, LED_GREEN_FN);
+	ledRed = pGraphics->LoadIBitmap(LED_RED_ID, LED_RED_FN);
 	
 	int x, y;
 	x = 874;

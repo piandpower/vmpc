@@ -14,6 +14,8 @@
 #define TIME_MIN 2.
 #define TIME_MAX 5000.
 
+class LedControl;
+
 class VMPCWDL : public IPlug
 {
 public:
@@ -45,6 +47,7 @@ private:
   IControl* mDataWheel;
   IControl* mRecKnob;
   IControl* mVolKnob;
+  LedControl* mLedPanel;
   IMidiQueue mMidiQueue;
 
   int mActiveVoices;

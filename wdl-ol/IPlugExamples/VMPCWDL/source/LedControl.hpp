@@ -56,5 +56,5 @@ public:
 	bool Draw(IGraphics* pGraphics) override;
 
 public:
-	LedControl(IPlugBase* pPlug);
+	LedControl(IPlugBase* pPlug, IGraphics* pGraphics);
 };
