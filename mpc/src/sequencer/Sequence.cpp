@@ -2,8 +2,8 @@
 
 #include <Mpc.hpp>
 #include <maingui/StartUp.hpp>
-//#include <maingui/Gui.hpp>
-//#include <ui/sequencer/window/SequencerWindowGui.hpp>
+#include <ui/Uis.hpp>
+#include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <sequencer/Event.hpp>
 //#include <sequencer/MidiClockEvent.hpp>
 #include <sequencer/Track.hpp>
@@ -157,7 +157,7 @@ void Sequence::initMetaTracks()
 
 void Sequence::createClickTrack()
 {
-	//auto swGui = mpc->getGui().lock()->getSequencerWindowGui();
+	auto swGui = mpc->getUis().lock()->getSequencerWindowGui();
 	metaTracks[0]->removeEvents();
 	auto bars = getLastBar() + 1;
 	auto den = 0;
@@ -170,8 +170,7 @@ void Sequence::createClickTrack()
 		for (auto k = 0; k < i; k++)
 			barStartPos += barLengths[k];
 
-		//switch (swGui->getRate()) {
-		switch (4) {
+		switch (swGui->getRate()) {
 		case 1:
 			denTicks *= 2.0f / 3;
 			break;
@@ -199,17 +198,13 @@ void Sequence::createClickTrack()
 			auto n = dynamic_pointer_cast<NoteEvent>(metaTracks[0]->addEvent(barStartPos + j, "note").lock());
 			n->setDuration(1);
 			if (j == 0) {
-				//n->setVelocity(swGui->getAccentVelo());
-				//n->setNote(swGui->getAccentNote());
-				n->setVelocity(127);
-				n->setNote(37);
+				n->setVelocity(swGui->getAccentVelo());
+				n->setNote(swGui->getAccentNote());
 			}
 			else {
-				//n->setVelocity(swGui->getNormalVelo());
-				//n->setNote(swGui->getNormalNote());
-				n->setVelocity(60);
-				n->setNote(37);
-
+				n->setVelocity(swGui->getNormalVelo());
+				n->setNote(swGui->getNormalNote());
+		
 			}
 		}
 	}
@@ -229,10 +224,9 @@ void Sequence::createMidiClockTrack()
 
 void Sequence::createTempoChangeTrack()
 {
-	//metaTracks[2]->removeEvents();
-	//for (auto& tce : tempoChangeEvents) {
-	//		metaTracks[2]->cloneEvent(tce);
-	//}
+	metaTracks[2]->removeEvents();
+	auto tce = metaTracks[2]->addEvent(0, "tempochange").lock();
+	dynamic_pointer_cast<mpc::sequencer::TempoChangeEvent>(tce)->setStepNumber(0);
 }
 
 bool Sequence::isLoopEnabled()
@@ -307,7 +301,6 @@ void Sequence::init(int lastBarIndex)
 	used = true;
 	auto lUserDefaults = maingui::StartUp::getUserDefaults().lock();
 	initialTempo = lUserDefaults->getTempo();
-	//tempoChangeEvents.clear();
 	loopEnabled = lUserDefaults->isLoopEnabled();
 	for (auto& track : getTracks()) {
 		auto lTrack = track.lock();
@@ -318,8 +311,6 @@ void Sequence::init(int lastBarIndex)
 	}
 	setLastBar(lastBarIndex);
 	initMetaTracks();
-	auto tce = metaTracks[2]->addEvent(0, "tempochange").lock();
-	dynamic_pointer_cast<mpc::sequencer::TempoChangeEvent>(tce)->setStepNumber(0);
 	initLoop();
 	setTimeSignature(0, getLastBar(), lUserDefaults->getTimeSig()->getNumerator(), lUserDefaults->getTimeSig()->getDenominator());
 }
@@ -425,7 +416,6 @@ TimeSignature Sequence::getTimeSignature()
 
 void Sequence::sortTempoChangeEvents()
 {
-	//sort(tempoChangeEvents.begin(), tempoChangeEvents.end(), Track::tickCmp);
 	metaTracks[2]->sortEvents();
 	int tceCounter = 0;
 	for (auto& e : metaTracks[2]->getEvents()) {

@@ -72,5 +72,173 @@ Uis::Uis()
 	*/
 }
 
+mpc::ui::sequencer::SequencerGui* Uis::getSequencerGui()
+{
+	return sequencerGui;
+}
+
+mpc::ui::sequencer::StepEditorGui* Uis::getStepEditorGui()
+{
+	return stepEditorGui;
+}
+
+mpc::ui::sampler::MixerGui* Uis::getMixerGui()
+{
+	return mixerGui;
+}
+
+mpc::ui::sequencer::EditSequenceGui* Uis::getEditSequenceGui()
+{
+	return editSequenceGui;
+}
+
+mpc::ui::sequencer::window::SequencerWindowGui* Uis::getSequencerWindowGui()
+{
+	return sequencerWindowGui;
+}
+
+mpc::ui::midisync::MidiSyncGui* Uis::getMidiSyncGui()
+{
+	return midiSyncGui;
+}
+
+mpc::ui::sequencer::BarCopyGui* Uis::getBarCopyGui()
+{
+	return barCopyGui;
+}
+
+mpc::ui::sequencer::TrMoveGui* Uis::getTrMoveGui()
+{
+	return trMoveGui;
+}
+
+mpc::ui::sampler::SoundGui* Uis::getSoundGui()
+{
+	return soundGui;
+}
+
+mpc::ui::sampler::window::ZoomGui* Uis::getZoomGui()
+{
+	return zoomGui;
+}
+
+mpc::ui::disk::DiskGui* Uis::getDiskGui()
+{
+	return diskGui;
+}
+
+mpc::ui::disk::window::DirectoryGui* Uis::getDirectoryGui()
+{
+	return directoryGui;
+}
+
+mpc::ui::disk::window::DiskWindowGui* Uis::getDiskWindowGui()
+{
+	return diskWindowGui;
+}
+
+mpc::ui::sampler::SamplerGui* Uis::getSamplerGui()
+{
+	return samplerGui;
+}
+
+mpc::ui::sampler::window::SamplerWindowGui* Uis::getSamplerWindowGui()
+{
+	return samplerWindowGui;
+}
+
+mpc::ui::NameGui* Uis::getNameGui()
+{
+	return nameGui;
+}
+
+mpc::ui::vmpc::DeviceGui* Uis::getDeviceGui()
+{
+	return deviceGui;
+}
+
+mpc::ui::sequencer::SongGui* Uis::getSongGui()
+{
+	return songGui;
+}
+
+mpc::ui::sampler::MixerSetupGui* Uis::getMixerSetupGui()
+{
+	return mixerSetupGui;
+}
+
+mpc::ui::sequencer::window::EraseGui* Uis::getEraseGui()
+{
+	return eraseGui;
+}
+
+mpc::ui::misc::PunchGui* Uis::getPunchGui()
+{
+	return punchGui;
+}
+
+mpc::ui::other::OthersGui* Uis::getOthersGui()
+{
+	return othersGui;
+}
+
+mpc::ui::vmpc::AudioGui* Uis::getAudioGui()
+{
+	return audioGui;
+}
+
+mpc::ui::vmpc::MidiGui* Uis::getMidiGui()
+{
+	return midiGui;
+}
+
+mpc::ui::vmpc::DirectToDiskRecorderGui* Uis::getD2DRecorderGui()
+{
+	return d2dRecorderGui;
+}
+
+mpc::ui::misc::TransGui* Uis::getTransGui()
+{
+	return transGui;
+}
+
+mpc::ui::misc::SecondSeqGui* Uis::getSecondSeqGui()
+{
+	return secondSeqGui;
+}
+
+mpc::ui::sampler::window::EditSoundGui* Uis::getEditSoundGui() {
+	return editSoundGui;
+}
+
+
 Uis::~Uis() {
+	if (stepEditorGui != nullptr) delete stepEditorGui;
+	if (sequencerWindowGui != nullptr) delete sequencerWindowGui;
+	if (sequencerGui != nullptr) delete sequencerGui;
+	if (editSequenceGui != nullptr) delete editSequenceGui;
+	if (barCopyGui != nullptr) delete barCopyGui;
+	if (trMoveGui != nullptr) delete trMoveGui;
+	if (soundGui != nullptr) delete soundGui;
+	if (samplerGui != nullptr) delete samplerGui;
+	if (editSoundGui != nullptr) delete editSoundGui;
+	if (zoomGui != nullptr) delete zoomGui;
+	if (samplerWindowGui != nullptr) delete samplerWindowGui;
+	if (mixerGui != nullptr) delete mixerGui;
+	if (diskGui != nullptr) delete diskGui;
+	if (directoryGui != nullptr) delete directoryGui;
+	if (diskWindowGui != nullptr) delete diskWindowGui;
+	if (midiSyncGui != nullptr) delete midiSyncGui;
+	if (nameGui != nullptr) delete nameGui;
+	if (mixerSetupGui != nullptr) delete mixerSetupGui;
+	if (eraseGui != nullptr) delete eraseGui;
+	if (punchGui != nullptr) delete punchGui;
+	if (midiGui != nullptr) delete midiGui;
+	if (audioGui != nullptr) delete audioGui;
+	if (d2dRecorderGui != nullptr) delete d2dRecorderGui;
+	if (transGui != nullptr) delete transGui;
+	if (secondSeqGui != nullptr) delete secondSeqGui;
+	if (deviceGui != nullptr) delete deviceGui;
+	if (songGui != nullptr) delete songGui;
+	if (othersGui != nullptr) delete othersGui;
 }

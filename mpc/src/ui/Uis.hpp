@@ -65,36 +65,43 @@ namespace mpc {
 		{
 
 		private:
-			mpc::ui::sequencer::SequencerGui* sequencerGui{};
-			mpc::ui::sequencer::window::SequencerWindowGui* sequencerWindowGui{};
-			mpc::ui::sequencer::StepEditorGui* stepEditorGui{};
-			ui::sequencer::BarCopyGui* barCopyGui{};
-			ui::sequencer::EditSequenceGui* editSequenceGui{};
-			ui::sequencer::TrMoveGui* trMoveGui{};
-			ui::sampler::SoundGui* soundGui{};
-			ui::sampler::SamplerGui* samplerGui{};
-			ui::sampler::window::EditSoundGui* editSoundGui{};
-			ui::sampler::window::SamplerWindowGui* samplerWindowGui{};
-			ui::sampler::window::ZoomGui* zoomGui{};
-			ui::sampler::MixerGui* mixerGui{};
-			ui::sampler::MixerSetupGui* mixerSetupGui{};
-			ui::disk::DiskGui* diskGui{};
-			ui::disk::window::DirectoryGui* directoryGui{};
-			ui::disk::window::DiskWindowGui* diskWindowGui{};
-			mpc::ui::midisync::MidiSyncGui* midiSyncGui{};
-			mpc::ui::NameGui* nameGui{};
-			ui::sequencer::SongGui* songGui{};
-			ui::sequencer::window::EraseGui* eraseGui{};
+			ui::NameGui* nameGui{ nullptr };
 
-			ui::other::OthersGui* othersGui{};
-			ui::misc::PunchGui* punchGui{};
-			ui::misc::SecondSeqGui* secondSeqGui{};
-			ui::misc::TransGui* transGui{};
+			ui::sequencer::SongGui* songGui{ nullptr };
+			ui::sequencer::SequencerGui* sequencerGui{ nullptr };
+			ui::sequencer::StepEditorGui* stepEditorGui{ nullptr };
+			ui::sequencer::BarCopyGui* barCopyGui{ nullptr };
+			ui::sequencer::EditSequenceGui* editSequenceGui{ nullptr };
+			ui::sequencer::TrMoveGui* trMoveGui{ nullptr };
 
-			ui::vmpc::DeviceGui* deviceGui{};
-			ui::vmpc::MidiGui* midiGui{};
-			ui::vmpc::AudioGui* audioGui{};
-			ui::vmpc::DirectToDiskRecorderGui* d2dRecorderGui{};
+			ui::sequencer::window::EraseGui* eraseGui{ nullptr };
+			ui::sequencer::window::SequencerWindowGui* sequencerWindowGui{ nullptr };
+
+			ui::sampler::SoundGui* soundGui{ nullptr };
+			ui::sampler::SamplerGui* samplerGui{ nullptr };
+			ui::sampler::MixerGui* mixerGui{ nullptr };
+			ui::sampler::MixerSetupGui* mixerSetupGui{ nullptr };
+
+			ui::sampler::window::EditSoundGui* editSoundGui{ nullptr };
+			ui::sampler::window::SamplerWindowGui* samplerWindowGui{ nullptr };
+			ui::sampler::window::ZoomGui* zoomGui{ nullptr };
+
+			ui::disk::DiskGui* diskGui{ nullptr };
+			ui::disk::window::DirectoryGui* directoryGui{ nullptr };
+			ui::disk::window::DiskWindowGui* diskWindowGui{ nullptr };
+
+			ui::midisync::MidiSyncGui* midiSyncGui{ nullptr };
+
+			ui::other::OthersGui* othersGui{ nullptr };
+
+			ui::misc::PunchGui* punchGui{ nullptr };
+			ui::misc::SecondSeqGui* secondSeqGui{ nullptr };
+			ui::misc::TransGui* transGui{ nullptr };
+
+			ui::vmpc::DeviceGui* deviceGui{ nullptr };
+			ui::vmpc::MidiGui* midiGui{ nullptr };
+			ui::vmpc::AudioGui* audioGui{ nullptr };
+			ui::vmpc::DirectToDiskRecorderGui* d2dRecorderGui{ nullptr };
 
 		public:
 			ui::sequencer::SequencerGui* getSequencerGui();
