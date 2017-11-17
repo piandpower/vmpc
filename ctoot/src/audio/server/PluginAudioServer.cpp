@@ -170,13 +170,13 @@ void PluginAudioServer::work(double** inputs, double** outputs, int nFrames) {
 	}
 
     if (bufferPointer == 0) {
-		if (requestedBufferSize != bufferSize) {
-			resizeBuffers(bufferSize);
-			for (auto& o : activeOutputs) {
-				if (o != nullptr)
-					o->localBuffer.resize(bufferSize * 2);
-			}
-		}
+		//if (requestedBufferSize != bufferSize) {
+		//	resizeBuffers(bufferSize);
+		//	for (auto& o : activeOutputs) {
+		//		if (o != nullptr)
+		//			o->localBuffer.resize(bufferSize * 2);
+		//	}
+		//}
 	}
 
 	for (int j = 0; j < activeInputs.size(); j++) {

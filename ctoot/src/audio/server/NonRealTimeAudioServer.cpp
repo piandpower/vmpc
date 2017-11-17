@@ -207,6 +207,10 @@ int NonRealTimeAudioServer::getTotalLatencyFrames()
     return server.lock()->getTotalLatencyFrames();
 }
 
+void NonRealTimeAudioServer::resizeBuffers(int newSize) {
+	server.lock()->resizeBuffers(newSize);
+}
+
 NonRealTimeAudioServer::~NonRealTimeAudioServer() {
 	if (nrtThread.joinable()) nrtThread.join();
 }

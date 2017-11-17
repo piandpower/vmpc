@@ -99,12 +99,11 @@ AudioMidiServices::AudioMidiServices(mpc::Mpc* mpc)
 }
 
 void AudioMidiServices::startTestMode() {
-	requestedBufferSize = 4096;
+	//requestedBufferSize = 4096;
 	setupMidi();
 
 	server = make_shared<ctoot::audio::server::UnrealAudioServer>();
 	offlineServer = make_shared<ctoot::audio::server::NonRealTimeAudioServer>(server);
-	offlineServer->resizeBuffers(4096);
 	setupMixer();
 	inputProcesses = vector<ctoot::audio::server::IOAudioProcess*>(2);
 	outputProcesses = vector<ctoot::audio::server::IOAudioProcess*>(5);
@@ -153,6 +152,7 @@ void AudioMidiServices::startTestMode() {
 	//cac->add(sampler.get());
 	offlineServer->setWeakPtr(offlineServer);
 	offlineServer->setClient(cac);
+	offlineServer->resizeBuffers(4096);
 	offlineServer->start(); // <---- niet cool
 	disabled = false;
 	//this_thread::sleep_for(chrono::milliseconds(6000));
@@ -256,19 +256,19 @@ void AudioMidiServices::setupServer(int index)
 		const string inputName = devIn == -1 ? "none" : directSoundInDevNames[devIn];
 		const string outputName = devOut == -1 ? "none" : directSoundOutDevNames[devOut];
 		server = make_shared<ctoot::audio::server::DirectSoundServer>(inputName, outputName);
-		server->setRequestedBufferSize(requestedBufferSize == -1 ? 4096 : requestedBufferSize);
-		server->resizeBuffers(server->getRequestedBufferSize());
+		//server->setRequestedBufferSize(requestedBufferSize == -1 ? 4096 : requestedBufferSize);
+//		server->resizeBuffers(server->getRequestedBufferSize());
 	}
 	else if (index >= 1 && standalone) {
 		server = make_shared<ctoot::audio::server::AsioServer>(index - 1);
-		server->setRequestedBufferSize(requestedBufferSize == -1 ? 4096 : requestedBufferSize);
-		server->resizeBuffers(server->getRequestedBufferSize());
+		//server->setRequestedBufferSize(requestedBufferSize == -1 ? 4096 : requestedBufferSize);
+		//server->resizeBuffers(server->getRequestedBufferSize());
 	}
 #endif
 
 	if (serverNames[index].find("host") != string::npos) {
 		server = make_shared<ctoot::audio::server::PluginAudioServer>(4, 10); // 4 mono in, 10 mono out, like real mpc2000xl
-		server->setRequestedBufferSize(requestedBufferSize == -1 ? 4096 : requestedBufferSize);
+		//server->setRequestedBufferSize(requestedBufferSize == -1 ? 4096 : requestedBufferSize);
 		//moduru::Logger::l.log("NInChannels() " + to_string(gui.lock()->getIPlugBase()->NInChannels()) + "\n");
 	}
 	requestedBufferSize = -1;
@@ -745,8 +745,8 @@ void AudioMidiServices::setBufferSize(int size)
 {
 	if (size < 32) return;
 	if (size > 16384) return;
-	server->setRequestedBufferSize(size);
-	if (server->getRequestedBufferSize() != server->getBufferSize()) {
+	//server->setRequestedBufferSize(size);
+	//if (server->getRequestedBufferSize() != server->getBufferSize()) {
 		//if (isDirectSound()) {
 		//	dynamic_pointer_cast<ctoot::audio::server::DirectSoundServer>(server)->getRtAudio()->stopStream();
 		//	server->resizeBuffers(server->getRequestedBufferSize());
@@ -764,7 +764,7 @@ void AudioMidiServices::setBufferSize(int size)
 		//}
 		//else { // assume plugin and do nothing
 		//}
-	}
+	//}
 
 	setChanged();
 	notifyObservers(string("buffersize"));

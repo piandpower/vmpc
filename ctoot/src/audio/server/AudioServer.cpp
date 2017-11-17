@@ -17,14 +17,6 @@ const std::vector<ctoot::audio::core::AudioBuffer*>& AudioServer::getBuffers() {
 	return buffers;
 }
 
-void AudioServer::setRequestedBufferSize(const unsigned int nFrames) {
-	requestedBufferSize = nFrames;
-}
-
-const unsigned int AudioServer::getRequestedBufferSize() {
-	return requestedBufferSize;
-}
-
 const unsigned int AudioServer::getBufferSize() {
 	return bufferSize;
 }

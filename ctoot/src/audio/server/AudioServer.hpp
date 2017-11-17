@@ -16,7 +16,6 @@ namespace ctoot {
 			{
 
 			protected:
-				unsigned int requestedBufferSize{ 512 };
 				unsigned int bufferSize{ 512 };
 				AudioClient* client{ nullptr };
 				bool running{ false };
@@ -25,13 +24,12 @@ namespace ctoot {
 				std::vector<ctoot::audio::core::AudioBuffer*> buffers{};
 
 			public:
-				void resizeBuffers(int newSize);
+				virtual void resizeBuffers(int newSize);
 
 			public:
 				const std::vector<IOAudioProcess*>& getActiveInputs();
 				const std::vector<IOAudioProcess*>& getActiveOutputs();
 				const std::vector<ctoot::audio::core::AudioBuffer*>& getBuffers();
-				const unsigned int getRequestedBufferSize();
 				const unsigned int getBufferSize();
 
 			public:
@@ -56,7 +54,7 @@ namespace ctoot {
 			public:
 				virtual ctoot::audio::core::AudioBuffer* createAudioBuffer(std::string name);
 				virtual void removeAudioBuffer(ctoot::audio::core::AudioBuffer* buffer);
-				virtual void setRequestedBufferSize(const unsigned int nFrames);
+				//virtual void setRequestedBufferSize(const unsigned int nFrames);
 
 			public:
 				virtual ~AudioServer();

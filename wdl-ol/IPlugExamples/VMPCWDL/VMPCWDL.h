@@ -42,7 +42,7 @@ private:
 
   IBitmapOverlayControl* mAboutBox;
   IControl* mKeyboard;
-
+  IControl* mDataWheel;
   IMidiQueue mMidiQueue;
 
   int mActiveVoices;

@@ -5,6 +5,8 @@
 #include "IControl.h"
 #include "IKeyboardControl.h"
 
+#include "source/DataWheelControl.hpp"
+
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/Sequence.hpp>
 
@@ -79,7 +81,9 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
   //                    C#     D#          F#      G#      A#
   int coords[12] = { 0, 7, 12, 20, 24, 36, 43, 48, 56, 60, 69, 72 };
   //mKeyboard = new IKeyboardControl(this, kKeybX, kKeybY, 48, 5, &regular, &sharp, coords);
-
+  auto dataWheels = pGraphics->LoadIBitmap(DATAWHEEL_ID, DATAWHEEL_FN);
+  mDataWheel = new DataWheelControl(this, dataWheels);
+  pGraphics->AttachControl(mDataWheel);
   //pGraphics->AttachControl(mKeyboard);
 
   //IBitmap about = pGraphics->LoadIBitmap(ABOUTBOX_ID, ABOUTBOX_FN);
@@ -93,6 +97,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 
 VMPCWDL::~VMPCWDL()
 {
+	//delete mDataWheel;
 	delete mpc;
 
   delete mOsc;

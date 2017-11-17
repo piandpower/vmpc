@@ -64,6 +64,7 @@ namespace ctoot {
 				int getInputLatencyFrames() override;
 				int getOutputLatencyFrames() override;
 				int getTotalLatencyFrames() override;
+				void resizeBuffers(int newSize) override;
 
 			public:
 				void work(int nFrames) override; // override AudioClient::work()
