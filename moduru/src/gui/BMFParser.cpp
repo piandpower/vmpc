@@ -140,8 +140,7 @@ std::vector<std::vector<bool>> BMFParser::BMPAsBoolArrays() {
 	fopen_s(&f, "c:/temp/font_0.bmp", "rb");
     //f = fopen("c:/temp/font_0.bmp", "rb");
 
-    
-	if (f == nullptr) return result;
+    if (f == nullptr) return result;
 
 	unsigned char info[infosize];
 	fread(info, sizeof(unsigned char), infosize, f); // read the 54-byte header
@@ -163,8 +162,9 @@ std::vector<std::vector<bool>> BMFParser::BMPAsBoolArrays() {
 
 	fseek(f, imageDataOffset, 0);
 
-	unsigned char* tempdata = new unsigned char[imageSize / 8]; // allocate 1 byte per 8 pixels
-	fread(tempdata, sizeof(unsigned char), imageSize, f); // read the rest of the data at once
+	//unsigned char* tempdata = new unsigned char[imageSize / 8]; // allocate 1 byte per 8 pixels
+	vector<unsigned char> tempdata(imageSize / 8);
+	fread(&tempdata[0], sizeof(unsigned char), imageSize, f); // read the rest of the data at once
 	fclose(f);
 
 	int xcounter = 0;
@@ -174,10 +174,12 @@ std::vector<std::vector<bool>> BMFParser::BMPAsBoolArrays() {
 	int bitcounter = 7;
 	int charcounter = 0;
 
+	// tot hier geen prob
+
 	while (pixelcounter < imageSize) {
 		if (bitcounter < 0) {
 			bitcounter = 7;
-			++tempdata;
+			//++tempdata;
 			charcounter++;
 		}
 		if (xcounter >= width) {
@@ -185,14 +187,14 @@ std::vector<std::vector<bool>> BMFParser::BMPAsBoolArrays() {
 			ycounter++;
 		}
 
-		if ((*tempdata >> bitcounter) & 1) result[xcounter][height - ycounter] = true;
+		if ((tempdata.at(charcounter) >> bitcounter) & 1) result[xcounter][height - ycounter] = true;
 
 		bitcounter--;
 		xcounter++;
 		pixelcounter++;
 	}
-	tempdata -= charcounter;
-	free(tempdata);
+	//tempdata -= charcounter;
+	//free(tempdata); // this fucker crashes UE4!!!
 	return result;
 }
 

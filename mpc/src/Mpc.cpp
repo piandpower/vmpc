@@ -2,6 +2,8 @@
 
 #include <ui/Uis.hpp>
 
+#include <lcdgui/LayeredScreen.hpp>
+
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audiomidi/EventHandler.hpp>
 
@@ -32,6 +34,7 @@ void Mpc::init()
 {
 
 	uis = make_shared<ui::Uis>();
+	layeredScreen = make_shared<lcdgui::LayeredScreen>(this);
 
 	sequencer = make_shared<mpc::sequencer::Sequencer>(this);
 	moduru::Logger::l.log("sequencer created.\n");
@@ -102,6 +105,10 @@ weak_ptr<audiomidi::AudioMidiServices> Mpc::getAudioMidiServices()
 
 weak_ptr<audiomidi::EventHandler> Mpc::getEventHandler() {
 	return eventHandler;
+}
+
+weak_ptr<lcdgui::LayeredScreen> Mpc::getLayeredScreen() {
+	return layeredScreen;
 }
 
 vector<char> Mpc::akaiAsciiChar = vector<char>({ ' ', '!', '#', '$', '%', '&', '\'', '(', ')', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '}' });

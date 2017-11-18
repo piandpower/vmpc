@@ -11,6 +11,10 @@ namespace mpc {
 		class Uis;
 	}
 
+	namespace lcdgui {
+		class LayeredScreen;
+	}
+
 	namespace ctootextensions {
 		class MpcSoundPlayerChannel;
 		class MpcBasicSoundPlayerChannel;
@@ -36,13 +40,14 @@ namespace mpc {
 	{
 	
 	private:
-		std::shared_ptr<mpc::ui::Uis> uis;
+		std::shared_ptr<ui::Uis> uis;
+		std::shared_ptr<lcdgui::LayeredScreen> layeredScreen;
 
 	private:
-		std::shared_ptr<mpc::audiomidi::EventHandler> eventHandler;
-		std::shared_ptr<mpc::sequencer::Sequencer> sequencer;
-		std::shared_ptr<mpc::sampler::Sampler> sampler;
-		std::shared_ptr<mpc::audiomidi::AudioMidiServices> audioMidiServices{};
+		std::shared_ptr<audiomidi::EventHandler> eventHandler;
+		std::shared_ptr<sequencer::Sequencer> sequencer;
+		std::shared_ptr<sampler::Sampler> sampler;
+		std::shared_ptr<audiomidi::AudioMidiServices> audioMidiServices{};
 
 	public:
 		void init();
@@ -50,15 +55,16 @@ namespace mpc {
 
 	public:
 		std::weak_ptr<ui::Uis> getUis();
+		std::weak_ptr<lcdgui::LayeredScreen> getLayeredScreen();
 
 	public:
-		std::weak_ptr<mpc::sequencer::Sequencer> getSequencer();
-		std::weak_ptr<mpc::sampler::Sampler> getSampler();
-		mpc::ctootextensions::MpcSoundPlayerChannel* getDrum(int i);
-		mpc::ctootextensions::MpcBasicSoundPlayerChannel* getBasicPlayer();
-		std::weak_ptr<mpc::audiomidi::AudioMidiServices> getAudioMidiServices();
-		std::vector<mpc::ctootextensions::MpcSoundPlayerChannel*> getDrums();
-		std::weak_ptr<mpc::audiomidi::EventHandler> getEventHandler();
+		std::weak_ptr<sequencer::Sequencer> getSequencer();
+		std::weak_ptr<sampler::Sampler> getSampler();
+		ctootextensions::MpcSoundPlayerChannel* getDrum(int i);
+		ctootextensions::MpcBasicSoundPlayerChannel* getBasicPlayer();
+		std::weak_ptr<audiomidi::AudioMidiServices> getAudioMidiServices();
+		std::vector<ctootextensions::MpcSoundPlayerChannel*> getDrums();
+		std::weak_ptr<audiomidi::EventHandler> getEventHandler();
 
 	public:
 		void loadSound(bool replace);
