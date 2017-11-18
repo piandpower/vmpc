@@ -69,6 +69,7 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}/../mpc/src
 	${CMAKE_CURRENT_SOURCE_DIR}/../ctoot/src
 	${CMAKE_CURRENT_SOURCE_DIR}/../moduru/src
+	${CMAKE_CURRENT_SOURCE_DIR}/../rapidjson/include
 	)
 
 if(APPLE)

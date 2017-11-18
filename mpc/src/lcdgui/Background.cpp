@@ -38,8 +38,9 @@ void Background::Draw(std::vector< std::vector<bool> >* pixels)
 	int imageSize = width*height;
 	fseek(f, imageDataOffset, 0);
 
-	unsigned char* data = new unsigned char[imageSize]; // allocate 1 byte per pixel
-	fread(data, sizeof(unsigned char), imageSize, f); // read the rest of the data at once
+	//unsigned char* data = new unsigned char[imageSize]; // allocate 1 byte per pixel
+	vector<unsigned char> data(imageSize);
+	fread(&data[0], sizeof(unsigned char), imageSize, f); // read the rest of the data at once
 	fclose(f);
 	int colorCount = (imageDataOffset - infosize) / 4;
 
@@ -56,22 +57,23 @@ void Background::Draw(std::vector< std::vector<bool> >* pixels)
 	//		++data;
 	//	}
 	//}
-
+	int charcounter = 0;
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
-			unsigned char value = *data;
+			//unsigned char value = *data;
+			auto value = data[charcounter++];
 			if ((colorCount <= 2 && value == 1) || (colorCount > 2 && value == 2)) {
 				(*pixels)[x][y] = true;
 			}
 			else if (value == 0) {
 				(*pixels)[x][y] = false;
 			}
-			++data;
+			//++data;
 		}
 	}
 
-	data -= imageSize;
-	free(data);
+	//data -= imageSize;
+	//free(data);
 
 	// clear bottom in case height != full LCD height
 	if (name.compare("popup") != 0) {
