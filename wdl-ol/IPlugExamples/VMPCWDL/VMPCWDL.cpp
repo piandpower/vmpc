@@ -8,12 +8,15 @@
 #include "source/DataWheelControl.hpp"
 #include "source/KnobControl.hpp"
 #include "source/LedControl.hpp"
+#include "source/LCDControl.hpp"
 
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/Sequence.hpp>
 
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audio/server/UnrealAudioServer.hpp>
+
+#include <lcdgui/LayeredScreen.hpp>
 
 const int kNumPrograms = 8;
 
@@ -92,9 +95,9 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	pGraphics->AttachControl(mRecKnob);
 	pGraphics->AttachControl(mVolKnob);
 
-	//IBitmap about = pGraphics->LoadIBitmap(ABOUTBOX_ID, ABOUTBOX_FN);
-	//mAboutBox = new IBitmapOverlayControl(this, 100, 100, &about, IRECT(540, 250, 680, 290));
-	//pGraphics->AttachControl(mAboutBox);
+	mLCDControl = new LCDControl(this, mpc->getLayeredScreen().lock()->getPixels());
+	pGraphics->AttachControl(mLCDControl);
+
 	AttachGraphics(pGraphics);
 
 	//MakePreset("preset 1", ... );
@@ -103,8 +106,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 
 VMPCWDL::~VMPCWDL()
 {
-	//delete mDataWheel;
-	delete mpc;
+		delete mpc;
 
   delete mOsc;
   delete mEnv;

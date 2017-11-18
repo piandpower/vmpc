@@ -35,6 +35,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 //	: IPanelControl(pPlug, *Constants::LCD_RECT(), Constants::LCD_OFF())
 {
 	this->mpc = mpc;
+	pixels = std::vector < std::vector <bool>>(248, std::vector<bool>(60));
 	//popup = make_unique<mpc::lcdgui::Popup>();
 	//popup->Hide(true);
 	//horizontalBarsTempoChangeEditor = vector<shared_ptr<HorizontalBar>>(4);
@@ -244,7 +245,22 @@ int LayeredScreen::openScreen(string screenName) {
 	if (screenName.compare("sequencer") == 0) {
 		//ui::sequencer::SequencerObserver foo(mpc, this);
 	}
+
+	getLayer(0).getBackground()->Draw(&pixels);
+	auto components = getLayer(0).getAllLabels();
+	for (auto& c : components) {
+		c.lock()->Draw(&pixels);
+	}
+	components = getLayer(0).getAllFields();
+	for (auto& c : components) {
+		c.lock()->Draw(&pixels);
+	}
+
 	return currentLayer;
+}
+
+std::vector<std::vector<bool>>* LayeredScreen::getPixels() {
+	return &pixels;
 }
 
 Layer& LayeredScreen::getLayer(int i) {

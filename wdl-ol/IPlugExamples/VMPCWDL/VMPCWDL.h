@@ -17,52 +17,55 @@
 class LedControl;
 class KnobControl;
 class DataWheelControl;
+class LCDControl;
 
 class VMPCWDL : public IPlug
 {
 public:
 
-  VMPCWDL(IPlugInstanceInfo instanceInfo);
-  ~VMPCWDL();
+	VMPCWDL(IPlugInstanceInfo instanceInfo);
+	~VMPCWDL();
 
-  void Reset();
-  void OnParamChange(int paramIdx);
+	void Reset();
+	void OnParamChange(int paramIdx);
 
-  void ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames);
-  bool HostRequestingAboutBox();
+	void ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames);
+	bool HostRequestingAboutBox();
 
-  int GetNumKeys();
-  bool GetKeyStatus(int key);
-  void ProcessMidiMsg(IMidiMsg* pMsg);
-  void NoteOnOff(IMidiMsg* pMsg);
+	int GetNumKeys();
+	bool GetKeyStatus(int key);
+	void ProcessMidiMsg(IMidiMsg* pMsg);
+	void NoteOnOff(IMidiMsg* pMsg);
 
 private:
 	mpc::Mpc* mpc = nullptr;
 
 private:
 
-  void NoteOnOffPoly(IMidiMsg* pMsg);
-  int FindFreeVoice();
+	void NoteOnOffPoly(IMidiMsg* pMsg);
+	int FindFreeVoice();
 
-  IBitmapOverlayControl* mAboutBox;
-  IControl* mKeyboard;
-  DataWheelControl* mDataWheel;
-  KnobControl* mRecKnob;
-  KnobControl* mVolKnob;
-  LedControl* mLedPanel;
-  IMidiQueue mMidiQueue;
+	IBitmapOverlayControl* mAboutBox;
+	IControl* mKeyboard;
+	DataWheelControl* mDataWheel;
+	KnobControl* mRecKnob;
+	KnobControl* mVolKnob;
+	LedControl* mLedPanel;
+	LCDControl* mLCDControl;
 
-  int mActiveVoices;
-  int mKey;
-  int mNumHeldKeys;
-  bool mKeyStatus[128]; // array of on/off for each key
+	IMidiQueue mMidiQueue;
 
-  double mSampleRate;
+	int mActiveVoices;
+	int mKey;
+	int mNumHeldKeys;
+	bool mKeyStatus[128]; // array of on/off for each key
 
-  CVoiceState mVS[MAX_VOICES];
-  CWTOsc* mOsc;
-  CADSREnvL* mEnv;
-  double* mTable;
+	double mSampleRate;
+
+	CVoiceState mVS[MAX_VOICES];
+	CWTOsc* mOsc;
+	CADSREnvL* mEnv;
+	double* mTable;
 };
 
 enum ELayout

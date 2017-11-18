@@ -34,6 +34,9 @@ namespace mpc {
 		{
 
 		private:
+			std::vector<std::vector<bool> > pixels;
+
+		private:
 			static const int LAYER_COUNT{ 4 };
 
 			mpc::Mpc* mpc;
@@ -124,6 +127,9 @@ namespace mpc {
 			mpc::lcdgui::TwoDots* getTwoDots();
 			mpc::lcdgui::Wave* getFineWave();
 			mpc::lcdgui::Wave* getWave();
+
+		public:
+			std::vector<std::vector<bool> >* getPixels();
 
 		public:
 			LayeredScreen(mpc::Mpc* mpc);

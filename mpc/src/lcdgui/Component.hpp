@@ -1,7 +1,7 @@
 #ifndef COMPONENT
 #define COMPONENT
 
-#include <gui/BasicStructs.hpp>
+//#include <gui/BasicStructs.hpp>
 
 #include <vector>
 
@@ -10,7 +10,7 @@ namespace mpc {
 		class Component {
 
 		private:
-			IRECT rect;
+			//IRECT rect;
 
 		public:
 			void Hide(bool hide) {}
@@ -19,7 +19,7 @@ namespace mpc {
 			virtual void Draw(std::vector<std::vector<bool> >* pixels) {}
 			void SetDirty(bool dirty) {}
 
-			IRECT* GetRECT() { return &rect; }
+			//IRECT* GetRECT() { return &rect; }
 
 			virtual ~Component() {}
 

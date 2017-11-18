@@ -59,6 +59,8 @@ void Mpc::init()
 
 	audioMidiServices->startTestMode();
 	moduru::Logger::l.log("audioMidiServices test mode started.\n");
+
+	layeredScreen->openScreen("sequencer");
 }
 
 weak_ptr<ui::Uis> Mpc::getUis() {
