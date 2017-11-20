@@ -18,6 +18,7 @@ class LedControl;
 class KnobControl;
 class DataWheelControl;
 class LCDControl;
+class InputCatcherControl;
 
 class VMPCWDL : public IPlug
 {
@@ -32,8 +33,6 @@ public:
 	void ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames);
 	bool HostRequestingAboutBox();
 
-	int GetNumKeys();
-	bool GetKeyStatus(int key);
 	void ProcessMidiMsg(IMidiMsg* pMsg);
 	void NoteOnOff(IMidiMsg* pMsg);
 
@@ -43,42 +42,16 @@ private:
 private:
 
 	void NoteOnOffPoly(IMidiMsg* pMsg);
-	int FindFreeVoice();
 
-	IBitmapOverlayControl* mAboutBox;
-	IControl* mKeyboard;
 	DataWheelControl* mDataWheel;
 	KnobControl* mRecKnob;
 	KnobControl* mVolKnob;
 	LedControl* mLedPanel;
 	LCDControl* mLCDControl;
+	InputCatcherControl* mInputCatcher;
 
 	IMidiQueue mMidiQueue;
-
-	int mActiveVoices;
-	int mKey;
-	int mNumHeldKeys;
-	bool mKeyStatus[128]; // array of on/off for each key
-
 	double mSampleRate;
-
-	CVoiceState mVS[MAX_VOICES];
-	CWTOsc* mOsc;
-	CADSREnvL* mEnv;
-	double* mTable;
-};
-
-enum ELayout
-{
-  kWidth = GUI_WIDTH,  // width of plugin window
-  kHeight = GUI_HEIGHT, // height of plugin window
-
-  kKeybX = 1,
-  kKeybY = 233,
-
-  kGainX = 100,
-  kGainY = 100,
-  kKnobFrames = 60
 };
 
 #endif //__VMPCWDL__

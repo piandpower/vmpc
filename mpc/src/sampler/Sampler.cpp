@@ -5,7 +5,7 @@
 #include <disk/SoundLoader.hpp>
 #include <maingui/StartUp.hpp>
 //#include <hardware/ControlPanel.hpp>
-////#include <maingui/Gui.hpp>
+//////#include <maingui/Gui.hpp>
 //#include <lcdgui/LayeredScreen.hpp>
 //#include <lcdgui/LayeredScreen.hpp>
 #include <ui/UserDefaults.hpp>

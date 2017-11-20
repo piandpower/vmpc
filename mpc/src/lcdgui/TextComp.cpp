@@ -23,7 +23,6 @@ TextComp::TextComp()
 	//textOffsetX = 2;
 }
 
-
 void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 	auto atlas = bmfParser->getAtlas();
 	auto font = bmfParser->getLoadedFont();
@@ -97,11 +96,11 @@ void TextComp::initRECT() {
 }
 
 int TextComp::getX() {
-	return x/2;
+	return x;
 }
 
 int TextComp::getY() {
-	return y/2;
+	return y;
 }
 
 int TextComp::getW() {

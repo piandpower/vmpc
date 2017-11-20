@@ -64,6 +64,9 @@ namespace mpc {
 			void initialize(std::string name, int x, int y, int columns);
 
 		public:
+			void Draw(std::vector<std::vector<bool> >* pixels) override;
+
+		public:
 			Field(mpc::lcdgui::LayeredScreen* layeredScreen);
 			~Field();
 

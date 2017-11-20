@@ -11,6 +11,11 @@ namespace mpc {
 		class Uis;
 	}
 
+	namespace controls {
+		class KbMouseController;
+		class Controls;
+	}
+
 	namespace lcdgui {
 		class LayeredScreen;
 	}
@@ -42,6 +47,8 @@ namespace mpc {
 	private:
 		std::shared_ptr<ui::Uis> uis;
 		std::shared_ptr<lcdgui::LayeredScreen> layeredScreen;
+		std::shared_ptr<controls::KbMouseController> kbmc;
+		std::shared_ptr<controls::Controls> controls;
 
 	private:
 		std::shared_ptr<audiomidi::EventHandler> eventHandler;
@@ -51,11 +58,13 @@ namespace mpc {
 
 	public:
 		void init();
-		void startMidi();
+		//void startMidi();
 
 	public:
 		std::weak_ptr<ui::Uis> getUis();
 		std::weak_ptr<lcdgui::LayeredScreen> getLayeredScreen();
+		std::weak_ptr<controls::KbMouseController> getKbmc();
+		std::weak_ptr<controls::Controls> getControls();
 
 	public:
 		std::weak_ptr<sequencer::Sequencer> getSequencer();

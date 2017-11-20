@@ -264,7 +264,6 @@ void LayeredScreen::transferFocus(bool backwards) {
 	if (!backwards && currentIndex == size - 1) return;
 
 	bool success = false;
-	/*
 	while (success == false) {
 		candidateIndex = backwards ? currentIndex-- - 1 : currentIndex++ + 1;
 		if (candidateIndex >= 0 && candidateIndex < size) {
@@ -276,11 +275,9 @@ void LayeredScreen::transferFocus(bool backwards) {
 			break;
 		}
 	}
-	*/
 	if (!success) return;
 
 	layers[currentLayer]->setFocus(params[candidateIndex]->getTf().lock()->getName());
-	//SetDirty(false);
 }
 
 int LayeredScreen::openScreen(string screenName) {
@@ -383,7 +380,7 @@ void LayeredScreen::returnToLastFocus()
 	for (auto& lf : lastFocus) {
 		if (lf[0].compare(currentScreenName) == 0) {
 			focusCounter++;
-			//mainFrame->setFocus(lf[1], currentLayer);
+			setFocus(lf[1], currentLayer);
 		}
 	}
 	if (focusCounter == 0) {
@@ -391,7 +388,7 @@ void LayeredScreen::returnToLastFocus()
 		sa[0] = currentScreenName;
 		sa[1] = firstField;
 		lastFocus.push_back(sa);
-		//mainFrame->setFocus(firstField, currentLayer);
+		setFocus(firstField, currentLayer);
 	}
 }
 
@@ -563,108 +560,114 @@ int LayeredScreen::getCurrentLayer() {
 
 weak_ptr<Field> LayeredScreen::findBelow(weak_ptr<Field> tf0) {
 	int marginChars = 8;
-	//int minDistV = maingui::Constants::TEXT_HEIGHT;
-	//int maxDistH = maingui::Constants::TEXT_WIDTH * marginChars;
+	int minDistV = 7;
+	int maxDistH = 6 * marginChars;
 	weak_ptr<Field> result = tf0;
 	auto lTf0 = tf0.lock();
-	//for (auto& a : layers[currentLayer]->getAllFields()) {
-	//	auto tf1 = dynamic_pointer_cast<Field>(a.lock());
-	//	/*
-	//	if (tf1->GetRECT()->B - lTf0->GetRECT()->B >= minDistV) {
-	//		if (abs((int)(tf1->GetRECT()->MW() - lTf0->GetRECT()->MW())) <= maxDistH) {
-	//			if (!tf1->IsHidden() && tf1->isFocusable()) {
-	//				result = tf1;
-	//				break;
-	//			}
-	//		}
-	//	}
-	//	*/
-	//}
+	for (auto& a : layers[currentLayer]->getAllFields()) {
+		auto tf1 = dynamic_pointer_cast<Field>(a.lock());
+		auto B1 = tf1->getY() + tf1->getH();
+		auto B0 = lTf0->getY() + lTf0->getH();
+		auto MW1 = 0.5f * (float)(tf1->getX()*2 + tf1->getW());
+		auto MW0 = 0.5f * (float)(lTf0->getX() * 2 + lTf0->getW());
+		if (B1 - B0 >= minDistV) {
+			if (abs((int)(MW1 - MW0)) <= maxDistH) {
+				if (!tf1->IsHidden() && tf1->isFocusable()) {
+					result = tf1;
+					break;
+				}
+			}
+		}
+	}
 
-	//if (result.lock() == lTf0) {
-	//	marginChars = 16;
-	//	minDistV = Constants::TEXT_HEIGHT;
-	//	maxDistH = Constants::TEXT_WIDTH * marginChars;
-	//	for (auto& a : layers[currentLayer]->getAllFields()) {
-	//		auto tf1 = dynamic_pointer_cast<Field>(a.lock());
-	//		/*
-	//		if (tf1->GetRECT()->B - lTf0->GetRECT()->B >= minDistV) {
-	//			if (abs((int)(tf1->GetRECT()->MW() - lTf0->GetRECT()->MW())) <= maxDistH) {
-	//				if (!tf1->IsHidden() && tf1->isFocusable()) {
-	//					result = tf1;
-	//					break;
-	//				}
-	//			}
-	//		}
-	//		*/
-	//	}
-	//}
+	if (result.lock() == lTf0) {
+		marginChars = 16;
+		maxDistH = 6 * marginChars;
+		for (auto& a : layers[currentLayer]->getAllFields()) {
+			auto tf1 = dynamic_pointer_cast<Field>(a.lock());
+			auto B1 = tf1->getY() + tf1->getH();
+			auto B0 = lTf0->getY() + lTf0->getH();
+			auto MW1 = 0.5f * (float)(tf1->getX() * 2 + tf1->getW());
+			auto MW0 = 0.5f * (float)(lTf0->getX() * 2 + lTf0->getW());
+			if (B1 - B0 >= minDistV) {
+				if (abs((int)(MW1 - MW0)) <= maxDistH) {
+					if (!tf1->IsHidden() && tf1->isFocusable()) {
+						result = tf1;
+						break;
+					}
+				}
+			}
+		}
+	}
 	return result;
 }
 
 weak_ptr<Field> LayeredScreen::findAbove(weak_ptr<Field> tf0) {
 	int marginChars = 8;
-	//int minDistV = - maingui::Constants::TEXT_HEIGHT;
-	//int maxDistH = maingui::Constants::TEXT_WIDTH * marginChars;
+	int minDistV = - 7;
+	int maxDistH = 6 * marginChars;
 	weak_ptr<Field> result = tf0;
 	auto lTf0 = tf0.lock();
-	//auto revComponents = layers[currentLayer]->getAllFields();
-	//reverse(revComponents.begin(), revComponents.end());
-	//for (auto& a : revComponents) {
-	//	auto tf1 = dynamic_pointer_cast<Field>(a.lock());
-	//	/*
-	//	if (tf1->GetRECT()->B - lTf0->GetRECT()->B <= minDistV) {
-	//		if (abs((int)(tf1->GetRECT()->MW() - lTf0->GetRECT()->MW())) <= maxDistH) {
-	//			if (!tf1->IsHidden() && tf1->isFocusable()) {
-	//				result = tf1;
-	//				break;
-	//			}
-	//		}
-	//	}
-	//	*/
-	//}
-	//if (result.lock() == lTf0) {
-	//	marginChars = 16;
-	//	minDistV = -Constants::TEXT_HEIGHT;
-	//	maxDistH = Constants::TEXT_WIDTH * marginChars;
-	//	for (auto& a : revComponents) {
-	//		auto tf1 = dynamic_pointer_cast<Field>(a.lock());
-	//		/*
-	//		if (tf1->GetRECT()->B - lTf0->GetRECT()->B <= minDistV) {
-	//			if (abs((int)(tf1->GetRECT()->MW() - lTf0->GetRECT()->MW())) <= maxDistH) {
-	//				if (!tf1->IsHidden() && tf1->isFocusable()) {
-	//					result = tf1;
-	//					break;
-	//				}
-	//			}
-	//		}
-	//		*/
-	//	}
-	//}
+	auto revComponents = layers[currentLayer]->getAllFields();
+	reverse(revComponents.begin(), revComponents.end());
+	for (auto& a : revComponents) {
+		auto tf1 = dynamic_pointer_cast<Field>(a.lock());
+		auto B1 = tf1->getY() + tf1->getH();
+		auto B0 = lTf0->getY() + lTf0->getH();
+		auto MW1 = 0.5f * (float)(tf1->getX() * 2 + tf1->getW());
+		auto MW0 = 0.5f * (float)(lTf0->getX() * 2 + lTf0->getW());
+		if (B1 - B0 <= minDistV) {
+			if (abs((int)(MW1 - MW0)) <= maxDistH) {
+				if (!tf1->IsHidden() && tf1->isFocusable()) {
+					result = tf1;
+					break;
+				}
+			}
+		}
+	}
+	if (result.lock() == lTf0) {
+		marginChars = 16;
+		maxDistH = 6 * marginChars;
+		for (auto& a : revComponents) {
+			auto tf1 = dynamic_pointer_cast<Field>(a.lock());
+			auto B1 = tf1->getY() + tf1->getH();
+			auto B0 = lTf0->getY() + lTf0->getH();
+			auto MW1 = 0.5f * (float)(tf1->getX() * 2 + tf1->getW());
+			auto MW0 = 0.5f * (float)(lTf0->getX() * 2 + lTf0->getW());
+			if (B1 - B0 <= minDistV) {
+				if (abs((int)(MW1 - MW0)) <= maxDistH) {
+					if (!tf1->IsHidden() && tf1->isFocusable()) {
+						result = tf1;
+						break;
+					}
+				}
+			}
+		}
+	}
 	return result;
 }
 
 string LayeredScreen::findBelow(string tf0) {
 	string result = tf0;
-	//for (auto& a : layers[currentLayer]->getAllFields()) {
-	//	auto candidate = dynamic_pointer_cast<Field>(a.lock());
-	//	if (candidate->getName().compare(tf0) == 0) {
-	//		result = findBelow(candidate).lock()->getName();
-	//		break;
-	//	}
-	//}
+	for (auto& a : layers[currentLayer]->getAllFields()) {
+		auto candidate = dynamic_pointer_cast<Field>(a.lock());
+		if (candidate->getName().compare(tf0) == 0) {
+			result = findBelow(candidate).lock()->getName();
+			break;
+		}
+	}
 	return result;
 }
 
 string LayeredScreen::findAbove(string tf0) {
 	string result = tf0;
-	//for (auto& a : layers[currentLayer]->getAllFields()) {
-	//	auto candidate = dynamic_pointer_cast<Field>(a.lock());
-	//	if (candidate->getName().compare(tf0) == 0) {
-	//		result = findAbove(candidate).lock()->getName();
-	//		break;
-	//	}
-	//}
+	for (auto& a : layers[currentLayer]->getAllFields()) {
+		auto candidate = dynamic_pointer_cast<Field>(a.lock());
+		if (candidate->getName().compare(tf0) == 0) {
+			result = findAbove(candidate).lock()->getName();
+			break;
+		}
+	}
 	return result;
 }
 
@@ -854,6 +857,17 @@ void LayeredScreen::initObserver()
 	*/
 }
 
+string LayeredScreen::getFocus() {
+	return layers[currentLayer]->getFocus();
+}
+
+void LayeredScreen::setFocus(string focus) {
+	layers[currentLayer]->setFocus(focus);
+}
+
+void LayeredScreen::setFocus(string focus, int layer) {
+	layers[layer]->setFocus(focus);
+}
 
 LayeredScreen::~LayeredScreen() {
 	if (currentBackground != nullptr) {

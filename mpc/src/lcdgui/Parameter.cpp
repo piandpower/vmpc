@@ -17,7 +17,7 @@ Parameter::Parameter(weak_ptr<Field> tf, std::weak_ptr<Label> label, string labe
 	int tfOffset = (count * 6);
 	this->tf = tf;
 	auto lTf = tf.lock();
-	lTf->initialize(name, x + tfOffset + 1, y - 1, tfColumns);
+	lTf->initialize(name, x + tfOffset, y - 1, tfColumns);
 }
 
 weak_ptr<Field> Parameter::getTf() {

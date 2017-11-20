@@ -2,7 +2,7 @@
 #include "Label.hpp"
 //#include <maingui/Constants.hpp>
 //#include <maingui/StartUp.hpp>
-////#include <maingui/Gui.hpp>
+//////#include <maingui/Gui.hpp>
 #include "LayeredScreen.hpp"
 //#include <lcdgui/LayeredScreen.hpp>
 //#include <ui/NameGui.hpp>
@@ -12,7 +12,8 @@
 //#include <ui/sequencer/TrMoveGui.hpp>
 
 #include <lang/StrUtil.hpp>
-
+#include <lang/utf8_decode.h>
+#include <gui/BMFParser.hpp>
 //#include <Util.hpp>
 
 #include <file/File.hpp>
@@ -39,6 +40,61 @@ void Field::initialize(std::string name, int x, int y, int columns) {
 	setLocation(x, y);
 	setText(text);
 	loseFocus(name);
+}
+
+void Field::Draw(std::vector<std::vector<bool> >* pixels) {
+	auto atlas = bmfParser->getAtlas();
+	auto font = bmfParser->getLoadedFont();
+
+	int textx = x;
+	int texty = y;
+	int atlasx, atlasy;
+
+	char* tempText = new char[text.length() + 1];
+	std::strcpy(tempText, text.c_str());
+	utf8_decode_init(tempText, text.length());
+
+	int next = utf8_decode_next();
+	int charCounter = 0;
+
+	for (int j = 0; j < (TEXT_WIDTH * columns) + 1; j++) {
+		for (int k = 0; k < TEXT_HEIGHT + 2; k++) {
+			int x1 = textx + j - 1;
+			int y1 = texty + k;
+			if (x1 < 0 || x1 > 247 || y1 < 0 || y1 > 59) continue;
+			(*pixels)[textx + j - 1][texty + k] = focus ? true : false;
+		}
+	}
+
+	while (next != UTF8_END && next >= 0) {
+		moduru::gui::bmfont_char current_char;
+		current_char = font.chars[next];
+		atlasx = current_char.x;
+		atlasy = current_char.y;
+
+		for (int x1 = 0; x1 < current_char.width; x1++) {
+			for (int y1 = 0; y1 < current_char.height; y1++) {
+				bool on = atlas[atlasx + x1][atlasy + y1 + 1];
+				if (on) {
+					(*pixels)[textx + x1 + current_char.xoffset][texty + y1 + current_char.yoffset] = focus ? false : true;
+				}
+			}
+		}
+		textx += current_char.xadvance;
+		next = utf8_decode_next();
+	}
+	delete tempText;
+
+	//if (name.compare("dummy") == 0) return;
+	//bool res = true;
+	//if (opaque) {
+	//res = IPanelControl::Draw(g);
+	//textControl->Draw(g);
+	//}
+	//else {
+	//res = textControl->Draw(g);
+	//}
+	dirty = false;
 }
 
 void Field::setSize(int width, int height) {
@@ -113,7 +169,7 @@ void Field::takeFocus(string prev)
 ////			focusField.lock()->setOpaque(true);
 //		//}
 //	}
-//	//SetDirty(false);
+	SetDirty();
 }
 
 void Field::loseFocus(string next)
@@ -167,7 +223,7 @@ void Field::loseFocus(string next)
 	//else if (csn.compare("assignmentview") == 0) {
 	//	setOpaque(false);
 	//}
-	//SetDirty(false);
+	SetDirty();
 }
 
 

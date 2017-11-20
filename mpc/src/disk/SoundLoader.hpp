@@ -10,11 +10,7 @@ namespace moduru {
 }
 
 namespace mpc {
-	
-	namespace maingui {
-		class Gui;
-	}
-
+	class Mpc;
 	namespace file {
 		namespace wav {
 			class WavFile;
@@ -33,7 +29,7 @@ namespace mpc {
 		{
 
 		private:
-			std::weak_ptr<mpc::maingui::Gui> gui{};
+			mpc::Mpc* mpc;
 			static float rateToTuneBase;
 
 			bool partOfProgram{ false };
@@ -53,8 +49,8 @@ namespace mpc {
 			double logOfBase(float num, float base);
 			int getSize();
 
-			SoundLoader(std::weak_ptr<mpc::maingui::Gui> gui);
-			SoundLoader(std::weak_ptr<mpc::maingui::Gui> gui, std::vector<std::weak_ptr<mpc::sampler::Sound>> sounds, bool replace);
+			SoundLoader(mpc::Mpc* mpc);
+			SoundLoader(mpc::Mpc* mpc, std::vector<std::weak_ptr<mpc::sampler::Sound>> sounds, bool replace);
 
 		};
 

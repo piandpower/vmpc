@@ -29,7 +29,7 @@
 //#include <ui/sampler/MixerGui.hpp>
 //#include <ui/sampler/window/SamplerWindowGui.hpp>
 //#include <ui/sampler/window/EditSoundGui.hpp>
-//#include <ui/sampler/SamplerGui.hpp>
+#include <ui/sampler/SamplerGui.hpp>
 //#include <ui/sampler/SoundGui.hpp>
 
 //#include <ui/vmpc/AudioGui.hpp>
@@ -49,9 +49,9 @@ Uis::Uis()
 	eraseGui = new mpc::ui::sequencer::window::EraseGui();
 	sequencerWindowGui = new mpc::ui::sequencer::window::SequencerWindowGui();
 
+	samplerGui = new mpc::ui::sampler::SamplerGui();
 	/*
 	soundGui = new mpc::ui::sampler::SoundGui();
-	samplerGui = new mpc::ui::sampler::SamplerGui();
 	editSoundGui = new mpc::ui::sampler::window::EditSoundGui();
 	zoomGui = new mpc::ui::sampler::window::ZoomGui();
 	samplerWindowGui = new mpc::ui::sampler::window::SamplerWindowGui();

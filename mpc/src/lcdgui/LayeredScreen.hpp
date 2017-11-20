@@ -144,6 +144,11 @@ namespace mpc {
 			void Draw();
 
 		public:
+			std::string getFocus();
+			void setFocus(std::string focus);
+			void setFocus(std::string focus, int layer);
+
+		public:
 			LayeredScreen(mpc::Mpc* mpc);
 			~LayeredScreen();
 

@@ -67,11 +67,11 @@ void StartUp::startUp()
 	ledPanel->setTrackMute(true);
 
 	std::this_thread::sleep_for(chrono::milliseconds((int)(500 * mpc::maingui::Constants::TFACTOR)));
-	lMainFrame->openScreen("black");
+	ls.lock()->openScreen("black");
 	std::this_thread::sleep_for(chrono::milliseconds((int)(90 * mpc::maingui::Constants::TFACTOR)));
-	lMainFrame->openScreen("mpc2000xl");
+	ls.lock()->openScreen("mpc2000xl");
 	std::this_thread::sleep_for(chrono::milliseconds((int)(100 * mpc::maingui::Constants::TFACTOR)));
-	lMainFrame->openScreen("sequencer");
+	ls.lock()->openScreen("sequencer");
 
 	lMainFrame->createPopup("Wait.......", 190);
 	ledPanel->setPadBankB(false);
@@ -93,9 +93,9 @@ void StartUp::startUp()
 	std::this_thread::sleep_for(chrono::milliseconds((int)(200 * mpc::maingui::Constants::TFACTOR)));
 	lMainFrame->removePopup();
 	gui.lock()->getMpc()->initDisks();
-	lMainFrame->openScreen("load");
+	ls.lock()->openScreen("load");
 	std::this_thread::sleep_for(chrono::milliseconds((int)(200 * mpc::maingui::Constants::TFACTOR)));
-	lMainFrame->openScreen("sequencer");
+	ls.lock()->openScreen("sequencer");
 	*/
 }
 

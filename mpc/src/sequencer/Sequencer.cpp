@@ -3,6 +3,7 @@
 #include <Mpc.hpp>
 #include <maingui/StartUp.hpp>
 #include <ui/UserDefaults.hpp>
+#include <lcdgui/LayeredScreen.hpp>
 
 #include <audiomidi/AudioMidiServices.hpp>
 
@@ -13,6 +14,8 @@
 #include <sequencer/TimeSignature.hpp>
 #include <sequencer/Song.hpp>
 #include <sequencer/Step.hpp>
+
+#include <sampler/Sampler.hpp>
 
 // ctoot
 #include <audio/server/NonRealTimeAudioServer.hpp>
@@ -485,7 +488,6 @@ void Sequencer::stop(int tick)
     }
 
     //mpc->getEventHandler()->handle(MidiClockEvent(ctoot::midi::core::ShortMessage::STOP), Track(mpc, 999));
-	/*
 	auto s1 = getActiveSequence().lock();
 	auto s2 = getCurrentlyPlayingSequence().lock();
 	auto pos = getTickPosition();
@@ -497,13 +499,11 @@ void Sequencer::stop(int tick)
     if (recording || overdubbing)
         s2->getTrack(activeTrackIndex).lock()->correctTimeRange(0, s2->getLastTick(), TICK_VALUES[getTcIndex()]);
 
-	auto lGui = gui.lock();
-	auto lMainFrame = lGui->getMainFrame().lock();
     auto notifynextsq = false;
 	if (nextsq != -1) {
 		notifynextsq = true;
 		nextsq = -1;
-		lMainFrame->setFocus("sq", 0);
+		mpc->getLayeredScreen().lock()->setFocus("sq", 0);
 	}
     recording = false;
     overdubbing = false;
@@ -522,13 +522,14 @@ void Sequencer::stop(int tick)
 		if (stopBounceThread.joinable()) stopBounceThread.join();
 		stopBounceThread = thread(&Sequencer::static_stopBounce, this);
 	}
+	/*
 	auto ledPanel = lMainFrame->getLedPanel().lock();
 	ledPanel->setOverDub(false);
 	ledPanel->setPlay(false);
 	ledPanel->setRec(false);
+	*/
     setChanged();
     notifyObservers(string("stop"));
-	*/
 }
 
 void Sequencer::static_stopBounce(void * args)

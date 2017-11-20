@@ -21,10 +21,10 @@ namespace mpc {
 			: public Component
 
 		{
-		private:
+		protected:
 			static moduru::gui::BMFParser* bmfParser;
 
-		private:
+		protected:
 			unsigned int x{ 0 };
 			unsigned int y{ 0 };
 			unsigned int w{ 0 };

@@ -45,6 +45,9 @@ class IParam;
 class IGraphics
 {
 public:
+	///// izzy added this
+	virtual void releaseKbHook() {};
+
   void PrepDraw();    // Called once, when the IGraphics class is attached to the IPlug class.
 
   bool IsDirty(IRECT* pR);        // Ask the plugin what needs to be redrawn.
@@ -187,6 +190,7 @@ public:
   bool OnMouseDblClick(int x, int y, IMouseMod* pMod);
   void OnMouseWheel(int x, int y, IMouseMod* pMod, int d);
   bool OnKeyDown(int x, int y, int key);
+  bool OnKeyUp(int x, int y, int key);
 
   virtual void HideMouseCursor() {};
   virtual void ShowMouseCursor() {};

@@ -90,33 +90,11 @@ mpc::lcdgui::FunctionKeys* Layer::getFunctionKeys() {
 	return fb;
 }
 
-void Layer::attachBg() {
-	//GetGUI()->AttachControl(bg);
-}
-
-void Layer::attachFb() {
-	//GetGUI()->AttachControl(fb);
-	//GetGUI()->AttachControl(blinkLabel.get());
-}
-
-void Layer::attachFields() {
-	for (auto& a : unusedFields) {
-//		GetGUI()->AttachControl(a.get());
-	}
-}
-
-void Layer::attachLabels() {
-	for (auto& a : unusedLabels) {
-		//GetGUI()->AttachControl(a.get());
-	}
-}
-
 void Layer::setFocus(string textFieldName) {
 
 	string oldFocus = focus;
 	// First make sure the desired focus field exists and is focusable
 	bool exists = false;
-	/*
 	for (auto& a : getAllFields()) {
 		auto tf = dynamic_pointer_cast<Field>(a.lock());
 		//if (!tf->IsHidden() && tf->getName().compare(textFieldName) == 0 && tf->isFocusable()) {
@@ -125,9 +103,7 @@ void Layer::setFocus(string textFieldName) {
 			break;
 		}
 	}
-	*/
 	if (!exists) return;
-	/*
 	for (auto& a : getAllFields()) {
 		auto tf = dynamic_pointer_cast<Field>(a.lock());
 		if (tf->getName().compare(focus) == 0 && tf->isFocusable()) {
@@ -135,9 +111,7 @@ void Layer::setFocus(string textFieldName) {
 			break;
 		}
 	}
-	*/
 	focus = textFieldName;
-	/*
 	for (auto& a : getAllFields()) {
 		auto tf = dynamic_pointer_cast<Field>(a.lock());
 		if (tf->getName().compare(textFieldName) == 0 && tf->isFocusable()) {
@@ -145,7 +119,6 @@ void Layer::setFocus(string textFieldName) {
 			break;
 		}
 	}
-	*/
 }
 
 string Layer::getFocus() {

@@ -41,10 +41,6 @@ namespace mpc {
 			std::string openScreen(rapidjson::Value& screenJson, std::string screenName);
 
 		public:
-			void attachFields();
-			void attachLabels();
-			void attachBg();
-			void attachFb();
 			void clear();
 			mpc::lcdgui::Background* getBackground();
 			mpc::lcdgui::FunctionKeys* getFunctionKeys();

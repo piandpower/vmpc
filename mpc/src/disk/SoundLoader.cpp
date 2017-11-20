@@ -4,7 +4,7 @@
 #include <disk/MpcFile.hpp>
 #include <file/sndreader/SndReader.hpp>
 #include <file/wav/WavFile.hpp>
-////#include <maingui/Gui.hpp>
+#include <ui/Uis.hpp>
 //#include <ui/disk/DiskGui.hpp>
 #include <sampler/Sampler.hpp>
 #include <sampler/Sound.hpp>
@@ -17,15 +17,15 @@ using namespace moduru::lang;
 using namespace mpc::disk;
 using namespace std;
 
-SoundLoader::SoundLoader(weak_ptr<mpc::maingui::Gui> gui)
+SoundLoader::SoundLoader(mpc::Mpc* mpc)
 {
-	this->gui = gui;
+	this->mpc = mpc;
 }
 float SoundLoader::rateToTuneBase = (float)(pow(2, (1.0 / 12.0)));
 
-SoundLoader::SoundLoader(weak_ptr<mpc::maingui::Gui> gui, vector<weak_ptr<mpc::sampler::Sound>> sounds, bool replace)
+SoundLoader::SoundLoader(mpc::Mpc* mpc, vector<weak_ptr<mpc::sampler::Sound>> sounds, bool replace)
 {
-	this->gui = gui;
+	this->mpc = mpc;
 	this->replace = replace;
 	this->sounds = sounds;
 }
@@ -56,12 +56,11 @@ int SoundLoader::loadSound(MpcFile* f)
 		soundFileName = soundFileName.substr(0, periodIndex);
 		soundName = soundFileName;
 	}
-	auto lGui = gui.lock();
-/*
-	auto sampler = lGui->getMpc()->getSampler().lock();
+	
+	auto sampler = mpc->getSampler().lock();
 	auto existIndex = sampler->checkExists(soundName);
 	if (!partOfProgram && existIndex == -1) {
-		lGui->getDiskGui()->openPopup(soundFileName, extension);
+		//mpc->getUis().lock()->getDiskGui()->openPopup(soundFileName, extension);
 	}
 
 	auto sound = sampler->addSound(sampleRate).lock();
@@ -135,7 +134,6 @@ int SoundLoader::loadSound(MpcFile* f)
 	else {
 		return existIndex;
 	}
-	*/
 	return -1;
 }
 

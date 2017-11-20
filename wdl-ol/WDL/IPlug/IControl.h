@@ -32,6 +32,7 @@ public:
   virtual void OnMouseDblClick(int x, int y, IMouseMod* pMod);
   virtual void OnMouseWheel(int x, int y, IMouseMod* pMod, int d) {};
   virtual bool OnKeyDown(int x, int y, int key) { return false; }
+  virtual bool OnKeyUp(int x, int y, int key) { return false; }
 
   // For efficiency, mouseovers/mouseouts are ignored unless you call IGraphics::HandleMouseOver.
   virtual void OnMouseOver(int x, int y, IMouseMod* pMod) {}
