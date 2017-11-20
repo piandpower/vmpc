@@ -99,7 +99,7 @@ namespace mpc {
 			int nextsq{ 0 };
 
 		private:
-			//std::weak_ptr<TempoChangeEvent> getCurrentTempoChangeEvent();
+			std::weak_ptr<TempoChangeEvent> getCurrentTempoChangeEvent();
 			void play(bool fromStart);
 			std::shared_ptr<Sequence> copySequence(std::weak_ptr<Sequence> source);
 			void copySequenceParameters(std::weak_ptr<Sequence> source, std::weak_ptr<Sequence> dest);

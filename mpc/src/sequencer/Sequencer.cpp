@@ -112,7 +112,6 @@ bool Sequencer::endOfSong = false;
 
 void Sequencer::setTempo(BCMath i)
 {
-	/*
 	if (i.toDouble() < 30.0 || i.toDouble() > 300.0) return;
 	auto s = getActiveSequence().lock();
 	auto tce = getCurrentTempoChangeEvent().lock();
@@ -131,12 +130,10 @@ void Sequencer::setTempo(BCMath i)
 	}
 	setChanged();
 	notifyObservers(string("tempo"));
-	*/
 }
 
 BCMath Sequencer::getTempo()
 {
-	/*
 	if (!isPlaying() && !getActiveSequence().lock()->isUsed()) {
 		return tempo;
 	}
@@ -147,8 +144,24 @@ BCMath Sequencer::getTempo()
 		}
 		return getActiveSequence().lock()->getInitialTempo();
 	}
-	*/
 	return tempo;
+}
+
+weak_ptr<TempoChangeEvent> Sequencer::getCurrentTempoChangeEvent()
+{
+	auto index = -1;
+	auto s = getActiveSequence().lock();
+	for (auto& tce : s->getTempoChangeEvents()) {
+		auto lTce = tce.lock();
+		if (getTickPosition() >= lTce->getTick()) {
+			index++;
+		}
+		else {
+			break;
+		}
+	}
+	if (index == -1) index++;
+	return s->getTempoChangeEvents()[index];
 }
 
 bool Sequencer::isTempoSourceSequence()
