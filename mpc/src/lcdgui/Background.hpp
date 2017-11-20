@@ -14,8 +14,11 @@ namespace mpc {
 
 		public:
 			void setName(std::string name);
+
+		public:
 			void Draw(std::vector< std::vector<bool> >* pixels) override;
 
+		public:
 			Background();
 			~Background();
 

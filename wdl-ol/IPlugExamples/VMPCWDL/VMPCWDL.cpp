@@ -95,7 +95,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	pGraphics->AttachControl(mRecKnob);
 	pGraphics->AttachControl(mVolKnob);
 
-	mLCDControl = new LCDControl(this, mpc->getLayeredScreen().lock()->getPixels());
+	mLCDControl = new LCDControl(this, mpc->getLayeredScreen());
 	pGraphics->AttachControl(mLCDControl);
 
 	AttachGraphics(pGraphics);
@@ -178,11 +178,14 @@ void VMPCWDL::NoteOnOff(IMidiMsg* pMsg)
       }
     }
   }
-
 }
 
 void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames)
 {
+	//if (mpc->getLayeredScreen().lock()->IsDirty()) {
+	//	mpc->getLayeredScreen().lock()->Draw();
+	//	mLCDControl->SetDirty(false);
+	//}
 	auto urserver = mpc->getAudioMidiServices().lock()->getUnrealAudioServer();
 	urserver->work(outputs, nFrames);
 

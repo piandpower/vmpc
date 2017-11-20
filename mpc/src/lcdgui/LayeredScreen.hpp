@@ -8,6 +8,12 @@
 #include <vector>
 #include <string>
 
+namespace moduru {
+	namespace observer {
+		class Observer;
+	}
+}
+
 namespace mpc {
 
 	class Mpc;
@@ -35,6 +41,10 @@ namespace mpc {
 
 		private:
 			std::vector<std::vector<bool> > pixels;
+			std::unique_ptr<moduru::observer::Observer> activeObserver;
+
+		private:
+			void initObserver();
 
 		private:
 			static const int LAYER_COUNT{ 4 };
@@ -130,6 +140,8 @@ namespace mpc {
 
 		public:
 			std::vector<std::vector<bool> >* getPixels();
+			bool IsDirty();
+			void Draw();
 
 		public:
 			LayeredScreen(mpc::Mpc* mpc);

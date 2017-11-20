@@ -1,12 +1,12 @@
 #include <audiomidi/AudioMidiServices.hpp>
-//#include <maingui/Gui.hpp>
+////#include <maingui/Gui.hpp>
 //#include <maingui/StartUp.hpp>
 #include <Mpc.hpp>
 //#include <audiomidi/SetupServer.hpp>
 //#include <audiomidi/DirectToDiskSettings.hpp>
 #include <audiomidi/ExportAudioProcessAdapter.hpp>
 //#include <audiomidi/MpcMidiPorts.hpp>
-//#include <maingui/MainFrame.hpp>
+//#include <lcdgui/LayeredScreen.hpp>
 //#include <ui/sampler/SamplerGui.hpp>
 //#include <ui/vmpc/AudioObserver.hpp>
 //#include <nvram/NvRam.hpp>

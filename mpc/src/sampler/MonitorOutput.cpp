@@ -1,9 +1,9 @@
 #include <sampler/MonitorOutput.hpp>
 
 #include <sampler/Sampler.hpp>
-//#include <maingui/Gui.hpp>
+////#include <maingui/Gui.hpp>
 //#include <lcdgui/LayeredScreen.hpp>
-//#include <maingui/MainFrame.hpp>
+//#include <lcdgui/LayeredScreen.hpp>
 //#include <ui/sampler/SamplerGui.hpp>
 #include <sampler/Sampler.hpp>
 #include <audio/core/ChannelFormat.hpp>

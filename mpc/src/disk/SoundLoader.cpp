@@ -4,7 +4,7 @@
 #include <disk/MpcFile.hpp>
 #include <file/sndreader/SndReader.hpp>
 #include <file/wav/WavFile.hpp>
-//#include <maingui/Gui.hpp>
+////#include <maingui/Gui.hpp>
 //#include <ui/disk/DiskGui.hpp>
 #include <sampler/Sampler.hpp>
 #include <sampler/Sound.hpp>

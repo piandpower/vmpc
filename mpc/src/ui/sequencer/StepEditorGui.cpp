@@ -1,7 +1,7 @@
 #include <ui/sequencer/StepEditorGui.hpp>
 
 //#include <lcdgui/LayeredScreen.hpp>
-//#include <maingui/MainFrame.hpp>
+//#include <lcdgui/LayeredScreen.hpp>
 //#include <lcdgui/SelectedEventBar.hpp>
 #include <sequencer/EmptyEvent.hpp>
 

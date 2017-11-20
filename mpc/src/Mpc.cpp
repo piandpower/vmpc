@@ -118,6 +118,7 @@ vector<string> Mpc::akaiAscii = vector<string>({ " ", "!", "#", "$", "%", "&", "
 
 Mpc::~Mpc() {
 	moduru::Logger::l.log("Mpc dtor\n");
+	layeredScreen.reset();
 	audioMidiServices->destroyServices();
 	moduru::Logger::l.log("audio midi services destroyed.\n");
 }

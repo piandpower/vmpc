@@ -2,9 +2,9 @@
 #include "Label.hpp"
 //#include <maingui/Constants.hpp>
 //#include <maingui/StartUp.hpp>
-//#include <maingui/Gui.hpp>
+////#include <maingui/Gui.hpp>
 #include "LayeredScreen.hpp"
-//#include <maingui/MainFrame.hpp>
+//#include <lcdgui/LayeredScreen.hpp>
 //#include <ui/NameGui.hpp>
 //#include <lcdgui/Field_Blinker.hpp>
 //#include <lcdgui/Field_Scroller.hpp>
@@ -67,7 +67,7 @@ void Field::takeFocus(string prev)
 	//auto lMainFrame = lGui->getMainFrame().lock();
 	//auto lMainFrame = mainFrame;
 	//auto focusEvent = lMainFrame->getFocus();
-	//auto focusField = lMainFrame->lookupField(focusEvent);
+	//auto focusField = lls->lookupField(focusEvent);
 	//auto lLs = ls.lock();
 //	csn = layeredScreen->getCurrentScreenName();
 //	if (csn.compare("trim") == 0 || csn.compare("loop") == 0) {

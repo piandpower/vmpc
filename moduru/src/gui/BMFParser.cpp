@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#include <Logger.hpp>
+//#include <Logger.hpp>
 
 using namespace moduru::gui;
 using namespace std;
@@ -107,7 +107,6 @@ bool BMFParser::GetBMFontData(const char* pBinary, size_t fileSize, bmfont* pBMF
 				bmfont_char foo;
 				pBMFont->chars.push_back(foo);
 				pBMFont->chars[index].id = stream.getU32();
-				moduru::Logger::l.log("char with index " + to_string(index) + " has id " + to_string(pBMFont->chars[index].id) + "\n");
 				pBMFont->chars[index].x = stream.getU16();
 				pBMFont->chars[index].y = stream.getU16();
 				pBMFont->chars[index].width = stream.getU16();

@@ -1,7 +1,7 @@
 #include "Background.hpp"
 //#include <maingui/Constants.hpp>
 #include <maingui/StartUp.hpp>
-//#include <maingui/Gui.hpp>
+////#include <maingui/Gui.hpp>
 #include <iostream>
 //#include <IGraphics.h>
 
@@ -16,7 +16,7 @@ Background::Background()
 void Background::setName(std::string name)
 { 
 	this->name = name;
-	//SetDirty(true);
+	SetDirty();
 }
 
 void Background::Draw(std::vector< std::vector<bool> >* pixels)
@@ -84,6 +84,7 @@ void Background::Draw(std::vector< std::vector<bool> >* pixels)
 		}
 	}
 	//return true;
+	dirty = false;
 }
 
 Background::~Background() {

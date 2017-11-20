@@ -58,15 +58,16 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 	}
 	delete tempText;
 
-	if (name.compare("dummy") == 0) return;
-	bool res = true;
-	if (opaque) {
+	//if (name.compare("dummy") == 0) return;
+	//bool res = true;
+	//if (opaque) {
 		//res = IPanelControl::Draw(g);
 		//textControl->Draw(g);
-	}
-	else {
+	//}
+	//else {
 		//res = textControl->Draw(g);
-	}
+	//}
+	dirty = false;
 }
 
 void TextComp::setSize(int w, int h) {
@@ -160,7 +161,7 @@ void TextComp::setText(string s)
 	////	textControl->SetTextFromPlug(&s[0]);
 	////}
 	//if (wasScrolling) setScrolling(true);
-	////SetDirty(false);
+	SetDirty();
 }
 
 void TextComp::setTextPadded(string s, string padding) {

@@ -76,7 +76,6 @@ namespace mpc {
 
 		public:
 			void Draw(std::vector<std::vector<bool> >* pixels) override;
-			bool IsHidden() { return false; };
 
 		public:
 			TextComp();

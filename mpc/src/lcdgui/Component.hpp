@@ -11,13 +11,20 @@ namespace mpc {
 
 		private:
 			//IRECT rect;
+			bool hidden{ false };
+
+		protected:
+			bool dirty{ false };
 
 		public:
-			void Hide(bool hide) {}
-			bool IsHidden() { return false; }
+			void Hide(bool b) { if (hidden != b) { hidden = b; SetDirty(); } }
+			void SetDirty() { dirty = true; }
 
+			bool IsHidden() { return hidden; }
+			bool IsDirty() { return dirty; }
+
+		public:
 			virtual void Draw(std::vector<std::vector<bool> >* pixels) {}
-			void SetDirty(bool dirty) {}
 
 			//IRECT* GetRECT() { return &rect; }
 
