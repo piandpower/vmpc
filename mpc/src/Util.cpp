@@ -78,8 +78,8 @@ string Util::distributeTimeSig(string s) {
 	if (pos == string::npos) return s;
 	auto s0 = s.substr(0, pos);
 	auto s1 = s.substr(pos + 1, s.length());
-	if (s0.length() == 1) s0 = "\u00CE" + s0 + "\u00CE";
-	if (s1.length() == 1) s1 = "\u00CE" + s1;
+	if (s0.length() == 1) s0 = u8"\u00CE" + s0 + u8"\u00CE";
+	if (s1.length() == 1) s1 = u8"\u00CE" + s1;
 	return s0 + "/" + s1;
 }
 /*

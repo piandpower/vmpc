@@ -56,7 +56,7 @@ void Field::Draw(std::vector<std::vector<bool> >* pixels) {
 
 	int next = utf8_decode_next();
 	int charCounter = 0;
-
+	if (name.compare("tsig") == 0) columns = 5;
 	for (int j = 0; j < (TEXT_WIDTH * columns) + 1; j++) {
 		for (int k = 0; k < TEXT_HEIGHT + 2; k++) {
 			int x1 = textx + j - 1;
@@ -65,6 +65,7 @@ void Field::Draw(std::vector<std::vector<bool> >* pixels) {
 			(*pixels)[textx + j - 1][texty + k] = focus ? true : false;
 		}
 	}
+	if (name.compare("tsig") == 0) columns = 7;
 
 	while (next != UTF8_END && next >= 0) {
 		moduru::gui::bmfont_char current_char;
