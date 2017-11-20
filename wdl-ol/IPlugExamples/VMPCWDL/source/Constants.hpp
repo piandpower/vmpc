@@ -4,15 +4,15 @@
 #ifdef __APPLE__
 #define FONTSIZE 17
 #else
-#define FONTSIZE 16
+#define FONTSIZE 8
 #endif
 
 class Constants {
 
 public:
 	static const float TFACTOR;
-	static const int TEXT_HEIGHT = 7 * 2;
-	static const int TEXT_WIDTH = 6 * 2;
+	//static const int TEXT_HEIGHT = 7;
+	//static const int TEXT_WIDTH = 6;
 
 	static IColor* LCD_ON();
 	static IColor* LCD_OFF();

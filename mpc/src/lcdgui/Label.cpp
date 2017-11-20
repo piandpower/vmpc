@@ -16,8 +16,8 @@ void Label::initialize(string name, string text, int x, int y, int columns) {
 	this->columns = columns;
 	setForeground(true);
 	setText(text);
-	setSize(columns * TEXT_WIDTH + 2, TEXT_HEIGHT + 4);
-	setLocation(x - (textOffsetX/2), y);
+	setSize(columns * TEXT_WIDTH + 1, TEXT_HEIGHT + 2);
+	setLocation(x, y);
 }
 
 Label::~Label() {

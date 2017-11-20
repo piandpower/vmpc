@@ -1,6 +1,6 @@
 #include "IGraphics.h"
 
-#define DEFAULT_FPS 25
+#define DEFAULT_FPS 20
 
 // If not dirty for this many timer ticks, we call OnGUIIDle.
 // Only looked at if USE_IDLE_CALLS is defined.

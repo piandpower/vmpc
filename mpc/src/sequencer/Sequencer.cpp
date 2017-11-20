@@ -1113,9 +1113,9 @@ void Sequencer::move(int tick)
 
 int Sequencer::getTickPosition()
 {
-    //if (isPlaying()) {
-    //    return mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->getTickPosition();
-    //}
+    if (isPlaying()) {
+        return mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->getTickPosition();
+    }
     return position;
 }
 

@@ -34,12 +34,10 @@ namespace mpc {
 			std::thread scrollThread;
 
 		protected:
-			const int TEXT_HEIGHT = 7 * 2;
-			const int TEXT_WIDTH = 6 * 2;
+			const int TEXT_HEIGHT = 7;
+			const int TEXT_WIDTH = 6;
 
 		protected:
-			int textOffsetX{ 0 };
-			int textOffsetY{ 0 };
 			std::string name{ "" };
 			std::	string text{ "" };
 			int columns{ 0 }; // characters

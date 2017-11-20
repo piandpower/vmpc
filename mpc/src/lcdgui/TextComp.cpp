@@ -21,13 +21,10 @@ TextComp::TextComp()
 	//Hide(true);
 	//textControl = make_unique<ITextControl>(pPlug, IRECT(0,0,0,0), Constants::FONT_ON(), text.c_str());
 	//textOffsetX = 2;
-	textOffsetX = 0;
-	textOffsetY = 0;
 }
 
 
 void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
-
 	auto atlas = bmfParser->getAtlas();
 	auto font = bmfParser->getLoadedFont();
 
@@ -40,11 +37,19 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 	utf8_decode_init(tempText, text.length());
 	
 	int next = utf8_decode_next();
+	int charCounter = 0;
 	while (next != UTF8_END && next >= 0) {
 		moduru::gui::bmfont_char current_char;
 		current_char = font.chars[next];
 		atlasx = current_char.x;
 		atlasy = current_char.y;
+
+		for (int j = 0; j < TEXT_WIDTH - 1; j++) {
+			for (int k = 0; k < TEXT_HEIGHT; k++) {
+				(*pixels)[textx + j + (charCounter*TEXT_WIDTH)][texty + 1 + k] = false;
+			}
+		}
+
 		for (int x1 = 0; x1 < current_char.width; x1++) {
 			for (int y1 = 0; y1 < current_char.height; y1++) {
 				bool on = atlas[atlasx + x1][atlasy + y1 + 1];
