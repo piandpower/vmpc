@@ -15,51 +15,50 @@ AssignControls::AssignControls(mpc::Mpc* mpc)
 void AssignControls::turnWheel(int i)
 {
 	init();
-	auto notch = getNotch(i);
 	auto slider = program.lock()->getSlider();
 	auto parameter = slider->getParameter();
 
 	if (param.compare("assignnote") == 0) {
-		slider->setAssignNote(slider->getNote() + notch);
+		slider->setAssignNote(slider->getNote() + i);
 	}
 	else if (param.compare("parameter") == 0) {
-		slider->setParameter(slider->getParameter() + notch);
+		slider->setParameter(slider->getParameter() + i);
 	}
 	else if (param.compare("highrange") == 0) {
 		switch (parameter) {
 		case 0:
-			slider->setTuneHighRange(slider->getTuneHighRange() + notch);
+			slider->setTuneHighRange(slider->getTuneHighRange() + i);
 			break;
 		case 1:
-			slider->setDecayHighRange(slider->getDecayHighRange() + notch);
+			slider->setDecayHighRange(slider->getDecayHighRange() + i);
 			break;
 		case 2:
-			slider->setAttackHighRange(slider->getAttackHighRange() + notch);
+			slider->setAttackHighRange(slider->getAttackHighRange() + i);
 			break;
 		case 3:
-			slider->setFilterHighRange(slider->getFilterHighRange() + notch);
+			slider->setFilterHighRange(slider->getFilterHighRange() + i);
 			break;
 		}
 	}
 	else if (param.compare("lowrange") == 0) {
 		switch (parameter) {
 		case 0:
-			slider->setTuneLowRange(slider->getTuneLowRange() + notch);
+			slider->setTuneLowRange(slider->getTuneLowRange() + i);
 			break;
 		case 1:
-			slider->setDecayLowRange(slider->getDecayLowRange() + notch);
+			slider->setDecayLowRange(slider->getDecayLowRange() + i);
 			break;
 		case 2:
-			slider->setAttackLowRange(slider->getAttackLowRange() + notch);
+			slider->setAttackLowRange(slider->getAttackLowRange() + i);
 			break;
 		case 3:
-			slider->setFilterLowRange(slider->getFilterLowRange() + notch);
+			slider->setFilterLowRange(slider->getFilterLowRange() + i);
 			break;
 		}
 
 	}
 	else if (param.compare("assignnv") == 0) {
-		slider->setControlChange(slider->getControlChange() + notch);
+		slider->setControlChange(slider->getControlChange() + i);
 	}
 }
 

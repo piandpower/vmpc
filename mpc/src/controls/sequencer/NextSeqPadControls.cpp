@@ -25,9 +25,8 @@ void NextSeqPadControls::turnWheel(int i)
 {
 	init();
 	auto lSequencer = sequencer.lock();
-	auto notch = getNotch(i);
 	if (param.compare("sq") == 0)
-		lSequencer->setActiveSequenceIndex(lSequencer->getActiveSequenceIndex() + notch);
+		lSequencer->setActiveSequenceIndex(lSequencer->getActiveSequenceIndex() + i);
 }
 
 void NextSeqPadControls::function(int i)

@@ -8,7 +8,7 @@
 #include <sampler/Sampler.hpp>
 #include <sampler/Program.hpp>
 
-#include <maingui/StartUp.hpp>
+#include <StartUp.hpp>
 
 //#include <hardware/DataWheelWidget.hpp>
 
@@ -57,13 +57,6 @@ AbstractControls::AbstractControls(Mpc* mpc)
 	nameGui = mpc->getUis().lock()->getNameGui();
 	samplerGui = mpc->getUis().lock()->getSamplerGui();
 	kbmc = mpc->getKbmc();
-}
-
-int AbstractControls::getNotch(int increment)
-{
-    //auto const notch_inc = (increment == DataWheelWidget::NOTCH_DOWN || increment == DataWheelWidget::NOTCH_UP) ? (increment > 0 ? 1 : -1) : increment;
-	auto notch_inc = 1;
-    return notch_inc;
 }
 
 void AbstractControls::init()

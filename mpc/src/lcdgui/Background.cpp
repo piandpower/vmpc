@@ -1,6 +1,6 @@
 #include "Background.hpp"
 //#include <maingui/Constants.hpp>
-#include <maingui/StartUp.hpp>
+#include <StartUp.hpp>
 //////#include <maingui/Gui.hpp>
 #include <iostream>
 //#include <IGraphics.h>
@@ -25,7 +25,7 @@ void Background::Draw(std::vector< std::vector<bool> >* pixels)
 	//int xOffset = Constants::LCD_RECT()->L;
 	//int yOffset = Constants::LCD_RECT()->T;
 
-	string bgNameStr = mpc::maingui::StartUp::resPath + "bmp/" + name + ".bmp";
+	string bgNameStr = mpc::StartUp::resPath + "bmp/" + name + ".bmp";
 	const int infosize = 54;
 
 	FILE* f = fopen(bgNameStr.c_str(), "rb");

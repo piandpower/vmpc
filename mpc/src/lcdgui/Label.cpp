@@ -9,12 +9,12 @@ Label::Label()
 }
 
 void Label::initialize(string name, string text, int x, int y, int columns) {
-	opaque = false;
-	//Hide(false);
+	opaque = true;
+	inverted = false;
+	Hide(false);
 	this->text = text;
 	this->name = name;
 	this->columns = columns;
-	setForeground(true);
 	setText(text);
 	setSize(columns * TEXT_WIDTH + 1, TEXT_HEIGHT + 2);
 	setLocation(x, y);

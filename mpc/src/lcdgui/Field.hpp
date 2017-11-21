@@ -20,7 +20,6 @@ namespace mpc {
 		{
 
 		private:
-			//mpc::maingui::MainFrame* mainFrame{};
 			mpc::lcdgui::LayeredScreen* layeredScreen{};
 			std::vector<Label*> letters{};
 
@@ -62,9 +61,6 @@ namespace mpc {
 			bool getBlinking();
 
 			void initialize(std::string name, int x, int y, int columns);
-
-		public:
-			void Draw(std::vector<std::vector<bool> >* pixels) override;
 
 		public:
 			Field(mpc::lcdgui::LayeredScreen* layeredScreen);

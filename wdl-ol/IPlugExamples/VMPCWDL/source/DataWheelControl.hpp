@@ -1,6 +1,12 @@
 #pragma once
 #include <IControl.h>
 
+namespace mpc {
+	namespace controls {
+		class KbMouseController;
+	}
+}
+
 	
 class DataWheelControl
 	: public IPanelControl
@@ -8,23 +14,16 @@ class DataWheelControl
 
 private:
 	IBitmap dataWheels{};
-	int dataWheelIndex{ 0 };
-	//mpc::controls::AbstractControls* target{ nullptr };
+	mpc::controls::KbMouseController* kbmc{ nullptr };
+	int lastDrawnIndex = -1;
 
 public:
-
-	static const int NOTCH_UP{ 1000000 };
-	static const int NOTCH_DOWN{ -1000000 };
-
-	//void setTarget(mpc::controls::AbstractControls* target);
-
-	void turn(int increment);
-
 	bool Draw(IGraphics* pGraphics) override;
 	void OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod) override;
+	bool IsDirty() override;
 
 public:
-	DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels);
+	DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels, mpc::controls::KbMouseController* kbmc);
 	~DataWheelControl();
 
 };

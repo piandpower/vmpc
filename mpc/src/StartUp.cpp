@@ -1,4 +1,4 @@
-#include <maingui/StartUp.hpp>
+#include <StartUp.hpp>
 #include <chrono>
 #include <thread>
 
@@ -10,7 +10,7 @@
 #include <sys/Home.hpp>
 #include <file/FileUtil.hpp>
 
-using namespace mpc::maingui;
+using namespace mpc;
 using namespace moduru::file;
 using namespace std;
 

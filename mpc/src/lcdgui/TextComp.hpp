@@ -21,8 +21,12 @@ namespace mpc {
 			: public Component
 
 		{
-		protected:
+		private:
 			static moduru::gui::BMFParser* bmfParser;
+
+		protected:
+			bool inverted{ false };
+
 
 		protected:
 			unsigned int x{ 0 };
@@ -56,9 +60,8 @@ namespace mpc {
 			virtual void setText(std::string s);
 
 		public:
-			void setForeground(bool on);
 			void setOpaque(bool b);
-			bool getForeground();
+			void setInverted(bool b);
 			int getX();
 			int getY();
 			int getW();

@@ -63,3 +63,6 @@ endif(WIN32)
 
 add_library(iplug ${IPLUG_SRC} ${IPLUG_HEADERS} ${IPLUG_DOC_HEADERS} )
 
+if (WIN32)
+	target_compile_options(iplug PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+endif(WIN32)

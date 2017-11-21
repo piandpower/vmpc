@@ -1,7 +1,8 @@
 #include "FunctionKeys.hpp"
-//#include <maingui/Constants.hpp>
 
-#include <maingui/StartUp.hpp>
+#include <lcdgui/Label.hpp>
+
+#include <StartUp.hpp>
 
 using namespace mpc::lcdgui;
 using namespace std;
@@ -15,99 +16,110 @@ FunctionKeys::FunctionKeys()
 
 void FunctionKeys::initialize(rapidjson::Value& fbLabels, rapidjson::Value& fbTypes) {
 	enabled = vector<bool>{ true, true, true, true, true , true };
-	vector<int> fbTypesArray_ = vector<int>(fbTypes.Size());
+	vector<int> fbTypesArray = vector<int>(fbTypes.Size());
 	int count = fbTypes.Size();
 	for (int i = 0; i < count; i++) {
 		if (fbTypes[i].IsNull()) continue;
-		fbTypesArray_[i] = fbTypes[i].GetInt();
+		fbTypesArray[i] = fbTypes[i].GetInt();
 	}
-	box0 = fbTypesArray_[0];
-	box1 = fbTypesArray_[1];
-	box2 = fbTypesArray_[2];
-	box3 = fbTypesArray_[3];
-	box4 = fbTypesArray_[4];
-	box5 = fbTypesArray_[5];
-	auto fbLabelsArray_ = vector<string>(fbLabels.Size());
+	box0 = fbTypesArray[0];
+	box1 = fbTypesArray[1];
+	box2 = fbTypesArray[2];
+	box3 = fbTypesArray[3];
+	box4 = fbTypesArray[4];
+	box5 = fbTypesArray[5];
+	auto fbLabelsArray = vector<string>(fbLabels.Size());
 	count = fbLabels.Size();
 	for (int i = 0; i < count; i++) {
 		if (fbLabels[i].IsNull()) continue;
-		fbLabelsArray_[i] = fbLabels[i].GetString();
+		fbLabelsArray[i] = fbLabels[i].GetString();
 	}
 	auto counter = 0;
 	for (auto b : enabled) {
 		if (!b) {
-			fbLabelsArray_[counter] = "";
+			fbLabelsArray[counter] = "";
 		}
 		counter++;
 	}
-	name0 = fbLabelsArray_[0];
-	name1 = fbLabelsArray_[1];
-	name2 = fbLabelsArray_[2];
-	name3 = fbLabelsArray_[3];
-	name4 = fbLabelsArray_[4];
-	name5 = fbLabelsArray_[5];
+	name0 = fbLabelsArray[0];
+	name1 = fbLabelsArray[1];
+	name2 = fbLabelsArray[2];
+	name3 = fbLabelsArray[3];
+	name4 = fbLabelsArray[4];
+	name5 = fbLabelsArray[5];
 	names = vector<string>{ name0, name1, name2, name3, name4, name5 };
-	//SetDirty(false);
+	SetDirty();
 }
-
-FunctionKeys::~FunctionKeys() {
-	names.clear();
-	enabled.clear();
-}
-
 
 void FunctionKeys::disable(int i)
 {
 	if (!enabled[i]) return;
 	enabled[i] = false;
-	//SetDirty(false);
+	SetDirty();
 }
 
 void FunctionKeys::enable(int i)
 {
     if(enabled[i]) return;
     enabled[i] = true;
-	//SetDirty(false);
+	SetDirty();
 }
 
-/*
-bool FunctionKeys::Draw(IGraphics* ig) {
-	vector<int> xPos = vector<int>{ 0, 82, 164, 246, 328, 410 };
+void FunctionKeys::Draw(std::vector<std::vector<bool> >* pixels) {
+	vector<int> xPos = vector<int>{ 2, 43, 84, 125, 166, 207 };
 	vector<int> types = vector<int>{ box0, box1, box2, box3, box4, box5 };
+	bool border = false;
+	bool bg = false;
+	bool label = false;
+
 	for (int i = 0; i < xPos.size(); i++) {
 		if (names[i] == "") continue;
 		if (!enabled[i]) continue;
 
 		auto stringSize = names[i].size();
-		auto lengthInPixels = stringSize * 12;
-		int offsetx = ((74 - lengthInPixels) / 2) + 3 + Constants::FB_RECT()->L;
-		IColor* border = nullptr;
-		IColor* bg = nullptr;
-		IText* label = nullptr;
+		auto lengthInPixels = stringSize * 6;
+		int offsetx = (40 - lengthInPixels) / 2;
 		if (types[i] == 0) {
-			border = Constants::LCD_ON();
-			bg = Constants::LCD_ON();
-			label = Constants::FONT_OFF();
+			border = true;
+			bg = true;
+			label = false;
 		}
-		if (types[i] == 1) {
-			border = Constants::LCD_ON();
-			bg = Constants::LCD_OFF();
-			label = Constants::FONT_ON();
+		else if (types[i] == 1) {
+			border = true;
+			bg = false;
+			label = true;
 		}
-		if (types[i] == 2) {
-			border = Constants::LCD_OFF();
-			bg = Constants::LCD_OFF();
-			label = Constants::FONT_ON();
+		else if (types[i] == 2) {
+			border = false;
+			bg = false;
+			label = true;
 		}
-		IRECT tmp(xPos[i] + Constants::FB_RECT()->L, Constants::FB_RECT()->T, xPos[i] + 77 + Constants::FB_RECT()->L, 17 + Constants::FB_RECT()->T);
-		ig->FillIRect(bg, &tmp);
-        tmp = IRECT(xPos[i] + Constants::FB_RECT()->L+1, Constants::FB_RECT()->T+1, xPos[i] + 76 + Constants::FB_RECT()->L, 16 + Constants::FB_RECT()->T);
-		ig->DrawRect(border, &tmp);
-        tmp = IRECT(xPos[i] + Constants::FB_RECT()->L, Constants::FB_RECT()->T, xPos[i] + 77 + Constants::FB_RECT()->L, 17 + Constants::FB_RECT()->T);
-		ig->DrawRect(border, &tmp);
-        tmp = IRECT(xPos[i] + offsetx, Constants::FB_RECT()->T, xPos[i] + offsetx + 82, Constants::FB_RECT()->B);
-		ig->DrawIText(label, &names[i][0], &tmp);
+
+		for (int j = 0; j < 39; j++) {
+			int x1 = j + xPos[i];
+			pixels->at(x1).at(51) = border;
+			pixels->at(x1).at(59) = border;
+		}
+
+		for (int j = 52; j < 59; j++) {
+			pixels->at(xPos[i]).at(j) = border;
+			pixels->at(xPos[i] + 38).at(j) = border;
+		}
+
+		for (int j = 1; j < 38; j++) {
+			for (int k = 52; k < 59; k++) {
+				pixels->at(xPos[i] + j).at(k) = bg;
+			}
+		}
+		lcdgui::Label l;
+		l.initialize("", names[i], xPos[i] + offsetx, 51, stringSize);
+		l.setInverted(!label);
+		l.setOpaque(false);
+		l.Draw(pixels);
+		//ig->DrawIText(label, &names[i][0], &tmp);
 	}
-	return true;
+	dirty = false;
 }
-*/
+
+FunctionKeys::~FunctionKeys() {
+}

@@ -63,35 +63,34 @@ void SongControls::down()
 void SongControls::turnWheel(int i)
 {
 	init();
-	auto notch = getNotch(i);
 	auto lSequencer = sequencer.lock();
 	auto lS = s.lock();
 	if (param.find("sequence") != string::npos) {
 		if (step > lS->getStepAmount() - 1) return;
 		auto seq = lS->getStep(step)->getSequence();
 		auto up = lSequencer->getFirstUsedSeqUp(seq + 1);
-		lS->getStep(step)->setSequence(notch < 0 ? lSequencer->getFirstUsedSeqDown(seq - 1) : up);
+		lS->getStep(step)->setSequence(i < 0 ? lSequencer->getFirstUsedSeqDown(seq - 1) : up);
 		lSequencer->setActiveSequenceIndex(lSequencer->getSongSequenceIndex());
 		lSequencer->setBar(0);
 	}
 	else if (param.find("reps") != string::npos) {
 		if (step > lS->getStepAmount() - 1) return;
-		lS->getStep(step)->setRepeats(lS->getStep(step)->getRepeats() + notch);
+		lS->getStep(step)->setRepeats(lS->getStep(step)->getRepeats() + i);
 	}
 	else if (param.compare("song") == 0) {
-		songGui->setSelectedSongIndex(songGui->getSelectedSongIndex() + notch);
+		songGui->setSelectedSongIndex(songGui->getSelectedSongIndex() + i);
 		songGui->setOffset(-1);
 		init();
 		if (lS->isUsed() && lS->getStepAmount() != 0)	lSequencer->setActiveSequenceIndex(lS->getStep(0)->getSequence());
 	}
 	else if (param.compare("tempo") == 0 && !lSequencer->isTempoSourceSequence()) {
-		lSequencer->setTempo(BCMath(lSequencer->getTempo().toDouble() + (notch / 10.0)));
+		lSequencer->setTempo(BCMath(lSequencer->getTempo().toDouble() + (i / 10.0)));
 	}
 	else if (param.compare("temposource") == 0) {
-		lSequencer->setTempoSourceSequence(notch > 0);
+		lSequencer->setTempoSourceSequence(i > 0);
 	}
 	else if (param.compare("loop") == 0) {
-		songGui->setLoop(notch > 0);
+		songGui->setLoop(i > 0);
 	}
 }
 

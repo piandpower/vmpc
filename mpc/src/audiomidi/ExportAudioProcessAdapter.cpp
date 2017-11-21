@@ -3,7 +3,7 @@
 //#include <Util.hpp>
 //#include <disk/MpcFile.hpp>
 //#include <file/wav/WavFile.hpp>
-//#include <maingui/StartUp.hpp>
+//#include <StartUp.hpp>
 #include <audio/core/AudioFormat.hpp>
 #include <audio/core/AudioBuffer.hpp>
 
@@ -175,7 +175,7 @@ void ExportAudioProcessAdapter::writeWav()
 	if (nonZeroDetected) {
 		/*
 		string sep = FileUtil::getSeparator();
-		string wavFileName = maingui::StartUp::home + sep + "vMPC" + sep + "recordings" + sep  + file->getName() + ".WAV";
+		string wavFileName = StartUp::home + sep + "vMPC" + sep + "recordings" + sep  + file->getName() + ".WAV";
 		auto newFile = new moduru::file::File(wavFileName, nullptr);
 		if (newFile->exists()) newFile->del();
 		newFile->create();

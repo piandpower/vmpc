@@ -1,7 +1,7 @@
 #include <sequencer/Sequencer.hpp>
 
 #include <Mpc.hpp>
-#include <maingui/StartUp.hpp>
+#include <StartUp.hpp>
 #include <ui/UserDefaults.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 
@@ -43,7 +43,7 @@ void Sequencer::init()
 	reposition = -1;
 	nextsq = -1;
 	previousTempo = BCMath("0.0");
-	auto userDefaults = mpc::maingui::StartUp::getUserDefaults().lock();
+	auto userDefaults = mpc::StartUp::getUserDefaults().lock();
 	defaultSequenceName = moduru::lang::StrUtil::trim(userDefaults->getSequenceName());
 	for (int i = 0; i < 64; i++) {
 		string name = "Track-";

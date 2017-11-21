@@ -102,15 +102,14 @@ void BarCopyControls::function(int j)
 	}
 }
 
-void BarCopyControls::turnWheel(int increment)
+void BarCopyControls::turnWheel(int i)
 {
 	init();
-	auto notch = getNotch(increment);
 	auto lFromSeq = fromSeq.lock();
 	auto lToSeq = toSeq.lock();
 	auto lSequencer = sequencer.lock();
 	if (param.compare("fromsq") == 0) {
-		barCopyGui->setFromSq(barCopyGui->getFromSq() + notch);
+		barCopyGui->setFromSq(barCopyGui->getFromSq() + i);
 		fromSeq = lSequencer->getSequence(barCopyGui->getFromSq());
 		lFromSeq = fromSeq.lock();
 		if (barCopyGui->getLastBar() > lFromSeq->getLastBar())
@@ -118,7 +117,7 @@ void BarCopyControls::turnWheel(int increment)
 
 	}
 	else if (param.compare("tosq") == 0) {
-		barCopyGui->setToSq(barCopyGui->getToSq() + notch);
+		barCopyGui->setToSq(barCopyGui->getToSq() + i);
 		toSeq = lSequencer->getSequence(barCopyGui->getToSq());
 		lToSeq = toSeq.lock();
 		if (barCopyGui->getAfterBar() > lToSeq->getLastBar())
@@ -126,15 +125,15 @@ void BarCopyControls::turnWheel(int increment)
 
 	}
 	else if (param.compare("afterbar") == 0) {
-		barCopyGui->setAfterBar(barCopyGui->getAfterBar() + notch, lToSeq->getLastBar());
+		barCopyGui->setAfterBar(barCopyGui->getAfterBar() + i, lToSeq->getLastBar());
 	}
 	else if (param.compare("firstbar") == 0) {
-		barCopyGui->setFirstBar(barCopyGui->getFirstBar() + notch, lFromSeq->getLastBar());
+		barCopyGui->setFirstBar(barCopyGui->getFirstBar() + i, lFromSeq->getLastBar());
 	}
 	else if (param.compare("lastbar") == 0) {
-		barCopyGui->setLastBar(barCopyGui->getLastBar() + notch, lFromSeq->getLastBar());
+		barCopyGui->setLastBar(barCopyGui->getLastBar() + i, lFromSeq->getLastBar());
 	}
 	else if (param.compare("copies") == 0) {
-		barCopyGui->setCopies(barCopyGui->getCopies() + notch);
+		barCopyGui->setCopies(barCopyGui->getCopies() + i);
 	}
 }

@@ -2,7 +2,7 @@
 
 #include <Mpc.hpp>
 #include <Util.hpp>
-#include <maingui/StartUp.hpp>
+#include <StartUp.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 #include <ui/UserDefaults.hpp>
 #include <lcdgui/Field.hpp>
@@ -22,7 +22,7 @@ UserObserver::UserObserver(mpc::Mpc* mpc)
 {
 	busNames = { "MIDI", "DRUM1", "DRUM2", "DRUM3", "DRUM4" };
 	this->mpc = mpc;
-	ud = mpc::maingui::StartUp::getUserDefaults();
+	ud = mpc::StartUp::getUserDefaults();
 	auto lUd = ud.lock();
 	timeSig = lUd->getTimeSig();
 	timeSig->deleteObservers();

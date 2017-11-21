@@ -9,7 +9,7 @@ using namespace std;
 Pad::Pad(int number)
 {
 	this->number = number;
-	//note = maingui::StartUp::getUserDefaults().lock()->getPadNotes()[number];
+	//note = StartUp::getUserDefaults().lock()->getPadNotes()[number];
 	note = number;
 	mixerChannel = make_shared<MixerChannel>();
 }

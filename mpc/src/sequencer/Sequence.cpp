@@ -1,7 +1,7 @@
 #include <sequencer/Sequence.hpp>
 
 #include <Mpc.hpp>
-#include <maingui/StartUp.hpp>
+#include <StartUp.hpp>
 #include <ui/Uis.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <sequencer/Event.hpp>
@@ -45,7 +45,7 @@ Sequence::Sequence(mpc::Mpc* mpc, vector<string> defaultTrackNames)
 	metaTracks[1]->setName("midiclock");
 	metaTracks[2]->setName("tempo");
 	deviceNames = vector<string>(33);
-	auto lUserDefaults = maingui::StartUp::getUserDefaults().lock();
+	auto lUserDefaults = StartUp::getUserDefaults().lock();
 	for (int i = 0; i < 33; i++) {
 		deviceNames[i] = lUserDefaults->getDeviceName(i);
 	}
@@ -299,7 +299,7 @@ bool Sequence::isUsed()
 void Sequence::init(int lastBarIndex)
 {
 	used = true;
-	auto lUserDefaults = maingui::StartUp::getUserDefaults().lock();
+	auto lUserDefaults = StartUp::getUserDefaults().lock();
 	initialTempo = lUserDefaults->getTempo();
 	loopEnabled = lUserDefaults->isLoopEnabled();
 	for (auto& track : getTracks()) {

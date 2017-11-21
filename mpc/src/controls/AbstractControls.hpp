@@ -23,11 +23,6 @@ namespace mpc {
 		class Program;
 	}
 
-	namespace maingui {
-		class Gui;
-		class MainFrame;
-	}
-
 	namespace lcdgui {
 
 		class Field;
@@ -76,7 +71,6 @@ namespace mpc {
 			std::vector<std::string> typableParams{};
 
 		protected:
-			virtual int getNotch(int increment);
 			virtual void init();
 
 		public:

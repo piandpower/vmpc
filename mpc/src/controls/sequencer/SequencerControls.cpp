@@ -1,6 +1,6 @@
 #include <controls/sequencer/SequencerControls.hpp>
 #include <ui/Uis.hpp>
-#include <maingui/StartUp.hpp>
+#include <StartUp.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 //#include <maingui/MainFrame.hpp>
 #include <ui/UserDefaults.hpp>
@@ -101,7 +101,6 @@ void SequencerControls::turnWheel(int i)
 {
 	init();
 	auto lSequencer = sequencer.lock();
-	int notch = getNotch(i);
 	auto lTrk = track.lock();
 	auto seq = sequence.lock();
 	if (param.size() >= 3 && param.substr(0, 3).compare("now") == 0) {
@@ -109,28 +108,28 @@ void SequencerControls::turnWheel(int i)
 	}
 
 	if (param.compare("now0") == 0) {
-		lSequencer->setBar(lSequencer->getCurrentBarNumber() + notch);
+		lSequencer->setBar(lSequencer->getCurrentBarNumber() + i);
 	}
 	else if (param.compare("now1") == 0) {
-		lSequencer->setBeat(lSequencer->getCurrentBeatNumber() + notch);
+		lSequencer->setBeat(lSequencer->getCurrentBeatNumber() + i);
 	}
 	else if (param.compare("now2") == 0) {
-		lSequencer->setClock(lSequencer->getCurrentClockNumber() + notch);
+		lSequencer->setClock(lSequencer->getCurrentClockNumber() + i);
 	}
 	else if (param.compare("devicenumber") == 0) {
-		lTrk->setDeviceNumber(lTrk->getDevice() + notch);
+		lTrk->setDeviceNumber(lTrk->getDevice() + i);
 	}
 	else if (param.compare("tr") == 0) {
-		if (notch > 0) {
+		if (i > 0) {
 			lSequencer->trackUp();
 		}
-		else if (notch < 0) {
+		else if (i < 0) {
 			lSequencer->trackDown();
 		}
 	}
 	else if (param.compare("tracktype") == 0) {
 		auto lTrk = track.lock();
-		lTrk->setBusNumber(lTrk->getBusNumber() + notch);
+		lTrk->setBusNumber(lTrk->getBusNumber() + i);
 		auto lastFocus = ls.lock()->getLastFocus("sequencer_step");
 		if (lastFocus.length() == 2) {
 			auto eventNumber = stoi(lastFocus.substr(1, 2));
@@ -157,24 +156,24 @@ void SequencerControls::turnWheel(int i)
 		}
 	}
 	else if (param.compare("pgm") == 0) {
-		lTrk->setProgramChange(lTrk->getProgramChange() + notch);
+		lTrk->setProgramChange(lTrk->getProgramChange() + i);
 	}
 	else if (param.compare("velo") == 0) {
-		lTrk->setVelocityRatio(lTrk->getVelocityRatio() + notch);
+		lTrk->setVelocityRatio(lTrk->getVelocityRatio() + i);
 	}
 	else if (param.compare("timing") == 0) {
-		lSequencer->setTcValue(lSequencer->getTcIndex() + notch);
+		lSequencer->setTcValue(lSequencer->getTcIndex() + i);
 	}
 	else if (param.compare("sq") == 0) {
 		if (lSequencer->isPlaying()) {
-			lSequencer->setNextSq(lSequencer->getCurrentlyPlayingSequenceIndex() + notch);
+			lSequencer->setNextSq(lSequencer->getCurrentlyPlayingSequenceIndex() + i);
 		}
 		else {
-			lSequencer->setActiveSequenceIndex(lSequencer->getActiveSequenceIndex() + notch);
+			lSequencer->setActiveSequenceIndex(lSequencer->getActiveSequenceIndex() + i);
 		}
 	}
 	else if (param.compare("nextsq") == 0) {
-		lSequencer->setNextSq(lSequencer->getNextSq() + notch);
+		lSequencer->setNextSq(lSequencer->getNextSq() + i);
 	}
 	else if (param.compare("bars") == 0) {
 		mpc->getUis().lock()->getSequencerWindowGui()->setNewBars(lSequencer->getActiveSequence().lock()->getLastBar());
@@ -182,7 +181,7 @@ void SequencerControls::turnWheel(int i)
 	}
 	else if (param.compare("tempo") == 0) {
 		double oldTempo = lSequencer->getTempo().toDouble();
-		double newTempo = oldTempo + (notch / 10.0);
+		double newTempo = oldTempo + (i / 10.0);
 		lSequencer->setTempo(BCMath(newTempo));
 	}
 	else if (param.compare("tsig") == 0) {
@@ -194,19 +193,19 @@ void SequencerControls::turnWheel(int i)
 		ls.lock()->openScreen("changetsig");
 	}
 	else if (param.compare("temposource") == 0) {
-		lSequencer->setTempoSourceSequence(notch > 0);
+		lSequencer->setTempoSourceSequence(i > 0);
 	}
 	else if (param.compare("count") == 0) {
-		lSequencer->setCountEnabled(notch > 0);
+		lSequencer->setCountEnabled(i > 0);
 	}
 	else if (param.compare("loop") == 0) {
-		seq->setLoopEnabled(notch > 0);
+		seq->setLoopEnabled(i > 0);
 	}
 	else if (param.compare("recordingmode") == 0) {
-		lSequencer->setRecordingModeMulti(notch > 0);
+		lSequencer->setRecordingModeMulti(i > 0);
 	}
 	else if (param.compare("on") == 0) {
-		lTrk->setOn(notch > 0);
+		lTrk->setOn(i > 0);
 	}
 }
 
@@ -290,7 +289,7 @@ void SequencerControls::right()
     if(lSequencer->getNextSq() != -1) return;
 	auto seq = sequence.lock();
 	if (!seq->isUsed()) {
-        seq->init(mpc::maingui::StartUp::getUserDefaults().lock()->getLastBarIndex());
+        seq->init(mpc::StartUp::getUserDefaults().lock()->getLastBarIndex());
 		int index = lSequencer->getActiveSequenceIndex();
 		string name = moduru::lang::StrUtil::trim(lSequencer->getDefaultSequenceName()) + moduru::lang::StrUtil::padLeft(to_string(index + 1), "0", 2);
 		seq->setName(name);
@@ -313,7 +312,7 @@ void SequencerControls::down()
 	if(lSequencer->getNextSq() != -1) return;
 	auto seq = sequence.lock();
 	if (!seq->isUsed()) {
-        seq->init(mpc::maingui::StartUp::getUserDefaults().lock()->getLastBarIndex());
+        seq->init(mpc::StartUp::getUserDefaults().lock()->getLastBarIndex());
 		int index = lSequencer->getActiveSequenceIndex();
 		string name = moduru::lang::StrUtil::trim(lSequencer->getDefaultSequenceName()) + moduru::lang::StrUtil::padLeft(to_string(index + 1), "0", 2);
 		seq->setName(name);

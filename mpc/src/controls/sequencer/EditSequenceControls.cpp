@@ -157,49 +157,48 @@ void EditSequenceControls::turnWheel(int i)
 	init();
 	auto lFromSeq = fromSeq.lock();
 	auto lToSeq = toSeq.lock();
-	auto notch = getNotch(i);
 	auto lSequencer = sequencer.lock();
 	if (param.compare("time0") == 0) {
-		editSequenceGui->setTime0(editSequenceGui->setBarNumber(editSequenceGui->getBarNumber(lFromSeq.get(), editSequenceGui->getTime0()) + notch, lFromSeq.get(), editSequenceGui->getTime0()));
+		editSequenceGui->setTime0(editSequenceGui->setBarNumber(editSequenceGui->getBarNumber(lFromSeq.get(), editSequenceGui->getTime0()) + i, lFromSeq.get(), editSequenceGui->getTime0()));
 	}
 	else if (param.compare("time1") == 0) {
-		editSequenceGui->setTime0(editSequenceGui->setBeatNumber(editSequenceGui->getBeatNumber(lFromSeq.get(), editSequenceGui->getTime0()) + notch, lFromSeq.get(), editSequenceGui->getTime0()));
+		editSequenceGui->setTime0(editSequenceGui->setBeatNumber(editSequenceGui->getBeatNumber(lFromSeq.get(), editSequenceGui->getTime0()) + i, lFromSeq.get(), editSequenceGui->getTime0()));
 	}
 	else if (param.compare("time2") == 0) {
-		editSequenceGui->setTime0(editSequenceGui->setClockNumber(editSequenceGui->getClockNumber(lFromSeq.get(), editSequenceGui->getTime0()) + notch, lFromSeq.get(), editSequenceGui->getTime0()));
+		editSequenceGui->setTime0(editSequenceGui->setClockNumber(editSequenceGui->getClockNumber(lFromSeq.get(), editSequenceGui->getTime0()) + i, lFromSeq.get(), editSequenceGui->getTime0()));
 	}
 	else if (param.compare("time3") == 0) {
-		editSequenceGui->setTime1(editSequenceGui->setBarNumber(editSequenceGui->getBarNumber(lFromSeq.get(), editSequenceGui->getTime1()) + notch, lFromSeq.get(), editSequenceGui->getTime1()));
+		editSequenceGui->setTime1(editSequenceGui->setBarNumber(editSequenceGui->getBarNumber(lFromSeq.get(), editSequenceGui->getTime1()) + i, lFromSeq.get(), editSequenceGui->getTime1()));
 	}
 	else if (param.compare("time4") == 0) {
-		editSequenceGui->setTime1(editSequenceGui->setBeatNumber(editSequenceGui->getBeatNumber(lFromSeq.get(), editSequenceGui->getTime1()) + notch, lFromSeq.get(), editSequenceGui->getTime1()));
+		editSequenceGui->setTime1(editSequenceGui->setBeatNumber(editSequenceGui->getBeatNumber(lFromSeq.get(), editSequenceGui->getTime1()) + i, lFromSeq.get(), editSequenceGui->getTime1()));
 	}
 	else if (param.compare("time5") == 0) {
-		editSequenceGui->setTime1(editSequenceGui->setClockNumber(editSequenceGui->getClockNumber(lFromSeq.get(), editSequenceGui->getTime1()) + notch, lFromSeq.get(), editSequenceGui->getTime1()));
+		editSequenceGui->setTime1(editSequenceGui->setClockNumber(editSequenceGui->getClockNumber(lFromSeq.get(), editSequenceGui->getTime1()) + i, lFromSeq.get(), editSequenceGui->getTime1()));
 	}
 	else if (param.compare("start0") == 0) {
-		editSequenceGui->setStartTicks(editSequenceGui->setBarNumber(editSequenceGui->getBarNumber(lToSeq.get(), editSequenceGui->getStartTicks()) + notch, lToSeq.get(), editSequenceGui->getStartTicks()));
+		editSequenceGui->setStartTicks(editSequenceGui->setBarNumber(editSequenceGui->getBarNumber(lToSeq.get(), editSequenceGui->getStartTicks()) + i, lToSeq.get(), editSequenceGui->getStartTicks()));
 	}
 	else if (param.compare("start1") == 0) {
-		editSequenceGui->setStartTicks(editSequenceGui->setBeatNumber(editSequenceGui->getBeatNumber(lToSeq.get(), editSequenceGui->getStartTicks()) + notch, lToSeq.get(), editSequenceGui->getStartTicks()));
+		editSequenceGui->setStartTicks(editSequenceGui->setBeatNumber(editSequenceGui->getBeatNumber(lToSeq.get(), editSequenceGui->getStartTicks()) + i, lToSeq.get(), editSequenceGui->getStartTicks()));
 	}
 	else if (param.compare("start2") == 0) {
-		editSequenceGui->setStartTicks(editSequenceGui->setClockNumber(editSequenceGui->getClockNumber(lToSeq.get(), editSequenceGui->getStartTicks()) + notch, lToSeq.get(), editSequenceGui->getStartTicks()));
+		editSequenceGui->setStartTicks(editSequenceGui->setClockNumber(editSequenceGui->getClockNumber(lToSeq.get(), editSequenceGui->getStartTicks()) + i, lToSeq.get(), editSequenceGui->getStartTicks()));
 	}
 	else if (param.compare("editfunction") == 0) {
-		editSequenceGui->setEditFunctionNumber(editSequenceGui->getEditFunctionNumber() + notch);
+		editSequenceGui->setEditFunctionNumber(editSequenceGui->getEditFunctionNumber() + i);
 	}
 	else if (param.compare("drumnote") == 0) {
-		editSequenceGui->setDrumNote(editSequenceGui->getDrumNote() + notch);
+		editSequenceGui->setDrumNote(editSequenceGui->getDrumNote() + i);
 	}
 	else if (param.compare("midinote0") == 0) {
-		editSequenceGui->setMidiNote0(editSequenceGui->getMidiNote0() + notch);
+		editSequenceGui->setMidiNote0(editSequenceGui->getMidiNote0() + i);
 	}
 	else if (param.compare("midinote1") == 0) {
-		editSequenceGui->setMidiNote1(editSequenceGui->getMidiNote1() + notch);
+		editSequenceGui->setMidiNote1(editSequenceGui->getMidiNote1() + i);
 	}
 	else if (param.compare("fromsq") == 0) {
-		editSequenceGui->setFromSq(editSequenceGui->getFromSq() + notch);
+		editSequenceGui->setFromSq(editSequenceGui->getFromSq() + i);
 		fromSeq = lSequencer->getSequence(editSequenceGui->getFromSq());
 		lFromSeq = fromSeq.lock();
 		if (editSequenceGui->getTime1() > lFromSeq->getLastTick()) {
@@ -207,10 +206,10 @@ void EditSequenceControls::turnWheel(int i)
 		}
 	}
 	else if (param.compare("tr0") == 0) {
-		editSequenceGui->setTr0(editSequenceGui->getTr0() + notch);
+		editSequenceGui->setTr0(editSequenceGui->getTr0() + i);
 	}
 	else if (param.compare("tosq") == 0) {
-		editSequenceGui->setToSq(editSequenceGui->getToSq() + notch);
+		editSequenceGui->setToSq(editSequenceGui->getToSq() + i);
 		toSeq = lSequencer->getSequence(editSequenceGui->getToSq());
 		lToSeq = toSeq.lock();
 		if (editSequenceGui->getStartTicks() > lToSeq->getLastTick()) {
@@ -218,31 +217,31 @@ void EditSequenceControls::turnWheel(int i)
 		}
 	}
 	else if (param.compare("tr1") == 0) {
-		editSequenceGui->setTr1(editSequenceGui->getTr1() + notch);
+		editSequenceGui->setTr1(editSequenceGui->getTr1() + i);
 	}
 	else if (param.compare("mode") == 0) {
 		if (editSequenceGui->getEditFunctionNumber() == 0) {
-			editSequenceGui->setModeMerge(notch > 0);
+			editSequenceGui->setModeMerge(i > 0);
 		}
 		else if (editSequenceGui->getEditFunctionNumber() == 1) {
-			editSequenceGui->setDurationMode(editSequenceGui->getDurationMode() + notch);
+			editSequenceGui->setDurationMode(editSequenceGui->getDurationMode() + i);
 		}
 		else if (editSequenceGui->getEditFunctionNumber() == 2) {
-			editSequenceGui->setVelocityMode(editSequenceGui->getVelocityMode() + notch);
+			editSequenceGui->setVelocityMode(editSequenceGui->getVelocityMode() + i);
 		}
 		else if (editSequenceGui->getEditFunctionNumber() == 3) {
-			editSequenceGui->setTransposeAmount(editSequenceGui->getTransposeAmount() + notch);
+			editSequenceGui->setTransposeAmount(editSequenceGui->getTransposeAmount() + i);
 		}
 	}
 	else if (param.compare("copies") == 0) {
 		if (editSequenceGui->getEditFunctionNumber() == 0) {
-			editSequenceGui->setCopies(editSequenceGui->getCopies() + notch);
+			editSequenceGui->setCopies(editSequenceGui->getCopies() + i);
 		}
 		else if (editSequenceGui->getEditFunctionNumber() == 1) {
-			editSequenceGui->setDurationValue(editSequenceGui->getDurationValue() + notch);
+			editSequenceGui->setDurationValue(editSequenceGui->getDurationValue() + i);
 		}
 		else if (editSequenceGui->getEditFunctionNumber() == 2) {
-			editSequenceGui->setVelocityValue(editSequenceGui->getVelocityValue() + notch);
+			editSequenceGui->setVelocityValue(editSequenceGui->getVelocityValue() + i);
 		}
 	}
 }

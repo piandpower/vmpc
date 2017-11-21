@@ -1,6 +1,6 @@
 #include "DataWheelControl.hpp"
 
-//#include <mpc/controls/AbstractControls.hpp>
+#include <controls/KbMouseController.hpp>
 
 #include "Constants.hpp"
 //#include <mpc/gui/Gui.hpp>
@@ -9,36 +9,27 @@
 
 //using namespace mpc::gui;
 
-DataWheelControl::DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels)
+DataWheelControl::DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels, mpc::controls::KbMouseController* kbmc)
 	: IPanelControl(pPlug, *Constants::DATAWHEEL_RECT(), Constants::LCD_OFF())
 {
-	dataWheelIndex = 0;
 	this->dataWheels = dataWheels;
+	this->kbmc = kbmc;
 }
 
 void DataWheelControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod) {
-	turn(dY);
+	kbmc->turnDataWheel(dY);
+	SetDirty(false);
 }
-
-void DataWheelControl::turn(int increment) {
-	dataWheelIndex += increment;
-	if (dataWheelIndex < 0)
-		dataWheelIndex = 99;
-
-	if (dataWheelIndex > 99)
-		dataWheelIndex = 0;
-	//target->turnWheel(increment);
-	SetDirty(true);
-}
-
-//void DataWheelControl::setTarget(mpc::controls::AbstractControls* target) {
-//	this->target = target;
-//}
 
 bool DataWheelControl::Draw(IGraphics* g) {
 	IChannelBlend tmp = IChannelBlend::kBlendNone;
-	g->DrawBitmap(&dataWheels, GetRECT(), 0, dataWheelIndex * GetRECT()->H(), &tmp);
+	g->DrawBitmap(&dataWheels, GetRECT(), 0, kbmc->getDataWheelIndex() * GetRECT()->H(), &tmp);
+	lastDrawnIndex = kbmc->getDataWheelIndex();
 	return true;
+}
+
+bool DataWheelControl::IsDirty() {
+	return kbmc->getDataWheelIndex() != lastDrawnIndex;
 }
 
 DataWheelControl::~DataWheelControl() {

@@ -1,6 +1,6 @@
 #include <audiomidi/AudioMidiServices.hpp>
 //////#include <maingui/Gui.hpp>
-//#include <maingui/StartUp.hpp>
+//#include <StartUp.hpp>
 #include <Mpc.hpp>
 //#include <audiomidi/SetupServer.hpp>
 //#include <audiomidi/DirectToDiskSettings.hpp>
@@ -657,7 +657,7 @@ void AudioMidiServices::prepareBouncing(DirectToDiskSettings* settings)
 	string sep = moduru::file::FileUtil::getSeparator();
 	for (int i = 0; i < 5; i++) {
 		auto eapa = exportProcesses[i];
-		//auto file = new moduru::file::File(mpc::maingui::StartUp::home + sep + "vMPC" + sep + "recordings" + sep + indivFileNames[i], nullptr);
+		//auto file = new moduru::file::File(mpc::StartUp::home + sep + "vMPC" + sep + "recordings" + sep + indivFileNames[i], nullptr);
 		//eapa->prepare(file, settings->lengthInFrames);
 	}
 	bouncePrepared = true;

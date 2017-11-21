@@ -28,7 +28,7 @@ namespace mpc {
 			std::vector<std::unique_ptr<lcdgui::Parameter>> params{};
 			std::vector<std::unique_ptr<lcdgui::Info>> infos{};
 			mpc::lcdgui::Background* bg{ nullptr };
-			FunctionKeys* fb{ nullptr };
+			FunctionKeys* fk{ nullptr };
 			//std::shared_ptr<mpc::lcdgui::BlinkLabel> blinkLabel{};
 
 		private:

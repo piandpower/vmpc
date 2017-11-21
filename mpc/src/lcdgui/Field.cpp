@@ -1,7 +1,7 @@
 #include "Field.hpp"
 #include "Label.hpp"
 //#include <maingui/Constants.hpp>
-//#include <maingui/StartUp.hpp>
+//#include <StartUp.hpp>
 //////#include <maingui/Gui.hpp>
 #include "LayeredScreen.hpp"
 //#include <lcdgui/LayeredScreen.hpp>
@@ -12,8 +12,7 @@
 //#include <ui/sequencer/TrMoveGui.hpp>
 
 #include <lang/StrUtil.hpp>
-#include <lang/utf8_decode.h>
-#include <gui/BMFParser.hpp>
+
 //#include <Util.hpp>
 
 #include <file/File.hpp>
@@ -30,72 +29,16 @@ void Field::initialize(std::string name, int x, int y, int columns) {
 	//ls = mainFrame->getLayeredScreen();
 	split = false;
 	focusable = true;
-	opaque = false;
+	opaque = true;
+	inverted = false;
 	//Hide(false);
 	this->name = name;
 	this->columns = columns;
-	setForeground(false);
 	
 	setSize(columns * TEXT_WIDTH + 1, TEXT_HEIGHT + 2);
 	setLocation(x, y);
 	setText(text);
 	loseFocus(name);
-}
-
-void Field::Draw(std::vector<std::vector<bool> >* pixels) {
-	auto atlas = bmfParser->getAtlas();
-	auto font = bmfParser->getLoadedFont();
-
-	int textx = x;
-	int texty = y;
-	int atlasx, atlasy;
-
-	char* tempText = new char[text.length() + 1];
-	std::strcpy(tempText, text.c_str());
-	utf8_decode_init(tempText, text.length());
-
-	int next = utf8_decode_next();
-	int charCounter = 0;
-	if (name.compare("tsig") == 0) columns = 5;
-	for (int j = 0; j < (TEXT_WIDTH * columns) + 1; j++) {
-		for (int k = 0; k < TEXT_HEIGHT + 2; k++) {
-			int x1 = textx + j - 1;
-			int y1 = texty + k;
-			if (x1 < 0 || x1 > 247 || y1 < 0 || y1 > 59) continue;
-			(*pixels)[textx + j - 1][texty + k] = focus ? true : false;
-		}
-	}
-	if (name.compare("tsig") == 0) columns = 7;
-
-	while (next != UTF8_END && next >= 0) {
-		moduru::gui::bmfont_char current_char;
-		current_char = font.chars[next];
-		atlasx = current_char.x;
-		atlasy = current_char.y;
-
-		for (int x1 = 0; x1 < current_char.width; x1++) {
-			for (int y1 = 0; y1 < current_char.height; y1++) {
-				bool on = atlas[atlasx + x1][atlasy + y1 + 1];
-				if (on) {
-					(*pixels)[textx + x1 + current_char.xoffset][texty + y1 + current_char.yoffset] = focus ? false : true;
-				}
-			}
-		}
-		textx += current_char.xadvance;
-		next = utf8_decode_next();
-	}
-	delete tempText;
-
-	//if (name.compare("dummy") == 0) return;
-	//bool res = true;
-	//if (opaque) {
-	//res = IPanelControl::Draw(g);
-	//textControl->Draw(g);
-	//}
-	//else {
-	//res = textControl->Draw(g);
-	//}
-	dirty = false;
 }
 
 void Field::setSize(int width, int height) {
@@ -120,6 +63,7 @@ const int Field::BLINKING_RATE;
 void Field::takeFocus(string prev)
 {
 	focus = true;
+	inverted = true;
 	//auto lGui = gui.lock();
 	//auto lMainFrame = lGui->getMainFrame().lock();
 	//auto lMainFrame = mainFrame;
@@ -175,8 +119,8 @@ void Field::takeFocus(string prev)
 
 void Field::loseFocus(string next)
 {
-	opaque = false;
 	focus = false;
+	inverted = false;
 	auto focusEvent = getName();
 	setSplit(false);
 	//auto lLs = ls.lock();
@@ -257,7 +201,7 @@ void Field::setSplit(bool b)
 		if (letters.size() == 0)
 			return;
 
-		this->setOpaque(true);
+		setOpaque(true);
 		//for (int i = 0; i < letters.size(); i++)
 			//GetGUI()->DetachControl(letters[i]);
 		activeSplit = 0;
@@ -269,7 +213,7 @@ void Field::setSplit(bool b)
 void Field::redrawSplit()
 {
 	for (int i = 0; i < letters.size(); i++) {
-		letters[i]->setForeground(i < activeSplit);
+		//letters[i]->setForeground(i < activeSplit);
 		//letters[i]->setBackground(i < activeSplit ? mpc::maingui::Constants::LCD_ON() : mpc::maingui::Constants::LCD_OFF());
 		//letters[i]->setOpaque(i < activeSplit);
 	}

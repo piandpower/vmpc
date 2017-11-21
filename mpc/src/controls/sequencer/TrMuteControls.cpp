@@ -43,8 +43,7 @@ void TrMuteControls::turnWheel(int i)
 {
 	init();
 	auto lSequencer = sequencer.lock();
-	auto notch = getNotch(i);
-	if (param.compare("sq") == 0) lSequencer->setActiveSequenceIndex(lSequencer->getActiveSequenceIndex() + notch);
+	if (param.compare("sq") == 0) lSequencer->setActiveSequenceIndex(lSequencer->getActiveSequenceIndex() + i);
 }
 
 void TrMuteControls::function(int i)

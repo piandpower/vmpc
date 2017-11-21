@@ -3,7 +3,7 @@
 #include <Logger.hpp>
 
 #include <Mpc.hpp>
-#include <maingui/StartUp.hpp>
+#include <StartUp.hpp>
 //#include <maingui/Constants.hpp>
 
 #include "Field.hpp"
@@ -184,10 +184,10 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	wave->setFine(false);
 	*/
 
-	FILE* fp0 = fopen(string(mpc::maingui::StartUp::resPath + "mainpanel.json").c_str(), "r"); // non-Windows use "r"
-	FILE* fp1 = fopen(string(mpc::maingui::StartUp::resPath + "windowpanel.json").c_str(), "r"); // non-Windows use "r"
-	FILE* fp2 = fopen(string(mpc::maingui::StartUp::resPath + "dialogpanel.json").c_str(), "r"); // non-Windows use "r"
-	FILE* fp3 = fopen(string(mpc::maingui::StartUp::resPath + "dialog2panel.json").c_str(), "r"); // non-Windows use "r"
+	FILE* fp0 = fopen(string(mpc::StartUp::resPath + "mainpanel.json").c_str(), "r"); // non-Windows use "r"
+	FILE* fp1 = fopen(string(mpc::StartUp::resPath + "windowpanel.json").c_str(), "r"); // non-Windows use "r"
+	FILE* fp2 = fopen(string(mpc::StartUp::resPath + "dialogpanel.json").c_str(), "r"); // non-Windows use "r"
+	FILE* fp3 = fopen(string(mpc::StartUp::resPath + "dialog2panel.json").c_str(), "r"); // non-Windows use "r"
 
 	FILE* fPointers[LAYER_COUNT]{ fp0, fp1, fp2, fp3 };
 
@@ -312,15 +312,18 @@ std::vector<std::vector<bool>>* LayeredScreen::getPixels() {
 }
 
 void LayeredScreen::Draw() {
-	if (getLayer(0).getBackground()->IsDirty()) getLayer(0).getBackground()->Draw(&pixels);
-	auto components = getLayer(0).getAllLabels();
-	for (auto& c : components) {
-		if (c.lock()->IsDirty()) c.lock()->Draw(&pixels);
-	}
-	components = getLayer(0).getAllFields();
-	for (auto& c : components) {
-		if (c.lock()->IsDirty())
-			c.lock()->Draw(&pixels);
+	for (int i = 0; i <= currentLayer; i++) {
+		if (getLayer(i).getBackground()->IsDirty()) getLayer(i).getBackground()->Draw(&pixels);
+		auto components = getLayer(i).getAllLabels();
+		for (auto& c : components) {
+			if (c.lock()->IsDirty()) c.lock()->Draw(&pixels);
+		}
+		components = getLayer(i).getAllFields();
+		for (auto& c : components) {
+			if (c.lock()->IsDirty())
+				c.lock()->Draw(&pixels);
+		}
+		if (getLayer(i).getFunctionKeys()->IsDirty()) getLayer(i).getFunctionKeys()->Draw(&pixels);
 	}
 }
 

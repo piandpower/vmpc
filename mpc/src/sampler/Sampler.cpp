@@ -3,7 +3,7 @@
 #include <Mpc.hpp>
 #include <audiomidi/AudioMidiServices.hpp>
 #include <disk/SoundLoader.hpp>
-#include <maingui/StartUp.hpp>
+#include <StartUp.hpp>
 //#include <hardware/ControlPanel.hpp>
 //////#include <maingui/Gui.hpp>
 //#include <lcdgui/LayeredScreen.hpp>
@@ -47,7 +47,7 @@ Sampler::Sampler()
 	sortNames = vector<string>{ "MEMORY", "NAME", "SIZE" };
 	recordBuffer = make_unique<ctoot::audio::core::AudioBuffer>("record", 2, 4096, 44100);
 	monitorOutput = make_shared<MonitorOutput>(this, gui);
-	auto ud = mpc::maingui::StartUp::getUserDefaults().lock();
+	auto ud = mpc::StartUp::getUserDefaults().lock();
 	initMasterPadAssign = ud->getPadNotes();
 
 	programs = vector<shared_ptr<Program>>(24);
@@ -168,7 +168,7 @@ void Sampler::init(mpc::Mpc* mpc)
 		}
 	}
 
-	auto f = make_shared<moduru::file::File>(mpc::maingui::StartUp::resPath + "click.wav", nullptr);
+	auto f = make_shared<moduru::file::File>(mpc::StartUp::resPath + "click.wav", nullptr);
 	clickSound = make_shared<Sound>();
 	mpc::disk::SoundLoader::getSampleDataFromWav(f, clickSound->getSampleData());
 	clickSound->setMono(true);

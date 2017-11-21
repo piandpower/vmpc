@@ -29,6 +29,12 @@ namespace mpc {
 
 		class KbMouseController
 		{
+		private:
+			int dataWheelIndex = 0;
+
+		public:
+			int getDataWheelIndex(){ return dataWheelIndex; }
+			void turnDataWheel(int increment);
 
 		private:
 			mpc::Mpc* mpc;

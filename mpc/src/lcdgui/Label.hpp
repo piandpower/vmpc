@@ -11,7 +11,7 @@ namespace mpc {
 
 		{
 		public:
-			void initialize(std::string name, std::string text, int x, int y, int size);
+			void initialize(std::string name, std::string text, int x, int y, int columns);
 
 		public:
 			Label();

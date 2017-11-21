@@ -1,6 +1,6 @@
 #include "UserControls.hpp"
 
-#include <maingui/StartUp.hpp>
+#include <StartUp.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 #include <ui/UserDefaults.hpp>
 #include <sequencer/TimeSignature.hpp>
@@ -11,7 +11,7 @@ using namespace std;
 UserControls::UserControls(mpc::Mpc* mpc) 
 	: AbstractSequencerControls(mpc)
 {
-	ud = mpc::maingui::StartUp::getUserDefaults();
+	ud = mpc::StartUp::getUserDefaults();
 }
 
 void UserControls::function(int i)
@@ -34,18 +34,17 @@ void UserControls::function(int i)
 void UserControls::turnWheel(int i)
 {
 	init();
-	auto notch = getNotch(i);
 	auto lUd = ud.lock();
 	if (param.compare("tempo") == 0) {
 		double oldTempo = lUd->getTempo().toDouble();
-		double newTempo = oldTempo + (notch / 10.0);
+		double newTempo = oldTempo + (i / 10.0);
 		lUd->setTempo(BCMath(newTempo));
 	}
 	else if (param.compare("loop") == 0) {
-		lUd->setLoop(notch > 0);
+		lUd->setLoop(i > 0);
 	}
 	else if (param.compare("tsig") == 0) {
-		if (notch > 0) {
+		if (i > 0) {
 			lUd->getTimeSig()->increase();
 		}
 		else {
@@ -53,21 +52,21 @@ void UserControls::turnWheel(int i)
 		}
 	}
 	else if (param.compare("bars") == 0) {
-		lUd->setLastBar(lUd->getLastBarIndex() + notch);
+		lUd->setLastBar(lUd->getLastBarIndex() + i);
 	}
 	else if (param.compare("pgm") == 0) {
-		lUd->setPgm(lUd->getPgm() + notch);
+		lUd->setPgm(lUd->getPgm() + i);
 	}
 	else if (param.compare("recordingmode") == 0) {
-		lUd->setRecordingModeMulti(notch > 0);
+		lUd->setRecordingModeMulti(i > 0);
 	}
 	else if (param.compare("tracktype") == 0) {
-		lUd->setBus(lUd->getBus() + notch);
+		lUd->setBus(lUd->getBus() + i);
 	}
 	else if (param.compare("devicenumber") == 0) {
-		lUd->setDeviceNumber(lUd->getDeviceNumber() + notch);
+		lUd->setDeviceNumber(lUd->getDeviceNumber() + i);
 	}
 	else if (param.compare("velo") == 0) {
-		lUd->setVelo(lUd->getVeloRatio() + notch);
+		lUd->setVelo(lUd->getVeloRatio() + i);
 	}
 }

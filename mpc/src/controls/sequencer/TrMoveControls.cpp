@@ -27,10 +27,9 @@ void TrMoveControls::init()
 void TrMoveControls::turnWheel(int i)
 {
 	init();
-	auto notch = getNotch(i);
-	if (param.find("tr") != string::npos && notch > 0) tmGui->goUp();
-	if (param.find("tr") != string::npos && notch < 0) tmGui->goDown();
-	if (param.compare("sq") == 0) tmGui->setSq(tmGui->getSq() + notch);
+	if (param.find("tr") != string::npos && i > 0) tmGui->goUp();
+	if (param.find("tr") != string::npos && i < 0) tmGui->goDown();
+	if (param.compare("sq") == 0) tmGui->setSq(tmGui->getSq() + i);
 }
 
 void TrMoveControls::up()

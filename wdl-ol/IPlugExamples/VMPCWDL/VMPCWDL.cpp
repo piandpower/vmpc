@@ -41,7 +41,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	pGraphics->AttachControl(mInputCatcher);
 
 	auto dataWheels = pGraphics->LoadIBitmap(DATAWHEEL_ID, DATAWHEEL_FN);
-	mDataWheel = new DataWheelControl(this, dataWheels);
+	mDataWheel = new DataWheelControl(this, dataWheels, mpc->getKbmc().lock().get());
 	pGraphics->AttachControl(mDataWheel);
 	auto knobs = pGraphics->LoadIBitmap(RECKNOB_ID, RECKNOB_FN);
 	mRecKnob = new KnobControl(this, 0, knobs);

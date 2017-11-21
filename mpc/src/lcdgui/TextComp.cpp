@@ -34,46 +34,54 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 	char* tempText = new char[text.length() + 1];
 	std::strcpy(tempText, text.c_str());
 	utf8_decode_init(tempText, text.length());
-	
+
 	int next = utf8_decode_next();
 	int charCounter = 0;
-	while (next != UTF8_END && next >= 0) {
-		moduru::gui::bmfont_char current_char;
-		current_char = font.chars[next];
-		atlasx = current_char.x;
-		atlasy = current_char.y;
-
-		for (int j = 0; j < TEXT_WIDTH - 1; j++) {
-			for (int k = 0; k < TEXT_HEIGHT; k++) {
-				(*pixels)[textx + j + (charCounter*TEXT_WIDTH)][texty + 1 + k] = false;
+	if (name.compare("tsig") == 0) columns = 5;
+	if (opaque) {
+		for (int j = 0; j < (TEXT_WIDTH * columns) + 1; j++) {
+			for (int k = 0; k < TEXT_HEIGHT + 2; k++) {
+				int x1 = textx + j - 1;
+				int y1 = texty + k;
+				if (x1 < 0 || x1 > 247 || y1 < 0 || y1 > 59) continue;
+				(*pixels)[textx + j - 1][texty + k] = inverted ? true : false;
 			}
 		}
+	}
+	if (name.compare("tsig") == 0) columns = 7;
 
-		for (int x1 = 0; x1 < current_char.width; x1++) {
-			for (int y1 = 0; y1 < current_char.height; y1++) {
-				bool on = atlas[atlasx + x1][atlasy + y1 + 1];
-				if (on) {
-					(*pixels)[textx + x1 + current_char.xoffset][texty + y1 + current_char.yoffset] = true;
+	if (!IsHidden()) {
+		while (next != UTF8_END && next >= 0) {
+			moduru::gui::bmfont_char current_char;
+			current_char = font.chars[next];
+			atlasx = current_char.x;
+			atlasy = current_char.y;
+
+			for (int x1 = 0; x1 < current_char.width; x1++) {
+				for (int y1 = 0; y1 < current_char.height; y1++) {
+					bool on = atlas[atlasx + x1][atlasy + y1 + 1];
+					if (on) {
+						(*pixels)[textx + x1 + current_char.xoffset][texty + y1 + current_char.yoffset] = inverted ? false : true;
+					}
 				}
 			}
+			textx += current_char.xadvance;
+			next = utf8_decode_next();
 		}
-		textx += current_char.xadvance;
-		next = utf8_decode_next();
-	}
-	delete tempText;
+		delete tempText;
 
-	//if (name.compare("dummy") == 0) return;
-	//bool res = true;
-	//if (opaque) {
+		//if (name.compare("dummy") == 0) return;
+		//bool res = true;
+		//if (opaque) {
 		//res = IPanelControl::Draw(g);
 		//textControl->Draw(g);
-	//}
-	//else {
+		//}
+		//else {
 		//res = textControl->Draw(g);
-	//}
+		//}
+	}
 	dirty = false;
 }
-
 void TextComp::setSize(int w, int h) {
 	columns = w / TEXT_WIDTH;
 	this->w = w;
@@ -111,21 +119,14 @@ int TextComp::getH() {
 	return h;
 }
 
-void TextComp::setForeground(bool on) {
-	//mColor = on ? *Constants::LCD_OFF() : *Constants::LCD_ON();
-	//f (textControl) textControl->SetText(on ? Constants::FONT_ON() : Constants::FONT_OFF());
-	//SetDirty(true);
+void TextComp::setOpaque(bool b) {
+	opaque = b;
+	SetDirty();
 }
 
-bool TextComp::getForeground() {
-	//if (!textControl) return true;
-	//return mColor == *Constants::LCD_OFF();
-	return true;
-}
-
-void TextComp::setOpaque(bool enabled) {
-	opaque = enabled;
-	//SetDirty(false);
+void TextComp::setInverted(bool b) {
+	inverted = b;
+	SetDirty();
 }
 
 string TextComp::getName() {

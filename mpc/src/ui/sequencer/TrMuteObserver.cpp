@@ -123,18 +123,18 @@ void TrMuteObserver::setTrackColor(int i)
 	auto lSequencer = sequencer.lock();
 	if (lSequencer->isSoloEnabled()) {
 		if (i + bankoffset() == lSequencer->getActiveTrackIndex()) {
-			tracks[i].lock()->setForeground(false);
+			tracks[i].lock()->setInverted(true);
 		}
 		else {
-			tracks[i].lock()->setForeground(true);
+			tracks[i].lock()->setInverted(false);
 		}
 	}
 	else {
 		if (lSequencer->getActiveSequence().lock()->getTrack(i + bankoffset()).lock()->isOn()) {
-			tracks[i].lock()->setForeground(false);
+			tracks[i].lock()->setInverted(true);
 		}
 		else {
-			tracks[i].lock()->setForeground(true);
+			tracks[i].lock()->setInverted(false);
 		}
 	}
 }

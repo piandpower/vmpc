@@ -11,7 +11,7 @@
 #include <controls/GlobalReleaseControls.hpp>
 #include <controls/KbMapping.hpp>
 //#include <disk/AbstractDisk.hpp>
-#include <maingui/StartUp.hpp>
+#include <StartUp.hpp>
 //#include <hardware/ControlPanel.hpp>
 #include <ui/Uis.hpp>
 //#include <gui/KeyLabels.hpp>
@@ -40,6 +40,19 @@ KbMouseController::KbMouseController(mpc::Mpc* mpc)
 	shiftPressed = false;
 	releaseControls = make_unique<GlobalReleaseControls>(mpc);
 	samplerGui = mpc->getUis().lock()->getSamplerGui();
+}
+
+void KbMouseController::turnDataWheel(int increment) {
+	init();
+	if (controls != nullptr) {
+		controls->turnWheel(increment);
+	}
+	dataWheelIndex += increment;
+	if (dataWheelIndex < 0)
+		dataWheelIndex = 99;
+
+	if (dataWheelIndex > 99)
+		dataWheelIndex = 0;
 }
 
 void KbMouseController::releaseShift() {
@@ -142,7 +155,7 @@ void KbMouseController::press(unsigned char c)
 	if (ctrlPressed && (c == 81 || c == 88)) {
 		auto lAms = mpc->getAudioMidiServices().lock();
 		if (!lAms || !lAms->isStandalone()) return;
-		//mainFrame.lock()->close();
+		//exit(0);
 		// EXIT ROUTINE
 		return;
 	}
@@ -303,10 +316,10 @@ void KbMouseController::press(unsigned char c)
 				controls->shift();
 			}
 			else if (c == KbMapping::dataWheelBack()) {
-				//lMainFrame->getControlPanel().lock()->getDataWheel().lock()->turn(-jump_ );
+				turnDataWheel(-jump);
 			}
 			else if (c == KbMapping::dataWheelForward()) {
-				//lMainFrame->getControlPanel().lock()->getDataWheel().lock()->turn(jump_);
+				turnDataWheel(jump);
 			}
 			else if (functionPressed && !altPressed) {
 				if (c == KbMapping::f6()) {

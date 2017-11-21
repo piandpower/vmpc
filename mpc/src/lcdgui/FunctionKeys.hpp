@@ -1,6 +1,6 @@
 #pragma once
 
-//#include <IControl.h>
+#include <lcdgui/Component.hpp>
 
 #include <rapidjson/document.h>
 
@@ -11,7 +11,7 @@ namespace mpc {
 	namespace lcdgui {
 
 		class FunctionKeys
-//			: public IPanelControl	
+			: public Component
 		{
 
 		public:
@@ -31,7 +31,7 @@ namespace mpc {
 			void enable(int i);
 
 		public:
-			//bool Draw(IGraphics* g) override;
+			void Draw(std::vector<std::vector<bool> >* pixels) override;
 
 		public:
 			FunctionKeys();

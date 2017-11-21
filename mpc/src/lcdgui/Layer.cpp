@@ -16,7 +16,7 @@ Layer::Layer(mpc::lcdgui::LayeredScreen* layeredScreen)
 	//: IPanelControl(pPlug, *Constants::LCD_RECT(), Constants::LCD_OFF())
 {
 	bg = new Background();
-	fb = new FunctionKeys();
+	fk = new FunctionKeys();
 	for (int i = 0; i < 100; i++) {
 		unusedFields.push_back(make_shared<mpc::lcdgui::Field>(layeredScreen));
 	}
@@ -87,7 +87,7 @@ mpc::lcdgui::Background* Layer::getBackground() {
 }
 
 mpc::lcdgui::FunctionKeys* Layer::getFunctionKeys() {
-	return fb;
+	return fk;
 }
 
 void Layer::setFocus(string textFieldName) {
@@ -171,13 +171,13 @@ string Layer::openScreen(Value& screenJson, string screenName) {
 	}
 
 	if (screenJson.HasMember("fblabels")) {
-		Value& fblabels = screenJson["fblabels"];
-		Value& fbtypes = screenJson["fbtypes"];
-		//fb->Hide(false);
-		fb->initialize(fblabels, fbtypes);
+		Value& fklabels = screenJson["fblabels"];
+		Value& fktypes = screenJson["fbtypes"];
+		fk->Hide(false);
+		fk->initialize(fklabels, fktypes);
 	}
 	else {
-		//fb->Hide(true);
+		fk->Hide(true);
 	}
 	return firstField;
 }
@@ -215,5 +215,5 @@ vector<weak_ptr<mpc::lcdgui::Component>> Layer::getAllLabels() {
 
 Layer::~Layer() {
 	if (bg != nullptr) delete bg;
-	if (fb != nullptr) delete fb;
+	if (fk != nullptr) delete fk;
 }

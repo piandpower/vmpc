@@ -124,10 +124,11 @@ void NextSeqPadObserver::setSeqColor(int i)
 
 	auto label = seqs[i].lock();
 	if (i + bankoffset() == lSequencer->getNextSq()) {
-		label->setForeground(false);
+		//label->setForeground(false);
+		label->setInverted(true);
 	}
 	else {
-		label->setForeground(true);
+		label->setInverted(false);
 	}
 }
 
