@@ -24,6 +24,8 @@
 #include <midi/core/MidiTransport.hpp>
 #include <synth/SynthChannel.hpp>
 
+#include <hardware/Hardware.hpp>
+
 #include <Logger.hpp>
 
 using namespace mpc;
@@ -67,6 +69,8 @@ void Mpc::init()
 	
 	kbmc = make_shared<controls::KbMouseController>(this);
 	controls = make_shared<controls::Controls>(this);
+
+	hardware = make_shared<hardware::Hardware>(this);
 
 	layeredScreen->openScreen("sequencer");
 
@@ -128,6 +132,10 @@ weak_ptr<audiomidi::EventHandler> Mpc::getEventHandler() {
 
 weak_ptr<lcdgui::LayeredScreen> Mpc::getLayeredScreen() {
 	return layeredScreen;
+}
+
+controls::AbstractControls* Mpc::getActiveControls() {
+	return controls->getControls(layeredScreen->getCurrentScreenName());
 }
 
 vector<char> Mpc::akaiAsciiChar = vector<char>({ ' ', '!', '#', '$', '%', '&', '\'', '(', ')', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '}' });

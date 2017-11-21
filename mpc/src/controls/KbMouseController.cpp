@@ -147,7 +147,7 @@ bool KbMouseController::isErasePressed()
 
 void KbMouseController::init()
 {
-	controls = mpc->getControls().lock()->getControls(mpc->getLayeredScreen().lock()->getCurrentScreenName());
+	controls = mpc->getActiveControls();
 }
 
 void KbMouseController::press(unsigned char c)
