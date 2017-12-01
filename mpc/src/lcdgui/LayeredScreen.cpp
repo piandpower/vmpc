@@ -95,6 +95,24 @@ using namespace mpc::ui::sampler;
 //using namespace mpc::ui::disk;
 //using namespace mpc::ui::disk::window;
 
+static vector<string> samplerWindowNames = vector<string>{ "program", "deleteprogram", "deleteallprograms", "createnewprogram",
+"copyprogram", "assignmentview", "initpadassign", "copynoteparameters", "velocitymodulation",
+"veloenvfilter", "velopitch", "autochromaticassignment", "keeporretry" };
+
+static vector<string> seqWindowNames = vector<string>{ "copysequence", "copytrack", "countmetronome", "timedisplay",
+"tempochange", "timingcorrect", "changetsig", "changebars", "changebars2", "eraseallofftracks",
+"transmitprogramchanges", "multirecordingsetup", "midiinput", "midioutput", "editvelocity", "sequence",
+"deletesequence", "track", "deletetrack", "deleteallsequences", "deletealltracks", "loopbarswindow" };
+
+static vector<string> diskNames = vector<string>{ "load", "save", "format", "setup", "device", "deleteallfiles", "loadaprogram",
+"saveaprogram", "loadasound", "saveasound", "cantfindfile", "filealreadyexists", "loadasequence",
+"saveasequence", "saveapsfile" };
+
+static vector<string> soundNames = vector<string>{ "sound", "deletesound", "deleteallsound", "convertsound", "resample",
+"stereotomono", "monotostereo", "copysound" };
+
+static vector<string> soundGuiNames = vector<string>{ "trim", "loop", "zone" };
+
 LayeredScreen::LayeredScreen(mpc::Mpc* mpc) 
 //	: IPanelControl(pPlug, *Constants::LCD_RECT(), Constants::LCD_OFF())
 {
@@ -285,7 +303,7 @@ int LayeredScreen::openScreen(string screenName) {
 	
 	previousScreenName = currentScreenName;
 	currentScreenName = screenName;
-	firstField = "";
+	std::string firstField = "";
 	int oldLayer = currentLayer;
 	for (int i = 0; i < LAYER_COUNT; i++) {
 		if (layerJsons[i].HasMember(screenName.c_str())) {
@@ -301,7 +319,7 @@ int LayeredScreen::openScreen(string screenName) {
 		}
 	}
 
-	returnToLastFocus();
+	returnToLastFocus(firstField);
 
 	initObserver();
 	return currentLayer;
@@ -313,37 +331,39 @@ std::vector<std::vector<bool>>* LayeredScreen::getPixels() {
 
 void LayeredScreen::Draw() {
 	for (int i = 0; i <= currentLayer; i++) {
-		if (getLayer(i).getBackground()->IsDirty()) getLayer(i).getBackground()->Draw(&pixels);
-		auto components = getLayer(i).getAllLabels();
+		if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
+		auto components = layers[i]->getAllLabels();
 		for (auto& c : components) {
 			if (c.lock()->IsDirty()) c.lock()->Draw(&pixels);
 		}
-		components = getLayer(i).getAllFields();
+		components = layers[i]->getAllFields();
 		for (auto& c : components) {
 			if (c.lock()->IsDirty())
 				c.lock()->Draw(&pixels);
 		}
-		if (getLayer(i).getFunctionKeys()->IsDirty()) getLayer(i).getFunctionKeys()->Draw(&pixels);
+		if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
 	}
 }
 
 bool LayeredScreen::IsDirty() {
-	if (getLayer(0).getBackground()->IsDirty()) return true;
-	
-	auto components = getLayer(0).getAllLabels();
-	for (auto& c : components) {
-		if (c.lock()->IsDirty()) return true;
-	}
+	for (int i = 0; i < 3; i++) {
+		if (layers[i]->getBackground()->IsDirty() || layers[i]->getFunctionKeys()->IsDirty()) return true;
 
-	components = getLayer(0).getAllFields();
-	for (auto& c : components) {
-		if (c.lock()->IsDirty()) return true;
+		auto components = layers[i]->getAllLabels();
+		for (auto& c : components) {
+			if (c.lock()->IsDirty()) return true;
+		}
+
+		components = layers[i]->getAllFields();
+		for (auto& c : components) {
+			if (c.lock()->IsDirty()) return true;
+		}
 	}
 	return false;
 }
 
-Layer& LayeredScreen::getLayer(int i) {
-	return *layers[i].get();
+Layer* LayeredScreen::getLayer(int i) {
+	return layers[i].get();
 }
 
 void LayeredScreen::createPopup(string text, int textXPos)
@@ -377,7 +397,7 @@ void LayeredScreen::setPopupText(string text)
 	//popup->setText(text, 0);
 }
 
-void LayeredScreen::returnToLastFocus()
+void LayeredScreen::returnToLastFocus(string firstFieldOfThisScreen)
 {
 	auto focusCounter = 0;
 	for (auto& lf : lastFocus) {
@@ -389,9 +409,9 @@ void LayeredScreen::returnToLastFocus()
 	if (focusCounter == 0) {
 		vector<string> sa(2);
 		sa[0] = currentScreenName;
-		sa[1] = firstField;
+		sa[1] = firstFieldOfThisScreen;
 		lastFocus.push_back(sa);
-		setFocus(firstField, currentLayer);
+		setFocus(firstFieldOfThisScreen, currentLayer);
 	}
 }
 
@@ -680,7 +700,7 @@ mpc::lcdgui::Underline* LayeredScreen::getUnderline() {
 
 std::weak_ptr<Field> LayeredScreen::lookupField(std::string s)
 {
-	for (auto& a : getLayer(getCurrentLayer()).getAllFields() ) {
+	for (auto& a : layers[currentLayer]->getAllFields() ) {
 		auto candidate = dynamic_pointer_cast<Field>(a.lock());
 		if (candidate->getName().compare(s) == 0) {
 			return candidate;
@@ -691,13 +711,22 @@ std::weak_ptr<Field> LayeredScreen::lookupField(std::string s)
 
 std::weak_ptr<Label> LayeredScreen::lookupLabel(std::string s)
 {
-	for (auto& a : getLayer(getCurrentLayer()).getAllLabels()) {
+	for (auto& a : layers[currentLayer]->getAllLabels()) {
 		auto candidate = dynamic_pointer_cast<Label>(a.lock());
 		if (candidate->getName().compare(s) == 0) {
 			return candidate;
 		}
 	}
 	return weak_ptr<Label>();
+}
+
+static inline bool checkActiveScreen(vector<string>* sa, string csn)
+{
+	for (auto s : *sa) {
+		if (csn.compare(s) == 0)
+			return true;
+	}
+	return false;
 }
 
 void LayeredScreen::initObserver()
@@ -709,81 +738,79 @@ void LayeredScreen::initObserver()
 	if (activeObserver) {
 		activeObserver.reset();
 	}
-	/*
 	if (csn.compare("audio") == 0) {
-		activeObserver = make_unique<AudioObserver>(mpc, this);
+		//activeObserver = make_unique<AudioObserver>(mpc, this);
 	}
 	else if (csn.compare("buffersize") == 0) {
-		activeObserver = make_unique<BufferSizeObserver>(this);
+		//activeObserver = make_unique<BufferSizeObserver>(this);
 	}
 	else if (csn.compare("midi") == 0) {
-		activeObserver = make_unique<MidiObserver>(mpc, this);
+		//activeObserver = make_unique<MidiObserver>(mpc, this);
 	}
 	else if (csn.compare("directtodiskrecorder") == 0) {
-		activeObserver = make_unique<DirectToDiskRecorderObserver>(this);
+		//activeObserver = make_unique<DirectToDiskRecorderObserver>(this);
 	}
 	else if (csn.compare("disk") == 0) {
-		activeObserver = make_unique<VmpcDiskObserver>(this);
+		//activeObserver = make_unique<VmpcDiskObserver>(this);
 	}
 	else if (csn.compare("punch") == 0) {
-		activeObserver = make_unique<PunchObserver>(this);
+		//activeObserver = make_unique<PunchObserver>(this);
 	}
 	else if (csn.compare("trans") == 0) {
-		activeObserver = make_unique<TransObserver>(this);
+		//activeObserver = make_unique<TransObserver>(this);
 	}
 	else if (csn.compare("2ndseq") == 0) {
-		activeObserver = make_unique<SecondSeqObserver>(this);
+		//activeObserver = make_unique<SecondSeqObserver>(this);
 	}
 	else if (csn.compare("others") == 0) {
-		activeObserver = make_unique<OthersObserver>(this);
+		//activeObserver = make_unique<OthersObserver>(this);
 	}
 	else if (csn.compare("erase") == 0) {
-		activeObserver = make_unique<EraseObserver>(this);
+		activeObserver = make_unique<EraseObserver>(mpc);
 	}
 	else if (csn.compare("sync") == 0) {
-		activeObserver = make_unique<SyncObserver>(this);
+		//activeObserver = make_unique<SyncObserver>(this);
 	}
 	else if (csn.compare("assign") == 0) {
-		activeObserver = make_unique<AssignObserver>(this);
+		activeObserver = make_unique<AssignObserver>(mpc);
 	}
 	else if (csn.compare("assign16levels") == 0) {
-		activeObserver = make_unique<Assign16LevelsObserver>(this);
+		activeObserver = make_unique<Assign16LevelsObserver>(mpc);
 	}
 	else if (csn.compare("metronomesound") == 0) {
-		activeObserver = make_unique<MetronomeSoundObserver>(this);
+		activeObserver = make_unique<MetronomeSoundObserver>(mpc);
 	}
 	else if (csn.compare("saveallfile") == 0) {
-		activeObserver = make_unique<SaveAllFileObserver>(this);
+		//activeObserver = make_unique<SaveAllFileObserver>(this);
 	}
 	else if (csn.compare("loadasequencefromall") == 0) {
-		activeObserver = make_unique<LoadASequenceFromAllObserver>(this);
+		//activeObserver = make_unique<LoadASequenceFromAllObserver>(this);
 	}
 	else if (csn.compare("nextseqpad") == 0) {
-		activeObserver = make_unique<NextSeqPadObserver>(mpc->getSequencer(), this);
+		activeObserver = make_unique<NextSeqPadObserver>(mpc);
 	}
 	else if (csn.compare("nextseq") == 0) {
-		activeObserver = make_unique<NextSeqObserver>(this);
+		activeObserver = make_unique<NextSeqObserver>(mpc);
 	}
 	else if (csn.compare("song") == 0) {
-		activeObserver = make_unique<SongObserver>(mpc, this);
+		activeObserver = make_unique<SongObserver>(mpc);
 	}
 	else if (csn.compare("trackmute") == 0) {
-		activeObserver = make_unique<TrMuteObserver>(mpc->getSequencer(), this);
+		activeObserver = make_unique<TrMuteObserver>(mpc);
 	}
-	else if (checkActiveScreen(Gui::diskNames)) {
-		activeObserver = make_unique<DiskObserver>(mpc, gui);
+	else if (checkActiveScreen(&diskNames, currentScreenName)) {
+		//activeObserver = make_unique<DiskObserver>(mpc, gui);
 	}
-	else if (checkActiveScreen(Gui::seqWindowNames)) {
-		activeObserver = make_unique<SequencerWindowObserver>(mpc, this);
+	else if (checkActiveScreen(&seqWindowNames, currentScreenName)) {
+		activeObserver = make_unique<SequencerWindowObserver>(mpc);
 	}
-	else if (checkActiveScreen(Gui::soundNames)) {
-		activeObserver = make_unique<SoundObserver>(mpc->getSampler(), this);
+	else if (checkActiveScreen(&soundNames, currentScreenName)) {
+		//activeObserver = make_unique<SoundObserver>(mpc->getSampler(), this);
 	}
 	else if (csn.compare("sample") == 0) {
-		activeObserver = make_unique<SampleObserver>(this, mpc->getSampler());
+		//activeObserver = make_unique<SampleObserver>(this, mpc->getSampler());
 	}
 	else 
-	*/
 	if (csn.compare("sequencer") == 0) {
 		activeObserver = make_unique<SequencerObserver>(mpc);
 	}

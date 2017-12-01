@@ -283,7 +283,7 @@ SequencerWindowObserver::SequencerWindowObserver(mpc::Mpc* mpc)
 		displayInRec();
 		displayWaitForKey();
 	}
-	else if (csn.compare("loopbarswindow") == 0) {
+	else if (csn.compare("LoopBarsControls") == 0) {
 		displayFirstBar();
 		displayLastBar();
 		displayNumberOfBars();

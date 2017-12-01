@@ -14,11 +14,13 @@ Hardware::Hardware(mpc::Mpc* mpc)
 	/*
 	static std::vector<int> bankKeys",
 	static std::vector<int> padKeys",
-	static std::vector<int> numPad",
 	static std::vector<int> altNumPad",
 	*/
 	for (auto& l : buttonLabels)
 		buttons.push_back(std::make_shared<Button>(mpc, l));
+
+	for (int i = 0; i <= 9; i++)
+		buttons.push_back(std::make_shared<Button>(mpc, std::to_string(i)));
 
 	dataWheel = make_shared<DataWheel>(mpc);
 

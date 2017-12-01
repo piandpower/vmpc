@@ -192,9 +192,8 @@ void Layer::clear() {
 		unuseLabel(i->getLabel());
 	}
 	infos.clear();
-	//bg->Hide(true);
-	//fb->Hide(true);
-	//SetDirty(false);
+	bg->Hide(true);
+	fk->Hide(true);
 }
 
 vector<weak_ptr<mpc::lcdgui::Component>> Layer::getAllFields() {

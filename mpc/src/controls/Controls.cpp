@@ -5,6 +5,39 @@
 #include <controls/AbstractControls.hpp>
 //#include <controls/KbMouseController.hpp>
 #include <controls/sequencer/SequencerControls.hpp>
+#include <controls/sequencer/AssignControls.hpp>
+#include <controls/sequencer/BarCopyControls.hpp>
+#include <controls/sequencer/EditSequenceControls.hpp>
+#include <controls/sequencer/NextSeqControls.hpp>
+#include <controls/sequencer/NextSeqPadControls.hpp>
+#include <controls/sequencer/SongControls.hpp>
+//#include <controls/sequencer/StepEditorControls.hpp>
+#include <controls/sequencer/TrMoveControls.hpp>
+#include <controls/sequencer/TrMuteControls.hpp>
+#include <controls/sequencer/UserControls.hpp>
+
+#include <controls/sequencer/window/EraseAllOffTracksControls.hpp>
+#include <controls/sequencer/window/Assign16LevelsControls.hpp>
+#include <controls/sequencer/window/ChangeTsigControls.hpp>
+#include <controls/sequencer/window/CountMetronomeControls.hpp>
+#include <controls/sequencer/window/EditMultipleControls.hpp>
+#include <controls/sequencer/window/EditVelocityControls.hpp>
+#include <controls/sequencer/window/EraseControls.hpp>
+#include <controls/sequencer/window/InsertEventControls.hpp>
+#include <controls/sequencer/window/LoopBarsControls.hpp>
+#include <controls/sequencer/window/MidiInputControls.hpp>
+#include <controls/sequencer/window/MidiMonitorControls.hpp>
+#include <controls/sequencer/window/MidiOutputControls.hpp>
+#include <controls/sequencer/window/MultiRecordingSetupControls.hpp>
+#include <controls/sequencer/window/PasteEventControls.hpp>
+#include <controls/sequencer/window/SequenceControls.hpp>
+#include <controls/sequencer/window/TempoChangeControls.hpp>
+#include <controls/sequencer/window/TimeDisplayControls.hpp>
+#include <controls/sequencer/window/TimingCorrectControls.hpp>
+#include <controls/sequencer/window/TrackControls.hpp>
+#include <controls/sequencer/window/TransmitProgramChangesControls.hpp>
+#include <controls/sequencer/window/ChangeBars2Controls.hpp>
+#include <controls/sequencer/window/ChangeBarsControls.hpp>
 
 /*
 #include <controls/disk/FormatControls.hpp>
@@ -30,8 +63,6 @@
 #include <controls/disk/window/SaveApsFileControls.hpp>
 
 #include <controls/midisync/SyncControls.hpp>
-#include <controls/sequencer/window/ChangeBars2Controls.hpp>
-#include <controls/sequencer/window/ChangeBarsControls.hpp>
 
 #include <hardware/LedPanel.hpp>
 
@@ -88,18 +119,6 @@
 #include <controls/sampler/window/VelocityModulationControls.hpp>
 #include <controls/sampler/window/ZoomControls.hpp>
 
-#include <controls/sequencer/AssignControls.hpp>
-#include <controls/sequencer/BarCopyControls.hpp>
-#include <controls/sequencer/EditSequenceControls.hpp>
-#include <controls/sequencer/window/EraseAllOffTracksControls.hpp>
-#include <controls/sequencer/NextSeqControls.hpp>
-#include <controls/sequencer/NextSeqPadControls.hpp>
-#include <controls/sequencer/SongControls.hpp>
-#include <controls/sequencer/StepEditorControls.hpp>
-#include <controls/sequencer/TrMoveControls.hpp>
-#include <controls/sequencer/TrMuteControls.hpp>
-#include <controls/sequencer/UserControls.hpp>
-
 #include <controls/sequencer/dialog/CopySequenceControls.hpp>
 #include <controls/sequencer/dialog/CopyTrackControls.hpp>
 #include <controls/sequencer/dialog/DeleteAllSequencesControls.hpp>
@@ -108,25 +127,6 @@
 #include <controls/sequencer/dialog/DeleteTrackControls.hpp>
 #include <controls/sequencer/dialog/MetronomeSoundControls.hpp>
 
-#include <controls/sequencer/window/Assign16LevelsControls.hpp>
-#include <controls/sequencer/window/ChangeTsigControls.hpp>
-#include <controls/sequencer/window/CountMetronomeControls.hpp>
-#include <controls/sequencer/window/EditMultipleControls.hpp>
-#include <controls/sequencer/window/EditVelocityControls.hpp>
-#include <controls/sequencer/window/EraseControls.hpp>
-#include <controls/sequencer/window/InsertEventControls.hpp>
-#include <controls/sequencer/window/LoopBarsWindow.hpp>
-#include <controls/sequencer/window/MidiInputControls.hpp>
-#include <controls/sequencer/window/MidiMonitorControls.hpp>
-#include <controls/sequencer/window/MidiOutputControls.hpp>
-#include <controls/sequencer/window/MultiRecordingSetupControls.hpp>
-#include <controls/sequencer/window/PasteEventControls.hpp>
-#include <controls/sequencer/window/SequenceControls.hpp>
-#include <controls/sequencer/window/TempoChangeControls.hpp>
-#include <controls/sequencer/window/TimeDisplayControls.hpp>
-#include <controls/sequencer/window/TimingCorrectControls.hpp>
-#include <controls/sequencer/window/TrackControls.hpp>
-#include <controls/sequencer/window/TransmitProgramChangesControls.hpp>
 //#include <controls/slider/Slider.hpp>
 #include <controls/vmpc/AudioControls.hpp>
 
@@ -145,8 +145,52 @@ Controls::Controls(mpc::Mpc* mpc)
 {
 
 	controls["sequencer"] = new sequencer::SequencerControls(mpc);
-	//controls["barcopy"] = new sequencer::BarCopyControls(mpc);
-	
+	controls["barcopy"] = new sequencer::BarCopyControls(mpc);
+	controls["edit"] = new sequencer::EditSequenceControls(mpc);
+	controls["nextseq"] = new sequencer::NextSeqControls(mpc);
+	controls["nextseqpad"] = new sequencer::NextSeqPadControls(mpc);
+	controls["song"] = new sequencer::SongControls(mpc);
+	//auto sec = new sequencer::StepEditorControls(mpc);
+	//controls["sequencer_step"] = sec;
+	//controls["step_tc"] = sec;
+
+	controls["changebars"] = new sequencer::window::ChangeBarsControls(mpc);
+	controls["changebars2"] = new sequencer::window::ChangeBars2Controls(mpc);
+	controls["sequence"] = new sequencer::window::SequenceControls(mpc);
+	controls["timedisplay"] = new sequencer::window::TimeDisplayControls(mpc);
+	controls["tempochange"] = new sequencer::window::TempoChangeControls(mpc);
+	controls["timingcorrect"] = new sequencer::window::TimingCorrectControls(mpc);
+	controls["LoopBarsControls"] = new sequencer::window::LoopBarsControls(mpc);
+	controls["editvelocity"] = new sequencer::window::EditVelocityControls(mpc);
+	controls["midioutput"] = new sequencer::window::MidiOutputControls(mpc);
+	controls["midiinput"] = new sequencer::window::MidiInputControls(mpc);
+	controls["multirecordingsetup"] = new sequencer::window::MultiRecordingSetupControls(mpc);
+	controls["transmitprogramchanges"] = new sequencer::window::TransmitProgramChangesControls(mpc);
+	controls["eraseallofftracks"] = new sequencer::window::EraseAllOffTracksControls(mpc);
+	controls["track"] = new sequencer::window::TrackControls(mpc);
+	controls["countmetronome"] = new sequencer::window::CountMetronomeControls(mpc);
+	controls["changetsig"] = new sequencer::window::ChangeTsigControls(mpc);
+	controls["editmultiple"] = new sequencer::window::EditMultipleControls(mpc);
+	controls["insertevent"] = new sequencer::window::InsertEventControls(mpc);
+	controls["pasteevent"] = new sequencer::window::PasteEventControls(mpc);
+	controls["trmove"] = new sequencer::TrMoveControls(mpc);
+	controls["trackmute"] = new sequencer::TrMuteControls(mpc);
+	controls["user"] = new sequencer::UserControls(mpc);
+	controls["assign16levels"] = new sequencer::window::Assign16LevelsControls(mpc);
+	controls["assign"] = new sequencer::AssignControls(mpc);
+	controls["midiinputmonitor"] = new sequencer::window::MidiMonitorControls(mpc);
+	controls["midioutputmonitor"] = new sequencer::window::MidiMonitorControls(mpc);
+	controls["erase"] = new sequencer::window::EraseControls(mpc);
+
+	//controls["metronomesound"] = new sequencer::dialog::MetronomeSoundControls(mpc);
+	//controls["copytrack"] = new sequencer::dialog::CopyTrackControls(mpc);
+	//controls["copysequence"] = new sequencer::dialog::CopySequenceControls(mpc);
+	//controls["deletealltracks"] = new sequencer::dialog::DeleteAllTracksControls(mpc);
+	//controls["deleteallsequences"] = new sequencer::dialog::DeleteAllSequencesControls(mpc);
+	//controls["deletetrack"] = new sequencer::dialog::DeleteTrackControls(mpc);
+	//controls["deletesequence"] = new sequencer::dialog::DeleteSequenceControls(mpc);
+
+
 	/*
 	controls["punch"] = new misc::PunchControls(mpc);
 	controls["trans"] = new misc::TransControls(mpc);
@@ -181,7 +225,6 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["saveaprogram"] = new disk::window::SaveAProgramControls(mpc);
 	controls["saveapsfile"] = new disk::window::SaveApsFileControls(mpc);
 	controls["loadasound"] = new disk::window::LoadASoundControls(mpc);
-	controls["edit"] = new sequencer::EditSequenceControls(mpc);
 
 
 	controls["trim"] = new sampler::TrimControls(mpc);
@@ -193,10 +236,6 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["purge"] = new sampler::PurgeControls(mpc);
 	controls["editsound"] = new sampler::window::EditSoundControls(mpc);
 	controls["name"] = new other::dialog::NameControls(mpc);
-	controls["changebars"] = new sequencer::window::ChangeBarsControls(mpc);
-	controls["changebars2"] = new sequencer::window::ChangeBars2Controls(mpc);
-	controls["nextseq"] = new sequencer::NextSeqControls(mpc);
-	controls["nextseqpad"] = new sequencer::NextSeqPadControls(mpc);
 
 	controls["programassign"] = new sampler::PgmAssignControls(mpc);
 	controls["programparams"] = new sampler::PgmParamsControls(mpc);
@@ -215,27 +254,7 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["autochromaticassignment"] = new sampler::window::AutoChromaticAssignmentControls(mpc);
 	controls["deleteallprograms"] = new sampler::dialog::DeleteAllProgramsControls(mpc);
 	controls["deleteprogram"] = new sampler::dialog::DeleteProgramControls(mpc);
-	controls["sequence"] = new sequencer::window::SequenceControls(mpc);
-	controls["timedisplay"] = new sequencer::window::TimeDisplayControls(mpc);
-	controls["tempochange"] = new sequencer::window::TempoChangeControls(mpc);
-	controls["timingcorrect"] = new sequencer::window::TimingCorrectControls(mpc);
-	controls["loopbarswindow"] = new sequencer::window::LoopBarsWindow(mpc);
-	controls["copytrack"] = new sequencer::dialog::CopyTrackControls(mpc);
-	controls["copysequence"] = new sequencer::dialog::CopySequenceControls(mpc);
-	controls["deletealltracks"] = new sequencer::dialog::DeleteAllTracksControls(mpc);
-	controls["deleteallsequences"] = new sequencer::dialog::DeleteAllSequencesControls(mpc);
-	controls["deletetrack"] = new sequencer::dialog::DeleteTrackControls(mpc);
-	controls["deletesequence"] = new sequencer::dialog::DeleteSequenceControls(mpc);
-	controls["editvelocity"] = new sequencer::window::EditVelocityControls(mpc);
-	controls["midioutput"] = new sequencer::window::MidiOutputControls(mpc);
-	controls["midiinput"] = new sequencer::window::MidiInputControls(mpc);
-	controls["multirecordingsetup"] = new sequencer::window::MultiRecordingSetupControls(mpc);
-	controls["transmitprogramchanges"] = new sequencer::window::TransmitProgramChangesControls(mpc);
-	controls["eraseallofftracks"] = new sequencer::window::EraseAllOffTracksControls(mpc);
-	controls["track"] = new sequencer::window::TrackControls(mpc);
-	controls["countmetronome"] = new sequencer::window::CountMetronomeControls(mpc);
-	controls["changetsig"] = new sequencer::window::ChangeTsigControls(mpc);
-	controls["song"] = new sequencer::SongControls(mpc);
+	
 	controls["sound"] = new sampler::window::SoundControls(mpc);
 	controls["deletesound"] = new sampler::dialog::DeleteSoundControls(mpc);
 	controls["deleteallsound"] = new sampler::dialog::DeleteAllSoundControls(mpc);
@@ -244,29 +263,16 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["copysound"] = new sampler::dialog::CopySoundControls(mpc);
 	controls["resample"] = new sampler::dialog::ResampleControls(mpc);
 	controls["stereotomono"] = new sampler::dialog::StereoToMonoControls(mpc);
-	controls["editmultiple"] = new sequencer::window::EditMultipleControls(mpc);
-	controls["insertevent"] = new sequencer::window::InsertEventControls(mpc);
-	controls["pasteevent"] = new sequencer::window::PasteEventControls(mpc);
-	controls["sequencer_step"] = new sequencer::StepEditorControls(mpc);
-	controls["step_tc"] = new sequencer::StepEditorControls(mpc);
-	//	controls["trmove"] = new sequencer::TrMoveControls(mpc);
-	controls["trackmute"] = new sequencer::TrMuteControls(mpc);
-	controls["user"] = new sequencer::UserControls(mpc);
+
 	controls["startfine"] = new sampler::window::ZoomControls(mpc);
 	controls["endfine"] = new sampler::window::ZoomControls(mpc);
 	controls["looptofine"] = new sampler::window::ZoomControls(mpc);
 	controls["loopendfine"] = new sampler::window::ZoomControls(mpc);
 	controls["selectdrum"] = new sampler::SelectDrumControls(mpc);
 	controls["selectdrum_mixer"] = new mixer::SelectDrumMixerControls(mpc);
-	controls["metronomesound"] = new sequencer::dialog::MetronomeSoundControls(mpc);
-	controls["assign16levels"] = new sequencer::window::Assign16LevelsControls(mpc);
-	controls["assign"] = new sequencer::AssignControls(mpc);
 
 	controls["sync"] = new midisync::SyncControls(mpc);
 
-	controls["midiinputmonitor"] = new sequencer::window::MidiMonitorControls(mpc);
-	controls["midioutputmonitor"] = new sequencer::window::MidiMonitorControls(mpc);
-	controls["erase"] = new sequencer::window::EraseControls(mpc);
 	controls["others"] = new other::OthersControls(mpc);
 	controls["init"] = new other::InitControls(mpc);
 	controls["ver"] = new other::VerControls(mpc);

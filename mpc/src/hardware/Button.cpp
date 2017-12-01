@@ -84,22 +84,22 @@ void Button::push() {
 		c->sixteenLevels();
 	}
 	else if (label.compare("f1") == 0) {
-		c->function(1);
+		c->function(0);
 	}
 	else if (label.compare("f2") == 0) {
-		c->function(2);
+		c->function(1);
 	}
 	else if (label.compare("f3") == 0) {
-		c->function(3);
+		c->function(2);
 	}
 	else if (label.compare("f4") == 0) {
-		c->function(4);
+		c->function(3);
 	}
 	else if (label.compare("f5") == 0) {
-		c->function(5);
+		c->function(4);
 	}
 	else if (label.compare("f6") == 0) {
-		c->function(6);
+		c->function(5);
 	}
 	else if (label.compare("shift") == 0) {
 		c->shift();
@@ -127,6 +127,36 @@ void Button::push() {
 	}
 	else if (label.compare("bankd") == 0) {
 		c->bank(3);
+	}
+	else if (label.compare("0") == 0) {
+		c->numpad(0);
+	}
+	else if (label.compare("1") == 0) {
+		c->numpad(1);
+	}
+	else if (label.compare("2") == 0) {
+		c->numpad(2);
+	}
+	else if (label.compare("3") == 0) {
+		c->numpad(3);
+	}
+	else if (label.compare("4") == 0) {
+		c->numpad(4);
+	}
+	else if (label.compare("5") == 0) {
+		c->numpad(5);
+	}
+	else if (label.compare("6") == 0) {
+		c->numpad(6);
+	}
+	else if (label.compare("7") == 0) {
+		c->numpad(7);
+	}
+	else if (label.compare("8") == 0) {
+		c->numpad(8);
+	}
+	else if (label.compare("9") == 0) {
+		c->numpad(9);
 	}
 }
 

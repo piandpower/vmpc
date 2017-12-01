@@ -66,7 +66,7 @@ namespace mpc {
 			std::string findBelow(std::string tf);
 			std::string findAbove(std::string tf);
 			void transferFocus(bool backwards);
-			Layer& getLayer(int i);
+			Layer* getLayer(int i);
 			int getCurrentLayer();
 			int openScreen(std::string name); // returns layer number
 			std::weak_ptr<Field> lookupField(std::string s);
@@ -98,8 +98,6 @@ namespace mpc {
 			int previousLayer{ 0 };
 			std::string previousViewModeText{ "" };
 			std::string previousFromNoteText{ "" };
-			std::string firstField{ "" };
-
 
 		public:
 			void createPopup(std::string text, int textXPos);
@@ -110,7 +108,7 @@ namespace mpc {
 			void setPopupText(std::string text);
 
 		public:
-			void returnToLastFocus();
+			void returnToLastFocus(std::string firstFieldOfThisScreen);
 			void redrawEnvGraph(int attack, int decay);
 			void setLastFocus(std::string screenName, std::string tfName);
 			std::string getLastFocus(std::string screenName);

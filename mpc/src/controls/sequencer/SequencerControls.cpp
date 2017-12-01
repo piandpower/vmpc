@@ -2,7 +2,7 @@
 #include <ui/Uis.hpp>
 #include <StartUp.hpp>
 #include <lcdgui/LayeredScreen.hpp>
-//#include <maingui/MainFrame.hpp>
+////#include <maingui/MainFrame.hpp>
 #include <ui/UserDefaults.hpp>
 #include <lcdgui/Field.hpp>
 #include <ui/sequencer/EditSequenceGui.hpp>
@@ -240,7 +240,7 @@ void SequencerControls::openWindow()
 		ls.lock()->openScreen("countmetronome");
 	}
 	else if (param.compare("loop") == 0) {
-		ls.lock()->openScreen("loopbarswindow");
+		ls.lock()->openScreen("LoopBarsControls");
 	}
 	else if (param.compare("tr") == 0) {
 		ls.lock()->openScreen("track");
