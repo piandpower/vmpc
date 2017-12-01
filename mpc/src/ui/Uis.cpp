@@ -1,6 +1,6 @@
 #include <ui/Uis.hpp>
 
-//#include <ui/NameGui.hpp>
+#include <ui/NameGui.hpp>
 
 //#include <ui/other/OthersGui.hpp>
 
@@ -30,7 +30,7 @@
 //#include <ui/sampler/window/SamplerWindowGui.hpp>
 //#include <ui/sampler/window/EditSoundGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
-//#include <ui/sampler/SoundGui.hpp>
+#include <ui/sampler/SoundGui.hpp>
 
 //#include <ui/vmpc/AudioGui.hpp>
 //#include <ui/vmpc/DeviceGui.hpp>
@@ -50,8 +50,10 @@ Uis::Uis()
 	sequencerWindowGui = new mpc::ui::sequencer::window::SequencerWindowGui();
 
 	samplerGui = new mpc::ui::sampler::SamplerGui();
-	/*
+	nameGui = new mpc::ui::NameGui();
 	soundGui = new mpc::ui::sampler::SoundGui();
+
+	/*
 	editSoundGui = new mpc::ui::sampler::window::EditSoundGui();
 	zoomGui = new mpc::ui::sampler::window::ZoomGui();
 	samplerWindowGui = new mpc::ui::sampler::window::SamplerWindowGui();
@@ -61,7 +63,6 @@ Uis::Uis()
 	diskWindowGui = new mpc::ui::disk::window::DiskWindowGui();
 
 	midiSyncGui = new mpc::ui::midisync::MidiSyncGui();
-	nameGui = new mpc::ui::NameGui();
 
 	punchGui = new mpc::ui::misc::PunchGui();
 	transGui = new mpc::ui::misc::TransGui();

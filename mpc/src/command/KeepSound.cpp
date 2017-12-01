@@ -42,7 +42,6 @@ void KeepSound::execute()
 		auto noteParameters = lProgram->getNoteParameters(samplerGui->getNote());
 		noteParameters->setSoundNumber(lSampler->getSoundCount() - 1);
 		if (sound.lock()->isLoopEnabled()) {
-			sound.lock()->deleteObservers();
 			noteParameters->setVoiceOverlap(2);
 		}
 

@@ -9,11 +9,6 @@ namespace mpc {
 		class Sequencer;
 	}
 
-
-	namespace maingui {
-		class MainFrame;
-	}
-
 	namespace lcdgui {
 		class Field;
 		class Label;
@@ -37,7 +32,7 @@ namespace mpc {
 				std::weak_ptr<mpc::lcdgui::Field> timingField{};
 				std::weak_ptr<mpc::lcdgui::Field> nextSqField{};
 				std::weak_ptr<mpc::sequencer::Sequencer> sequencer{};
-				mpc::maingui::MainFrame* mainFrame{};
+				mpc::Mpc* mpc;
 
 			private:
 				void displaySq();

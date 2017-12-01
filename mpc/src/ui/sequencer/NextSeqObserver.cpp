@@ -2,7 +2,8 @@
 
 #include <Mpc.hpp>
 #include <Util.hpp>
-////#include <maingui/Gui.hpp>
+#include <ui/Uis.hpp>
+#include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 #include <lcdgui/Field.hpp>
 #include <ui/sequencer/SequencerObserver.hpp>
@@ -20,7 +21,7 @@ using namespace std;
 
 NextSeqObserver::NextSeqObserver(mpc::Mpc* mpc) 
 {
-	this->mainFrame = mainFrame;
+	this->mpc = mpc;
 	sequencer = mpc->getSequencer();
 	auto lSequencer = sequencer.lock();
 	lSequencer->deleteObservers();
@@ -128,7 +129,7 @@ void NextSeqObserver::displayTempoSource()
 
 void NextSeqObserver::displayTiming()
 {
-    timingField.lock()->setText(SequencerObserver::timingCorrectNames()->at(sequencer.lock()->getTcIndex()));
+    timingField.lock()->setText(SequencerObserver::timingCorrectNames()->at(mpc->getUis().lock()->getSequencerWindowGui()->getNoteValue()));
 }
 
 void NextSeqObserver::update(moduru::observer::Observable* o, boost::any arg)

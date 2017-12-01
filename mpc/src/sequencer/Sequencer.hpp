@@ -130,10 +130,8 @@ namespace mpc {
 			void setActiveSequenceIndex(int i);
 			std::string getDefaultDeviceName(int i);
 			void setDefaultDeviceName(int i, std::string s);
-			void setTcValue(int i);
 			bool isCountEnabled();
 			void setCountEnabled(bool b);
-			int getTcIndex();
 			void setTimeDisplayStyle(int i);
 			int getTimeDisplayStyle();
 			void setRecordingModeMulti(bool b);
@@ -187,8 +185,8 @@ namespace mpc {
 			std::vector<int> getUsedSequenceIndexes();
 			void goToPreviousEvent();
 			void goToNextEvent();
-			void goToPreviousStep();
-			void goToNextStep();
+			void goToPreviousStep(int tcIndex);
+			void goToNextStep(int tcIndex);
 			void tap();
 			int getResolution();
 			void move(int tick);

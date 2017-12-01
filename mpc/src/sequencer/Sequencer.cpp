@@ -1,6 +1,8 @@
-#include <sequencer/Sequencer.hpp>
+#include "Sequencer.hpp"
 
 #include <Mpc.hpp>
+#include <ui/Uis.hpp>
+#include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <StartUp.hpp>
 #include <ui/UserDefaults.hpp>
 #include <lcdgui/LayeredScreen.hpp>
@@ -256,13 +258,6 @@ void Sequencer::setDefaultDeviceName(int i, string s)
 	defaultDeviceNames[i] = s;
 }
 
-void Sequencer::setTcValue(int i)
-{
-	//gui.lock()->getSequencerWindowGui()->setNoteValue(i);
-	setChanged();
-	notifyObservers(string("timing"));
-}
-
 bool Sequencer::isCountEnabled()
 {
     return countEnabled;
@@ -273,12 +268,6 @@ void Sequencer::setCountEnabled(bool b)
     countEnabled = b;
     setChanged();
     notifyObservers(string("count"));
-}
-
-int Sequencer::getTcIndex()
-{
-    //return gui.lock()->getSequencerWindowGui()->getNoteValue();
-	return 0;
 }
 
 void Sequencer::setTimeDisplayStyle(int i)
@@ -510,7 +499,7 @@ void Sequencer::stop(int tick)
 	int frameOffset = tick == -1 ? 0 : lAms->getFrameSequencer().lock()->getEventFrameOffset(tick);
 	lAms->getFrameSequencer().lock()->stop();
     if (recording || overdubbing)
-        s2->getTrack(activeTrackIndex).lock()->correctTimeRange(0, s2->getLastTick(), TICK_VALUES[getTcIndex()]);
+        s2->getTrack(activeTrackIndex).lock()->correctTimeRange(0, s2->getLastTick(), TICK_VALUES[mpc->getUis().lock()->getSequencerWindowGui()->getNoteValue()]);
 
     auto notifynextsq = false;
 	if (nextsq != -1) {
@@ -1016,9 +1005,9 @@ void Sequencer::notifyTimeDisplay()
 	notifyObservers(string("clock"));
 }
 
-void Sequencer::goToPreviousStep()
+void Sequencer::goToPreviousStep(int tcIndex)
 {
-	auto stepSize = TICK_VALUES[getTcIndex()];
+	auto stepSize = TICK_VALUES[tcIndex];
 	auto pos = getTickPosition();
 	auto stepAmt = static_cast<int>(ceil(getActiveSequence().lock()->getLastTick() / stepSize)) + 1;
 	auto stepGrid = vector<int>(stepAmt);
@@ -1037,9 +1026,9 @@ void Sequencer::goToPreviousStep()
 	move(currentStep * stepSize);
 }
 
-void Sequencer::goToNextStep()
+void Sequencer::goToNextStep(int tcIndex)
 {
-	auto stepSize = TICK_VALUES[getTcIndex()];
+	auto stepSize = TICK_VALUES[tcIndex];
 	auto pos = getTickPosition();
 	auto stepGrid = vector<int>(ceil(getActiveSequence().lock()->getLastTick() / stepSize));
 	for (int i = 0; i < stepGrid.size(); i++)

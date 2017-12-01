@@ -72,7 +72,6 @@ SequencerWindowObserver::SequencerWindowObserver(mpc::Mpc* mpc)
 	track = seq->getTrack(trackNum);
 	timeSig = seq->getTimeSignature();
 	newTimeSignature = swGui->getNewTimeSignature();
-	newTimeSignature->deleteObservers();
 	newTimeSignature->addObserver(this);
 	auto lSampler = sampler.lock();
 	int drum = track.lock()->getBusNumber() - 1;
@@ -208,18 +207,12 @@ SequencerWindowObserver::SequencerWindowObserver(mpc::Mpc* mpc)
 	deviceNameLabel = ls->lookupLabel("devicename");
 	editTypeField = ls->lookupField("edittype");
 	valueField = ls->lookupField("value");
-	swGui->deleteObservers();
 	swGui->addObserver(this);
-	nameGui->deleteObservers();
 	nameGui->addObserver(this);
-	lSequencer->deleteObservers();
 	lSequencer->addObserver(this);
-	seq->deleteObservers();
 	seq->addObserver(this);
 	auto lTrk = track.lock();
-	lTrk->deleteObservers();
 	lTrk->addObserver(this);
-	timeSig.deleteObservers();
 	timeSig.addObserver(this);
 	
 	for (auto& h : hBars) {
@@ -623,7 +616,6 @@ void SequencerWindowObserver::initVisibleEvents()
 			visibleTempoChangeEvents[i] = allTce[i + swGui->getTempoChangeOffset()];
 			auto tce = visibleTempoChangeEvents[i].lock();
 			if (tce) {
-				tce->deleteObservers();
 				tce->addObserver(this);
 			}
 		}
@@ -815,9 +807,9 @@ void SequencerWindowObserver::update(moduru::observer::Observable* o, boost::any
 	string s = boost::any_cast<string>(arg);
 	auto seq = sequence.lock();
 	auto lTrk = track.lock();
-	lTrk->deleteObservers();
-	seq->deleteObservers();
-	timeSig.deleteObservers();
+	lTrk->deleteObserver(this);
+	seq->deleteObserver(this);
+	timeSig.deleteObserver(this);
 	auto lSequencer = sequencer.lock();
 	seqNum = lSequencer->getActiveSequenceIndex();
 	seq = lSequencer->getSequence(seqNum).lock();
@@ -1058,4 +1050,12 @@ SequencerWindowObserver::~SequencerWindowObserver() {
 	for (auto& h : hBars) {
 		//h.lock()->Hide(true);
 	}
+	track.lock()->deleteObserver(this);
+	sequencer.lock()->deleteObserver(this);
+	newTimeSignature->deleteObserver(this);
+	swGui->deleteObserver(this);
+	nameGui->deleteObserver(this);
+	sequence.lock()->deleteObserver(this);
+	track.lock()->deleteObserver(this);
+	timeSig.deleteObserver(this);
 }

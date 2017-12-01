@@ -1,6 +1,8 @@
 #include <ui/sequencer/SequencerObserver.hpp>
 #include <lang/StrUtil.hpp>
 #include <Mpc.hpp>
+#include <ui/Uis.hpp>
+#include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <audiomidi/AudioMidiServices.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 #include <lcdgui/Field.hpp>
@@ -22,10 +24,12 @@ using namespace std;
 SequencerObserver::SequencerObserver(mpc::Mpc* mpc)
 {
 	this->mpc = mpc;
-	this->ls = mpc->getLayeredScreen().lock().get();
+
+	mpc->getUis().lock()->getSequencerWindowGui()->addObserver(this);
+
+	ls = mpc->getLayeredScreen().lock().get();
 	sequencer = mpc->getSequencer();
 	auto lSequencer = sequencer.lock();
-	lSequencer->deleteObservers();
 	lSequencer->addObserver(this);
 
 	now0Field = ls->lookupField("now0");
@@ -61,7 +65,6 @@ SequencerObserver::SequencerObserver(mpc::Mpc* mpc)
 	seq = lSequencer->getSequence(seqNum);
 
 	auto lSeq = seq.lock();
-	lSeq->deleteObservers();
 	lSeq->addObserver(this);
 
 	busNames = vector<string>{ "MIDI", "DRUM1", "DRUM2", "DRUM3", "DRUM4" };
@@ -69,7 +72,6 @@ SequencerObserver::SequencerObserver(mpc::Mpc* mpc)
 	trackNum = lSequencer->getActiveTrackIndex();
 	track = lSeq->getTrack(trackNum);
 	auto lTrk = track.lock();
-	lTrk->deleteObservers();
 	lTrk->addObserver(this);
 
 	displayTr();
@@ -242,7 +244,7 @@ void SequencerObserver::update(moduru::observer::Observable* o, boost::any arg)
 		if(lNextSqField->IsHidden()) {
 			lNextSqField->Hide(false);
 			nextSqLabel.lock()->Hide(false);
-			//mainFrame->setFocus("nextsq", 0);
+			ls->setFocus("nextsq", 0);
 		}
 		lNextSqField->setTextPadded(lSequencer->getNextSq() + 1, " ");
 	}
@@ -250,9 +252,9 @@ void SequencerObserver::update(moduru::observer::Observable* o, boost::any arg)
 		lNextSqField->Hide(true);
 		nextSqLabel.lock()->Hide(true);
 		ls->drawFunctionKeyses("sequencer");
-		//mainFrame->setFocus("sq", 0);
+		ls->setFocus("sq", 0);
 	}
-	else if (s.compare("timing") == 0) {
+	else if (s.compare("notevalue") == 0) {
 		displayTiming();
 	}
 	else if (s.compare("count") == 0) {
@@ -373,11 +375,12 @@ void SequencerObserver::displayCount() {
 }
 
 void SequencerObserver::displayTiming() {
-	timingField.lock()->setText(timingCorrectNames_[sequencer.lock()->getTcIndex()]);
+	timingField.lock()->setText(timingCorrectNames_[mpc->getUis().lock()->getSequencerWindowGui()->getNoteValue()]);
 }
 
 SequencerObserver::~SequencerObserver() {
 	seq.lock()->deleteObserver(this);
 	sequencer.lock()->deleteObserver(this);
 	track.lock()->deleteObserver(this);
+	mpc->getUis().lock()->getSequencerWindowGui()->deleteObserver(this);
 }

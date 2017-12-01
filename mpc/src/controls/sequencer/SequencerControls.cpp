@@ -162,7 +162,7 @@ void SequencerControls::turnWheel(int i)
 		lTrk->setVelocityRatio(lTrk->getVelocityRatio() + i);
 	}
 	else if (param.compare("timing") == 0) {
-		lSequencer->setTcValue(lSequencer->getTcIndex() + i);
+		swGui->setNoteValue(swGui->getNoteValue() + i);
 	}
 	else if (param.compare("sq") == 0) {
 		if (lSequencer->isPlaying()) {
@@ -225,7 +225,6 @@ void SequencerControls::openWindow()
 		ls.lock()->openScreen("tempochange");
 	}
 	else if (param.compare("timing") == 0) {
-		mpc->getUis().lock()->getSequencerWindowGui()->setNoteValue(lSequencer->getTcIndex());
 		ls.lock()->openScreen("timingcorrect");
 	}
 	else if (param.compare("tsig") == 0) {

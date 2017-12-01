@@ -349,40 +349,40 @@ int SequencerWindowGui::getNoteValue()
 
 void SequencerWindowGui::setNoteValue(int i)
 {
-    if(i < 0 || i > 6)
-        return;
+	if (i < 0 || i > 6)
+		return;
 
-    noteValue = i;
-    if(noteValue == 0) {
-        setAmount(0);
-    }
-    if(noteValue == 2) {
-        if(amount > 15)
-            setAmount(15);
+	noteValue = i;
+	if (noteValue == 0) {
+		setAmount(0);
+	}
+	if (noteValue == 2) {
+		if (amount > 15)
+			setAmount(15);
 
-    }
-    if(noteValue == 3) {
-        if(amount > 11)
-            setAmount(11);
+	}
+	if (noteValue == 3) {
+		if (amount > 11)
+			setAmount(11);
 
-    }
-    if(noteValue == 4) {
-        if(amount > 7)
-            setAmount(7);
+	}
+	if (noteValue == 4) {
+		if (amount > 7)
+			setAmount(7);
 
-    }
-    if(noteValue == 5) {
-        if(amount > 5)
-            setAmount(5);
+	}
+	if (noteValue == 5) {
+		if (amount > 5)
+			setAmount(5);
 
-    }
-    if(noteValue == 6) {
-        if(amount > 3)
-            setAmount(3);
+	}
+	if (noteValue == 6) {
+		if (amount > 3)
+			setAmount(3);
 
-    }
-    setChanged();
-    notifyObservers(string("notevalue"));
+	}
+	setChanged();
+	notifyObservers(string("notevalue"));
 }
 
 int SequencerWindowGui::getTime0()
