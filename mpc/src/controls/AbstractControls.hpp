@@ -48,6 +48,13 @@ namespace mpc {
 
 		class AbstractControls
 		{
+		protected:
+			bool shiftPressed{ false };
+			bool recPressed{ false };
+			bool overDubPressed{ false };
+			bool tapPressed{ false };
+			bool goToPressed{ false };
+			bool erasePressed{ false };
 
 		protected:
 			std::string param{ "" };

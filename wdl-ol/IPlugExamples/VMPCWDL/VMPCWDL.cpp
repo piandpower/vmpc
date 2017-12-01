@@ -15,7 +15,8 @@
 
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audio/server/UnrealAudioServer.hpp>
-
+#include <hardware/Hardware.hpp>
+#include <hardware/DataWheel.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 
 const int kNumPrograms = 8;
@@ -37,11 +38,14 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	mLedPanel->setPadBankA(true);
 	pGraphics->AttachControl(mLedPanel);
 
-	mInputCatcher = new InputCatcherControl(this, mpc->getKbmc().lock().get());
+	mInputCatcher = new InputCatcherControl(this, mpc);
 	pGraphics->AttachControl(mInputCatcher);
 
 	auto dataWheels = pGraphics->LoadIBitmap(DATAWHEEL_ID, DATAWHEEL_FN);
-	mDataWheel = new DataWheelControl(this, dataWheels, mpc->getKbmc().lock().get());
+	mDataWheel = new DataWheelControl(this, dataWheels, mpc->getHardware().lock()->getDataWheel());
+
+	mpc->getHardware().lock()->getDataWheel().lock()->addObserver(mDataWheel);
+
 	pGraphics->AttachControl(mDataWheel);
 	auto knobs = pGraphics->LoadIBitmap(RECKNOB_ID, RECKNOB_FN);
 	mRecKnob = new KnobControl(this, 0, knobs);

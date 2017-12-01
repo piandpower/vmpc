@@ -1,6 +1,6 @@
 #include <controls/sequencer/TrMuteControls.hpp>
 
-#include <controls/KbMouseController.hpp>
+//#include <controls/KbMouseController.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 //#include <maingui/MainFrame.hpp>
 #include <sequencer/Sequence.hpp>
@@ -24,6 +24,7 @@ void TrMuteControls::pad(int i, int velo, bool repeat, int tick)
 	init();
 	auto lSequencer = sequencer.lock();
 	auto lLs = ls.lock();
+	/*
 	if (kbmc.lock()->isF6Pressed() || lSequencer->isSoloEnabled()) {
 		if (!lSequencer->isSoloEnabled())
 			lSequencer->setSoloEnabled(true);
@@ -37,6 +38,7 @@ void TrMuteControls::pad(int i, int velo, bool repeat, int tick)
 		auto t = s->getTrack(i + (bank_ * 16)).lock();
 		t->setOn(!t->isOn());
 	}
+	*/
 }
 
 void TrMuteControls::turnWheel(int i)

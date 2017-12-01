@@ -3,6 +3,7 @@
 #include <Mpc.hpp>
 
 #include "Button.hpp"
+#include "DataWheel.hpp"
 
 using namespace mpc::hardware;
 using namespace std;
@@ -18,12 +19,19 @@ Hardware::Hardware(mpc::Mpc* mpc)
 	*/
 	for (auto& l : buttonLabels)
 		buttons.push_back(std::make_shared<Button>(mpc, l));
+
+	dataWheel = make_shared<DataWheel>(mpc);
+
 }
 
 weak_ptr<Button> Hardware::getButton(std::string label) {
 	for (auto b : buttons)
 		if (b->getLabel().compare(label) == 0) return b;
 	return weak_ptr<Button>();
+}
+
+weak_ptr<DataWheel> Hardware::getDataWheel() {
+	return dataWheel;
 }
 
 Hardware::~Hardware() {

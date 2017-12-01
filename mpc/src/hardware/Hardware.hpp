@@ -32,6 +32,7 @@ namespace mpc {
 
 		public:
 			std::weak_ptr<Button> getButton(std::string label);
+			std::weak_ptr<DataWheel> getDataWheel();
 
 		public:
 			Hardware(mpc::Mpc* mpc);

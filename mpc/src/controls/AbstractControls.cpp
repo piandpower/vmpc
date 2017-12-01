@@ -14,7 +14,7 @@
 
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audiomidi/EventHandler.hpp>
-#include <controls/KbMouseController.hpp>
+//#include <controls/KbMouseController.hpp>
 //#include <hardware/SliderWidget.hpp>
 //#include <disk/AbstractDisk.hpp>
 //#include <hardware/ControlPanel.hpp>
@@ -56,7 +56,7 @@ AbstractControls::AbstractControls(Mpc* mpc)
 	sequencerGui = mpc->getUis().lock()->getSequencerGui();
 	nameGui = mpc->getUis().lock()->getNameGui();
 	samplerGui = mpc->getUis().lock()->getSamplerGui();
-	kbmc = mpc->getKbmc();
+	//kbmc = mpc->getKbmc();
 }
 
 void AbstractControls::init()
@@ -166,8 +166,8 @@ void AbstractControls::pad(int i, int velo, bool repeat, int tick)
 {
 	init();
 	auto lTrk = track.lock();
-	kbmc.lock()->getPressedPads()->emplace(i);
-	kbmc.lock()->getPressedPadVelos()->at(i) = velo;
+	//kbmc.lock()->getPressedPads()->emplace(i);
+	//kbmc.lock()->getPressedPadVelos()->at(i) = velo;
 	auto note = lTrk->getBusNumber() > 0 ? program.lock()->getPad(i + (bank_ * 16))->getNote() : i + (bank_ * 16) + 35;
 	auto velocity = velo;
 	auto pad = i + (bank_ * 16);
@@ -193,13 +193,14 @@ void AbstractControls::pad(int i, int velo, bool repeat, int tick)
 	if (csn.compare("assign16levels") == 0 && note != 34)
 		mpc->getUis().lock()->getSequencerGui()->setNote(note);
 	auto lSequencer = sequencer.lock();
-	if (kbmc.lock()->isTapPressed() && lSequencer->isPlaying()) {
-		if (repeat)
-			generateNoteOn(note, velocity, tick);
-	}
-	else {
+	
+	//if (kbmc.lock()->isTapPressed() && lSequencer->isPlaying()) {
+//		if (repeat)
+	//		generateNoteOn(note, velocity, tick);
+	//}
+	//else {
 		generateNoteOn(note, velocity, -1);
-	}
+	//}
 }
 
 void AbstractControls::generateNoteOn(int nn, int padVelo, int tick)
@@ -280,7 +281,8 @@ void AbstractControls::generateNoteOn(int nn, int padVelo, int tick)
 void AbstractControls::numpad(int i)
 {
 	init();
-	if (!kbmc.lock()->isShiftPressed()) {
+	
+	if (!shiftPressed) {
 		auto mtf = ls.lock()->lookupField(param);
 		if (isTypable()) {
 			auto lMtf = mtf.lock();
@@ -293,7 +295,7 @@ void AbstractControls::numpad(int i)
 
 	auto lSequencer = sequencer.lock();
 	//auto lDisk = mpc->getDisk().lock();
-	if (kbmc.lock()->isShiftPressed()) {
+	if (shiftPressed) {
 		auto lAms = mpc->getAudioMidiServices().lock();
 		auto audioGui = mpc->getUis().lock()->getAudioGui();
 		switch (i) {
@@ -355,14 +357,14 @@ void AbstractControls::numpad(int i)
 void AbstractControls::pressEnter()
 {
 	init();
-	if (kbmc.lock()->isShiftPressed()) {
+	if (shiftPressed) {
 		ls.lock()->openScreen("save");
 	}
 }
 
 void AbstractControls::rec()
 {
-	kbmc.lock()->setRecPressed(true);
+	recPressed = true;
     init();
 	auto lSequencer = sequencer.lock();
 	//auto ledPanel = lMainFrame->getLedPanel().lock();
@@ -380,7 +382,7 @@ void AbstractControls::rec()
 
 void AbstractControls::overDub()
 {
-	kbmc.lock()->setOverdubPressed(true);
+	overDubPressed = true;
 	init();
 	//auto ledPanel = lMainFrame->getLedPanel().lock();
 	auto lSequencer = sequencer.lock();
@@ -402,7 +404,7 @@ void AbstractControls::stop()
 	init();
 	auto lSequencer = sequencer.lock();
 	lSequencer->stop();
-	if (kbmc.lock()->isShiftPressed())
+	if (shiftPressed)
 		mpc->getAudioMidiServices().lock()->stopBouncing();
 }
 
@@ -413,12 +415,12 @@ void AbstractControls::play()
 	auto lSequencer = sequencer.lock();
 
 	if(lSequencer->isPlaying()) {
-        if(kbmc.lock()->isRecPressed() && !lSequencer->isOverDubbing()) {
+        if (recPressed && !lSequencer->isOverDubbing()) {
             lSequencer->setOverdubbing(false);
             lSequencer->setRecording(true);
             //ledPanel->setOverDub(false);
             //ledPanel->setRec(true);
-        } else if(kbmc.lock()->isOverdubPressed() && !lSequencer->isRecording()) {
+        } else if(overDubPressed && !lSequencer->isRecording()) {
             lSequencer->setOverdubbing(true);
             lSequencer->setRecording(false);
             //ledPanel->setOverDub(true);
@@ -426,14 +428,14 @@ void AbstractControls::play()
         }
 	}
 	else {
-		if (kbmc.lock()->isRecPressed()) {
+		if (recPressed) {
 			lSequencer->rec();
 		}
-		else if (kbmc.lock()->isOverdubPressed()) {
+		else if (overDubPressed) {
 			lSequencer->overdub();
 		}
 		else {
-			if (kbmc.lock()->isShiftPressed() && !mpc->getAudioMidiServices().lock()->isBouncing()) {
+			if (shiftPressed && !mpc->getAudioMidiServices().lock()->isBouncing()) {
 				//mpc->getUis().lock()->getD2DRecorderGui()->setSq(lSequencer->getActiveSequenceIndex());
 				ls.lock()->openScreen("directtodiskrecorder");
 			}
@@ -451,12 +453,12 @@ void AbstractControls::playStart()
 	auto lSequencer = sequencer.lock();
 	if(lSequencer->isPlaying()) return;
 
-    if(kbmc.lock()->isRecPressed()) {
+    if(recPressed) {
         lSequencer->recFromStart();
-    } else if(kbmc.lock()->isOverdubPressed()) {
+    } else if(overDubPressed) {
         lSequencer->overdubFromStart();
     } else {
-        if(kbmc.lock()->isShiftPressed()) {
+        if(shiftPressed) {
             //mpc->getUis().lock()->getD2DRecorderGui()->setSq(lSequencer->getActiveSequenceIndex());
             ls.lock()->openScreen("directtodiskrecorder");
         } else {
@@ -480,7 +482,7 @@ void AbstractControls::mainScreen()
 void AbstractControls::tap()
 {
 	init();
-	kbmc.lock()->setTapPressed(true);
+	tapPressed = true;
 	sequencer.lock()->tap();
 }
 
@@ -495,7 +497,7 @@ void AbstractControls::nextStepEvent()
 void AbstractControls::goTo()
 {
 	init();
-	kbmc.lock()->setGoToPressed(true);
+	goToPressed = true;
 }
 
 void AbstractControls::prevBarStart()
@@ -559,7 +561,7 @@ void AbstractControls::after()
 {
 	init();
 	//auto ledPanel = lMainFrame->getLedPanel().lock();
-	if (kbmc.lock()->isShiftPressed()) {
+	if (shiftPressed) {
 		ls.lock()->openScreen("assign");
 	}
 	else {
@@ -570,10 +572,10 @@ void AbstractControls::after()
 
 void AbstractControls::shift()
 {
-	if (kbmc.lock()->isShiftPressed())
+	if (shiftPressed)
 		return;
 
-	kbmc.lock()->setShiftPressed(true);
+	shiftPressed = true;
 }
 
 void AbstractControls::undoSeq()
@@ -648,7 +650,7 @@ bool AbstractControls::isTypable()
 void AbstractControls::erase()
 {
 	init();
-	kbmc.lock()->setErasePressed(true);
+	erasePressed = true;
 	auto lSequencer = sequencer.lock();
 
 	if (!lSequencer->getActiveSequence().lock()->isUsed())

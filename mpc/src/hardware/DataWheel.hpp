@@ -4,6 +4,8 @@
 
 namespace mpc {
 
+	class Mpc;
+
 	namespace hardware {
 
 		class DataWheel
@@ -11,9 +13,13 @@ namespace mpc {
 		{
 
 		private:
+			mpc::Mpc* mpc;
 
 		public:
-			DataWheel();
+			void turn(int increment);
+
+		public:
+			DataWheel(mpc::Mpc* mpc);
 			~DataWheel();
 
 		};

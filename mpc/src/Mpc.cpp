@@ -4,8 +4,6 @@
 
 #include <lcdgui/LayeredScreen.hpp>
 
-#include <controls/KbMouseController.hpp>
-
 #include <controls/Controls.hpp>
 
 #include <audiomidi/AudioMidiServices.hpp>
@@ -67,7 +65,7 @@ void Mpc::init()
 	moduru::Logger::l.log("audioMidiServices test mode started.\n");
 
 	
-	kbmc = make_shared<controls::KbMouseController>(this);
+	//kbmc = make_shared<controls::KbMouseController>(this);
 	controls = make_shared<controls::Controls>(this);
 
 	hardware = make_shared<hardware::Hardware>(this);
@@ -84,8 +82,8 @@ weak_ptr<controls::Controls> Mpc::getControls() {
 	return controls;
 }
 
-weak_ptr<controls::KbMouseController> Mpc::getKbmc() {
-	return kbmc;
+weak_ptr<hardware::Hardware> Mpc::getHardware() {
+	return hardware;
 }
 
 weak_ptr<mpc::sequencer::Sequencer> Mpc::getSequencer()

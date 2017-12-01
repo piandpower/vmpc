@@ -3,7 +3,7 @@
 #include <Mpc.hpp>
 
 #include <controls/AbstractControls.hpp>
-#include <controls/KbMouseController.hpp>
+//#include <controls/KbMouseController.hpp>
 #include <controls/sequencer/SequencerControls.hpp>
 
 /*

@@ -1,27 +1,25 @@
 #pragma once
 #include <IControl.h>
 
-#include <controls/KbMouseController.hpp>
+//#include <controls/KbMouseController.hpp>
 
 #include <memory>
 
 namespace mpc {
-	namespace controls {
-		class KbMouseController;
-	}
+	class Mpc;
 }
 
 class InputCatcherControl
 	: public IPanelControl {
 
 private:
-	mpc::controls::KbMouseController* kbmc;
+	mpc::Mpc* mpc;
 
 public:
 	bool OnKeyDown(int x, int y, int key) override;
 	bool OnKeyUp(int x, int y, int key) override;
 
-	InputCatcherControl(IPlugBase* pPlug, mpc::controls::KbMouseController* kbmc);
+	InputCatcherControl(IPlugBase* pPlug, mpc::Mpc* mpc);
 	~InputCatcherControl();
 
 };

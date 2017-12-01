@@ -1,4 +1,4 @@
-#include <controls/KbMapping.hpp>
+#include "KbMapping.hpp"
 #include <thirdp/wrpkey/key.hxx>
 
 using namespace mpc::controls;

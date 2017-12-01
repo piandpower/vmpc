@@ -1,29 +1,42 @@
 #pragma once
 #include <IControl.h>
 
+#include <memory>
+
+#include <observer/Observer.hpp>
+
 namespace mpc {
-	namespace controls {
-		class KbMouseController;
+	namespace  hardware {
+		class DataWheel;
 	}
 }
 
 	
 class DataWheelControl
 	: public IPanelControl
+	, public moduru::observer::Observer
 {
 
 private:
 	IBitmap dataWheels{};
-	mpc::controls::KbMouseController* kbmc{ nullptr };
-	int lastDrawnIndex = -1;
+	std::weak_ptr<mpc::hardware::DataWheel> dataWheel;
+	int dataWheelIndex = 0;
 
+	/*
+	* Implement IPanelControl
+	*/
 public:
 	bool Draw(IGraphics* pGraphics) override;
 	void OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod) override;
-	bool IsDirty() override;
+
+	/*
+	* Implement Observer
+	*/
+public:
+	void update(moduru::observer::Observable* o, boost::any arg) override;
 
 public:
-	DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels, mpc::controls::KbMouseController* kbmc);
+	DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels, std::weak_ptr<mpc::hardware::DataWheel> dataWheel);
 	~DataWheelControl();
 
 };

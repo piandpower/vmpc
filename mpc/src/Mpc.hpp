@@ -16,7 +16,6 @@ namespace mpc {
 	}
 
 	namespace controls {
-		class KbMouseController;
 		class Controls;
 		class AbstractControls;
 	}
@@ -52,7 +51,6 @@ namespace mpc {
 	private:
 		std::shared_ptr<ui::Uis> uis;
 		std::shared_ptr<lcdgui::LayeredScreen> layeredScreen;
-		std::shared_ptr<controls::KbMouseController> kbmc;
 		std::shared_ptr<controls::Controls> controls;
 
 	private:
@@ -71,9 +69,9 @@ namespace mpc {
 	public:
 		std::weak_ptr<ui::Uis> getUis();
 		std::weak_ptr<lcdgui::LayeredScreen> getLayeredScreen();
-		std::weak_ptr<controls::KbMouseController> getKbmc();
 		std::weak_ptr<controls::Controls> getControls();
 		controls::AbstractControls* getActiveControls();
+		std::weak_ptr<hardware::Hardware> getHardware();
 
 	public:
 		std::weak_ptr<sequencer::Sequencer> getSequencer();
