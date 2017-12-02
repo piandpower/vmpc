@@ -15,6 +15,7 @@ public:
 	//static const int TEXT_WIDTH = 6;
 
 	static IColor* LCD_ON();
+	static IColor* LCD_HALF_ON();
 	static IColor* LCD_OFF();
 	static IColor* TRANS_BLACK();
 
@@ -33,6 +34,7 @@ public:
 
 private:
 	static IColor LCD_ON_;
+	static IColor LCD_HALF_ON_;
 	static IColor LCD_OFF_;
 	static IColor TRANS_BLACK_;
 

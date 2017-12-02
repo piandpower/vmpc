@@ -72,6 +72,12 @@ IColor* Constants::LCD_ON()
 }
 IColor Constants::LCD_ON_ = IColor(255, 86, 61, 145);
 
+IColor* Constants::LCD_HALF_ON()
+{
+	return &LCD_HALF_ON_;
+}
+IColor Constants::LCD_HALF_ON_ = IColor(255, 128, 154, 181);
+
 IColor* Constants::LCD_OFF()
 {
 	return &LCD_OFF_;
