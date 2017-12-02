@@ -295,7 +295,7 @@ int LayeredScreen::openScreen(string screenName) {
 	return currentLayer;
 }
 
-std::vector<std::vector<bool>>* LayeredScreen::getPixels() {
+std::vector<std::vector<bool> >* LayeredScreen::getPixels() {
 	return &pixels;
 }
 

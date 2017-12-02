@@ -53,6 +53,7 @@ void MultiRecordingSetupControls::turnWheel(int i)
 	}
 }
 
+/*
 void MultiRecordingSetupControls::keyEvent(unsigned char e)
 {
 	init();
@@ -88,3 +89,4 @@ void MultiRecordingSetupControls::keyEvent(unsigned char e)
 		}
 	}
 }
+*/

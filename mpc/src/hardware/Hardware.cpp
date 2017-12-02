@@ -4,6 +4,7 @@
 
 #include "Button.hpp"
 #include "DataWheel.hpp"
+#include "HwPad.hpp"
 
 using namespace mpc::hardware;
 using namespace std;
@@ -21,9 +22,16 @@ Hardware::Hardware(mpc::Mpc* mpc)
 
 	for (int i = 0; i <= 9; i++)
 		buttons.push_back(std::make_shared<Button>(mpc, std::to_string(i)));
+	
+	for (int i = 0; i <= 15; i++)
+		pads.push_back(std::make_shared<HwPad>(mpc, i));
 
 	dataWheel = make_shared<DataWheel>(mpc);
 
+}
+
+weak_ptr<HwPad> Hardware::getPad(int index) {
+	return pads.at(index);
 }
 
 weak_ptr<Button> Hardware::getButton(std::string label) {

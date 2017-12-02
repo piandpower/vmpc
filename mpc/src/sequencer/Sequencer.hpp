@@ -185,8 +185,8 @@ namespace mpc {
 			std::vector<int> getUsedSequenceIndexes();
 			void goToPreviousEvent();
 			void goToNextEvent();
-			void goToPreviousStep(int tcIndex);
-			void goToNextStep(int tcIndex);
+			void goToPreviousStep();
+			void goToNextStep();
 			void tap();
 			int getResolution();
 			void move(int tick);

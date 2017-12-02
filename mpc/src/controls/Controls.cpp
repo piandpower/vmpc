@@ -11,7 +11,7 @@
 #include <controls/sequencer/NextSeqControls.hpp>
 #include <controls/sequencer/NextSeqPadControls.hpp>
 #include <controls/sequencer/SongControls.hpp>
-//#include <controls/sequencer/StepEditorControls.hpp>
+#include <controls/sequencer/StepEditorControls.hpp>
 #include <controls/sequencer/TrMoveControls.hpp>
 #include <controls/sequencer/TrMuteControls.hpp>
 #include <controls/sequencer/UserControls.hpp>
@@ -38,6 +38,14 @@
 #include <controls/sequencer/window/TransmitProgramChangesControls.hpp>
 #include <controls/sequencer/window/ChangeBars2Controls.hpp>
 #include <controls/sequencer/window/ChangeBarsControls.hpp>
+
+#include <controls/sequencer/dialog/CopySequenceControls.hpp>
+#include <controls/sequencer/dialog/CopyTrackControls.hpp>
+#include <controls/sequencer/dialog/DeleteAllSequencesControls.hpp>
+#include <controls/sequencer/dialog/DeleteAllTracksControls.hpp>
+#include <controls/sequencer/dialog/DeleteSequenceControls.hpp>
+#include <controls/sequencer/dialog/DeleteTrackControls.hpp>
+#include <controls/sequencer/dialog/MetronomeSoundControls.hpp>
 
 #include <controls/disk/FormatControls.hpp>
 #include <controls/disk/LoadControls.hpp>
@@ -121,14 +129,6 @@
 #include <controls/sampler/window/VelocityModulationControls.hpp>
 #include <controls/sampler/window/ZoomControls.hpp>
 
-#include <controls/sequencer/dialog/CopySequenceControls.hpp>
-#include <controls/sequencer/dialog/CopyTrackControls.hpp>
-#include <controls/sequencer/dialog/DeleteAllSequencesControls.hpp>
-#include <controls/sequencer/dialog/DeleteAllTracksControls.hpp>
-#include <controls/sequencer/dialog/DeleteSequenceControls.hpp>
-#include <controls/sequencer/dialog/DeleteTrackControls.hpp>
-#include <controls/sequencer/dialog/MetronomeSoundControls.hpp>
-
 //#include <controls/slider/Slider.hpp>
 #include <controls/vmpc/AudioControls.hpp>
 
@@ -152,9 +152,9 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["nextseq"] = new sequencer::NextSeqControls(mpc);
 	controls["nextseqpad"] = new sequencer::NextSeqPadControls(mpc);
 	controls["song"] = new sequencer::SongControls(mpc);
-	//auto sec = new sequencer::StepEditorControls(mpc);
-	//controls["sequencer_step"] = sec;
-	//controls["step_tc"] = sec;
+	auto sec = new sequencer::StepEditorControls(mpc);
+	controls["sequencer_step"] = sec;
+	controls["step_tc"] = sec;
 
 	controls["changebars"] = new sequencer::window::ChangeBarsControls(mpc);
 	controls["changebars2"] = new sequencer::window::ChangeBars2Controls(mpc);
@@ -184,13 +184,13 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["midioutputmonitor"] = new sequencer::window::MidiMonitorControls(mpc);
 	controls["erase"] = new sequencer::window::EraseControls(mpc);
 
-	//controls["metronomesound"] = new sequencer::dialog::MetronomeSoundControls(mpc);
-	//controls["copytrack"] = new sequencer::dialog::CopyTrackControls(mpc);
-	//controls["copysequence"] = new sequencer::dialog::CopySequenceControls(mpc);
-	//controls["deletealltracks"] = new sequencer::dialog::DeleteAllTracksControls(mpc);
-	//controls["deleteallsequences"] = new sequencer::dialog::DeleteAllSequencesControls(mpc);
-	//controls["deletetrack"] = new sequencer::dialog::DeleteTrackControls(mpc);
-	//controls["deletesequence"] = new sequencer::dialog::DeleteSequenceControls(mpc);
+	controls["metronomesound"] = new sequencer::dialog::MetronomeSoundControls(mpc);
+	controls["copytrack"] = new sequencer::dialog::CopyTrackControls(mpc);
+	controls["copysequence"] = new sequencer::dialog::CopySequenceControls(mpc);
+	controls["deletealltracks"] = new sequencer::dialog::DeleteAllTracksControls(mpc);
+	controls["deleteallsequences"] = new sequencer::dialog::DeleteAllSequencesControls(mpc);
+	controls["deletetrack"] = new sequencer::dialog::DeleteTrackControls(mpc);
+	controls["deletesequence"] = new sequencer::dialog::DeleteSequenceControls(mpc);
 
 
 	controls["load"] = new disk::LoadControls(mpc);

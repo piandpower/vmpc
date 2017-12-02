@@ -23,7 +23,7 @@ namespace mpc {
 					void left() override;
 					void right() override;
 					void turnWheel(int i) override;
-					void keyEvent(unsigned char c) override;
+					//void keyEvent(unsigned char c) override;
 
 					MultiRecordingSetupControls(mpc::Mpc* mpc);
 

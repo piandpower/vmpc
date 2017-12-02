@@ -1005,9 +1005,10 @@ void Sequencer::notifyTimeDisplay()
 	notifyObservers(string("clock"));
 }
 
-void Sequencer::goToPreviousStep(int tcIndex)
+void Sequencer::goToPreviousStep()
 {
-	auto stepSize = TICK_VALUES[tcIndex];
+	auto swGui = mpc->getUis().lock()->getSequencerWindowGui();
+	auto stepSize = TICK_VALUES[swGui->getNoteValue()];
 	auto pos = getTickPosition();
 	auto stepAmt = static_cast<int>(ceil(getActiveSequence().lock()->getLastTick() / stepSize)) + 1;
 	auto stepGrid = vector<int>(stepAmt);
@@ -1026,9 +1027,10 @@ void Sequencer::goToPreviousStep(int tcIndex)
 	move(currentStep * stepSize);
 }
 
-void Sequencer::goToNextStep(int tcIndex)
+void Sequencer::goToNextStep()
 {
-	auto stepSize = TICK_VALUES[tcIndex];
+	auto swGui = mpc->getUis().lock()->getSequencerWindowGui();
+	auto stepSize = TICK_VALUES[swGui->getNoteValue()];
 	auto pos = getTickPosition();
 	auto stepGrid = vector<int>(ceil(getActiveSequence().lock()->getLastTick() / stepSize));
 	for (int i = 0; i < stepGrid.size(); i++)

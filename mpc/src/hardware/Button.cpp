@@ -1,6 +1,5 @@
 #include "Button.hpp"
 
-#include <Logger.hpp>
 #include <Mpc.hpp>
 
 #include <controls/AbstractControls.hpp>

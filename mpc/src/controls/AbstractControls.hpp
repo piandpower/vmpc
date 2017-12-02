@@ -90,7 +90,7 @@ namespace mpc {
 			virtual void function(int i);
 			virtual void openWindow();
 			virtual void turnWheel(int i);
-			virtual void keyEvent(unsigned char c) {};
+			//virtual void keyEvent(unsigned char c) {};
 			virtual void numpad(int i);
 			virtual void pressEnter();
 			virtual void rec();
