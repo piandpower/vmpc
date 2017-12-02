@@ -39,20 +39,15 @@ DiskObserver::DiskObserver(mpc::Mpc* mpc)
 	samplerGui = uis->getSamplerGui();
 	soundGui = uis->getSoundGui();
 	diskWindowGui = uis->getDiskWindowGui();
-	diskWindowGui->deleteObservers();
 	diskWindowGui->addObserver(this);
-	samplerGui->deleteObservers();
 	samplerGui->addObserver(this);
-	soundGui->deleteObservers();
 	soundGui->addObserver(this);
 	disk = mpc->getDisk();
 	sampler = mpc->getSampler();
 	sequencer = mpc->getSequencer();
 	auto lSequencer = sequencer.lock();
-	lSequencer->deleteObservers();
 	lSequencer->addObserver(this);
 	diskGui = mpc->getUis().lock()->getDiskGui();
-	diskGui->deleteObservers();
 	diskGui->addObserver(this);
 	auto lSampler = sampler.lock();
 	int activeTrack = lSequencer->getActiveTrackIndex();
@@ -63,7 +58,6 @@ DiskObserver::DiskObserver(mpc::Mpc* mpc)
 			candidate = 0;
 
 		mpcSoundPlayerChannel = lSampler->getDrum(candidate);
-		mpcSoundPlayerChannel->deleteObservers();
 		mpcSoundPlayerChannel->addObserver(this);
 		program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
 	}
@@ -73,7 +67,6 @@ DiskObserver::DiskObserver(mpc::Mpc* mpc)
 	auto lDisk = disk.lock();
 	
 	if (lDisk) {
-		lDisk->deleteObservers();
 		lDisk->addObserver(this);
 	}
 	
@@ -426,4 +419,9 @@ DiskObserver::~DiskObserver() {
 	lDisk->deleteObserver(this);
 	auto lSequencer = sequencer.lock();
 	lSequencer->deleteObserver(this);
+	diskWindowGui->deleteObserver(this);
+	samplerGui->deleteObserver(this);
+	soundGui->deleteObserver(this);
+	diskGui->deleteObserver(this);
+	mpcSoundPlayerChannel->deleteObserver(this);
 }

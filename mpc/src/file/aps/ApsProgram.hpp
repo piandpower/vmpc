@@ -37,7 +37,8 @@ namespace mpc {
 				static const int NOTE_PARAMETERS_LENGTH{ 26 };
 				static const int PADDING2_LENGTH{ 7 };
 				static const int MIXER_OFFSET{ 1703 };
-				static const int MIXER_END{ 2081 };
+				//static const int MIXER_END{ 2081 };
+				static const int MIXER_END{ 2087 };
 				static const int PADDING3_LENGTH{ 3 };
 				static const int ASSIGN_TABLE_OFFSET{ 2090 };
 				static const int ASSIGN_TABLE_LENGTH{ 64 };

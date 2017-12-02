@@ -18,7 +18,7 @@ DirectToDiskRecorderObserver::DirectToDiskRecorderObserver(mpc::Mpc* mpc)
 	this->mpc = mpc;
 	recordNames = vector<string>{ "SEQUENCE", "LOOP", "CUSTOM RANGE", "SONG", "JAM" };
 	d2dRecorderGui = mpc->getUis().lock()->getD2DRecorderGui();
-	d2dRecorderGui->deleteObservers();
+	//d2dRecorderGui->deleteObservers();
 	d2dRecorderGui->addObserver(this);
 	auto ls = mpc->getLayeredScreen().lock();
 	recordField = ls->lookupField("record");
@@ -131,4 +131,5 @@ void DirectToDiskRecorderObserver::update(moduru::observer::Observable* o, boost
 }
 
 DirectToDiskRecorderObserver::~DirectToDiskRecorderObserver() {
+	d2dRecorderGui->deleteObserver(this);
 }
