@@ -3,7 +3,7 @@
 #include <Mpc.hpp>
 
 #include <controls/AbstractControls.hpp>
-//#include <controls/KbMouseController.hpp>
+
 #include <controls/sequencer/SequencerControls.hpp>
 #include <controls/sequencer/AssignControls.hpp>
 #include <controls/sequencer/BarCopyControls.hpp>
@@ -39,16 +39,11 @@
 #include <controls/sequencer/window/ChangeBars2Controls.hpp>
 #include <controls/sequencer/window/ChangeBarsControls.hpp>
 
-/*
 #include <controls/disk/FormatControls.hpp>
 #include <controls/disk/LoadControls.hpp>
 #include <controls/disk/SaveControls.hpp>
 #include <controls/disk/SetupControls.hpp>
-#include <controls/disk/dialog/CantFindFileControls.hpp>
-#include <controls/disk/dialog/DeleteAllFilesControls.hpp>
-#include <controls/disk/dialog/DeleteFileControls.hpp>
-#include <controls/disk/dialog/DeleteFolderControls.hpp>
-#include <controls/disk/dialog/FileAlreadyExistsControls.hpp>
+
 #include <controls/disk/window/DirectoryControls.hpp>
 #include <controls/disk/window/LoadAProgramControls.hpp>
 #include <controls/disk/window/LoadASequenceControls.hpp>
@@ -62,6 +57,13 @@
 #include <controls/disk/window/SaveAllFileControls.hpp>
 #include <controls/disk/window/SaveApsFileControls.hpp>
 
+//#include <controls/disk/dialog/CantFindFileControls.hpp>
+//#include <controls/disk/dialog/DeleteAllFilesControls.hpp>
+//#include <controls/disk/dialog/DeleteFileControls.hpp>
+//#include <controls/disk/dialog/DeleteFolderControls.hpp>
+//#include <controls/disk/dialog/FileAlreadyExistsControls.hpp>
+
+/*
 #include <controls/midisync/SyncControls.hpp>
 
 #include <hardware/LedPanel.hpp>
@@ -191,6 +193,30 @@ Controls::Controls(mpc::Mpc* mpc)
 	//controls["deletesequence"] = new sequencer::dialog::DeleteSequenceControls(mpc);
 
 
+	controls["load"] = new disk::LoadControls(mpc);
+	controls["save"] = new disk::SaveControls(mpc);
+	controls["format"] = new disk::FormatControls(mpc);
+	controls["setup"] = new disk::SetupControls(mpc);
+
+	controls["loadasequence"] = new disk::window::LoadASequenceControls(mpc);
+	controls["saveasound"] = new disk::window::SaveASoundControls(mpc);
+	controls["mpc2000xlallfile"] = new disk::window::MPC2000XLAllFileControls(mpc);
+	controls["loadasequencefromall"] = new disk::window::LoadASequenceFromAllControls(mpc);
+	controls["loadapsfile"] = new disk::window::LoadApsFileControls(mpc);
+	controls["saveallfile"] = new disk::window::SaveAllFileControls(mpc);
+	controls["loadaprogram"] = new disk::window::LoadAProgramControls(mpc);
+	controls["directory"] = new disk::window::DirectoryControls(mpc);
+	controls["saveasequence"] = new disk::window::SaveASequenceControls(mpc);
+	controls["saveaprogram"] = new disk::window::SaveAProgramControls(mpc);
+	controls["saveapsfile"] = new disk::window::SaveApsFileControls(mpc);
+	controls["loadasound"] = new disk::window::LoadASoundControls(mpc);
+
+	//controls["deleteallfiles"] = new disk::dialog::DeleteAllFilesControls(mpc);
+	//controls["deletefile"] = new disk::dialog::DeleteFileControls(mpc);
+	//controls["deletefolder"] = new disk::dialog::DeleteFolderControls(mpc);
+	//controls["cantfindfile"] = new disk::dialog::CantFindFileControls(mpc);
+	//controls["filealreadyexists"] = new disk::dialog::FileAlreadyExistsControls(mpc);
+
 	/*
 	controls["punch"] = new misc::PunchControls(mpc);
 	controls["trans"] = new misc::TransControls(mpc);
@@ -199,34 +225,11 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["transposepermanent"] = new misc::window::TransposePermanentControls(mpc);
 
 	
-
 	controls["mixer"] = new mixer::MixerControls(mpc);
 	controls["channelsettings"] = new mixer::window::ChannelSettingsControls(mpc);
 	controls["mixersetup"] = new mixer::MixerSetupControls(mpc);
 	controls["disk"] = new vmpc::VmpcDiskControls(mpc);
-	controls["directory"] = new disk::window::DirectoryControls(mpc);
-	controls["deleteallfiles"] = new disk::dialog::DeleteAllFilesControls(mpc);
-	controls["deletefile"] = new disk::dialog::DeleteFileControls(mpc);
-	controls["deletefolder"] = new disk::dialog::DeleteFolderControls(mpc);
-	controls["load"] = new disk::LoadControls(mpc);
-	controls["loadasequence"] = new disk::window::LoadASequenceControls(mpc);
-	controls["cantfindfile"] = new disk::dialog::CantFindFileControls(mpc);
-	controls["save"] = new disk::SaveControls(mpc);
-	controls["saveasound"] = new disk::window::SaveASoundControls(mpc);
-	controls["format"] = new disk::FormatControls(mpc);
-	controls["setup"] = new disk::SetupControls(mpc);
-	controls["mpc2000xlallfile"] = new disk::window::MPC2000XLAllFileControls(mpc);
-	controls["loadasequencefromall"] = new disk::window::LoadASequenceFromAllControls(mpc);
-	controls["loadapsfile"] = new disk::window::LoadApsFileControls(mpc);
-	controls["saveallfile"] = new disk::window::SaveAllFileControls(mpc);
-	controls["loadaprogram"] = new disk::window::LoadAProgramControls(mpc);
-	controls["filealreadyexists"] = new disk::dialog::FileAlreadyExistsControls(mpc);
-	controls["saveasequence"] = new disk::window::SaveASequenceControls(mpc);
-	controls["saveaprogram"] = new disk::window::SaveAProgramControls(mpc);
-	controls["saveapsfile"] = new disk::window::SaveApsFileControls(mpc);
-	controls["loadasound"] = new disk::window::LoadASoundControls(mpc);
-
-
+	
 	controls["trim"] = new sampler::TrimControls(mpc);
 	controls["loop"] = new sampler::LoopControls(mpc);
 	controls["zone"] = new sampler::ZoneControls(mpc);

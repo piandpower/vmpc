@@ -1,8 +1,13 @@
 #include "Mpc.hpp"
 
-#include <ui/Uis.hpp>
+#include "DiskController.hpp"
 
-#include <lcdgui/LayeredScreen.hpp>
+#include <disk/AbstractDisk.hpp>
+#include <disk/SoundLoader.hpp>
+#include <disk/ProgramLoader.hpp>
+
+#include <ui/Uis.hpp>
+#include <ui/disk/DiskGui.hpp>
 
 #include <controls/Controls.hpp>
 
@@ -37,7 +42,7 @@ Mpc::Mpc()
 void Mpc::init()
 {
 
-	uis = make_shared<ui::Uis>();
+	uis = make_shared<ui::Uis>(this);
 	layeredScreen = make_shared<lcdgui::LayeredScreen>(this);
 
 	sequencer = make_shared<mpc::sequencer::Sequencer>(this);
@@ -64,11 +69,12 @@ void Mpc::init()
 	audioMidiServices->startTestMode();
 	moduru::Logger::l.log("audioMidiServices test mode started.\n");
 
-	
-	//kbmc = make_shared<controls::KbMouseController>(this);
 	controls = make_shared<controls::Controls>(this);
 
 	hardware = make_shared<hardware::Hardware>(this);
+
+	diskController = make_unique<DiskController>(this);
+	diskController->initDisks();
 
 	layeredScreen->openScreen("sequencer");
 
@@ -136,12 +142,58 @@ controls::AbstractControls* Mpc::getActiveControls() {
 	return controls->getControls(layeredScreen->getCurrentScreenName());
 }
 
+weak_ptr<mpc::disk::AbstractDisk> Mpc::getDisk()
+{
+	return diskController->getDisk();
+}
+
+weak_ptr<mpc::disk::Stores> Mpc::getStores()
+{
+	return diskController->getStores();
+}
+
 vector<char> Mpc::akaiAsciiChar = vector<char>({ ' ', '!', '#', '$', '%', '&', '\'', '(', ')', '-', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '}' });
 vector<string> Mpc::akaiAscii = vector<string>({ " ", "!", "#", "$", "%", "&", "'", "(", ")", "-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "@", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "_", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "{", "}" });
+
+void Mpc::loadSound(bool replace)
+{
+	if (loadSoundThread.joinable()) loadSoundThread.join();
+	auto lDisk = getDisk().lock();
+	lDisk->setBusy(true);
+	auto soundLoader = mpc::disk::SoundLoader(this, sampler->getSounds(), replace);
+	soundLoader.setPreview(true);
+	soundLoader.setPartOfProgram(false);
+	auto exists = soundLoader.loadSound(uis->getDiskGui()->getSelectedFile()) != -1;
+	if (!exists) {
+		//loadSoundThread = thread(&Mpc::static_loadSound, this, soundLoader.getSize());
+	}
+	else {
+		lDisk->setBusy(false);
+	}
+}
+
+void Mpc::loadProgram()
+{
+	programLoader.reset();
+	programLoader = make_unique<mpc::disk::ProgramLoader>(this, uis->getDiskGui()->getSelectedFile(), uis->getDiskGui()->getLoadReplaceSound());
+}
+
+void Mpc::importLoadedProgram()
+{
+	auto t = sequencer->getActiveSequence().lock()->getTrack(sequencer->getActiveTrackIndex()).lock();
+	if (uis->getDiskGui()->getClearProgramWhenLoading()) {
+		auto pgm = getDrum(t->getBusNumber() - 1)->getProgram();
+		sampler->replaceProgram(programLoader->get(), pgm);
+	}
+	else {
+		getDrum(t->getBusNumber() - 1)->setProgram(sampler->getProgramCount() - 1);
+	}
+}
 
 Mpc::~Mpc() {
 	moduru::Logger::l.log("Mpc dtor\n");
 	layeredScreen.reset();
 	audioMidiServices->destroyServices();
 	moduru::Logger::l.log("audio midi services destroyed.\n");
+	if (loadSoundThread.joinable()) loadSoundThread.join();
 }

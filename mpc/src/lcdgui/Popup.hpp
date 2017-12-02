@@ -1,5 +1,5 @@
 #pragma once
-//#include <IControl.h>
+#include "Component.hpp"
 
 #include <string>
 #include <memory>
@@ -10,7 +10,7 @@ namespace mpc {
 		class Background;
 
 		class Popup
-			//				: public IPanelControl			
+			: public Component			
 		{
 
 		private:

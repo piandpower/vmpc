@@ -8,11 +8,11 @@
 //#include <ui/misc/SecondSeqGui.hpp>
 //#include <ui/misc/TransGui.hpp>
 
-//#include <ui/disk/DiskGui.hpp>
-//#include <ui/disk/window/DirectoryGui.hpp>
-//#include <ui/disk/window/DiskWindowGui.hpp>
+#include <ui/disk/DiskGui.hpp>
+#include <ui/disk/window/DirectoryGui.hpp>
+#include <ui/disk/window/DiskWindowGui.hpp>
 
-//#include <ui/midisync/MidiSyncGui.hpp>
+#include <ui/midisync/MidiSyncGui.hpp>
 
 #include <ui/sequencer/SequencerGui.hpp>
 #include <ui/sequencer/SongGui.hpp>
@@ -25,22 +25,22 @@
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 
 //#include <ui/sampler/window/ZoomGui.hpp>
-//#include <ui/sampler/MixerSetupGui.hpp>
-//#include <ui/sampler/MixerGui.hpp>
+#include <ui/sampler/MixerSetupGui.hpp>
+#include <ui/sampler/MixerGui.hpp>
 //#include <ui/sampler/window/SamplerWindowGui.hpp>
 //#include <ui/sampler/window/EditSoundGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <ui/sampler/SoundGui.hpp>
 
 //#include <ui/vmpc/AudioGui.hpp>
-//#include <ui/vmpc/DeviceGui.hpp>
+#include <ui/vmpc/DeviceGui.hpp>
 //#include <ui/vmpc/DirectToDiskRecorderGui.hpp>
 //#include <ui/vmpc/MidiGui.hpp>
 
 using namespace mpc::ui;
 using namespace std;
 
-Uis::Uis() 
+Uis::Uis(mpc::Mpc* mpc) 
 {
 	if (noteNames.size() != 128) {
 		noteNames = vector<string>(128);
@@ -74,24 +74,31 @@ Uis::Uis()
 	nameGui = new mpc::ui::NameGui();
 	soundGui = new mpc::ui::sampler::SoundGui();
 
-	/*
-	editSoundGui = new mpc::ui::sampler::window::EditSoundGui();
-	zoomGui = new mpc::ui::sampler::window::ZoomGui();
-	samplerWindowGui = new mpc::ui::sampler::window::SamplerWindowGui();
+	//editSoundGui = new mpc::ui::sampler::window::EditSoundGui();
+	//zoomGui = new mpc::ui::sampler::window::ZoomGui();
+	//samplerWindowGui = new mpc::ui::sampler::window::SamplerWindowGui();
 	mixerGui = new mpc::ui::sampler::MixerGui();
 	mixerSetupGui = new mpc::ui::sampler::MixerSetupGui();
 
+	
+	diskGui = new mpc::ui::disk::DiskGui(mpc);
+	directoryGui = new mpc::ui::disk::window::DirectoryGui(mpc, diskGui);
 	diskWindowGui = new mpc::ui::disk::window::DiskWindowGui();
 
 	midiSyncGui = new mpc::ui::midisync::MidiSyncGui();
 
-	punchGui = new mpc::ui::misc::PunchGui();
-	transGui = new mpc::ui::misc::TransGui();
+	//d2dRecorderGui = new mpc::ui::vmpc::DirectToDiskRecorderGui(weakThis);
+	//othersGui = new mpc::ui::other::OthersGui(weakThis);
+	//stepEditorGui = new mpc::ui::sequencer::StepEditorGui(mainFrame);
+	//audioGui = new mpc::ui::vmpc::AudioGui(mpc->getAudioMidiServices());
 
-	midiGui = new mpc::ui::vmpc::MidiGui();
-	secondSeqGui = new mpc::ui::misc::SecondSeqGui();
+
+	//punchGui = new mpc::ui::misc::PunchGui();
+	//transGui = new mpc::ui::misc::TransGui();
+
+	//midiGui = new mpc::ui::vmpc::MidiGui();
+	//secondSeqGui = new mpc::ui::misc::SecondSeqGui();
 	deviceGui = new mpc::ui::vmpc::DeviceGui();
-	*/
 }
 vector<string> Uis::noteNames;
 

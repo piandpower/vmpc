@@ -10,24 +10,19 @@
 
 #include <StartUp.hpp>
 
-//#include <hardware/DataWheelWidget.hpp>
-
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audiomidi/EventHandler.hpp>
-//#include <controls/KbMouseController.hpp>
-//#include <hardware/SliderWidget.hpp>
-//#include <disk/AbstractDisk.hpp>
+#include <disk/AbstractDisk.hpp>
 //#include <hardware/ControlPanel.hpp>
-//#include <maingui/Gui.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 //#include <hardware/LedPanel.hpp>
 #include <ui/NameGui.hpp>
 #include <lcdgui/Field.hpp>
-//#include <ui/disk/DiskGui.hpp>
-//#include <ui/disk/window/DirectoryGui.hpp>
+#include <ui/disk/DiskGui.hpp>
+#include <ui/disk/window/DirectoryGui.hpp>
 //#include <ui/misc/PunchGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
-//#include <ui/sampler/SoundGui.hpp>
+#include <ui/sampler/SoundGui.hpp>
 //#include <ui/sampler/window/EditSoundGui.hpp>
 #include <ui/sequencer/SequencerGui.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
@@ -56,7 +51,6 @@ AbstractControls::AbstractControls(Mpc* mpc)
 	sequencerGui = mpc->getUis().lock()->getSequencerGui();
 	nameGui = mpc->getUis().lock()->getNameGui();
 	samplerGui = mpc->getUis().lock()->getSamplerGui();
-	//kbmc = mpc->getKbmc();
 }
 
 void AbstractControls::init()
@@ -129,7 +123,7 @@ void AbstractControls::function(int i)
 				//lsLocked->setPreviousScreenName(mpc->getUis().lock()->getEditSoundGui()->getPreviousScreenName());
 			}
 			else if (csn.compare("sound") == 0) {
-				//lsLocked->setPreviousScreenName(mpc->getUis().lock()->getSoundGui()->getPreviousScreenName());
+				lsLocked->setPreviousScreenName(mpc->getUis().lock()->getSoundGui()->getPreviousScreenName());
 			}
 			else if (csn.compare("program") == 0) {
 				lsLocked->setPreviousScreenName(mpc->getUis().lock()->getSamplerGui()->getPrevScreenName());
@@ -139,14 +133,14 @@ void AbstractControls::function(int i)
 				lsLocked->setLastFocus("name", "0");
 			}
 			else if (csn.compare("numberofzones") == 0) {
-				//mpc->getUis().lock()->getSoundGui()->setNumberOfZones(mpc->getUis().lock()->getSoundGui()->getPreviousNumberOfzones());
+				mpc->getUis().lock()->getSoundGui()->setNumberOfZones(mpc->getUis().lock()->getSoundGui()->getPreviousNumberOfzones());
 			}
 			else if (csn.compare("directory") == 0) {
-				//lsLocked->setPreviousScreenName(mpc->getUis().lock()->getDirectoryGui()->getPreviousScreenName());
+				lsLocked->setPreviousScreenName(mpc->getUis().lock()->getDirectoryGui()->getPreviousScreenName());
 			}
 			if (lsLocked->getPreviousScreenName().compare("load") == 0) {
-				//if (mpc->getUis().lock()->getDiskGui()->getFileLoad() + 1 > mpc->getDisk().lock()->getFiles().size())
-//					mpc->getUis().lock()->getDiskGui()->setFileLoad(0);
+				if (mpc->getUis().lock()->getDiskGui()->getFileLoad() + 1 > mpc->getDisk().lock()->getFiles().size())
+					mpc->getUis().lock()->getDiskGui()->setFileLoad(0);
 			}
 			lsLocked->openScreen(lsLocked->getPreviousScreenName());
 		}
@@ -294,7 +288,7 @@ void AbstractControls::numpad(int i)
 	}
 
 	auto lSequencer = sequencer.lock();
-	//auto lDisk = mpc->getDisk().lock();
+	auto lDisk = mpc->getDisk().lock();
 	if (shiftPressed) {
 		auto lAms = mpc->getAudioMidiServices().lock();
 		auto audioGui = mpc->getUis().lock()->getAudioGui();
@@ -319,11 +313,11 @@ void AbstractControls::numpad(int i)
 			return;
 		case 3:
 			if (lSequencer->isPlaying()) return;
-			//if (mpc != nullptr && lDisk != nullptr) lDisk->initFiles();
+			if (mpc != nullptr && lDisk != nullptr) lDisk->initFiles();
 
-			//if (mpc->getUis().lock()->getDiskGui()->getFileLoad() + 1 > lDisk->getFiles().size()) {
-			//	mpc->getUis().lock()->getDiskGui()->setFileLoad((int)(lDisk->getFiles().size()) - 1);
-			//}
+			if (mpc->getUis().lock()->getDiskGui()->getFileLoad() + 1 > lDisk->getFiles().size()) {
+				mpc->getUis().lock()->getDiskGui()->setFileLoad((int)(lDisk->getFiles().size()) - 1);
+			}
 			ls.lock()->openScreen("load");
 			return;
 		case 4:

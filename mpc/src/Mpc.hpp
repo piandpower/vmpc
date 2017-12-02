@@ -4,9 +4,13 @@
 #include <thread>
 #include <memory>
 
+#include <lcdgui/LayeredScreen.hpp>
+#include <ui/Uis.hpp>
 #include <Logger.hpp>
 
 namespace mpc {
+
+	class DiskController;
 
 	namespace ui {
 		class UserDefaults;
@@ -15,6 +19,12 @@ namespace mpc {
 
 	namespace hardware {
 		class Hardware;
+	}
+
+	namespace disk {
+		class Stores;
+		class AbstractDisk;
+		class ProgramLoader;
 	}
 
 	namespace controls {
@@ -51,6 +61,10 @@ namespace mpc {
 	{
 	
 	private:
+		std::thread loadSoundThread{};
+		std::unique_ptr<mpc::disk::ProgramLoader> programLoader{};
+
+	private:
 		std::shared_ptr<ui::Uis> uis;
 		std::shared_ptr<lcdgui::LayeredScreen> layeredScreen;
 		std::shared_ptr<controls::Controls> controls;
@@ -60,6 +74,9 @@ namespace mpc {
 		std::shared_ptr<sequencer::Sequencer> sequencer;
 		std::shared_ptr<sampler::Sampler> sampler;
 		std::shared_ptr<audiomidi::AudioMidiServices> audioMidiServices;
+
+	private:
+		std::unique_ptr<DiskController> diskController{};
 
 	private:
 		std::shared_ptr<hardware::Hardware> hardware;
@@ -88,6 +105,10 @@ namespace mpc {
 		void loadSound(bool replace);
 		void loadProgram();
 		void importLoadedProgram();
+
+	public:
+		std::weak_ptr<mpc::disk::AbstractDisk> getDisk();
+		std::weak_ptr<mpc::disk::Stores> getStores();
 
 	public:
 		Mpc();

@@ -36,7 +36,6 @@ namespace mpc {
 
 
 		class LayeredScreen
-			//	: public IPanelControl 
 		{
 
 		private:
@@ -57,12 +56,9 @@ namespace mpc {
 			int getCurrentParamIndex();
 			std::weak_ptr<mpc::lcdgui::Field> findBelow(std::weak_ptr<mpc::lcdgui::Field> tf);
 			std::weak_ptr<mpc::lcdgui::Field> findAbove(std::weak_ptr<mpc::lcdgui::Field> tf);
-			//std::unique_ptr<mpc::lcdgui::Popup> popup{};
-			//IBitmap gridBmp;
-			//std::shared_ptr<IBitmapControl> gridControl{};
+			std::unique_ptr<mpc::lcdgui::Popup> popup{};
 
 		public:
-			void attachControls();
 			std::string findBelow(std::string tf);
 			std::string findAbove(std::string tf);
 			void transferFocus(bool backwards);

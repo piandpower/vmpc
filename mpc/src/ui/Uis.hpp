@@ -4,6 +4,7 @@
 #include <string>
 
 namespace mpc {
+	class Mpc;
 	namespace ui {
 
 		class NameGui;
@@ -145,7 +146,7 @@ namespace mpc {
 			static std::vector<std::string> noteNames;
 
 		public:
-			Uis();
+			Uis(mpc::Mpc* mpc);
 			~Uis();
 
 		};

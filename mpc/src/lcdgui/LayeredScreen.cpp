@@ -4,21 +4,21 @@
 
 #include <Mpc.hpp>
 #include <StartUp.hpp>
-//#include <maingui/Constants.hpp>
 
 #include "Field.hpp"
-#include <lcdgui/Label.hpp>
-//#include <lcdgui/Underline.hpp>
-//#include <lcdgui/HorizontalBar.hpp>
-//#include <lcdgui/VerticalBar.hpp>
-//#include <lcdgui/MixerFaderBackground.hpp>
-//#include <lcdgui/MixerKnobBackground.hpp>
-//#include <lcdgui/Knob.hpp>
-//#include <lcdgui/TwoDots.hpp>
-//#include <lcdgui/Wave.hpp>
-//#include <lcdgui/Popup.hpp>
 
-//#include <lcdgui/SelectedEventBar.hpp>
+#include <lcdgui/EnvGraph.hpp>
+#include <lcdgui/Label.hpp>
+#include <lcdgui/Underline.hpp>
+#include <lcdgui/HorizontalBar.hpp>
+#include <lcdgui/VerticalBar.hpp>
+#include <lcdgui/MixerFaderBackground.hpp>
+#include <lcdgui/MixerKnobBackground.hpp>
+#include <lcdgui/Knob.hpp>
+#include <lcdgui/TwoDots.hpp>
+#include <lcdgui/Wave.hpp>
+#include <lcdgui/Popup.hpp>
+#include <lcdgui/SelectedEventBar.hpp>
 
 #include <ui/sequencer/AssignObserver.hpp>
 #include <ui/sequencer/BarCopyObserver.hpp>
@@ -27,7 +27,7 @@
 #include <ui/sequencer/NextSeqPadObserver.hpp>
 #include <ui/sequencer/SequencerObserver.hpp>
 #include <ui/sequencer/SongObserver.hpp>
-//#include <ui/sequencer/StepEditorObserver.hpp>
+#include <ui/sequencer/StepEditorObserver.hpp>
 #include <ui/sequencer/TrMoveObserver.hpp>
 #include <ui/sequencer/TrMuteObserver.hpp>
 #include <ui/sequencer/UserObserver.hpp>
@@ -36,7 +36,7 @@
 #include <ui/sequencer/window/MetronomeSoundObserver.hpp>
 #include <ui/sequencer/window/MidiMonitorObserver.hpp>
 #include <ui/sequencer/window/SequencerWindowObserver.hpp>
-//#include <ui/sequencer/window/StepWindowObserver.hpp>
+#include <ui/sequencer/window/StepWindowObserver.hpp>
 
 /*
 #include <ui/sampler/DrumObserver.hpp>
@@ -54,46 +54,52 @@
 #include <ui/sampler/window/MuteAssignObserver.hpp>
 #include <ui/sampler/window/SamplerWindowObserver.hpp>
 #include <ui/sampler/window/ZoomObserver.hpp>
+*/
 
-#include <ui/NameObserver.hpp>
+//#include <ui/NameObserver.hpp>
+
 #include <ui/disk/DiskObserver.hpp>
 #include <ui/disk/window/LoadASequenceFromAllObserver.hpp>
 #include <ui/disk/window/DeleteAllFilesObserver.hpp>
 #include <ui/disk/window/DirectoryObserver.hpp>
 #include <ui/disk/window/SaveAllFileObserver.hpp>
+
 #include <ui/midisync/SyncObserver.hpp>
+/*
 #include <ui/misc/PunchObserver.hpp>
 #include <ui/misc/SecondSeqObserver.hpp>
 #include <ui/misc/TransObserver.hpp>
 #include <ui/other/OthersObserver.hpp>
+*/
 
 #include <ui/vmpc/AudioObserver.hpp>
 #include <ui/vmpc/BufferSizeObserver.hpp>
 #include <ui/vmpc/DirectToDiskRecorderObserver.hpp>
-#include <ui/vmpc/MidiObserver.hpp>
+//#include <ui/vmpc/MidiObserver.hpp>
 #include <ui/vmpc/VmpcDiskObserver.hpp>
-*/
 
 
 #include <rapidjson/filereadstream.h>
 
 #include <cmath>
 
-//using namespace mpc::ui;
-using namespace rapidjson;
 using namespace std;
+
+using namespace rapidjson;
+
+using namespace mpc::ui;
 using namespace mpc::lcdgui;
 
-//using namespace mpc::ui::vmpc;
+using namespace mpc::ui::vmpc;
 using namespace mpc::ui::sequencer;
 using namespace mpc::ui::sequencer::window;
 using namespace mpc::ui::sampler;
-//using namespace mpc::ui::sampler::window;
-//using namespace mpc::ui::midisync;
-//using namespace mpc::ui::misc;
-//using namespace mpc::ui::other;
-//using namespace mpc::ui::disk;
-//using namespace mpc::ui::disk::window;
+using namespace mpc::ui::sampler::window;
+using namespace mpc::ui::midisync;
+using namespace mpc::ui::misc;
+using namespace mpc::ui::other;
+using namespace mpc::ui::disk;
+using namespace mpc::ui::disk::window;
 
 static vector<string> samplerWindowNames = vector<string>{ "program", "deleteprogram", "deleteallprograms", "createnewprogram",
 "copyprogram", "assignmentview", "initpadassign", "copynoteparameters", "velocitymodulation",
@@ -118,22 +124,22 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 {
 	this->mpc = mpc;
 	pixels = std::vector < std::vector <bool>>(248, std::vector<bool>(60));
-	//popup = make_unique<mpc::lcdgui::Popup>();
-	//popup->Hide(true);
-	//horizontalBarsTempoChangeEditor = vector<shared_ptr<HorizontalBar>>(4);
-	//horizontalBarsStepEditor = vector<shared_ptr<HorizontalBar>>(4);
-	//selectedEventBarsStepEditor = vector<shared_ptr<mpc::lcdgui::SelectedEventBar>>(4);
+	popup = make_unique<mpc::lcdgui::Popup>();
+	popup->Hide(true);
+	horizontalBarsTempoChangeEditor = vector<shared_ptr<HorizontalBar>>(4);
+	horizontalBarsStepEditor = vector<shared_ptr<HorizontalBar>>(4);
+	selectedEventBarsStepEditor = vector<shared_ptr<mpc::lcdgui::SelectedEventBar>>(4);
 
-	//verticalBarsMixer = vector<shared_ptr<VerticalBar>>(16);
-	//mixerKnobBackgrounds = vector<shared_ptr<MixerKnobBackground>>(16);
-	//mixerFaderBackgrounds = vector<shared_ptr<MixerFaderBackground>>(16);
-	//knobs = vector<shared_ptr<Knob>>(16);
+	verticalBarsMixer = vector<shared_ptr<VerticalBar>>(16);
+	mixerKnobBackgrounds = vector<shared_ptr<MixerKnobBackground>>(16);
+	mixerFaderBackgrounds = vector<shared_ptr<MixerFaderBackground>>(16);
+	knobs = vector<shared_ptr<Knob>>(16);
 
-	//underline = make_shared<mpc::lcdgui::Underline>();
+	underline = make_shared<mpc::lcdgui::Underline>();
 
 	//IRECT dotsRect(0, 0, 496, 50);
 
-	//twoDots = make_shared<TwoDots>(dotsRect);
+	twoDots = make_shared<TwoDots>();
 
 	int x, y, w, h;
 	/*
@@ -192,15 +198,16 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		knobs[i] = make_shared<Knob>(rect, pPlug);
 		knobs[i]->Hide(true);
 	}
+	*/
 
-	fineWave = make_shared <mpc::lcdgui::Wave>(pPlug);
+
+	fineWave = make_shared <mpc::lcdgui::Wave>();
 	fineWave->setFine(true);
 	fineWave->Hide(true);
 
-	wave = make_shared<mpc::lcdgui::Wave>(pPlug);
+	wave = make_shared<mpc::lcdgui::Wave>();
 	wave->Hide(true);
 	wave->setFine(false);
-	*/
 
 	FILE* fp0 = fopen(string(mpc::StartUp::resPath + "mainpanel.json").c_str(), "r"); // non-Windows use "r"
 	FILE* fp1 = fopen(string(mpc::StartUp::resPath + "windowpanel.json").c_str(), "r"); // non-Windows use "r"
@@ -216,9 +223,6 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		layerJsons[i].ParseStream(is);
 		fclose(fPointers[i]);
 	}
-
-	//gridBmp = GetGUI()->LoadIBitmap(GRID_ID, GRID_FN);
-	//gridControl = make_shared<IBitmapControl>(GetGUI()->GetPlug(), Constants::LCD_RECT()->L, Constants::LCD_RECT()->T, 0, &gridBmp, IChannelBlend::kBlendNone);
 }
 
 int LayeredScreen::getCurrentParamIndex() {
@@ -234,42 +238,6 @@ int LayeredScreen::getCurrentParamIndex() {
 	}
 	if (currentIndex == size) return -1;
 	return currentIndex;
-}
-
-void LayeredScreen::attachControls() {
-	/*
-	layers[0]->attachBg();
-	layers[0]->attachFb();
-	for (int i = 0; i < 16; i++) {
-		GetGUI()->AttachControl(mixerKnobBackgrounds[i].get());
-		GetGUI()->AttachControl(knobs[i].get());
-		GetGUI()->AttachControl(mixerFaderBackgrounds[i].get());
-		GetGUI()->AttachControl(verticalBarsMixer[i].get());
-	}
-	for (int i = 0; i < 4; i++) {
-		GetGUI()->AttachControl(horizontalBarsStepEditor[i].get());
-		GetGUI()->AttachControl(selectedEventBarsStepEditor[i].get());
-	}
-	layers[0]->attachFields();
-	layers[0]->attachLabels();
-
-	for (int i = 1; i < 4; i++) {
-		layers[i]->attachBg();
-		layers[i]->attachFb();
-		layers[i]->attachLabels();
-		layers[i]->attachFields();
-	}
-	underline->Hide(true);
-	GetGUI()->AttachControl(underline.get());
-	for (int i = 0; i < 4; i++)
-		GetGUI()->AttachControl(horizontalBarsTempoChangeEditor[i].get());
-
-	GetGUI()->AttachControl(twoDots.get());
-	GetGUI()->AttachControl(wave.get());
-	GetGUI()->AttachControl(fineWave.get());
-	GetGUI()->AttachControl(popup.get());
-	GetGUI()->AttachControl(gridControl.get());
-	*/
 }
 
 void LayeredScreen::transferFocus(bool backwards) {
@@ -381,7 +349,7 @@ mpc::lcdgui::Background* LayeredScreen::getCurrentBackground()
 
 void LayeredScreen::removeCurrentBackground()
 {
-	//    currentLayer->remove(currentBackground);
+	layers[currentLayer]->getBackground()->setName("");
 }
 
 void LayeredScreen::setCurrentBackground(string s)
@@ -391,12 +359,12 @@ void LayeredScreen::setCurrentBackground(string s)
 
 void LayeredScreen::removePopup()
 {
-	//popup->Hide(true);
+	popup->Hide(true);
 }
 
 void LayeredScreen::setPopupText(string text)
 {
-	//popup->setText(text, 0);
+	popup->setText(text, 0);
 }
 
 void LayeredScreen::returnToLastFocus(string firstFieldOfThisScreen)
@@ -419,11 +387,11 @@ void LayeredScreen::returnToLastFocus(string firstFieldOfThisScreen)
 
 void LayeredScreen::redrawEnvGraph(int attack, int decay)
 {
-	int line1[]{ 75, 43, 75 + (int)(attack * 0.17), 24 };
-	int line2[]{ 119 - (int)(decay * 0.17), 24, 119, 43 };
-	int line3[] = { 75 + (int)(attack * 0.17), 24, 119 - (int)(decay * 0.17), 24 };
-	int* lines[] = { line1, line2, line3 };
-	//envGraph->setCoordinates(lines);
+	vector<int> line1 { 75, 43, 75 + (int)(attack * 0.17), 24 };
+	vector<int> line2 { 119 - (int)(decay * 0.17), 24, 119, 43 };
+	vector<int> line3  { 75 + (int)(attack * 0.17), 24, 119 - (int)(decay * 0.17), 24 };
+	vector<vector<int> > lines = { line1, line2, line3 };
+	envGraph->setCoordinates(lines);
 }
 
 void LayeredScreen::setLastFocus(string screenName, string tfName)
@@ -467,8 +435,7 @@ string LayeredScreen::getPreviousScreenName()
 }
 
 mpc::lcdgui::Popup* LayeredScreen::getPopup() {
-	//return popup.get();
-	return nullptr;
+	return popup.get();
 }
 
 mpc::lcdgui::EnvGraph* LayeredScreen::getEnvGraph()
@@ -741,19 +708,19 @@ void LayeredScreen::initObserver()
 		activeObserver.reset();
 	}
 	if (csn.compare("audio") == 0) {
-		//activeObserver = make_unique<AudioObserver>(mpc, this);
+		activeObserver = make_unique<AudioObserver>(mpc);
 	}
 	else if (csn.compare("buffersize") == 0) {
-		//activeObserver = make_unique<BufferSizeObserver>(this);
+		activeObserver = make_unique<BufferSizeObserver>(mpc);
 	}
 	else if (csn.compare("midi") == 0) {
 		//activeObserver = make_unique<MidiObserver>(mpc, this);
 	}
 	else if (csn.compare("directtodiskrecorder") == 0) {
-		//activeObserver = make_unique<DirectToDiskRecorderObserver>(this);
+		activeObserver = make_unique<DirectToDiskRecorderObserver>(mpc);
 	}
 	else if (csn.compare("disk") == 0) {
-		//activeObserver = make_unique<VmpcDiskObserver>(this);
+		activeObserver = make_unique<VmpcDiskObserver>(mpc);
 	}
 	else if (csn.compare("punch") == 0) {
 		//activeObserver = make_unique<PunchObserver>(this);
@@ -771,7 +738,7 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<EraseObserver>(mpc);
 	}
 	else if (csn.compare("sync") == 0) {
-		//activeObserver = make_unique<SyncObserver>(this);
+		activeObserver = make_unique<SyncObserver>(mpc);
 	}
 	else if (csn.compare("assign") == 0) {
 		activeObserver = make_unique<AssignObserver>(mpc);
@@ -783,10 +750,10 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<MetronomeSoundObserver>(mpc);
 	}
 	else if (csn.compare("saveallfile") == 0) {
-		//activeObserver = make_unique<SaveAllFileObserver>(this);
+		activeObserver = make_unique<SaveAllFileObserver>(mpc);
 	}
 	else if (csn.compare("loadasequencefromall") == 0) {
-		//activeObserver = make_unique<LoadASequenceFromAllObserver>(this);
+		activeObserver = make_unique<LoadASequenceFromAllObserver>(mpc);
 	}
 	else if (csn.compare("nextseqpad") == 0) {
 		activeObserver = make_unique<NextSeqPadObserver>(mpc);
@@ -801,7 +768,7 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<TrMuteObserver>(mpc);
 	}
 	else if (checkActiveScreen(&diskNames, currentScreenName)) {
-		//activeObserver = make_unique<DiskObserver>(mpc, gui);
+		activeObserver = make_unique<DiskObserver>(mpc);
 	}
 	else if (checkActiveScreen(&seqWindowNames, currentScreenName)) {
 		activeObserver = make_unique<SequencerWindowObserver>(mpc);
@@ -816,77 +783,75 @@ void LayeredScreen::initObserver()
 	if (csn.compare("sequencer") == 0) {
 		activeObserver = make_unique<SequencerObserver>(mpc);
 	}
-	/*
 	else if (csn.compare("directory") == 0) {
-		activeObserver = make_unique<DirectoryObserver>(mpc->getDisk(), gui);
+		activeObserver = make_unique<DirectoryObserver>(mpc->getDisk(), mpc);
 	}
 	else if (csn.compare("programparams") == 0) {
-		activeObserver = make_unique<PgmParamsObserver>(mpc, this);
+		//activeObserver = make_unique<PgmParamsObserver>(mpc, this);
 	}
 	else if (csn.compare("programassign") == 0) {
-		activeObserver = make_unique<PgmAssignObserver>(mpc, this);
+		//activeObserver = make_unique<PgmAssignObserver>(mpc, this);
 	}
 	else if (csn.compare("sequencer_step") == 0) {
-		activeObserver = make_unique<StepEditorObserver>(mpc, gui);
+		activeObserver = make_unique<StepEditorObserver>(mpc);
 	}
 	else if (csn.compare("step_tc") == 0 || csn.compare("editmultiple") == 0 || csn.compare("insertevent") == 0) {
-		activeObserver = make_unique<StepWindowObserver>(mpc, this);
+		activeObserver = make_unique<StepWindowObserver>(mpc);
 	}
 	else if (csn.compare("mixer") == 0 || csn.compare("channelsettings") == 0 || csn.compare("mixersetup") == 0) {
-		activeObserver = make_unique<MixerObserver>(mpc, gui);
+		//activeObserver = make_unique<MixerObserver>(mpc, gui);
 	}
 	else if (csn.compare("edit") == 0) {
-		activeObserver = make_unique<EditSequenceObserver>(mpc->getSequencer(), mpc->getSampler(), this);
+		activeObserver = make_unique<EditSequenceObserver>(mpc);
 	}
 	else if (csn.compare("name") == 0) {
-		activeObserver = make_unique<ui::NameObserver>(mpc, this);
+		//activeObserver = make_unique<ui::NameObserver>(mpc, this);
 	}
 	else if (csn.compare("midiinputmonitor") == 0 || csn.compare("midioutputmonitor") == 0) {
-		activeObserver = make_unique<MidiMonitorObserver>(mpc, this);
+		activeObserver = make_unique<MidiMonitorObserver>(mpc);
 	}
 	else if (csn.compare("barcopy") == 0) {
-		activeObserver = make_unique<BarCopyObserver>(this);
+		activeObserver = make_unique<BarCopyObserver>(mpc);
 	}
 	else if (csn.compare("trmove") == 0) {
-		activeObserver = make_unique<TrMoveObserver>(mpc->getSequencer(), this);
+		activeObserver = make_unique<TrMoveObserver>(mpc);
 	}
 	else if (csn.compare("user") == 0) {
-		activeObserver = make_unique<UserObserver>(mpc, this);
+		activeObserver = make_unique<UserObserver>(mpc);
 	}
 	else if (csn.compare("trim") == 0) {
-		activeObserver = make_unique<TrimObserver>(mpc->getSampler(), this);
+		//activeObserver = make_unique<TrimObserver>(mpc->getSampler(), this);
 	}
 	else if (csn.compare("loop") == 0) {
-		activeObserver = make_unique<LoopObserver>(mpc->getSampler(), this);
+		//activeObserver = make_unique<LoopObserver>(mpc->getSampler(), this);
 	}
 	else if (csn.compare("editsound") == 0) {
-		activeObserver = make_unique<EditSoundObserver>(mpc->getSampler(), this);
+		//activeObserver = make_unique<EditSoundObserver>(mpc->getSampler(), this);
 	}
 	else if (csn.find("startfine") != string::npos || csn.find("endfine") != string::npos || csn.compare("looptofine") == 0) {
-		activeObserver = make_unique<ZoomObserver>(mpc->getSampler(), this);
+		//activeObserver = make_unique<ZoomObserver>(mpc->getSampler(), this);
 	}
 	else if (csn.compare("zone") == 0 || csn.compare("numberofzones") == 0) {
-		activeObserver = make_unique<ZoneObserver>(mpc->getSampler(), this);
+		//activeObserver = make_unique<ZoneObserver>(mpc->getSampler(), this);
 	}
 	else if (csn.compare("params") == 0) {
-		activeObserver = make_unique<SndParamsObserver>(mpc->getSampler(), this);
+		//activeObserver = make_unique<SndParamsObserver>(mpc->getSampler(), this);
 	}
 	else if (csn.compare("deleteallfiles") == 0) {
-		activeObserver = make_unique<DeleteAllFilesObserver>(mpc, gui);
+		activeObserver = make_unique<DeleteAllFilesObserver>(mpc);
 	}
-	else if (checkActiveScreen(Gui::samplerWindowNames)) {
-		activeObserver = make_unique<SamplerWindowObserver>(mpc, this);
+	else if (checkActiveScreen(&samplerWindowNames, csn)) {
+		//activeObserver = make_unique<SamplerWindowObserver>(mpc, this);
 	}
 	else if (csn.compare("purge") == 0) {
-		activeObserver = make_unique<PurgeObserver>(gui);
+		//activeObserver = make_unique<PurgeObserver>(gui);
 	}
 	else if (csn.compare("drum") == 0) {
-		activeObserver = make_unique<DrumObserver>(gui);
+		//activeObserver = make_unique<DrumObserver>(gui);
 	}
 	else if (csn.compare("muteassign") == 0) {
-		activeObserver = make_unique<MuteAssignObserver>(this);
+		//activeObserver = make_unique<MuteAssignObserver>(this);
 	}
-	*/
 }
 
 string LayeredScreen::getFocus() {
