@@ -301,6 +301,8 @@ void LayeredScreen::transferFocus(bool backwards) {
 int LayeredScreen::openScreen(string screenName) {
 	if (currentScreenName.compare(screenName) == 0) return -1;
 	
+	setLastFocus(currentScreenName, getFocus());
+
 	previousScreenName = currentScreenName;
 	currentScreenName = screenName;
 	std::string firstField = "";

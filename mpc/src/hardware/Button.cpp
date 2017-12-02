@@ -1,5 +1,6 @@
 #include "Button.hpp"
 
+#include <Logger.hpp>
 #include <Mpc.hpp>
 
 #include <controls/AbstractControls.hpp>
@@ -93,6 +94,7 @@ void Button::push() {
 		c->function(2);
 	}
 	else if (label.compare("f4") == 0) {
+		moduru::Logger::l.log("f4 pressed\n");
 		c->function(3);
 	}
 	else if (label.compare("f5") == 0) {

@@ -115,12 +115,28 @@ bool InputCatcherControl::OnKeyDown(int x, int y, int c) {
 		hw->getButton("shift").lock()->push();
 	}
 	else if (c == KbMapping::dataWheelBack()) {
-		//controls->turnWheel(-1);
 		hw->getDataWheel().lock()->turn(-1);
 	}
 	else if (c == KbMapping::dataWheelForward()) {
-		//controls->turnWheel(1);
 		hw->getDataWheel().lock()->turn(1);
+	}
+	else if (c == KbMapping::f1()) {
+		hw->getButton("f1").lock()->push();
+	}
+	else if (c == KbMapping::f2()) {
+		hw->getButton("f2").lock()->push();
+	}
+	else if (c == KbMapping::f3()) {
+		hw->getButton("f3").lock()->push();
+	}
+	else if (c == KbMapping::f4()) {
+		hw->getButton("f4").lock()->push();
+	}
+	else if (c == KbMapping::f5()) {
+		hw->getButton("f5").lock()->push();
+	}
+	else if (c == KbMapping::f6()) {
+		hw->getButton("f6").lock()->push();
 	}
 	return true;
 }
