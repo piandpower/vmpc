@@ -181,13 +181,11 @@ void Sampler::playMetronome(mpc::sequencer::NoteEvent* event, int framePos)
 {
 	auto swGui = mpc->getUis().lock()->getSequencerWindowGui();
 	auto soundNumber = -2;
-	/*
 	if (swGui->getMetronomeSound() != 0) {
 		auto program = mpc->getDrum(swGui->getMetronomeSound() - 1)->getProgram();
 		auto accent = event->getVelocity() == swGui->getAccentVelo();
 		soundNumber = programs[program]->getNoteParameters(accent ? swGui->getAccentNote() : swGui->getNormalNote())->getSndNumber();
 	}
-	*/
 	mpc->getBasicPlayer()->mpcNoteOn(soundNumber, event->getVelocity(), framePos);
 }
 
@@ -438,6 +436,7 @@ vector<weak_ptr<Sound>> Sampler::sortSamplesByMemoryIndex(vector<weak_ptr<Sound>
 
 vector<weak_ptr<Sound>> Sampler::sortSamplesByName()
 {
+
 	vector<weak_ptr<Sound>> res;
 	//::java::util::List* tempSamples = new ::java::util::ArrayList();
 	//npc(tempSamples)->addAll(static_cast< ::java::util::Collection* >(sounds));

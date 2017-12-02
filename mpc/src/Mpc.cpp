@@ -190,6 +190,11 @@ void Mpc::importLoadedProgram()
 	}
 }
 
+mpc::ctootextensions::MpcMultiMidiSynth* Mpc::getMms()
+{
+	return audioMidiServices->getMms().lock().get();
+}
+
 Mpc::~Mpc() {
 	moduru::Logger::l.log("Mpc dtor\n");
 	layeredScreen.reset();

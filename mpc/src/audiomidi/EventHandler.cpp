@@ -115,9 +115,9 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 			if (ne->getDuration() != -1) {
 				if (!(lSequencer->isSoloEnabled() && track->getTrackIndex() != lSequencer->getActiveTrackIndex())) {
 					auto newVelo = static_cast<int>(ne->getVelocity() * (track->getVelocityRatio() / 100.0));
-					//midiAdapter.process(ne, drum, newVelo);
+					midiAdapter.process(ne, drum, newVelo);
 					auto eventFrame = mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->getEventFrameOffset(event->getTick());
-					//mpc->getMms()->mpcTransport(track->getTrackIndex(), midiAdapter.get().lock().get(), 0, ne->getVariationTypeNumber(), ne->getVariationValue(), eventFrame);
+					mpc->getMms()->mpcTransport(track->getTrackIndex(), midiAdapter.get().lock().get(), 0, ne->getVariationTypeNumber(), ne->getVariationValue(), eventFrame);
 				}
 			}
 		}

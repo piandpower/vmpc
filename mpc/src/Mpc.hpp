@@ -100,6 +100,7 @@ namespace mpc {
 		std::weak_ptr<audiomidi::AudioMidiServices> getAudioMidiServices();
 		std::vector<ctootextensions::MpcSoundPlayerChannel*> getDrums();
 		std::weak_ptr<audiomidi::EventHandler> getEventHandler();
+		mpc::ctootextensions::MpcMultiMidiSynth* getMms();
 
 	public:
 		void loadSound(bool replace);

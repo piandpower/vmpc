@@ -4,7 +4,7 @@
 #include <sequencer/Sequencer.hpp>
 #include <sampler/Sampler.hpp>
 #include <sequencer/Event.hpp>
-//#include <sequencer/MidiAdapter.hpp>
+#include <sequencer/MidiAdapter.hpp>
 
 #include <memory>
 
@@ -42,7 +42,7 @@ namespace mpc {
 			mpc::ui::midisync::MidiSyncGui* msGui{ nullptr };
 			ui::vmpc::MidiGui* midiGui{ nullptr };
 			Mpc* mpc{ nullptr };
-			//mpc::sequencer::MidiAdapter midiAdapter;
+			mpc::sequencer::MidiAdapter midiAdapter;
 
 		public:
 			void handle(std::weak_ptr<mpc::sequencer::Event> event, mpc::sequencer::Track* track);
