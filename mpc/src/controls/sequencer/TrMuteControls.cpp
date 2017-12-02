@@ -1,6 +1,5 @@
 #include <controls/sequencer/TrMuteControls.hpp>
 
-//#include <controls/KbMouseController.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 ////#include <maingui/MainFrame.hpp>
 #include <sequencer/Sequence.hpp>

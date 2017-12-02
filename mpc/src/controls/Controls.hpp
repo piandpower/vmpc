@@ -10,6 +10,7 @@ namespace mpc {
 	namespace controls {
 
 		class AbstractControls;
+		class GlobalReleaseControls;
 
 		class Controls
 		{
@@ -19,6 +20,7 @@ namespace mpc {
 
 		public:
 			mpc::controls::AbstractControls* getControls(std::string s);
+			mpc::controls::GlobalReleaseControls* getReleaseControls();
 
 		public:
 			Controls(Mpc* mpc);

@@ -142,6 +142,10 @@ controls::AbstractControls* Mpc::getActiveControls() {
 	return controls->getControls(layeredScreen->getCurrentScreenName());
 }
 
+controls::GlobalReleaseControls* Mpc::getReleaseControls() {
+	return controls->getReleaseControls();
+}
+
 weak_ptr<mpc::disk::AbstractDisk> Mpc::getDisk()
 {
 	return diskController->getDisk();

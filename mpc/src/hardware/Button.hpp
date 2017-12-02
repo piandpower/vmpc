@@ -26,6 +26,7 @@ namespace mpc {
 		public:
 			std::string getLabel();
 			void push();
+			void release();
 
 		public:
 			Button(mpc::Mpc* mpc, std::string label);

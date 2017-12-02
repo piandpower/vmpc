@@ -53,6 +53,13 @@ AbstractControls::AbstractControls(Mpc* mpc)
 	samplerGui = mpc->getUis().lock()->getSamplerGui();
 }
 
+bool AbstractControls::shiftPressed { false};
+bool AbstractControls::recPressed { false};
+bool AbstractControls::overDubPressed { false};
+bool AbstractControls::tapPressed { false};
+bool AbstractControls::goToPressed { false};
+bool AbstractControls::erasePressed { false};
+
 void AbstractControls::init()
 {
 	csn = ls.lock()->getCurrentScreenName();

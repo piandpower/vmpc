@@ -30,6 +30,7 @@ namespace mpc {
 	namespace controls {
 		class Controls;
 		class AbstractControls;
+		class GlobalReleaseControls;
 	}
 
 	namespace lcdgui {
@@ -90,6 +91,7 @@ namespace mpc {
 		std::weak_ptr<lcdgui::LayeredScreen> getLayeredScreen();
 		std::weak_ptr<controls::Controls> getControls();
 		controls::AbstractControls* getActiveControls();
+		controls::GlobalReleaseControls* getReleaseControls();
 		std::weak_ptr<hardware::Hardware> getHardware();
 
 	public:

@@ -46,17 +46,15 @@ namespace mpc {
 
 	namespace controls {
 
-		class KbMouseController;
-
 		class AbstractControls
 		{
 		protected:
-			bool shiftPressed{ false };
-			bool recPressed{ false };
-			bool overDubPressed{ false };
-			bool tapPressed{ false };
-			bool goToPressed{ false };
-			bool erasePressed{ false };
+			static bool shiftPressed;
+			static bool recPressed;
+			static bool overDubPressed;
+			static bool tapPressed;
+			static bool goToPressed;
+			static bool erasePressed;
 
 		protected:
 			std::string param{ "" };
@@ -70,7 +68,6 @@ namespace mpc {
 			ctootextensions::MpcSoundPlayerChannel* mpcSoundPlayerChannel{ nullptr };
 
 			std::weak_ptr<mpc::lcdgui::LayeredScreen> ls{};
-			std::weak_ptr<KbMouseController> kbmc{};
 			mpc::ui::NameGui* nameGui{ nullptr };
 			ui::sequencer::SequencerGui* sequencerGui{ nullptr };
 			ui::sampler::SamplerGui* samplerGui{ nullptr };

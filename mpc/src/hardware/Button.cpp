@@ -3,6 +3,7 @@
 #include <Mpc.hpp>
 
 #include <controls/AbstractControls.hpp>
+#include <controls/GlobalReleaseControls.hpp>
 
 using namespace mpc::hardware;
 using namespace std;
@@ -93,7 +94,6 @@ void Button::push() {
 		c->function(2);
 	}
 	else if (label.compare("f4") == 0) {
-		moduru::Logger::l.log("f4 pressed\n");
 		c->function(3);
 	}
 	else if (label.compare("f5") == 0) {
@@ -158,6 +158,16 @@ void Button::push() {
 	}
 	else if (label.compare("9") == 0) {
 		c->numpad(9);
+	}
+}
+
+void Button::release() {
+	auto c = mpc->getReleaseControls();
+	if (label.compare("shift") == 0) {
+		c->shift();
+	}
+	else if (label.compare("erase") == 0) {
+		c->erase();
 	}
 }
 

@@ -4,6 +4,8 @@
 
 #include <controls/AbstractControls.hpp>
 
+#include <controls/GlobalReleaseControls.hpp>
+
 #include <controls/sequencer/SequencerControls.hpp>
 #include <controls/sequencer/AssignControls.hpp>
 #include <controls/sequencer/BarCopyControls.hpp>
@@ -145,6 +147,7 @@ using namespace mpc::controls;
 
 Controls::Controls(mpc::Mpc* mpc)
 {
+	controls["release"] = new GlobalReleaseControls(mpc);
 
 	controls["sequencer"] = new sequencer::SequencerControls(mpc);
 	controls["barcopy"] = new sequencer::BarCopyControls(mpc);
@@ -292,6 +295,11 @@ Controls::Controls(mpc::Mpc* mpc)
 AbstractControls* Controls::getControls(std::string s)
 {
 	return controls[s];
+}
+
+GlobalReleaseControls* Controls::getReleaseControls()
+{
+	return (GlobalReleaseControls*) controls["release"];
 }
 
 Controls::~Controls()
