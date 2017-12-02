@@ -11,10 +11,9 @@
 using namespace mpc::sampler;
 using namespace std;
 
-MonitorOutput::MonitorOutput(Sampler* sampler, weak_ptr<mpc::maingui::Gui> gui)
+MonitorOutput::MonitorOutput(Sampler* sampler)
 {
 	this->sampler = sampler;
-	this->gui = gui;
 }
 
 string MonitorOutput::getName()

@@ -45,10 +45,6 @@ namespace ctoot {
 
 namespace mpc {
 
-	namespace maingui {
-		class Gui;
-	}
-
 	namespace ctootextensions {
 		class MpcMixerControls;
 		class MpcMultiMidiSynth;
@@ -81,7 +77,6 @@ namespace mpc {
 			std::vector<std::shared_ptr<mpc::ctootextensions::Voice>> voices{};
 			std::shared_ptr<mpc::ctootextensions::Voice> basicVoice{};
 			std::vector<std::shared_ptr<ctoot::synth::SynthChannelControls>> synthChannelControls{};
-			std::weak_ptr<mpc::maingui::Gui> gui{};
 			int serverIndex{ -1 };
 			std::shared_ptr<ctoot::audio::server::AudioServer> server{};
 			std::shared_ptr<ctoot::audio::server::NonRealTimeAudioServer> offlineServer{};

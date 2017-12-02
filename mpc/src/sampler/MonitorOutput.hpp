@@ -7,10 +7,6 @@
 
 namespace mpc {
 
-	namespace maingui {
-		class Gui;
-	}
-
 	namespace sampler {
 
 		class Sampler;
@@ -21,7 +17,6 @@ namespace mpc {
 
 		private:
 			Sampler* sampler{ nullptr };
-			std::weak_ptr<mpc::maingui::Gui> gui{};
 
 		public: 
 			bool closed{ false };
@@ -34,7 +29,7 @@ namespace mpc {
 			std::string getLocation() override;
 
 		public:
-			MonitorOutput(Sampler* sampler, std::weak_ptr<mpc::maingui::Gui> gui);
+			MonitorOutput(Sampler* sampler);
 			~MonitorOutput();
 
 		};

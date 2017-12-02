@@ -7,10 +7,6 @@ namespace mpc {
 
 	class Mpc;
 
-	namespace maingui {
-		class MainFrame;
-	}
-
 	namespace lcdgui {
 		class Label;
 	}

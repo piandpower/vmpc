@@ -10,11 +10,6 @@ namespace mpc {
 		class Sequencer;
 	}
 
-
-	namespace maingui {
-		class MainFrame;
-	}
-
 	namespace lcdgui {
 		class Field;
 		class Label;

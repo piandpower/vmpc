@@ -32,10 +32,6 @@ namespace mpc {
 		class HorizontalBar;
 	}
 
-	namespace maingui {
-		class MainFrame;
-	}
-
 	namespace ui {
 
 		class NameGui;
@@ -60,7 +56,6 @@ namespace mpc {
 					std::vector<std::string> typeNames{};
 					std::vector<std::weak_ptr<mpc::sequencer::TempoChangeEvent>> visibleTempoChangeEvents{};
 					std::vector<std::string> noteValueNames{};
-					mpc::maingui::MainFrame* mainFrame{};
 					std::string csn{""};
 					std::weak_ptr<mpc::sequencer::Sequencer> sequencer{};
 					std::weak_ptr<mpc::sampler::Sampler> sampler{};

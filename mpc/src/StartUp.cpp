@@ -35,13 +35,6 @@ void StartUp::initUserDefaults() {
 
 /*
 void StartUp::runBootSequence(weak_ptr<Gui> gui) {
-	if (this->gui.lock()) return;
-	this->gui = gui;
-	auto lGui = gui.lock();
-	//lGui->init();
-	mainFrame = lGui->getMainFrame();
-//	auto lMainFrame = mainFrame.lock();
-//	lMainFrame->addLcd();
 	//if (startupThread.joinable()) startupThread.join();
 	startupThread = spawn();
 }

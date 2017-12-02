@@ -13,10 +13,6 @@ namespace mpc {
 		class TimeSignature;
 	}
 
-	namespace maingui {
-		class MainFrame;
-	}
-
 	namespace lcdgui {
 		class Field;
 		class Label;

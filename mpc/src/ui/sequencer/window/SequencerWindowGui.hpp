@@ -10,10 +10,6 @@ namespace mpc {
 		class TempoChangeEvent;
 	}
 
-	namespace maingui {
-		class MainFrame;
-	}
-
 	namespace ui {
 
 		namespace sequencer {

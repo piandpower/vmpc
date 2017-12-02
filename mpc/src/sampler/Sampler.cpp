@@ -5,14 +5,13 @@
 #include <disk/SoundLoader.hpp>
 #include <StartUp.hpp>
 //#include <hardware/ControlPanel.hpp>
-//////#include <maingui/Gui.hpp>
-//#include <lcdgui/LayeredScreen.hpp>
-//#include <lcdgui/LayeredScreen.hpp>
+#include <ui/Uis.hpp>
 #include <ui/UserDefaults.hpp>
 //#include <lcdgui/Background.hpp>
+#include <lcdgui/LayeredScreen.hpp>
 //#include <ui/sampler/SamplerGui.hpp>
 //#include <ui/sampler/SoundGui.hpp>
-//#include <ui/sequencer/window/SequencerWindowGui.hpp>
+#include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -36,7 +35,6 @@ using namespace std;
 
 Sampler::Sampler()
 {
-	this->gui = gui;
 	vuCounter = 0;
 	vuBufferL = vector<float>(VU_BUFFER_SIZE);
 	vuBufferR = vector<float>(VU_BUFFER_SIZE);
@@ -46,7 +44,7 @@ Sampler::Sampler()
 	abcd = vector<string>{ "A", "B", "C", "D" };
 	sortNames = vector<string>{ "MEMORY", "NAME", "SIZE" };
 	recordBuffer = make_unique<ctoot::audio::core::AudioBuffer>("record", 2, 4096, 44100);
-	monitorOutput = make_shared<MonitorOutput>(this, gui);
+	monitorOutput = make_shared<MonitorOutput>(this);
 	auto ud = mpc::StartUp::getUserDefaults().lock();
 	initMasterPadAssign = ud->getPadNotes();
 
@@ -181,8 +179,7 @@ void Sampler::init(mpc::Mpc* mpc)
 
 void Sampler::playMetronome(mpc::sequencer::NoteEvent* event, int framePos)
 {
-	auto lGui = gui.lock();
-	//auto swGui = lGui->getSequencerWindowGui();
+	auto swGui = mpc->getUis().lock()->getSequencerWindowGui();
 	auto soundNumber = -2;
 	/*
 	if (swGui->getMetronomeSound() != 0) {
@@ -817,8 +814,7 @@ void Sampler::arm()
 		record();
 		return;
 	}
-	auto lGui = gui.lock();
-	//lGui->getMainFrame().lock()->getLayeredScreen().lock()->getCurrentBackground()->setName("waitingforinputsignal");
+	mpc->getLayeredScreen().lock()->getCurrentBackground()->setName("waitingforinputsignal");
 	armed = true;
 }
 
@@ -855,7 +851,6 @@ void Sampler::stopRecording()
 
 void Sampler::stopRecordingBasic()
 {
-	auto lGui = gui.lock();
 	auto counter = 0;
 	auto s = addSound().lock();
 	s->setName(addOrIncreaseNumber("sound"));

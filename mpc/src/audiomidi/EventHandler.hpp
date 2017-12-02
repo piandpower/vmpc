@@ -14,12 +14,12 @@ namespace mpc {
 		class MidiAdapter;
 	}
 
-	namespace maingui {
-		class Gui;
-	}
-
 	namespace ui {
-
+		namespace sequencer {
+			namespace window {
+				class SequencerWindowGui;
+			}
+		}
 		namespace midisync {
 			class MidiSyncGui;
 		}
@@ -38,10 +38,10 @@ namespace mpc {
 		private:
 			std::weak_ptr<mpc::sequencer::Sequencer> sequencer{ };
 			std::weak_ptr<mpc::sampler::Sampler> sampler{};
+			ui::sequencer::window::SequencerWindowGui* swGui{ nullptr };
 			mpc::ui::midisync::MidiSyncGui* msGui{ nullptr };
 			ui::vmpc::MidiGui* midiGui{ nullptr };
 			Mpc* mpc{ nullptr };
-			std::weak_ptr<mpc::maingui::Gui> gui{};
 			//mpc::sequencer::MidiAdapter midiAdapter;
 
 		public:

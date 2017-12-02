@@ -9,10 +9,6 @@ namespace mpc {
 
 	class Mpc;
 
-	namespace maingui {
-		class MainFrame;
-	}
-
 	namespace ui {
 		namespace sequencer {
 

@@ -24,7 +24,6 @@ EditSequenceObserver::EditSequenceObserver(mpc::Mpc* mpc)
 	this->sampler = mpc->getSampler();
 	functionNames = { "COPY", "DURATION", "VELOCITY", "TRANSPOSE" };
 	modeNames = { "ADD VALUE", "SUB VALUE", "MULTI VAL%", "SET TO VAL" };
-	auto lGui = gui.lock();
 	editSequenceGui = mpc->getUis().lock()->getEditSequenceGui();
 	editSequenceGui->deleteObservers();
 	editSequenceGui->addObserver(this);
@@ -311,8 +310,8 @@ void EditSequenceObserver::setNoteValues()
 
 void EditSequenceObserver::setMidiNoteValues()
 {
-	//midiNote0Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(editSequenceGui->getMidiNote0()), " ", 3) + "(" + mpc::maingui::Gui::noteNames[editSequenceGui->getMidiNote0()] + "\u00D4");
-	//midiNote1Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(editSequenceGui->getMidiNote1()), " ", 3) + "(" + mpc::maingui::Gui::noteNames[editSequenceGui->getMidiNote1()] + "\u00D4");
+	//midiNote0Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(editSequenceGui->getMidiNote0()), " ", 3) + "(" + mpc::ui::Uis::noteNames[editSequenceGui->getMidiNote0()] + "\u00D4");
+	//midiNote1Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(editSequenceGui->getMidiNote1()), " ", 3) + "(" + mpc::ui::Uis::noteNames[editSequenceGui->getMidiNote1()] + "\u00D4");
 }
 
 void EditSequenceObserver::setDrumNoteValue()

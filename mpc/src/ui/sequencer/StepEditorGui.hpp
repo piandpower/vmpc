@@ -10,10 +10,6 @@ namespace mpc {
 		class Event;
 	}
 
-	namespace maingui {
-		class MainFrame;
-	}
-
 	namespace ui {
 
 		namespace sequencer {

@@ -1,5 +1,8 @@
 #pragma once
 
+#include <vector>
+#include <string>
+
 namespace mpc {
 	namespace ui {
 
@@ -134,6 +137,12 @@ namespace mpc {
 			ui::misc::TransGui* getTransGui();
 			ui::misc::SecondSeqGui* getSecondSeqGui();
 			ui::misc::PunchGui* getPunchGui();
+
+		private:
+			std::vector<std::string> someNoteNames{ "C.", "C#", "D.", "D#", "E.", "F.", "F#", "G.", "G#", "A.", "A#", "B." };
+
+		public:
+			static std::vector<std::string> noteNames;
 
 		public:
 			Uis();

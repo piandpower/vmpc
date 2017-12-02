@@ -143,8 +143,8 @@ void EraseObserver::displayNotes()
         }
     } else {
         notes0Field.lock()->setSize(8 * 6 * 2, 18);
-        //notes0Field.lock()->setText((moduru::lang::StrUtil::padLeft(to_string(swGui->getMidiNote0()), " ", 3) + mpc::maingui::Gui::noteNames[swGui->getMidiNote0()]) + "\u00D4");
-        //notes1Field.lock()->setText((moduru::lang::StrUtil::padLeft(to_string(swGui->getMidiNote1()), " ", 3) + mpc::maingui::Gui::noteNames[swGui->getMidiNote1()]) + "\u00D4");
+        //notes0Field.lock()->setText((moduru::lang::StrUtil::padLeft(to_string(swGui->getMidiNote0()), " ", 3) + mpc::ui::Uis::noteNames[swGui->getMidiNote0()]) + "\u00D4");
+        //notes1Field.lock()->setText((moduru::lang::StrUtil::padLeft(to_string(swGui->getMidiNote1()), " ", 3) + mpc::ui::Uis::noteNames[swGui->getMidiNote1()]) + "\u00D4");
     }
 }
 

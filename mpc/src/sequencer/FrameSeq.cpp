@@ -8,7 +8,6 @@
 
 #include <sequencer/SeqUtil.hpp>
 
-//////#include <maingui/Gui.hpp>
 //#include <ui/sequencer/SongGui.hpp>
 //#include <ui/sequencer/window/SequencerWindowGui.hpp>
 //#include <controls/AbstractControls.hpp>
@@ -21,7 +20,6 @@ FrameSeq::FrameSeq(weak_ptr<Sequencer> sequencer) {
 }
 
 //void FrameSeq::setGui(mpc::Mpc* mpc) {
-//	this->gui = gui;
 //}
 
 void FrameSeq::start() {

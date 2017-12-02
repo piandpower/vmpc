@@ -12,11 +12,6 @@ namespace mpc {
 		class TimeSignature;
 	}
 
-	namespace maingui {
-		class Gui;
-		class MainFrame;
-	}
-
 	namespace lcdgui {
 		class Field;
 	}
@@ -32,7 +27,6 @@ namespace mpc {
 			{
 
 			private:
-				std::weak_ptr<mpc::maingui::Gui> gui{};
 				BarCopyGui* bcGui{};
 				int trackNum{};
 				int seqNum{};

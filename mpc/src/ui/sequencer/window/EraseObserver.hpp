@@ -16,10 +16,6 @@ namespace mpc {
 		class Program;
 	}
 
-	namespace maingui {
-		class MainFrame;
-	}
-
 	namespace lcdgui {
 		class Field;
 		class Label;

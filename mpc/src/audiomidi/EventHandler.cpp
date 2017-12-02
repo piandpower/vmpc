@@ -3,24 +3,26 @@
 #include <Mpc.hpp>
 #include <audiomidi/AudioMidiServices.hpp>
 //#include <audiomidi/MpcMidiPorts.hpp>
-//////#include <maingui/Gui.hpp>
-//#include <lcdgui/LayeredScreen.hpp>
-//#include <lcdgui/LayeredScreen.hpp>
-//#include <ui/midisync/MidiSyncGui.hpp>
-//#include <ui/misc/TransGui.hpp>
-//#include <ui/sequencer/window/SequencerWindowGui.hpp>
-//#include <ui/vmpc/DirectToDiskRecorderGui.hpp>
-//#include <ui/vmpc/MidiGui.hpp>
-#include <sampler/Program.hpp>
-#include <sampler/Sampler.hpp>
+
 #include <sequencer/Event.hpp>
 #include <sequencer/FrameSeq.hpp>
-//#include <sequencer/MidiClockEvent.hpp>
-//#include <sequencer/MixerEvent.hpp>
+#include <sequencer/MidiClockEvent.hpp>
+#include <sequencer/MixerEvent.hpp>
 #include <sequencer/Track.hpp>
 #include <sequencer/NoteEvent.hpp>
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/TempoChangeEvent.hpp>
+
+//#include <lcdgui/LayeredScreen.hpp>
+
+#include <ui/Uis.hpp>
+#include <ui/sequencer/window/SequencerWindowGui.hpp>
+#include <ui/midisync/MidiSyncGui.hpp>
+//#include <ui/misc/TransGui.hpp>
+//#include <ui/vmpc/DirectToDiskRecorderGui.hpp>
+//#include <ui/vmpc/MidiGui.hpp>
+#include <sampler/Program.hpp>
+#include <sampler/Sampler.hpp>
 #include <sampler/MixerChannel.hpp>
 #include <ctootextensions/MpcMultiMidiSynth.hpp>
 #include <thirdp/bcmath/bcmath_stl.h>
@@ -37,9 +39,11 @@ using namespace std;
 EventHandler::EventHandler(mpc::Mpc* mpc)
 {
 	this->mpc = mpc;
-	this->gui = gui;
 	sequencer = mpc->getSequencer();
 	sampler = mpc->getSampler();
+	msGui = mpc->getUis().lock()->getMidiSyncGui();
+	midiGui = mpc->getUis().lock()->getMidiGui();
+	swGui = mpc->getUis().lock()->getSequencerWindowGui();
 }
 
 void EventHandler::handle(weak_ptr<mpc::sequencer::Event> event, mpc::sequencer::Track* track)
@@ -52,20 +56,15 @@ void EventHandler::handle(weak_ptr<mpc::sequencer::Event> event, mpc::sequencer:
 
 void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequencer::Track* track)
 {
-	auto lGui = gui.lock();
 	auto event = e.lock();
-	if (msGui == nullptr) {
-		//msGui = lGui->getMidiSyncGui();
-		//midiGui = lGui->getMidiGui();
-	}
 
 	auto lSequencer = sequencer.lock();
 
 	if (track->getName().compare("click") == 0) {
 		auto lSequencer = sequencer.lock();
 		if (!lSequencer->isCountEnabled()) return;
-		//if (lSequencer->isRecordingOrOverdubbing() && !lGui->getSequencerWindowGui()->getInRec() && !lSequencer->isCountingIn()) return;
-		//if (lSequencer->isPlaying() && !lSequencer->isRecordingOrOverdubbing() && !lGui->getSequencerWindowGui()->getInPlay() && !lSequencer->isCountingIn()) return;
+		if (lSequencer->isRecordingOrOverdubbing() && !swGui->getInRec() && !lSequencer->isCountingIn()) return;
+		if (lSequencer->isPlaying() && !lSequencer->isRecordingOrOverdubbing() && !swGui->getInPlay() && !lSequencer->isCountingIn()) return;
 
 		auto ne = dynamic_pointer_cast<mpc::sequencer::NoteEvent>(event);
 
@@ -83,30 +82,29 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 			return;
 		}
 	}
-	/*
 	auto tce = dynamic_pointer_cast<mpc::sequencer::TempoChangeEvent>(event);
 	auto mce = dynamic_pointer_cast<mpc::sequencer::MidiClockEvent>(event);
 	auto ne = dynamic_pointer_cast<mpc::sequencer::NoteEvent>(event);
 	auto me = dynamic_pointer_cast<mpc::sequencer::MixerEvent>(event);
 
 	if (tce) {
-		//		lSequencer->setTempo(tce->getTempo());
+		lSequencer->setTempo(tce->getTempo());
 		return;
 	}
 	else if (mce) {
-		auto mpcMidiPorts = mpc->getMidiPorts().lock();
+		//auto mpcMidiPorts = mpc->getMidiPorts().lock();
 		auto clockMsg = dynamic_cast<ctoot::midi::core::ShortMessage*>(mce->getShortMessage());
 		clockMsg->setMessage(mce->getStatus());
-		switch (lGui->getMidiSyncGui()->getOut()) {
+		switch (msGui->getOut()) {
 		case 0:
-			mpcMidiPorts->transmitA(clockMsg);
+			//mpcMidiPorts->transmitA(clockMsg);
 			break;
 		case 1:
-			mpcMidiPorts->transmitB(clockMsg);
+			//mpcMidiPorts->transmitB(clockMsg);
 			break;
 		case 2:
-			mpcMidiPorts->transmitA(clockMsg);
-			mpcMidiPorts->transmitB(clockMsg);
+			//mpcMidiPorts->transmitA(clockMsg);
+			//mpcMidiPorts->transmitB(clockMsg);
 			break;
 		}
 	}
@@ -117,9 +115,9 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 			if (ne->getDuration() != -1) {
 				if (!(lSequencer->isSoloEnabled() && track->getTrackIndex() != lSequencer->getActiveTrackIndex())) {
 					auto newVelo = static_cast<int>(ne->getVelocity() * (track->getVelocityRatio() / 100.0));
-					midiAdapter.process(ne, drum, newVelo);
+					//midiAdapter.process(ne, drum, newVelo);
 					auto eventFrame = mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->getEventFrameOffset(event->getTick());
-					mpc->getMms()->mpcTransport(track->getTrackIndex(), midiAdapter.get().lock().get(), 0, ne->getVariationTypeNumber(), ne->getVariationValue(), eventFrame);
+					//mpc->getMms()->mpcTransport(track->getTrackIndex(), midiAdapter.get().lock().get(), 0, ne->getVariationTypeNumber(), ne->getVariationValue(), eventFrame);
 				}
 			}
 		}
@@ -136,7 +134,6 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 			mixer->setPanning(me->getValue());
 		}
 	}
-	*/
 }
 
 void EventHandler::midiOut(weak_ptr<mpc::sequencer::Event> e, mpc::sequencer::Track* track)

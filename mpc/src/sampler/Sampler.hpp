@@ -17,10 +17,6 @@ namespace mpc {
 
 	class Mpc;
 
-	namespace maingui {
-		class Gui;
-	}
-
 	namespace ctootextensions {
 		class MpcSoundPlayerChannel;
 	}
@@ -50,7 +46,6 @@ namespace mpc {
 
 			std::unique_ptr<ctoot::audio::core::AudioBuffer> recordBuffer{};
 
-			std::weak_ptr<mpc::maingui::Gui> gui{};
 			static const int VU_BUFFER_SIZE{ 100 };
 			int vuCounter{};
 			std::vector<float> vuBufferL{};

@@ -4,10 +4,6 @@
 
 namespace mpc {
 
-	namespace maingui {
-		class Gui;
-	}
-
 	namespace sampler {
 
 		class Sampler;

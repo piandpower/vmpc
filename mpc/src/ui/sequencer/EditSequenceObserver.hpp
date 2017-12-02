@@ -20,11 +20,6 @@ namespace mpc {
 		class Track;
 	}
 
-	namespace maingui {
-		class Gui;
-		class MainFrame;
-	}
-
 	namespace lcdgui {
 		class Field;
 		class Label;
@@ -46,7 +41,6 @@ namespace mpc {
 
 				std::vector<std::string> functionNames{};
 				std::vector<std::string> modeNames{};
-				std::weak_ptr<mpc::maingui::Gui> gui{};
 				EditSequenceGui* editSequenceGui{};
 				int trackNum{};
 				int seqNum{};

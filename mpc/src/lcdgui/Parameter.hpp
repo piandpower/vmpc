@@ -4,10 +4,7 @@
 //#include <IPlugBase.h>
 
 namespace mpc {
-	namespace maingui {
-
-		class Gui;
-	}
+	
 	namespace lcdgui {
 
 		class Label;
