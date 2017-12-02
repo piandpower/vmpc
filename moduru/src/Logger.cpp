@@ -27,6 +27,9 @@ Logger::Logger(string logFile) {
 }
 
 void Logger::log(std::string s) {
+
+	s += "\n";
+
 #ifdef _WIN32
 	if (path.find("c:/temp/") != string::npos) {
 #else

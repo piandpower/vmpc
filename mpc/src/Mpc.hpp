@@ -4,6 +4,8 @@
 #include <thread>
 #include <memory>
 
+#include <Logger.hpp>
+
 namespace mpc {
 
 	namespace ui {

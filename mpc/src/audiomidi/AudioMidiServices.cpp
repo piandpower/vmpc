@@ -195,7 +195,7 @@ void AudioMidiServices::init()
 	if (bufferSize > 16384) bufferSize = -1;
 	if (index == -1) index = 0;
 	requestedBufferSize = bufferSize;
-	moduru::Logger::l.log("bufferSize from config.vmp " + to_string(bufferSize) + "\n");
+	MLOG("bufferSize from config.vmp " + to_string(bufferSize));
 	setDriver(index);
 	if (isStandalone()) {
 		loadIOConfig();
