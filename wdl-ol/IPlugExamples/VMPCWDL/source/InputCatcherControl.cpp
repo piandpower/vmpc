@@ -25,7 +25,6 @@ bool InputCatcherControl::OnKeyDown(int x, int y, int c) {
 	auto hw = mpc->getHardware().lock();
 
 /*
-	hw->getButton("enter").lock()->push();
 	hw->getButton("after").lock()->push();
 */
 	for (int i = 0; i < KbMapping::padKeys().size(); i++) {
@@ -35,7 +34,11 @@ bool InputCatcherControl::OnKeyDown(int x, int y, int c) {
 		}
 	}
 
-	if (c == KbMapping::fullLevel()) {
+	if (c == KbMapping::numPadEnter()) {
+		hw->getButton("enter").lock()->push();
+		return true;
+	}
+	else if (c == KbMapping::fullLevel()) {
 		hw->getButton("fulllevel").lock()->push();
 		return true;
 	}
