@@ -184,10 +184,11 @@ void FloatSampleBuffer::makeSilence()
 
 void FloatSampleBuffer::makeSilence(int channel)
 {
-	vector<float>* samples = getChannel(channel);
-	for (int i = 0; i < samples->size(); i++) {
-		(*samples)[i] = 0;
-	}
+	//vector<float>* samples = getChannel(channel);
+	//for (int i = 0; i < samples->size(); i++) {
+//		(*samples)[i] = 0;
+//	}
+	channels[channel] = vector<float>(getSampleCount());
 }
 
 void FloatSampleBuffer::addChannel(bool silent)

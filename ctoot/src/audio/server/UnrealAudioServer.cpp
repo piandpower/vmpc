@@ -33,8 +33,6 @@ void UnrealAudioServer::close() {
 }
 
 void UnrealAudioServer::work() {
-	std::cout << "working..." << endl;
-	moduru::Logger::l.log("working...\n");
 	client->work(bufferSize);
 	if (activeOutputs.size() != 0) {
 		int counter = 0;

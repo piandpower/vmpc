@@ -6,7 +6,7 @@
 #include <sequencer/NoteEvent.hpp>
 #include <observer/Observable.hpp>
 
-#include <thirdp/concurrentqueue.h>
+//#include <thirdp/concurrentqueue.h>
 #include <memory>
 
 namespace mpc {
@@ -21,8 +21,11 @@ namespace mpc {
 
 			std::vector<std::shared_ptr<Event>> events{};
 
-			moodycamel::ConcurrentQueue<std::shared_ptr<NoteEvent>> queuedNoteOnEvents{};
-			moodycamel::ConcurrentQueue<std::weak_ptr<NoteEvent>> noteOffs{};
+			//moodycamel::ConcurrentQueue<std::shared_ptr<NoteEvent>> queuedNoteOnEvents{};
+			//moodycamel::ConcurrentQueue<std::weak_ptr<NoteEvent>> noteOffs{};
+
+			std::vector<std::shared_ptr<NoteEvent> > queuedNoteOnEvents;
+			std::vector<std::weak_ptr<NoteEvent> > noteOffs;
 
 			mpc::sequencer::Sequence* parent{ nullptr };
 			Mpc* mpc{ nullptr };

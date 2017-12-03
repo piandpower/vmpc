@@ -115,9 +115,9 @@ void AudioMixer::work(int nFrames)
 	silenceStrips(groupStrips);
 	silenceStrips(fxStrips);
     silenceStrips(auxStrips);
-    mainStrip->silence();
+	mainStrip->silence();
 	evaluateStrips(channelStrips, nFrames);
-    evaluateStrips(groupStrips, nFrames);
+	evaluateStrips(groupStrips, nFrames);
     evaluateStrips(fxStrips, nFrames);
     evaluateStrips(auxStrips, nFrames);
 	mainStrip->processBuffer(nFrames);
