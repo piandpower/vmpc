@@ -5,7 +5,7 @@
 //////#include <maingui/Gui.hpp>
 #include "LayeredScreen.hpp"
 //#include <lcdgui/LayeredScreen.hpp>
-//#include <ui/NameGui.hpp>
+#include <ui/NameGui.hpp>
 //#include <lcdgui/Field_Blinker.hpp>
 //#include <lcdgui/Field_Scroller.hpp>
 //#include <lcdgui/TwoDots.hpp>
@@ -26,19 +26,19 @@ Field::Field(LayeredScreen* layeredScreen)
 }
 
 void Field::initialize(std::string name, int x, int y, int columns) {
-	//ls = mainFrame->getLayeredScreen();
 	split = false;
 	focusable = true;
 	opaque = true;
 	inverted = false;
-	//Hide(false);
+	focus = false;
+	Hide(false);
 	this->name = name;
 	this->columns = columns;
 	
 	setSize(columns * TEXT_WIDTH + 1, TEXT_HEIGHT + 2);
 	setLocation(x, y);
 	setText(text);
-	loseFocus(name);
+	//loseFocus(name);
 }
 
 void Field::setSize(int width, int height) {
@@ -62,15 +62,15 @@ const int Field::BLINKING_RATE;
 
 void Field::takeFocus(string prev)
 {
+	//csn = layeredScreen->getCurrentScreenName();
 	focus = true;
 	inverted = true;
+	//if (csn.compare("name") == 0) setOpaque(true);
 	//auto lGui = gui.lock();
 	//auto lMainFrame = lGui->getMainFrame().lock();
 	//auto lMainFrame = mainFrame;
-	//auto focusEvent = lMainFrame->getFocus();
-	//auto focusField = lls->lookupField(focusEvent);
-	//auto lLs = ls.lock();
-//	csn = layeredScreen->getCurrentScreenName();
+	//auto focusEvent = layeredScreen->getFocus();
+	//auto focusField = layeredScreen->lookupField(focusEvent);
 //	if (csn.compare("trim") == 0 || csn.compare("loop") == 0) {
 //		if (focusEvent.compare("st") == 0 || focusEvent.compare("to") == 0) {
 //			layeredScreen->getTwoDots()->setSelected(0, true);
@@ -96,23 +96,23 @@ void Field::takeFocus(string prev)
 //	if (csn.compare("directory") == 0) {
 //		focusField.lock()->setOpaque(true);
 //	}
-//	if ((!csn.compare("name") == 0)) {
+	//if (!csn.compare("name") == 0) {
+//		focusField.lock()->setOpaque(true);
+	//}
+	//if (csn.compare("name") == 0) {
+		//		//if (!lGui->getNameGui()->isNameBeingEdited()) {
+		//focusField.lock()->setOpaque(true);
+	//}
+	//if (!(csn.compare("name") == 0 && nameGui->isNameBeingEdited())) {	
+	//		focusField.lock()->setForeground(false);
+	//}
+	//	}
+	//	if (csn.compare("tempochange") == 0) {
 //		focusField.lock()->setOpaque(true);
 //	}
-//	if (csn.compare("tempochange") == 0) {
-//		focusField.lock()->setOpaque(true);
-//	}
-//	//if (!(csn.compare("name") == 0 && lGui->getNameGui()->isNameBeingEdited())) {	
-//		focusField.lock()->setForeground(false);
-//	//}
 //	if (csn.compare("trmove") == 0) {
 //		//if (focusEvent.compare("tr1") == 0 && !lGui->getTrMoveGui()->isSelected())
 //		//	lLs->drawFunctionKeyses("trmove_notselected");
-//	}
-//	if (csn.compare("name") == 0) {
-//		//if (!lGui->getNameGui()->isNameBeingEdited()) {
-////			focusField.lock()->setOpaque(true);
-//		//}
 //	}
 	SetDirty();
 }
@@ -121,10 +121,12 @@ void Field::loseFocus(string next)
 {
 	focus = false;
 	inverted = false;
-	auto focusEvent = getName();
-	setSplit(false);
-	//auto lLs = ls.lock();
-	//csn = lLs->getCurrentScreenName();
+	//if (csn.compare("name") == 0) {
+//		setOpaque(false);
+//	}
+	//auto focusEvent = getName();
+	//setSplit(false);
+	//csn = layeredScreen->getCurrentScreenName();
 	//if (csn.compare("trim") == 0 || csn.compare("loop") == 0) {
 	//	if (focusEvent.compare("st") == 0 || focusEvent.compare("to") == 0) {
 	//		lLs->getTwoDots()->setSelected(0, false);
@@ -148,13 +150,18 @@ void Field::loseFocus(string next)
 	//	}
 	//}
 	//
-	////if ((!lGui->getNameGui()->isNameBeingEdited() && csn.compare("name") == 0))
-	//	setOpaque(false);
-
+	
 	//if (csn.compare("tempochange") == 0) {
 	//	setOpaque(false);
 	//	setForeground(false);
 	//}
+
+	//if (csn.compare("name") == 0) {
+//		setOpaque(false);
+//	}
+
+	////if ((!lGui->getNameGui()->isNameBeingEdited() && csn.compare("name") == 0))
+	//	setOpaque(false);
 	////if (!(csn.compare("name") == 0 && lGui->getNameGui()->isNameBeingEdited())) {
 	//	setForeground(!getForeground());
 	////}

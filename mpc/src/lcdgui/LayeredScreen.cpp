@@ -56,7 +56,7 @@
 #include <ui/sampler/window/ZoomObserver.hpp>
 */
 
-//#include <ui/NameObserver.hpp>
+#include <ui/NameObserver.hpp>
 
 #include <ui/disk/DiskObserver.hpp>
 #include <ui/disk/window/LoadASequenceFromAllObserver.hpp>
@@ -805,7 +805,7 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<EditSequenceObserver>(mpc);
 	}
 	else if (csn.compare("name") == 0) {
-		//activeObserver = make_unique<ui::NameObserver>(mpc, this);
+		activeObserver = make_unique<ui::NameObserver>(mpc);
 	}
 	else if (csn.compare("midiinputmonitor") == 0 || csn.compare("midioutputmonitor") == 0) {
 		activeObserver = make_unique<MidiMonitorObserver>(mpc);

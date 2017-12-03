@@ -67,6 +67,12 @@
 #include <controls/disk/window/SaveAllFileControls.hpp>
 #include <controls/disk/window/SaveApsFileControls.hpp>
 
+#include <controls/other/InitControls.hpp>
+#include <controls/other/OthersControls.hpp>
+#include <controls/other/VerControls.hpp>
+
+#include <controls/other/dialog/NameControls.hpp>
+
 //#include <controls/disk/dialog/CantFindFileControls.hpp>
 //#include <controls/disk/dialog/DeleteAllFilesControls.hpp>
 //#include <controls/disk/dialog/DeleteFileControls.hpp>
@@ -88,12 +94,6 @@
 #include <controls/mixer/MixerSetupControls.hpp>
 #include <controls/mixer/SelectDrumMixerControls.hpp>
 #include <controls/mixer/window/ChannelSettingsControls.hpp>
-
-#include <controls/other/InitControls.hpp>
-#include <controls/other/OthersControls.hpp>
-#include <controls/other/VerControls.hpp>
-
-#include <controls/other/dialog/NameControls.hpp>
 
 #include <controls/sampler/DrumControls.hpp>
 #include <controls/sampler/InitPadAssignControls.hpp>
@@ -214,6 +214,12 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["saveapsfile"] = new disk::window::SaveApsFileControls(mpc);
 	controls["loadasound"] = new disk::window::LoadASoundControls(mpc);
 
+	controls["name"] = new other::dialog::NameControls(mpc);
+
+	controls["others"] = new other::OthersControls(mpc);
+	controls["init"] = new other::InitControls(mpc);
+	controls["ver"] = new other::VerControls(mpc);
+
 	//controls["deleteallfiles"] = new disk::dialog::DeleteAllFilesControls(mpc);
 	//controls["deletefile"] = new disk::dialog::DeleteFileControls(mpc);
 	//controls["deletefolder"] = new disk::dialog::DeleteFolderControls(mpc);
@@ -241,7 +247,6 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["drum"] = new sampler::DrumControls(mpc);
 	controls["purge"] = new sampler::PurgeControls(mpc);
 	controls["editsound"] = new sampler::window::EditSoundControls(mpc);
-	controls["name"] = new other::dialog::NameControls(mpc);
 
 	controls["programassign"] = new sampler::PgmAssignControls(mpc);
 	controls["programparams"] = new sampler::PgmParamsControls(mpc);
@@ -279,9 +284,6 @@ Controls::Controls(mpc::Mpc* mpc)
 
 	controls["sync"] = new midisync::SyncControls(mpc);
 
-	controls["others"] = new other::OthersControls(mpc);
-	controls["init"] = new other::InitControls(mpc);
-	controls["ver"] = new other::VerControls(mpc);
 	controls["midi"] = new vmpc::MidiControls(mpc);
 	controls["audio"] = new vmpc::AudioControls(mpc);
 	controls["buffersize"] = new vmpc::BufferSizeControls(mpc);

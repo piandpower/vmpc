@@ -40,7 +40,7 @@ void Layer::unuseField(weak_ptr<mpc::lcdgui::Field> field) {
 	auto lField = field.lock();
 	//lField->Hide(true);
 	lField->setFocusable(false);
-		for (int i = 0; i < usedFields.size(); i++) {
+	for (int i = 0; i < usedFields.size(); i++) {
 		if (usedFields[i] == lField) {
 			unusedFields.push_back(lField);
 			usedFields.erase(usedFields.begin() + i);
@@ -198,8 +198,16 @@ void Layer::clear() {
 
 vector<weak_ptr<mpc::lcdgui::Component>> Layer::getAllFields() {
 	vector<weak_ptr<mpc::lcdgui::Component>> result;
-	for (auto& f : usedFields)
-		result.push_back(f);
+	weak_ptr<mpc::lcdgui::Component> focus;
+	for (auto& f : usedFields) {
+		if (!f->hasFocus()) {
+			result.push_back(f);
+		}
+		else {
+			focus = f;
+		}
+	}
+	if (focus.lock()) result.push_back(focus);
 	return result;
 }
 
