@@ -95,8 +95,230 @@ void NameControls::function(int i)
         ls.lock()->openScreen(ls.lock()->getPreviousScreenName());
         resetNameGui();
         break;
+	case 4:
+		saveName();
+		break;
     }
 
+}
+
+void NameControls::pressEnter() {
+	saveName();
+}
+
+void NameControls::saveName() {
+	auto uis = mpc->getUis().lock();
+	auto lLs = ls.lock();
+	auto lSequencer = sequencer.lock();
+	auto ngParam = nameGui->getParameterName();
+	auto prevScreen = lLs->getPreviousScreenName();
+	auto soundGui = uis->getSoundGui();
+
+	if (ngParam.compare("outputfolder") == 0) {
+		uis->getD2DRecorderGui()->setOutputFolder(nameGui->getName());
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("directtodiskrecorder");
+	}
+	else if (ngParam.compare("saveallfile") == 0) {
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("saveallfile");
+		return;
+	}
+	else if (ngParam.compare("saveasound") == 0) {
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("saveasound");
+		return;
+	}
+	else if (ngParam.compare("savingpgm") == 0) {
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("saveaprogram");
+		return;
+	}
+	else if (ngParam.compare("savingaps") == 0) {
+		string apsName = nameGui->getName();
+		apsName.append(".APS");
+		mpc::file::aps::ApsSaver(mpc, mpc::Util::getFileName(apsName));
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		return;
+	}
+	else if (ngParam.compare("savingmid") == 0) {
+		lLs->openScreen("saveasequence");
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		return;
+	}
+	else if (ngParam.find("default") != string::npos) {
+		if (prevScreen.compare("track") == 0) {
+			lSequencer->setDefaultTrackName(nameGui->getName(), lSequencer->getActiveTrackIndex());
+			nameGui->setNameBeingEdited(false);
+			lLs->setLastFocus("name", "0");
+			lLs->openScreen("sequencer");
+			return;
+		}
+		else if (prevScreen.compare("sequence") == 0) {
+			lSequencer->setDefaultSequenceName(nameGui->getName());
+			nameGui->setNameBeingEdited(false);
+			lLs->setLastFocus("name", "0");
+			lLs->openScreen("sequencer");
+			return;
+		}
+	}
+	else if (ngParam.compare("programname") == 0) {
+		program.lock()->setName(nameGui->getName());
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("program");
+		return;
+	}
+	else if (ngParam.compare("createnewprogram") == 0) {
+		//uis->getSamplerWindowGui()->setNewName(nameGui->getName());
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("program");
+		return;
+	}
+	else if (ngParam.compare("autochrom") == 0) {
+		//uis->getSamplerWindowGui()->setNewName(nameGui->getName());
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("autochromaticassignment");
+		lLs->setPreviousScreenName(uis->getSamplerGui()->getPrevScreenName());
+		return;
+	}
+	else if (ngParam.compare("rename") == 0) {
+		bool success;
+		auto ext = mpc::Util::splitName(directoryGui->getSelectedFile()->getName())[1];
+		if (ext.length() > 0) ext = "." + ext;
+
+		success = mpc->getDisk().lock()->renameSelectedFile(StrUtil::trim(StrUtil::toUpper(nameGui->getName())) + ext);
+		if (!success) {
+			lLs->createPopup("File name exists !!", 120);
+			//invokeLater(NameControls_keyEvent_1(this));
+			lLs->setPreviousScreenName("directory");
+			return;
+		}
+		else {
+			mpc->getDisk().lock()->flush();
+			mpc->getDisk().lock()->initFiles();
+			nameGui->setNameBeingEdited(false);
+			lLs->setLastFocus("name", "0");
+			lLs->openScreen("directory");
+			return;
+		}
+	}
+	else if (ngParam.compare("newfolder") == 0) {
+		auto lDisk = mpc->getDisk().lock();
+		bool success = lDisk->newFolder(StrUtil::toUpper(nameGui->getName()));
+		if (success) {
+			lDisk->flush();
+			lDisk->initFiles();
+			auto counter = 0;
+			for (int i = 0; i < lDisk->getFileNames().size(); i++) {
+				if (lDisk->getFileName(i).compare(StrUtil::toUpper(nameGui->getName())) == 0) {
+					uis->getDiskGui()->setFileLoad(counter);
+					if (counter > 4) {
+						uis->getDirectoryGui()->setYOffset1(counter - 4);
+					}
+					else {
+						uis->getDirectoryGui()->setYOffset1(0);
+					}
+					break;
+				}
+				counter++;
+			}
+			lLs->openScreen("directory");
+			lLs->setPreviousScreenName("load");
+			nameGui->setNameBeingEdited(false);
+		}
+
+		if (!success) {
+			lLs->createPopup("Folder name exists !!", 120);
+			//invokeLater(NameControls_keyEvent_2(this));
+		}
+	}
+
+	if (prevScreen.compare("saveapsfile") == 0) {
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("saveapsfile");
+	}
+	else if (prevScreen.compare("keeporretry") == 0) {
+		sampler.lock()->getPreviewSound().lock()->setName(nameGui->getName());
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("keeporretry");
+	}
+	else if (prevScreen.compare("track") == 0) {
+		track.lock()->setName(nameGui->getName());
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("sequencer");
+		return;
+	}
+	else if (prevScreen.compare("saveasequence") == 0) {
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("saveasequence");
+	}
+	else if (prevScreen.compare("sequence") == 0) {
+		sequence.lock()->setName(nameGui->getName());
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("sequencer");
+		return;
+	}
+	else if (prevScreen.compare("midioutput") == 0) {
+		sequence.lock()->setDeviceName(swGui->getDeviceNumber() + 1, nameGui->getName().substr(0, 8));
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("sequencer");
+		return;
+	}
+	else if (prevScreen.compare("editsound") == 0) {
+		//uis->getEditSoundGui()->setNewName(nameGui->getName());
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("editsound");
+		return;
+	}
+	else if (prevScreen.compare("sound") == 0) {
+		mpc->getSampler().lock()->getSound(soundGui->getSoundIndex()).lock()->setName(nameGui->getName());
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("sound");
+		return;
+	}
+	else if (prevScreen.compare("resample") == 0) {
+		soundGui->setNewName(nameGui->getName());
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("resample");
+		return;
+	}
+	else if (prevScreen.compare("stereotomono") == 0) {
+		if (ngParam.compare("newlname") == 0) {
+			soundGui->setNewLName(nameGui->getName());
+		}
+		else if (ngParam.compare("newrname") == 0) {
+			soundGui->setNewRName(nameGui->getName());
+		}
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("stereotomono");
+		return;
+	}
+	else if (prevScreen.compare("copysound") == 0) {
+		soundGui->setNewName(nameGui->getName());
+		nameGui->setNameBeingEdited(false);
+		lLs->setLastFocus("name", "0");
+		lLs->openScreen("copysound");
+		return;
+	}
 }
 
 /*
@@ -128,218 +350,6 @@ void NameControls::keyEvent(unsigned char e)
 	if (e != KbMapping::numPadShift()) lGui->setPreviousKeyStroke(e);
 	auto lMainFrame = mainFrame.lock();
 	auto lLs = ls.lock();
-	if (e == mpc::controls::KbMapping::f5() || e == mpc::controls::KbMapping::numPadEnter()) {
-		if (nameGui->getParameterName().compare("outputfolder") == 0) {
-			lGui->getD2DRecorderGui()->setOutputFolder(nameGui->getName());
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("directtodiskrecorder");
-		}
-		else if (nameGui->getParameterName().compare("saveallfile") == 0) {
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("saveallfile");
-			return;
-		}
-		else if (nameGui->getParameterName().compare("saveasound") == 0) {
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("saveasound");
-			return;
-		}
-		else if (nameGui->getParameterName().compare("savingpgm") == 0) {
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("saveaprogram");
-			return;
-		}
-		else if (nameGui->getParameterName().compare("savingaps") == 0) {
-			string apsName = nameGui->getName();
-			apsName.append(".APS");
-			mpc::file::aps::ApsSaver(gui, mpc, mpc::Util::getFileName(apsName));
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			return;
-		}
-		else if (nameGui->getParameterName().compare("savingmid") == 0) {
-			lMainFrame->openScreen("saveasequence");
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			return;
-		}
-
-		auto lSequencer = sequencer.lock();
-
-		if (nameGui->getParameterName().find("default") != string::npos) {
-			if (lLs->getPreviousScreenName().compare("track") == 0) {
-				lSequencer->setDefaultTrackName(nameGui->getName(), lSequencer->getActiveTrackIndex());
-				nameGui->setNameBeingEdited(false);
-				lLs->setLastFocus("name", "0");
-				lMainFrame->openScreen("sequencer");
-				return;
-			}
-			else if (lLs->getPreviousScreenName().compare("sequence") == 0) {
-				lSequencer->setDefaultSequenceName(nameGui->getName());
-				nameGui->setNameBeingEdited(false);
-				lLs->setLastFocus("name", "0");
-				lMainFrame->openScreen("sequencer");
-				return;
-			}
-		}
-
-		if (lLs->getPreviousScreenName().compare("saveapsfile") == 0) {
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("saveapsfile");
-		}
-		else if (lLs->getPreviousScreenName().compare("keeporretry") == 0) {
-			sampler.lock()->getPreviewSound().lock()->setName(nameGui->getName());
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("keeporretry");
-		}
-		else if (lLs->getPreviousScreenName().compare("track") == 0) {
-			track.lock()->setName(nameGui->getName());
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("sequencer");
-			return;
-		}
-		else if (lLs->getPreviousScreenName().compare("saveasequence") == 0) {
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("saveasequence");
-		}
-		else if (lLs->getPreviousScreenName().compare("sequence") == 0) {
-			sequence.lock()->setName(nameGui->getName());
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("sequencer");
-			return;
-		}
-		else if (lLs->getPreviousScreenName().compare("midioutput") == 0) {
-			sequence.lock()->setDeviceName(swGui->getDeviceNumber() + 1, nameGui->getName().substr(0, 8));
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("sequencer");
-			return;
-		}
-		else if (lLs->getPreviousScreenName().compare("editsound") == 0) {
-			lGui->getEditSoundGui()->setNewName(nameGui->getName());
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("editsound");
-			return;
-		}
-		else if (lLs->getPreviousScreenName().compare("sound") == 0) {
-			mpc->getSampler().lock()->getSound(lGui->getSoundGui()->getSoundIndex()).lock()->setName(nameGui->getName());
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("sound");
-			return;
-		}
-		else if (lLs->getPreviousScreenName().compare("resample") == 0) {
-			lGui->getSoundGui()->setNewName(nameGui->getName());
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("resample");
-			return;
-		}
-		else if (lLs->getPreviousScreenName().compare("stereotomono") == 0) {
-			if (nameGui->getParameterName().compare("newlname") == 0) {
-				lGui->getSoundGui()->setNewLName(nameGui->getName());
-			}
-			if (nameGui->getParameterName().compare("newrname") == 0) {
-				lGui->getSoundGui()->setNewRName(nameGui->getName());
-			}
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("stereotomono");
-			return;
-		}
-		else if (lLs->getPreviousScreenName().compare("copysound") == 0) {
-			lGui->getSoundGui()->setNewName(nameGui->getName());
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("copysound");
-			return;
-		}
-
-		if (nameGui->getParameterName().compare("programname") == 0) {
-			program.lock()->setName(nameGui->getName());
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("program");
-			return;
-		}
-		else if (nameGui->getParameterName().compare("createnewprogram") == 0) {
-			lGui->getSamplerWindowGui()->setNewName(nameGui->getName());
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("program");
-			return;
-		}
-		else if (nameGui->getParameterName().compare("autochrom") == 0) {
-			lGui->getSamplerWindowGui()->setNewName(nameGui->getName());
-			nameGui->setNameBeingEdited(false);
-			lLs->setLastFocus("name", "0");
-			lMainFrame->openScreen("autochromaticassignment");
-			lLs->setPreviousScreenName(lGui->getSamplerGui()->getPrevScreenName());
-			return;
-		}
-		else if (nameGui->getParameterName().compare("rename") == 0) {
-			bool success;
-			auto ext = mpc::Util::splitName(directoryGui->getSelectedFile()->getName())[1];
-			if (ext.length() > 0) ext = "." + ext;
-
-			success = mpc->getDisk().lock()->renameSelectedFile(StrUtil::trim(StrUtil::toUpper(nameGui->getName())) + ext);
-			if (!success) {
-				lMainFrame->createPopup("File name exists !!", 120);
-				//invokeLater(NameControls_keyEvent_1(this));
-				lLs->setPreviousScreenName("directory");
-				return;
-			}
-			else {
-				mpc->getDisk().lock()->flush();
-				mpc->getDisk().lock()->initFiles();
-				nameGui->setNameBeingEdited(false);
-				lLs->setLastFocus("name", "0");
-				lMainFrame->openScreen("directory");
-				return;
-			}
-		}
-		if (nameGui->getParameterName().compare("newfolder") == 0) {
-			auto lDisk = mpc->getDisk().lock();
-			bool success = lDisk->newFolder(StrUtil::toUpper(nameGui->getName()));
-			if (success) {
-				lDisk->flush();
-				lDisk->initFiles();
-				auto counter = 0;
-				for (int i = 0; i < lDisk->getFileNames().size(); i++) {
-					if (lDisk->getFileName(i).compare(StrUtil::toUpper(nameGui->getName())) == 0) {
-						lGui->getDiskGui()->setFileLoad(counter);
-						if (counter > 4) {
-							lGui->getDirectoryGui()->setYOffset1(counter - 4);
-						}
-						else {
-							lGui->getDirectoryGui()->setYOffset1(0);
-						}
-						break;
-					}
-					counter++;
-				}
-				lMainFrame->openScreen("directory");
-				lLs->setPreviousScreenName("load");
-				nameGui->setNameBeingEdited(false);
-			}
-
-			if (!success) {
-				lMainFrame->createPopup("Folder name exists !!", 120);
-				//invokeLater(NameControls_keyEvent_2(this));
-			}
-			return;
-		}
-	}
 	drawUnderline();
 }
 */

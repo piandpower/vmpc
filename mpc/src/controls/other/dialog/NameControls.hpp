@@ -15,11 +15,13 @@ namespace mpc {
 					void right() override;
 					void turnWheel(int j) override;
 					void function(int i) override;
+					void pressEnter() override;
 
 				private:
 					void drawUnderline();
 					void initEditColors();
 					void resetNameGui();
+					void saveName();
 
 				public:
 					NameControls(mpc::Mpc* mpc);
