@@ -23,7 +23,6 @@ InputCatcherControl::InputCatcherControl(IPlugBase* pPlug, mpc::Mpc* mpc)
 
 bool InputCatcherControl::OnKeyDown(int x, int y, int c) {
 	auto hw = mpc->getHardware().lock();
-
 /*
 	hw->getButton("after").lock()->push();
 */

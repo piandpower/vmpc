@@ -55,18 +55,22 @@ LRESULT CALLBACK IGraphicsWin::globalKeyboardHookProcedure(int nCode, WPARAM wPa
 	int processed = FALSE;
 	if (nCode == HC_ACTION) {
 		KBDLLHOOKSTRUCT *p = (KBDLLHOOKSTRUCT *)lParam;
-		IGraphicsWin* pGraphics = (IGraphicsWin*)GetWindowLongPtr(GetFocus(), GWLP_USERDATA);
-		if (pGraphics != nullptr) {
-			if (p->flags < 128) {
-				processed = pGraphics->OnKeyDown(0, 0, p->vkCode);
-			}
-			else {
-				processed = pGraphics->OnKeyUp(0, 0, p->vkCode);
+		bool closeWindow = p->vkCode == VK_F4 && p->flags & LLKHF_ALTDOWN;
+
+		if (!closeWindow) {
+			IGraphicsWin* pGraphics = (IGraphicsWin*)GetWindowLongPtr(GetFocus(), GWLP_USERDATA);
+			if (pGraphics != nullptr) {
+				if (p->flags < 128) {
+					processed = pGraphics->OnKeyDown(0, 0, p->vkCode);
+				}
+				else {
+					processed = pGraphics->OnKeyUp(0, 0, p->vkCode);
+				}
 			}
 		}
 	}
-	//return CallNextHookEx(NULL, nCode, wParam, lParam);// Forward the event to VST host
-	return processed;
+	if (processed != FALSE) return processed;
+	return CallNextHookEx(NULL, nCode, wParam, lParam);// Forward the event to VST host
 }
 
 // static
