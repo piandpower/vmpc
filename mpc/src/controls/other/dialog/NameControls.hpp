@@ -15,7 +15,6 @@ namespace mpc {
 					void right() override;
 					void turnWheel(int j) override;
 					void function(int i) override;
-					//void keyEvent(unsigned char c) override;
 
 				private:
 					void drawUnderline();
@@ -23,12 +22,9 @@ namespace mpc {
 					void resetNameGui();
 
 				public:
-					NameControls(mpc::Mpc* mpc) ;
+					NameControls(mpc::Mpc* mpc);
+					~NameControls();
 
-				private:
-//					friend class NameControls_keyEvent_1;
-//					friend class NameControls_keyEvent_2;
-//					friend class NameControls_drawUnderline_3;
 				};
 
 			}

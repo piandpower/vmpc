@@ -3,9 +3,6 @@
 #include <controls/KbMapping.hpp>
 #include <Mpc.hpp>
 #include <Util.hpp>
-//#include <controls/other/dialog/NameControls_keyEvent_2.hpp>
-//#include <controls/other/dialog/NameControls_drawUnderline_3.hpp>
-//#include <controls/other/dialog/NameControls_keyEvent_1.hpp>
 #include <disk/AbstractDisk.hpp>
 #include <disk/MpcFile.hpp>
 #include <file/aps/ApsSaver.hpp>
@@ -46,6 +43,7 @@ void NameControls::left()
 	if (nameGui->isNameBeingEdited()) {
 		auto field = ls.lock()->lookupField(ls.lock()->getFocus()).lock();
 		field->setInverted(false);
+		drawUnderline();
 	}
 }
 
@@ -57,6 +55,7 @@ void NameControls::right()
 	if (nameGui->isNameBeingEdited()) {
 		auto field = ls.lock()->lookupField(ls.lock()->getFocus()).lock();
 		field->setInverted(false);
+		drawUnderline();
 	}
 }
 
@@ -78,7 +77,9 @@ void NameControls::turnWheel(int j)
 				if (param.compare(to_string(i)) == 0) {
 					nameGui->changeNameCharacter(i, j > 0);
 					nameGui->setNameBeingEdited(true);
+					ls.lock()->getUnderline()->Hide(false);
 					initEditColors();
+					drawUnderline();
 					break;
 				}
 			}
@@ -347,7 +348,6 @@ void NameControls::drawUnderline()
 {
 	if (nameGui->isNameBeingEdited()) {
 		string focus = ls.lock()->getFocus();
-		//if (focus == null) return;
 		if (focus.length() != 1 && focus.length() != 2) return;
 		auto u = ls.lock()->getUnderline();
 		for (int i = 0; i < 16; i++) {
@@ -379,4 +379,7 @@ void NameControls::resetNameGui()
 {
 	nameGui->setNameBeingEdited(false);
 	ls.lock()->setLastFocus("name", "0");
+}
+
+NameControls::~NameControls() {
 }

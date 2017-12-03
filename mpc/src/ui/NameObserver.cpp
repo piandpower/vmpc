@@ -33,7 +33,7 @@ NameObserver::NameObserver(mpc::Mpc* mpc)
 	nameGui->deleteObservers();
 	nameGui->addObserver(this);
 	underline = ls->getUnderline();
-	underline->Hide(false);
+	underline->Hide(true);
 	for (int i = 0; i < 16; i++) {
 		underline->setState(i, false);
 	}

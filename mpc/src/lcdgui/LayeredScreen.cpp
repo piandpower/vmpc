@@ -312,6 +312,7 @@ void LayeredScreen::Draw() {
 				c.lock()->Draw(&pixels);
 		}
 		if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
+		if (i == currentLayer && currentScreenName.compare("name") == 0 && underline->IsDirty()) underline->Draw(&pixels);
 	}
 }
 

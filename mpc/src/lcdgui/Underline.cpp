@@ -8,24 +8,24 @@ Underline::Underline()
 	states = vector<bool>(16);
 }
 
-/*
-bool Underline::Draw(IGraphics* g1)
+void Underline::Draw(vector<vector<bool> >* pixels)
 {
-	int x = this->mRECT.L + Constants::LCD_RECT()->L;
-	int y = this->mRECT.T + Constants::LCD_RECT()->T;
+	if (IsHidden()) return;
 	for (int i = 0; i < 16; i++) {
-		if (!states[i]) {
-			continue;
+		//IRECT rect(x + (i * 12), y + 0, x + (i * 12) + 12, y + 1);
+		//g1->DrawRect(Constants::LCD_ON(), &rect);
+		for (int j = 0; j < 6; j++) {
+			pixels->at(j + (i * 6) + 106)[27] = states[i];
 		}
-		IRECT rect(x + (i * 12), y + 0, x + (i * 12) + 12, y + 1);
-		g1->DrawRect(Constants::LCD_ON(), &rect);
 	}
-	return true;
+	dirty = false;
 }
-*/
 
 void Underline::setState(int i, bool b)
 {
     states[i] = b;
-	//SetDirty(false);
+	SetDirty();
+}
+
+Underline::~Underline() {
 }
