@@ -38,7 +38,6 @@
 #include <ui/sequencer/window/SequencerWindowObserver.hpp>
 #include <ui/sequencer/window/StepWindowObserver.hpp>
 
-/*
 #include <ui/sampler/DrumObserver.hpp>
 #include <ui/sampler/LoopObserver.hpp>
 #include <ui/sampler/MixerObserver.hpp>
@@ -50,6 +49,7 @@
 #include <ui/sampler/SoundObserver.hpp>
 #include <ui/sampler/TrimObserver.hpp>
 #include <ui/sampler/ZoneObserver.hpp>
+/*
 #include <ui/sampler/window/EditSoundObserver.hpp>
 #include <ui/sampler/window/MuteAssignObserver.hpp>
 #include <ui/sampler/window/SamplerWindowObserver.hpp>
@@ -775,10 +775,10 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<SequencerWindowObserver>(mpc);
 	}
 	else if (checkActiveScreen(&soundNames, currentScreenName)) {
-		//activeObserver = make_unique<SoundObserver>(mpc->getSampler(), this);
+		activeObserver = make_unique<SoundObserver>(mpc);
 	}
 	else if (csn.compare("sample") == 0) {
-		//activeObserver = make_unique<SampleObserver>(this, mpc->getSampler());
+		activeObserver = make_unique<SampleObserver>(mpc);
 	}
 	else 
 	if (csn.compare("sequencer") == 0) {
@@ -788,10 +788,10 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<DirectoryObserver>(mpc->getDisk(), mpc);
 	}
 	else if (csn.compare("programparams") == 0) {
-		//activeObserver = make_unique<PgmParamsObserver>(mpc, this);
+		activeObserver = make_unique<PgmParamsObserver>(mpc);
 	}
 	else if (csn.compare("programassign") == 0) {
-		//activeObserver = make_unique<PgmAssignObserver>(mpc, this);
+		activeObserver = make_unique<PgmAssignObserver>(mpc);
 	}
 	else if (csn.compare("sequencer_step") == 0) {
 		activeObserver = make_unique<StepEditorObserver>(mpc);
@@ -800,7 +800,7 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<StepWindowObserver>(mpc);
 	}
 	else if (csn.compare("mixer") == 0 || csn.compare("channelsettings") == 0 || csn.compare("mixersetup") == 0) {
-		//activeObserver = make_unique<MixerObserver>(mpc, gui);
+		activeObserver = make_unique<MixerObserver>(mpc);
 	}
 	else if (csn.compare("edit") == 0) {
 		activeObserver = make_unique<EditSequenceObserver>(mpc);
@@ -821,22 +821,22 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<UserObserver>(mpc);
 	}
 	else if (csn.compare("trim") == 0) {
-		//activeObserver = make_unique<TrimObserver>(mpc->getSampler(), this);
+		activeObserver = make_unique<TrimObserver>(mpc);
 	}
 	else if (csn.compare("loop") == 0) {
-		//activeObserver = make_unique<LoopObserver>(mpc->getSampler(), this);
+		activeObserver = make_unique<LoopObserver>(mpc);
 	}
 	else if (csn.compare("editsound") == 0) {
-		//activeObserver = make_unique<EditSoundObserver>(mpc->getSampler(), this);
+		//activeObserver = make_unique<EditSoundObserver>(mpc);
 	}
 	else if (csn.find("startfine") != string::npos || csn.find("endfine") != string::npos || csn.compare("looptofine") == 0) {
 		//activeObserver = make_unique<ZoomObserver>(mpc->getSampler(), this);
 	}
 	else if (csn.compare("zone") == 0 || csn.compare("numberofzones") == 0) {
-		//activeObserver = make_unique<ZoneObserver>(mpc->getSampler(), this);
+		activeObserver = make_unique<ZoneObserver>(mpc);
 	}
 	else if (csn.compare("params") == 0) {
-		//activeObserver = make_unique<SndParamsObserver>(mpc->getSampler(), this);
+		activeObserver = make_unique<SndParamsObserver>(mpc);
 	}
 	else if (csn.compare("deleteallfiles") == 0) {
 		activeObserver = make_unique<DeleteAllFilesObserver>(mpc);
@@ -845,10 +845,10 @@ void LayeredScreen::initObserver()
 		//activeObserver = make_unique<SamplerWindowObserver>(mpc, this);
 	}
 	else if (csn.compare("purge") == 0) {
-		//activeObserver = make_unique<PurgeObserver>(gui);
+		activeObserver = make_unique<PurgeObserver>(mpc);
 	}
 	else if (csn.compare("drum") == 0) {
-		//activeObserver = make_unique<DrumObserver>(gui);
+		activeObserver = make_unique<DrumObserver>(mpc);
 	}
 	else if (csn.compare("muteassign") == 0) {
 		//activeObserver = make_unique<MuteAssignObserver>(this);
