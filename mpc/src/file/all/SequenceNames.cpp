@@ -20,7 +20,7 @@ using namespace mpc::file::all;
 
 SequenceNames::SequenceNames(vector<char> b)
 {
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < names.size(); i++) {
 		int offset = i * ENTRY_LENGTH;
 		string stringBuffer = "";
 		auto nameBytes = moduru::VecUtil::CopyOfRange(&b, offset, offset + AllParser::NAME_LENGTH);

@@ -89,7 +89,7 @@ Uis::Uis(mpc::Mpc* mpc)
 
 	//d2dRecorderGui = new mpc::ui::vmpc::DirectToDiskRecorderGui(weakThis);
 	//othersGui = new mpc::ui::other::OthersGui(weakThis);
-	//stepEditorGui = new mpc::ui::sequencer::StepEditorGui(mainFrame);
+	stepEditorGui = new mpc::ui::sequencer::StepEditorGui();
 	//audioGui = new mpc::ui::vmpc::AudioGui(mpc->getAudioMidiServices());
 
 

@@ -193,7 +193,7 @@ void ApsLoader::showPopup(string name, string ext, int sampleSize)
 		if (sleepTime < 300)
 			sleepTime = 300;
 		//this_thread::sleep_for(chrono::milliseconds((int)(sleepTime*mpc::maingui::Constants::TFACTOR)));
-		this_thread::sleep_for(chrono::milliseconds((int)(sleepTime* 1.0)));
+		this_thread::sleep_for(chrono::milliseconds((int)(sleepTime* 0.1)));
 	}
 }
 

@@ -21,7 +21,7 @@ namespace mpc {
 				static const int LENGTH{ 1782 };
 				static const int ENTRY_LENGTH{ 18 };
 				static const int LAST_EVENT_INDEX_OFFSET{ 16 };
-				std::vector<std::string> names = std::vector<std::string>(100);
+				std::vector<std::string> names = std::vector<std::string>(99);
 				std::vector<char> saveBytes{};
 
 			public:
