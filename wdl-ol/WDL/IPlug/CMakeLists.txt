@@ -63,6 +63,10 @@ endif(WIN32)
 
 add_library(iplug ${IPLUG_SRC} ${IPLUG_HEADERS} ${IPLUG_DOC_HEADERS} )
 
+	set_target_properties(iplug PROPERTIES COMPILE_FLAGS_RELEASE "/MD")
+	set_target_properties(iplug PROPERTIES COMPILE_FLAGS_DEBUG "/MDd")
+
+
 if (WIN32)
 	target_compile_options(iplug PRIVATE "/MD$<$<CONFIG:Debug>:d>")
 endif(WIN32)
