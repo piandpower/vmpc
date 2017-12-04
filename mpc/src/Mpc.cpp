@@ -29,7 +29,10 @@
 
 #include <hardware/Hardware.hpp>
 
-#include <Logger.hpp>
+#include <file/all/AllLoader.hpp>
+#include <file/aps/ApsLoader.hpp>
+
+#include <disk/MpcFile.hpp>
 
 using namespace mpc;
 using namespace std;
@@ -76,8 +79,22 @@ void Mpc::init()
 	diskController = make_unique<DiskController>(this);
 	diskController->initDisks();
 
-	layeredScreen->openScreen("sequencer");
+	/*
+	getDisk().lock()->moveForward("TEST2");	
+	getDisk().lock()->initFiles();
+	mpc::disk::MpcFile* f = getDisk().lock()->getFile("FRUTZLE.ALL");
+	auto allLoader = new mpc::file::all::AllLoader(this, f);
+	f = getDisk().lock()->getFile("FRUTZLE.APS");
+	auto apsLoader = new mpc::file::aps::ApsLoader(this, f);
+	delete allLoader;
+	while (getDisk().lock()->isBusy()) {
+		this_thread::sleep_for(chrono::milliseconds(10));
+	}
+	delete apsLoader;
+	sequencer->playFromStart();
+	*/
 
+	layeredScreen->openScreen("sequencer");
 }
 
 weak_ptr<ui::Uis> Mpc::getUis() {
