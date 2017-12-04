@@ -69,7 +69,7 @@ string StrUtil::padRight(string str, string pad, int size) {
 
 string StrUtil::trim(string str) {
 	string copy = str;
-	while (!copy.empty() && isspace(copy.back())) copy.pop_back();
+	while (!copy.empty() && copy.back() >=0 && copy.back() <= 255 && isspace(copy.back())) copy.pop_back();
 	return copy;
 }
 

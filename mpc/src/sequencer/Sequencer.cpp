@@ -505,7 +505,7 @@ void Sequencer::stop(int tick)
 	if (nextsq != -1) {
 		notifynextsq = true;
 		nextsq = -1;
-		mpc->getLayeredScreen().lock()->setFocus("sq", 0);
+		mpc->getLayeredScreen().lock()->setFocus("sq");
 	}
     recording = false;
     overdubbing = false;

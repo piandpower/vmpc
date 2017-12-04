@@ -377,7 +377,7 @@ void LayeredScreen::returnToLastFocus(string firstFieldOfThisScreen)
 	for (auto& lf : lastFocus) {
 		if (lf[0].compare(currentScreenName) == 0) {
 			focusCounter++;
-			setFocus(lf[1], currentLayer);
+			setFocus(lf[1]);
 		}
 	}
 	if (focusCounter == 0) {
@@ -385,7 +385,7 @@ void LayeredScreen::returnToLastFocus(string firstFieldOfThisScreen)
 		sa[0] = currentScreenName;
 		sa[1] = firstFieldOfThisScreen;
 		lastFocus.push_back(sa);
-		setFocus(firstFieldOfThisScreen, currentLayer);
+		setFocus(firstFieldOfThisScreen);
 	}
 }
 
@@ -863,12 +863,30 @@ string LayeredScreen::getFocus() {
 }
 
 void LayeredScreen::setFocus(string focus) {
+	string oldFocus = getFocus();
 	layers[currentLayer]->setFocus(focus);
+	MLOG("setFocus called, csn == " + currentScreenName);
+	if (currentScreenName.compare("directory") == 0) {
+		MLOG("oldFocus " + oldFocus);
+		MLOG("focus " + focus);
+	}
+	if (currentScreenName.compare("directory") == 0 && oldFocus.compare(focus) != 0 && oldFocus.compare("") != 0) {
+		auto oldtf = lookupField(oldFocus);
+		auto newtf = lookupField(focus);
+		MLOG("old tf " + oldtf.lock()->getName());
+		MLOG("new tf " + newtf.lock()->getName());
+		//oldtf.lock()->setOpaque(false);
+		//oldtf.lock()->setInverted(false);
+		newtf.lock()->setOpaque(true);
+		//newtf.lock()->setInverted(true);
+	}
 }
 
+/*
 void LayeredScreen::setFocus(string focus, int layer) {
 	layers[layer]->setFocus(focus);
 }
+*/
 
 LayeredScreen::~LayeredScreen() {
 	if (currentBackground != nullptr) {

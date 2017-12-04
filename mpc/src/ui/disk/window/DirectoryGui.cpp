@@ -274,12 +274,13 @@ void DirectoryGui::displayRightFields(vector<weak_ptr<mpc::lcdgui::Field>> tfa)
 
 void DirectoryGui::refreshFocus(vector<weak_ptr<mpc::lcdgui::Field>> tfa0, vector<weak_ptr<mpc::lcdgui::Field>> tfa1)
 {
+	MLOG("DirGui refreshFocus xPos == " + to_string(xPos));
 	auto ls = mpc->getLayeredScreen().lock();
 	if (xPos == 0) {
-		ls->setFocus(tfa0[yPos0].lock()->getName(), 1);
+		ls->setFocus(tfa0[yPos0].lock()->getName());
 	}
-	if (xPos == 1) {
-		ls->setFocus(tfa1[diskGui->getFileLoad() - yOffset1].lock()->getName(), 1);
+	else if (xPos == 1) {
+		ls->setFocus(tfa1[diskGui->getFileLoad() - yOffset1].lock()->getName());
 	}
 }
 

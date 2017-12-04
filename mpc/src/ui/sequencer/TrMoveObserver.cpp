@@ -103,7 +103,7 @@ void TrMoveObserver::displayTrFields()
 		tr1Field.lock()->Hide(true);
 		tr0Field.lock()->Hide(false);
 		auto tr0Name = s->getTrack(tmGui->getSelectedTrackIndex()).lock()->getName();
-		if (tr0Name.length() < 10) tr0Name = moduru::lang::StrUtil::padRight(tr0Name, " ", 9) + "\u00CD";
+		if (tr0Name.length() < 10) tr0Name = moduru::lang::StrUtil::padRight(tr0Name, " ", 9) + u8"\u00CD";
 		tr0Field.lock()->setText("Tr:" + moduru::lang::StrUtil::padLeft(to_string(tmGui->getSelectedTrackIndex() + 1), "0", 2) + "-" + tr0Name);
 		ls->drawFunctionKeyses("trmove_selected");
 	}

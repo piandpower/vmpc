@@ -62,7 +62,7 @@ void StepEditorControls::function(int i)
 			auto command = mpc::command::RemoveEvents(seGui, track.lock().get());
 			command.execute();
 			ls.lock()->openScreen("sequencer_step");
-			ls.lock()->setFocus("a0", 0);
+			ls.lock()->setFocus("a0");
 		}
 		else if (param.length() == 2) {
 			auto eventNumber = stoi(param.substr(1, 2));

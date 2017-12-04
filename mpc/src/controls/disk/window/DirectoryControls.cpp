@@ -1,14 +1,16 @@
-#include <controls/disk/window/DirectoryControls.hpp>
+#include "DirectoryControls.hpp"
 
 #include <Util.hpp>
 #include <disk/MpcFile.hpp>
 #include <ui/NameGui.hpp>
 #include <ui/disk/window/DirectoryGui.hpp>
+#include <lcdgui/Field.hpp>
 
 using namespace mpc::controls::disk::window;
 using namespace std;
 
-DirectoryControls::DirectoryControls(mpc::Mpc* mpc) : AbstractDiskControls(mpc)
+DirectoryControls::DirectoryControls(mpc::Mpc* mpc)
+	: AbstractDiskControls(mpc)
 {
 }
 

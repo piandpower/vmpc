@@ -73,7 +73,7 @@ void TrimObserver::displaySnd()
 {
 	auto lSampler = sampler.lock();
 	if (lSampler->getSoundCount() != 0) {
-		mpc->getLayeredScreen().lock()->setFocus(sndField.lock()->getName(), 0);
+		mpc->getLayeredScreen().lock()->setFocus(sndField.lock()->getName());
 		auto lSound = sound.lock();
 		lSound->deleteObserver(this);
 		lSound->getMsoc()->deleteObserver(this);
@@ -89,7 +89,7 @@ void TrimObserver::displaySnd()
 	}
 	else {
 		sndField.lock()->setText("(no sound)");
-		mpc->getLayeredScreen().lock()->setFocus("dummy", 0);
+		mpc->getLayeredScreen().lock()->setFocus("dummy");
 	}
 }
 

@@ -140,7 +140,7 @@ namespace mpc {
 		public:
 			std::string getFocus();
 			void setFocus(std::string focus);
-			void setFocus(std::string focus, int layer);
+			//void setFocus(std::string focus, int layer);
 
 		public:
 			LayeredScreen(mpc::Mpc* mpc);

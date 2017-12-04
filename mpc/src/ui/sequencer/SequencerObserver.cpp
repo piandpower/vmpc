@@ -244,7 +244,7 @@ void SequencerObserver::update(moduru::observer::Observable* o, boost::any arg)
 		if(lNextSqField->IsHidden()) {
 			lNextSqField->Hide(false);
 			nextSqLabel.lock()->Hide(false);
-			ls->setFocus("nextsq", 0);
+			ls->setFocus("nextsq");
 		}
 		lNextSqField->setTextPadded(lSequencer->getNextSq() + 1, " ");
 	}
@@ -252,7 +252,7 @@ void SequencerObserver::update(moduru::observer::Observable* o, boost::any arg)
 		lNextSqField->Hide(true);
 		nextSqLabel.lock()->Hide(true);
 		ls->drawFunctionKeyses("sequencer");
-		ls->setFocus("sq", 0);
+		ls->setFocus("sq");
 	}
 	else if (s.compare("notevalue") == 0) {
 		displayTiming();

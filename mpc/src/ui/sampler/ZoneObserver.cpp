@@ -76,7 +76,7 @@ void ZoneObserver::displaySnd()
 	auto lSampler = sampler.lock();
 	if (lSampler->getSoundCount() != 0) {
 		waveformLoadData();
-		mpc->getLayeredScreen().lock()->setFocus("snd", 0);
+		mpc->getLayeredScreen().lock()->setFocus("snd");
 		auto lSound = sound.lock();
 		lSound->deleteObserver(this);
 		lSound->getMsoc()->deleteObserver(this);
@@ -92,7 +92,7 @@ void ZoneObserver::displaySnd()
 	}
 	else {
 		sndField.lock()->setText("(no sound)");
-		mpc->getLayeredScreen().lock()->setFocus("dummy", 0);
+		mpc->getLayeredScreen().lock()->setFocus("dummy");
 	}
 }
 

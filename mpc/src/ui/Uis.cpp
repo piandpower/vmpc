@@ -49,10 +49,10 @@ Uis::Uis(mpc::Mpc* mpc)
 		for (int j = 0; j < 128; j++) {
 			string octaveString = to_string(octave);
 			if (octave == -2)
-				octaveString = "\u00D2";
+				octaveString = u8"\u00D2";
 
 			if (octave == -1)
-				octaveString = "\u00D3";
+				octaveString = u8"\u00D3";
 
 			noteNames[j] = someNoteNames[noteCounter] + octaveString;
 			noteCounter++;

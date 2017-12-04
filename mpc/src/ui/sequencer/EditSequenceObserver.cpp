@@ -310,8 +310,8 @@ void EditSequenceObserver::setNoteValues()
 
 void EditSequenceObserver::setMidiNoteValues()
 {
-	//midiNote0Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(editSequenceGui->getMidiNote0()), " ", 3) + "(" + mpc::ui::Uis::noteNames[editSequenceGui->getMidiNote0()] + "\u00D4");
-	//midiNote1Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(editSequenceGui->getMidiNote1()), " ", 3) + "(" + mpc::ui::Uis::noteNames[editSequenceGui->getMidiNote1()] + "\u00D4");
+	//midiNote0Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(editSequenceGui->getMidiNote0()), " ", 3) + "(" + mpc::ui::Uis::noteNames[editSequenceGui->getMidiNote0()] + u8"\u00D4");
+	//midiNote1Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(editSequenceGui->getMidiNote1()), " ", 3) + "(" + mpc::ui::Uis::noteNames[editSequenceGui->getMidiNote1()] + u8"\u00D4");
 }
 
 void EditSequenceObserver::setDrumNoteValue()

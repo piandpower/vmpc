@@ -102,7 +102,7 @@ void SndParamsObserver::displaySampleAndNewTempo()
         part1 = "---";
         part2 = "-";
     }
-	sampleTempoLabel.lock()->setText("Sample tempo=" + moduru::lang::StrUtil::padLeft(part1 + "\u00CB" + part2, " ", 5));
+	sampleTempoLabel.lock()->setText("Sample tempo=" + moduru::lang::StrUtil::padLeft(part1 + u8"\u00CB" + part2, " ", 5));
     auto newBpm = (int) (pow(2.0, (lSound->getTune() / 120.0) * bpm));
 	bpmString = to_string(newBpm);
     part1 = bpmString.substr(0, bpmString.length() - 1);
@@ -111,7 +111,7 @@ void SndParamsObserver::displaySampleAndNewTempo()
         part1 = "---";
         part2 = "-";
     }
-	newTempoLabel.lock()->setText("New tempo=" + moduru::lang::StrUtil::padLeft(part1 + "\u00CB" + part2, " ", 5));
+	newTempoLabel.lock()->setText("New tempo=" + moduru::lang::StrUtil::padLeft(part1 + u8"\u00CB" + part2, " ", 5));
 }
 
 void SndParamsObserver::displaySnd()

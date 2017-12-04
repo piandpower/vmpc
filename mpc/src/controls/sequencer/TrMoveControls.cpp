@@ -77,16 +77,16 @@ void TrMoveControls::function(int i)
 		break;
 	case 4:
 		if (tmGui->isSelected()) tmGui->cancel();
-		ls.lock()->setFocus("tr1", 0);
+		ls.lock()->setFocus("tr1");
 		break;
 	case 5:
 		if (tmGui->isSelected()) {
 			tmGui->insert(seq.lock().get());
-			ls.lock()->setFocus("tr1", 0);
+			ls.lock()->setFocus("tr1");
 		}
 		else {
 			tmGui->select();
-			ls.lock()->setFocus("tr0", 0);
+			ls.lock()->setFocus("tr0");
 		}
 		break;
 	}

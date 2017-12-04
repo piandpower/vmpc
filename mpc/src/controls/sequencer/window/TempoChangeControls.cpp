@@ -25,7 +25,7 @@ void TempoChangeControls::left()
     init();
 	if (param.length() == 2) {
         if(param[0] == 'a') {
-            ls.lock()->setFocus("tempochange", 1);
+            ls.lock()->setFocus("tempochange");
             return;
         }
     }
@@ -37,7 +37,7 @@ void TempoChangeControls::right()
 	init();
 	if (param.length() == 2) {
 		if (param[0] == 'f') {
-			ls.lock()->setFocus("initialtempo", 1);
+			ls.lock()->setFocus("initialtempo");
 			return;
 		}
 	}
@@ -66,7 +66,7 @@ void TempoChangeControls::function(int j)
 		if (swGui->getTempoChangeOffset() + yPos == tceList.size()) swGui->setTempoChangeOffset(swGui->getTempoChangeOffset() - 1);
 
 		ls.lock()->openScreen("tempochange");
-		ls.lock()->setFocus(string("a" + to_string(yPos)), 1);
+		ls.lock()->setFocus(string("a" + to_string(yPos)));
 		break;
 	case 2:
 		nowDetected = -1;
@@ -85,7 +85,7 @@ void TempoChangeControls::function(int j)
 			if (nowDetected > swGui->getTempoChangeOffset() + 3 || nowDetected < swGui->getTempoChangeOffset()) {
 				swGui->setTempoChangeOffset(nowDetected);
 			}
-			ls.lock()->setFocus(param.substr(0, 1) + to_string(nowDetected - swGui->getTempoChangeOffset()), 1);
+			ls.lock()->setFocus(param.substr(0, 1) + to_string(nowDetected - swGui->getTempoChangeOffset()));
 		}
 		break;
 	case 3:
@@ -204,27 +204,27 @@ void TempoChangeControls::down()
 	auto tce2 = swGui->getVisibleTempoChanges()[2].lock();
 
 	if (param.compare("tempochange") == 0) {
-		ls.lock()->setFocus("e0", 1);
+		ls.lock()->setFocus("e0");
 	}
 	else if (param.compare("initialtempo") == 0) {
-		ls.lock()->setFocus("f0", 1);
+		ls.lock()->setFocus("f0");
 	}
 	else if (param.length() == 2) {
 		if ((yPos == 1 && !tce1) || (yPos == 2 && !tce2)) {
 			return;
 		}
 		else if (yPos == 1 && !tce2) {
-			ls.lock()->setFocus("a2", 1);
+			ls.lock()->setFocus("a2");
 			return;
 		}
 		else if (yPos == 2) {
 			swGui->setTempoChangeOffset(swGui->getTempoChangeOffset() + 1);
 			if (swGui->getTempoChangeOffset() + yPos == sequence.lock()->getTempoChangeEvents().size() && param[0] != 'a') {
-				ls.lock()->setFocus("a2", 1);
+				ls.lock()->setFocus("a2");
 			}
 			return;
 		}
-		ls.lock()->setFocus(string(param.substr(0, 1) + to_string(yPos + 1)), 1);
+		ls.lock()->setFocus(string(param.substr(0, 1) + to_string(yPos + 1)));
 	}
 }
 
@@ -235,17 +235,17 @@ void TempoChangeControls::up()
 		if (yPos == 0) {
 			if (swGui->getTempoChangeOffset() == 0) {
 				if (param.compare("e0") == 0) {
-					ls.lock()->setFocus("tempochange", 1);
+					ls.lock()->setFocus("tempochange");
 				}
 				else if (param.compare("f0") == 0) {
-					ls.lock()->setFocus("initialtempo", 1);
+					ls.lock()->setFocus("initialtempo");
 				}
 				return;
 			}
 			swGui->setTempoChangeOffset(swGui->getTempoChangeOffset() - 1);
 			return;
 		}
-		ls.lock()->setFocus(param.substr(0, 1) + to_string(yPos - 1), 1);
+		ls.lock()->setFocus(param.substr(0, 1) + to_string(yPos - 1));
 		return;
 	}
 }

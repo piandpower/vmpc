@@ -17,6 +17,7 @@ using namespace std;
 
 DirectoryObserver::DirectoryObserver(weak_ptr<mpc::disk::AbstractDisk> disk, mpc::Mpc* mpc)
 {
+	this->mpc = mpc;
 	this->disk = disk;
 	auto lDisk = disk.lock();
 	lDisk->addObserver(this);
@@ -75,6 +76,8 @@ void DirectoryObserver::update(moduru::observer::Observable* o, boost::any a)
 {
 	string param = boost::any_cast<string>(a);
 
+	MLOG("DirObs update param " + param);
+
 	if (param.compare("disk") == 0) {
 		updateLeft();
 		updateRight();
@@ -130,11 +133,11 @@ void DirectoryObserver::drawGraphicsLeft()
 	a3->setText("");
 	a4->setText("");
 	auto fc = directoryGui->getFirstColumn();
-	auto currentDirIcons = vector<string>{ "\u00EF", "\u00F1", "\u00F0" };
-	auto dirIcons = vector<string>{ "\u00EA", "\u00EB", "\u00EC" };
-	string notRootDash = "\u00ED";
-	string onlyDirIcon = "\u00F3";
-	string rootIcon = "\u00EE";
+	auto currentDirIcons = vector<string>{ u8"\u00EF", u8"\u00F1", u8"\u00F0" };
+	auto dirIcons = vector<string>{ u8"\u00EA", u8"\u00EB", u8"\u00EC" };
+	string notRootDash = u8"\u00ED";
+	string onlyDirIcon = u8"\u00F3";
+	string rootIcon = u8"\u00EE";
 	int size = fc.size();
 	if (size == 0) {
 		a0->setText(rootIcon);
@@ -276,31 +279,31 @@ void DirectoryObserver::drawGraphicsRight()
 	auto a4 = a4Field.lock();
 
 	if (parentNames.size() == 0) {
-		a0Field.lock()->setText(padFileName(a0->getText(), "\u00DF"));
-		b0->setText("\u00E0");
+		a0Field.lock()->setText(padFileName(a0->getText(), u8"\u00DF"));
+		b0->setText(u8"\u00E0");
 	}
 
 	int size = firstColumn.size();
 
 	if (size - yOffset1 > 0 && directoryGui->getFileFromGrid(0, 0)->getName().compare(dirName) == 0) {
-		b0->setText("\u00E0");
-		a0Field.lock()->setText(padFileName(a0->getText(), "\u00DF"));
+		b0->setText(u8"\u00E0");
+		a0Field.lock()->setText(padFileName(a0->getText(), u8"\u00DF"));
 	}
 	if (size - yOffset1 > 1 && directoryGui->getFileFromGrid(0, 1)->getName().compare(dirName) == 0) {
-		b1->setText("\u00E0");
-		a1Field.lock()->setText(padFileName(a1->getText(), "\u00DF"));
+		b1->setText(u8"\u00E0");
+		a1Field.lock()->setText(padFileName(a1->getText(), u8"\u00DF"));
 	}
 	if (size - yOffset1 > 2 && directoryGui->getFileFromGrid(0, 2)->getName().compare(dirName) == 0) {
-		b2->setText("\u00E0");
-		a2Field.lock()->setText(padFileName(a2->getText(), "\u00DF"));
+		b2->setText(u8"\u00E0");
+		a2Field.lock()->setText(padFileName(a2->getText(), u8"\u00DF"));
 	}
 	if (size - yOffset1 > 3 && directoryGui->getFileFromGrid(0, 3)->getName().compare(dirName) == 0) {
-		b3->setText("\u00E0");
-		a3Field.lock()->setText(padFileName(a3->getText(), "\u00DF"));
+		b3->setText(u8"\u00E0");
+		a3Field.lock()->setText(padFileName(a3->getText(), u8"\u00DF"));
 	}
 	if (size - yOffset1 > 4 && directoryGui->getFileFromGrid(0, 4)->getName().compare(dirName) == 0) {
-		b4->setText("\u00E0");
-		a4Field.lock()->setText(padFileName(a4->getText(), "\u00DF"));
+		b4->setText(u8"\u00E0");
+		a4Field.lock()->setText(padFileName(a4->getText(), u8"\u00DF"));
 	}
 	
 	auto c0 = c0Label.lock();
@@ -311,53 +314,53 @@ void DirectoryObserver::drawGraphicsRight()
 
 	if (directoryGui->getFileFromGrid(1, 0) != nullptr && directoryGui->getFileFromGrid(1, 0)->isDirectory()) {
 		if (yOffset2 == 0) {
-			c0->setText("\u00E1");
+			c0->setText(u8"\u00E1");
 		}
 		else {
-			c0->setText("\u00E6");
+			c0->setText(u8"\u00E6");
 		}
 	}
 	else {
 		if (yOffset2 == 0) {
-			c0->setText("\u00E5");
+			c0->setText(u8"\u00E5");
 		}
 		else {
-			c0->setText("\u00E3");
+			c0->setText(u8"\u00E3");
 		}
 	}
 
 	if (directoryGui->getFileFromGrid(1, 1) != nullptr && directoryGui->getFileFromGrid(1, 1)->isDirectory()) {
-		c1->setText("\u00E6");
+		c1->setText(u8"\u00E6");
 	}
 	else {
-		c1->setText("\u00E3");
+		c1->setText(u8"\u00E3");
 	}
 	if (directoryGui->getFileFromGrid(1, 2) != nullptr && directoryGui->getFileFromGrid(1, 2)->isDirectory()) {
-		c2->setText("\u00E6");
+		c2->setText(u8"\u00E6");
 	}
 	else {
-		c2->setText("\u00E3");
+		c2->setText(u8"\u00E3");
 	}
 	if (directoryGui->getFileFromGrid(1, 3) != nullptr && directoryGui->getFileFromGrid(1, 3)->isDirectory()) {
-		c3->setText("\u00E6");
+		c3->setText(u8"\u00E6");
 	}
 	else {
-		c3->setText("\u00E3");
+		c3->setText(u8"\u00E3");
 	}
 	if (directoryGui->getFileFromGrid(1, 4) != nullptr && directoryGui->getFileFromGrid(1, 4)->isDirectory()) {
 		if (yOffset2 + 5 == secondColumn.size()) {
-			c4->setText("\u00E2");
+			c4->setText(u8"\u00E2");
 		}
 		else {
-			c4->setText("\u00E6");
+			c4->setText(u8"\u00E6");
 		}
 	}
 	else {
 		if (yOffset2 + 5 == secondColumn.size() || secondColumn.size() <= 5) {
-			c4->setText("\u00E4");
+			c4->setText(u8"\u00E4");
 		}
 		else {
-			c4->setText("\u00E3");
+			c4->setText(u8"\u00E3");
 		}
 	}
 }
@@ -370,4 +373,5 @@ string DirectoryObserver::padFileName(string s, string pad) {
 DirectoryObserver::~DirectoryObserver() {
 	auto lDisk = disk.lock();
 	lDisk->deleteObserver(this);
+	directoryGui->deleteObserver(this);
 }

@@ -367,8 +367,8 @@ void StepEditorObserver::setViewModeNotesText()
 		}
 	}
 	else if (stepEditorGui->getViewModeNumber() == 1 && lTrk->getBusNumber() == 0) {
-		fromNoteField.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(stepEditorGui->getNoteA()), " ", 3) + "(" + mpc::ui::Uis::noteNames[stepEditorGui->getNoteA()] + "\u00D4");
-		toNoteField.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(stepEditorGui->getNoteB()), " ", 3) + "(" + mpc::ui::Uis::noteNames[stepEditorGui->getNoteB()] + "\u00D4");
+		fromNoteField.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(stepEditorGui->getNoteA()), " ", 3) + "(" + mpc::ui::Uis::noteNames[stepEditorGui->getNoteA()] + u8"\u00D4");
+		toNoteField.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(stepEditorGui->getNoteB()), " ", 3) + "(" + mpc::ui::Uis::noteNames[stepEditorGui->getNoteB()] + u8"\u00D4");
 	}
 	else if (stepEditorGui->getViewModeNumber() == 3) {
 		if (stepEditorGui->getControlNumber() == -1) controlNumberField.lock()->setText("   -    ALL");
