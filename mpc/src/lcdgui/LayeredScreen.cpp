@@ -120,7 +120,6 @@ static vector<string> soundNames = vector<string>{ "sound", "deletesound", "dele
 static vector<string> soundGuiNames = vector<string>{ "trim", "loop", "zone" };
 
 LayeredScreen::LayeredScreen(mpc::Mpc* mpc) 
-//	: IPanelControl(pPlug, *Constants::LCD_RECT(), Constants::LCD_OFF())
 {
 	this->mpc = mpc;
 	pixels = std::vector < std::vector <bool>>(248, std::vector<bool>(60));
@@ -314,6 +313,7 @@ void LayeredScreen::Draw() {
 		if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
 		if (i == currentLayer && currentScreenName.compare("name") == 0 && underline->IsDirty()) underline->Draw(&pixels);
 	}
+	if (popup->IsDirty()) popup->Draw(&pixels);
 }
 
 bool LayeredScreen::IsDirty() {
@@ -329,7 +329,10 @@ bool LayeredScreen::IsDirty() {
 		for (auto& c : components) {
 			if (c.lock()->IsDirty()) return true;
 		}
+		if (layers[i]->getFunctionKeys()->IsDirty()) return true;
+		if (underline->IsDirty()) return true;
 	}
+	if (popup->IsDirty()) return true;
 	return false;
 }
 
@@ -339,8 +342,8 @@ Layer* LayeredScreen::getLayer(int i) {
 
 void LayeredScreen::createPopup(string text, int textXPos)
 {
-	//popup->Hide(false);
-	//popup->setText(text, textXPos);
+	popup->Hide(false);
+	popup->setText(text, textXPos);
 }
 
 mpc::lcdgui::Background* LayeredScreen::getCurrentBackground()

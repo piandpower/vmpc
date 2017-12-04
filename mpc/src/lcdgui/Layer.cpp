@@ -128,7 +128,7 @@ string Layer::getFocus() {
 string Layer::openScreen(Value& screenJson, string screenName) {
 	moduru::Logger::l.log("Opening screen " + screenName + "\n");
 	focus = "";
-	//bg->Hide(false);
+	bg->Hide(false);
 	bg->setName(screenName);
 	Value& labels = screenJson["labels"];
 	Value& x = screenJson["x"];

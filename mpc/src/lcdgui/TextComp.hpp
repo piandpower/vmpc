@@ -1,10 +1,7 @@
 #pragma once
-
 #include "Component.hpp"
 
-//#include <maingui/Constants.hpp>
 #include <string>
-
 #include <vector>
 #include <memory>
 #include <thread>

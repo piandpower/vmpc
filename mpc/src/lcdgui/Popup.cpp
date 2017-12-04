@@ -1,5 +1,7 @@
-#include <lcdgui/Popup.hpp>
+#include "Popup.hpp"
+
 #include <lcdgui/Background.hpp>
+#include <lcdgui/Label.hpp>
 
 #include <cmath>
 
@@ -10,7 +12,6 @@ Popup::Popup()
 {
 	bg = make_unique<Background>();
 	bg->setName("popup");
-	//plugBase->GetGUI()->AttachControl(bg.get());
 	//int x = maingui::Constants::POPUP_RECT()->L + 20;
 	//int y = maingui::Constants::POPUP_RECT()->T + 12;
 	int textWidth = 200;
@@ -22,15 +23,17 @@ void Popup::setText(string text, int pos)
 {
 	this->text = text;
 	this->pos = pos;
-	//SetDirty(true);
+	SetDirty();
 }
 
-/*
-bool Popup::Draw(IGraphics* g)
+void Popup::Draw(std::vector<std::vector<bool> >* pixels)
 {
-	bg->Draw(g);
-	char* textChars = &text[0];
-	g->DrawIText(Constants::FONT_OFF(), textChars, &textRect);
-	return true;
+	if (IsHidden()) return;
+	bg->Draw(pixels);
+	lcdgui::Label l;
+	l.initialize("popup", text, 43, 23, text.size());
+	l.setOpaque(true);
+	l.setInverted(true);
+	l.Draw(pixels);
+	dirty = false;
 }
-*/

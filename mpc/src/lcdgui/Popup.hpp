@@ -15,13 +15,14 @@ namespace mpc {
 
 		private:
 			int pos{ 0 };
-			//IRECT textRect;
 			std::string text{ "" };
 			std::unique_ptr<Background> bg;
 
 		public:
 			void setText(std::string text, int pos);
-			//bool Draw(IGraphics* mGraphics) override;
+
+		public:
+			void Draw(std::vector<std::vector<bool> >* pixels) override;
 
 			Popup();
 

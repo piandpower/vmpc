@@ -100,7 +100,7 @@ void FunctionKeys::Draw(std::vector<std::vector<bool> >* pixels) {
 			pixels->at(x1).at(51) = border;
 			pixels->at(x1).at(59) = border;
 		}
-
+		
 		for (int j = 52; j < 59; j++) {
 			pixels->at(xPos[i]).at(j) = border;
 			pixels->at(xPos[i] + 38).at(j) = border;
@@ -116,7 +116,6 @@ void FunctionKeys::Draw(std::vector<std::vector<bool> >* pixels) {
 		l.setInverted(!label);
 		l.setOpaque(false);
 		l.Draw(pixels);
-		//ig->DrawIText(label, &names[i][0], &tmp);
 	}
 	dirty = false;
 }
