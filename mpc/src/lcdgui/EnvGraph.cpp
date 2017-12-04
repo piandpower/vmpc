@@ -1,29 +1,46 @@
 #include <lcdgui/EnvGraph.hpp>
 
+#include <gui/Bressenham.hpp>
+
 using namespace mpc::lcdgui;
 using namespace std;
 
-EnvGraph::EnvGraph(vector<vector<int>> coordinates) 
+EnvGraph::EnvGraph() {
+}
+
+EnvGraph::EnvGraph(vector<vector<int> > coordinates) 
 {
 	this->coordinates = coordinates;
 }
 
-void EnvGraph::setCoordinates(vector<vector<int>> ia)
+void EnvGraph::setCoordinates(vector<vector<int> > ia)
 {
     coordinates = ia;
 	SetDirty();
 }
 
-//bool EnvGraph::Draw(IGraphics* g1)
-//{
-//    //auto g = Graphics2D(g1);
-//    //auto envGraph = new BufferedImage(248, 60);
-//    //auto ig = envGraph->createGraphics();
-//    //ig->setStroke(BasicStroke(1));
-//	//ig->setColor(gui::Constants::LCD_ON());
-//    for (int j = 0; j < coordinates.size(); j++) {
-//        //ig->drawLine(coordinates[j][0], coordinates[j][1], coordinates[j][2], coordinates[j][3]);
-//    }
-//    //g->drawImage(envGraph, getScaleInstance(2, 2), this);
-//	return true;
-//}
+void EnvGraph::Draw(std::vector<std::vector<bool> >* pixels)
+{
+	int xoff = 76;
+	int yoff = 16;
+	int width = 44;
+	int height = 28;
+	for (int x = 0; x < width-1; x++) {
+		for (int y = 0; y < height-1; y++) {
+			int x1 = xoff + x;
+			int y1 = yoff + y;
+			if (y1 == 24 && x1 >= 93 && x1 <= 101) continue;
+			pixels->at(x1)[y1] = false;
+		}
+	}
+	for (auto& c : coordinates) {
+		auto linePixels = moduru::gui::Bressenham::Line(c[0], c[1], c[2], c[3]);
+		for (auto& l : linePixels) {
+			pixels->at(l[0]).at(l[1]) = true;
+		}
+	}
+	dirty = false;
+}
+
+EnvGraph::~EnvGraph() {
+}

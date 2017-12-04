@@ -1,6 +1,5 @@
 #pragma once
 #include "Component.hpp"
-//#include <IControl.h>
 
 #include <vector>
 
@@ -8,7 +7,6 @@ namespace mpc {
 	namespace lcdgui {
 		class EnvGraph
 			: public Component
-			//: public IPanelControl
 		{
 
 		private:
@@ -16,9 +14,12 @@ namespace mpc {
 
 		public:
 			virtual void setCoordinates(std::vector<std::vector<int>> ia);
-			//bool Draw(IGraphics* pGraphics) override;
+			void Draw(std::vector<std::vector<bool> >* pixels) override;
 
+		public:
+			EnvGraph();
 			EnvGraph(std::vector<std::vector<int>> coordinates);
+			~EnvGraph();
 
 		};
 

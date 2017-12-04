@@ -134,6 +134,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	knobs = vector<shared_ptr<Knob>>(16);
 
 	underline = make_shared<mpc::lcdgui::Underline>();
+	envGraph = make_shared<mpc::lcdgui::EnvGraph>();
 
 	//IRECT dotsRect(0, 0, 496, 50);
 
@@ -298,7 +299,7 @@ std::vector<std::vector<bool> >* LayeredScreen::getPixels() {
 }
 
 void LayeredScreen::Draw() {
-	for (int i = 0; i <= currentLayer; i++) {
+	for (int i = currentLayer; i <= currentLayer; i++) {
 		if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
 		auto components = layers[i]->getAllLabels();
 		for (auto& c : components) {
@@ -313,10 +314,11 @@ void LayeredScreen::Draw() {
 		if (i == currentLayer && currentScreenName.compare("name") == 0 && underline->IsDirty()) underline->Draw(&pixels);
 	}
 	if (popup->IsDirty()) popup->Draw(&pixels);
+	if (envGraph->IsDirty()) envGraph->Draw(&pixels);
 }
 
 bool LayeredScreen::IsDirty() {
-	for (int i = 0; i < 3; i++) {
+	for (int i = currentLayer; i <= currentLayer; i++) {
 		if (layers[i]->getBackground()->IsDirty() || layers[i]->getFunctionKeys()->IsDirty()) return true;
 
 		auto components = layers[i]->getAllLabels();
@@ -332,6 +334,7 @@ bool LayeredScreen::IsDirty() {
 		if (underline->IsDirty()) return true;
 	}
 	if (popup->IsDirty()) return true;
+	if (envGraph->IsDirty()) return true;
 	return false;
 }
 
