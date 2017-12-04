@@ -2,7 +2,6 @@
 
 #include <lcdgui/LayeredScreen.hpp>
 //#include <hardware/LedPanel.hpp>
-//#include <maingui/MainFrame.hpp>
 #include <ui/sequencer/SequencerGui.hpp>
 
 using namespace mpc::controls::sequencer::window;
@@ -28,15 +27,16 @@ void Assign16LevelsControls::function(int i)
 void Assign16LevelsControls::turnWheel(int i)
 {
 	init();
-	if (param.compare("note") == 0)
+	if (param.compare("note") == 0) {
 		sequencerGui->setNote(sequencerGui->getNote() + i);
-
-	if (param.compare("param") == 0)
+	}
+	else if (param.compare("param") == 0) {
 		sequencerGui->setParameter(sequencerGui->getParameter() + i);
-
-	if (param.compare("type") == 0)
+	}
+	else if (param.compare("type") == 0) {
 		sequencerGui->setType(sequencerGui->getType() + i);
-
-	if (param.compare("originalkeypad") == 0)
+	}
+	else if (param.compare("originalkeypad") == 0) {
 		sequencerGui->setOriginalKeyPad(sequencerGui->getOriginalKeyPad() + i);
+	}
 }

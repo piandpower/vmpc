@@ -325,8 +325,7 @@ void NameControls::saveName() {
 void NameControls::keyEvent(unsigned char e)
 {
 	init();
-	auto lGui = gui.lock();
-	if (!(e == KbMapping::left() || e == KbMapping::right() || e == KbMapping::dataWheelBack())) {
+		if (!(e == KbMapping::left() || e == KbMapping::right() || e == KbMapping::dataWheelBack())) {
 		for (int i = 0; i < akaiAsciiChar.size(); i++) {
 			if (e == akaiAsciiChar[i]) {
 				auto offset = 1;
@@ -341,14 +340,14 @@ void NameControls::keyEvent(unsigned char e)
 				if (!nameGui->isNameBeingEdited()) nameGui->setNameBeingEdited(true);
 
 				initEditColors();
-				auto lMainFrame = mainFrame.lock();
-				lMainFrame->lookupField(to_string(position)).lock()->setText(string{ akaiAsciiChar[i] });
+				auto lLs = ls.lock();
+				lLs->lookupField(to_string(position)).lock()->setText(string{ akaiAsciiChar[i] });
 				lMainFrame->setFocus(to_string(position), 2);
 			}
 		}
 	}
 	if (e != KbMapping::numPadShift()) lGui->setPreviousKeyStroke(e);
-	auto lMainFrame = mainFrame.lock();
+	auto lLs = ls.lock();
 	auto lLs = ls.lock();
 	drawUnderline();
 }

@@ -49,12 +49,11 @@
 #include <ui/sampler/SoundObserver.hpp>
 #include <ui/sampler/TrimObserver.hpp>
 #include <ui/sampler/ZoneObserver.hpp>
-/*
+
 #include <ui/sampler/window/EditSoundObserver.hpp>
 #include <ui/sampler/window/MuteAssignObserver.hpp>
 #include <ui/sampler/window/SamplerWindowObserver.hpp>
 #include <ui/sampler/window/ZoomObserver.hpp>
-*/
 
 #include <ui/NameObserver.hpp>
 
@@ -830,10 +829,10 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<LoopObserver>(mpc);
 	}
 	else if (csn.compare("editsound") == 0) {
-		//activeObserver = make_unique<EditSoundObserver>(mpc);
+		activeObserver = make_unique<EditSoundObserver>(mpc);
 	}
 	else if (csn.find("startfine") != string::npos || csn.find("endfine") != string::npos || csn.compare("looptofine") == 0) {
-		//activeObserver = make_unique<ZoomObserver>(mpc->getSampler(), this);
+		activeObserver = make_unique<ZoomObserver>(mpc);
 	}
 	else if (csn.compare("zone") == 0 || csn.compare("numberofzones") == 0) {
 		activeObserver = make_unique<ZoneObserver>(mpc);
@@ -845,7 +844,7 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<DeleteAllFilesObserver>(mpc);
 	}
 	else if (checkActiveScreen(&samplerWindowNames, csn)) {
-		//activeObserver = make_unique<SamplerWindowObserver>(mpc, this);
+		activeObserver = make_unique<SamplerWindowObserver>(mpc);
 	}
 	else if (csn.compare("purge") == 0) {
 		activeObserver = make_unique<PurgeObserver>(mpc);
@@ -854,7 +853,7 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<DrumObserver>(mpc);
 	}
 	else if (csn.compare("muteassign") == 0) {
-		//activeObserver = make_unique<MuteAssignObserver>(this);
+		activeObserver = make_unique<MuteAssignObserver>(mpc);
 	}
 }
 

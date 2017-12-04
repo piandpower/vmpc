@@ -43,8 +43,7 @@ void FrameSeq::work(int nFrames) {
 	if (!running) {
 		return;
 	}
-	//auto lGui = gui.lock();
-	//auto kbmc = lGui->getKb().lock();
+	//	//auto kbmc = lGui->getKb().lock();
 	auto lSequencer = sequencer.lock();
 	if (!lSequencer->isCountingIn()) lSequencer->notify("now");
 

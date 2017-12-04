@@ -1,8 +1,7 @@
 #include "Background.hpp"
 //#include <maingui/Constants.hpp>
 #include <StartUp.hpp>
-//////#include <maingui/Gui.hpp>
-#include <iostream>
+//////#include <iostream>
 //#include <IGraphics.h>
 
 using namespace mpc::lcdgui;

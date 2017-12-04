@@ -333,8 +333,7 @@ bool Sequencer::isPlaying()
 void Sequencer::play(bool fromStart)
 {
     if(isPlaying()) return;
-	//auto lGui = gui.lock();
-    endOfSong = false;
+	//    endOfSong = false;
     repeats = 0;
 	//auto currentSong = songs[lGui->getSongGui()->getSelectedSongIndex()];
     Step* currentStep = nullptr;
@@ -412,8 +411,7 @@ void Sequencer::undoSeq()
 	undoPlaceHolder = copySequence(sequences[activeSequenceIndex]);
 	sequences[activeSequenceIndex] = s;
 	lastRecordingActive = !lastRecordingActive;
-	//auto lGui = gui.lock();
-	//lGui->getMainFrame().lock()->getLedPanel().lock()->setUndoSeq(lastRecordingActive);
+	//	//lGui->getMainFrame().lock()->getLedPanel().lock()->setUndoSeq(lastRecordingActive);
 }
 
 void Sequencer::clearUndoSeq()
@@ -421,8 +419,7 @@ void Sequencer::clearUndoSeq()
     if(isPlaying()) return;
     undoPlaceHolder = nullptr;
     lastRecordingActive = false;
-	//auto lGui = gui.lock();
-	//lGui->getMainFrame().lock()->getLedPanel().lock()->setUndoSeq(false);
+	//	//lGui->getMainFrame().lock()->getLedPanel().lock()->setUndoSeq(false);
 }
 
 void Sequencer::playFromStart()
@@ -463,8 +460,7 @@ void Sequencer::switchRecordToOverDub()
 	if (!isRecording()) return;
 	recording = false;
 	overdubbing = true;
-	//auto lGui = gui.lock();
-	//auto lMainFrame = lGui->getMainFrame().lock();
+	//	//auto lMainFrame = lGui->getMainFrame().lock();
 	//auto ledPanel = lMainFrame->getLedPanel().lock();
 	//ledPanel->setOverDub(true);
 	//ledPanel->setRec(false);
@@ -878,8 +874,7 @@ int Sequencer::getLoopEnd()
 
 weak_ptr<Sequence> Sequencer::getActiveSequence()
 {
-//	auto lGui = gui.lock();
-//	if (songMode && songs[lGui->getSongGui()->getSelectedSongIndex()]->getStepAmount() != 0)
+//	//	if (songMode && songs[lGui->getSongGui()->getSelectedSongIndex()]->getStepAmount() != 0)
 //		return sequences[getSongSequenceIndex() >= 0 ? getSongSequenceIndex() : activeSequenceIndex];
 	return sequences[activeSequenceIndex];
 }
@@ -1138,8 +1133,7 @@ void Sequencer::setSelectedTrackIndex(int i)
 
 int Sequencer::getCurrentlyPlayingSequenceIndex()
 {
-	//auto lGui = gui.lock();
-	//auto songseq = songMode ? songs[lGui->getSongGui()->getSelectedSongIndex()]->getStep(lGui->getSongGui()->getOffset() + 1)->getSequence() : -1;
+	//	//auto songseq = songMode ? songs[lGui->getSongGui()->getSelectedSongIndex()]->getStep(lGui->getSongGui()->getOffset() + 1)->getSequence() : -1;
 	//return songMode ? songseq : currentlyPlayingSequenceIndex;
 	return getActiveSequenceIndex();
 }
@@ -1240,8 +1234,7 @@ void Sequencer::setSongModeEnabled(bool b)
 
 int Sequencer::getSongSequenceIndex()
 {
-	//auto lGui = gui.lock();
-	//auto song = songs[lGui->getSongGui()->getSelectedSongIndex()];
+	//	//auto song = songs[lGui->getSongGui()->getSelectedSongIndex()];
 	//auto step = lGui->getSongGui()->getOffset() + 1;
 	//if (step > song->getStepAmount() - 1)
 	//	step = song->getStepAmount() - 1;
@@ -1281,8 +1274,7 @@ void Sequencer::storeActiveSequenceInPlaceHolder()
 {
 	undoPlaceHolder = copySequence(sequences[activeSequenceIndex]);
 	lastRecordingActive = true;
-	//auto lGui = gui.lock();
-	//lGui->getMainFrame().lock()->getLedPanel().lock()->setUndoSeq(lastRecordingActive);
+	//	//lGui->getMainFrame().lock()->getLedPanel().lock()->setUndoSeq(lastRecordingActive);
 }
 
 bool Sequencer::isOverDubbing()

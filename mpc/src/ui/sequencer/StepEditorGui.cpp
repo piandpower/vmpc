@@ -277,7 +277,7 @@ vector<weak_ptr<mpc::sequencer::Event>> StepEditorGui::getPlaceHolder()
 void StepEditorGui::checkSelection()
 {
 	/*
-	auto lMainFrame = mainFrame.lock();
+	auto lLs = ls.lock();
 	string focus = lMainFrame->getFocus(0);
     if (focus.length() == 2) {
         int eventNumber = stoi(focus.substr(1, 2));

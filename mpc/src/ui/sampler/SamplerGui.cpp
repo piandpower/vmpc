@@ -2,8 +2,7 @@
 
 #include <Mpc.hpp>
 //#include <hardware/LedPanel.hpp>
-//////#include <maingui/MainFrame.hpp>
-#include <sequencer/Sequence.hpp>
+//////#include <sequencer/Sequence.hpp>
 #include <sequencer/Track.hpp>
 #include <sequencer/Sequencer.hpp>
 

@@ -30,7 +30,7 @@ void GlobalReleaseControls::keyEvent(unsigned char kc)
 {
 	init();
 	auto lSequencer = sequencer.lock();
-	auto lMainFrame = mainFrame.lock();
+	auto lLs = ls.lock();
 	auto ledPanel = lMainFrame->getLedPanel().lock();
 	if (kc == KbMapping::goTo())
 		KbMouseController::goToIsPressed() = false;

@@ -1,8 +1,7 @@
 #include <sampler/MonitorOutput.hpp>
 
 #include <sampler/Sampler.hpp>
-//////#include <maingui/Gui.hpp>
-//#include <lcdgui/LayeredScreen.hpp>
+////////#include <lcdgui/LayeredScreen.hpp>
 //#include <lcdgui/LayeredScreen.hpp>
 //#include <ui/sampler/SamplerGui.hpp>
 #include <sampler/Sampler.hpp>
@@ -29,8 +28,7 @@ void MonitorOutput::open()
 int32_t MonitorOutput::processAudio(ctoot::audio::core::AudioBuffer* buffer, int nFrames)
 {
 	/*
-	auto lGui = gui.lock();
-	if (sampler->monitorBufferL == nullptr || sampler->monitorBufferR == nullptr || lGui->getSamplerGui()->getMonitor() == 0 || lGui->getMainFrame().lock()->getLayeredScreen().lock()->getCurrentScreenName().compare("sample") != 0 || closed) {
+		if (sampler->monitorBufferL == nullptr || sampler->monitorBufferR == nullptr || lGui->getSamplerGui()->getMonitor() == 0 || lGui->getMainFrame().lock()->getLayeredScreen().lock()->getCurrentScreenName().compare("sample") != 0 || closed) {
 		buffer->makeSilence();
 		return AUDIO_SILENCE;
 	}

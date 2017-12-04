@@ -81,8 +81,7 @@ void Sampler::work(int nFrames)
 {
 	/*
 	if (input == nullptr && inputSwap == nullptr) return;
-	auto lGui = gui.lock();
-	if (!lGui) return;
+		if (!lGui) return;
 	if (!lGui->getMainFrame().lock()) return;
 	auto lMainFrame = lGui->getMainFrame().lock();
 	auto ls = lMainFrame->getLayeredScreen().lock();
@@ -676,8 +675,7 @@ string Sampler::addOrIncreaseNumber2(string s) {
 Pad* Sampler::getLastPad(Program* program)
 {
 	/*
-	auto lGui = gui.lock();
-	auto lastValidPad = lGui->getSamplerGui()->getPad();
+		auto lastValidPad = lGui->getSamplerGui()->getPad();
 	if (lastValidPad == -1) lastValidPad = lGui->getSamplerGui()->getPrevPad();
 	return program->getPad(lastValidPad);
 	*/
@@ -687,8 +685,7 @@ Pad* Sampler::getLastPad(Program* program)
 NoteParameters* Sampler::getLastNp(Program* program)
 {
 	/*
-	auto lGui = gui.lock();
-	auto lastValidNote = lGui->getSamplerGui()->getNote();
+		auto lastValidNote = lGui->getSamplerGui()->getNote();
 	if (lastValidNote == 34) lastValidNote = lGui->getSamplerGui()->getPrevNote();
 	return program->getNoteParameters(lastValidNote);
 	*/
@@ -820,8 +817,7 @@ void Sampler::arm()
 void Sampler::record()
 {
 	/*
-	auto lGui = gui.lock();
-	int recSize = 0;
+		int recSize = 0;
 	recSize = lGui->getSamplerGui()->getTime() * 4410;
 	lGui->getMainFrame().lock()->getLayeredScreen().lock()->getCurrentBackground()->setName("recording");
 	recordBufferL = vector<float>(recSize);

@@ -23,13 +23,13 @@ void OthersControls::function(int i)
 	}
 }
 
-void OthersControls::turnWheel(int increment)
+void OthersControls::turnWheel(int i)
 {
     init();
     //if(param.compare("tapaveraging") == 0 && !mpc::controls::KbMouseController::altIsPressed())
-    //    lGui->getOthersGui()->setTapAveraging(lGui->getOthersGui()->getTapAveraging() + notch);
+    //    lGui->getOthersGui()->setTapAveraging(lGui->getOthersGui()->getTapAveraging() + i);
 
   //  if(mpc::controls::KbMouseController::altIsPressed())
-//        lGui->getOthersGui()->setContrast(lGui->getOthersGui()->getContrast() + notch);
+//        lGui->getOthersGui()->setContrast(lGui->getOthersGui()->getContrast() + i);
 
 }

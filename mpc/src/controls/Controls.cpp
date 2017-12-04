@@ -49,6 +49,42 @@
 #include <controls/sequencer/dialog/DeleteTrackControls.hpp>
 #include <controls/sequencer/dialog/MetronomeSoundControls.hpp>
 
+#include <controls/sampler/DrumControls.hpp>
+#include <controls/sampler/InitPadAssignControls.hpp>
+#include <controls/sampler/LoopControls.hpp>
+#include <controls/sampler/PgmAssignControls.hpp>
+#include <controls/sampler/PgmParamsControls.hpp>
+#include <controls/sampler/PurgeControls.hpp>
+#include <controls/sampler/SampleControls.hpp>
+#include <controls/sampler/SelectDrumControls.hpp>
+#include <controls/sampler/SndParamsControls.hpp>
+#include <controls/sampler/TrimControls.hpp>
+#include <controls/sampler/ZoneControls.hpp>
+#include <controls/sampler/dialog/ConvertSoundControls.hpp>
+#include <controls/sampler/dialog/CopyProgramControls.hpp>
+#include <controls/sampler/dialog/CopySoundControls.hpp>
+#include <controls/sampler/dialog/CreateNewProgramControls.hpp>
+#include <controls/sampler/dialog/DeleteAllProgramsControls.hpp>
+#include <controls/sampler/dialog/DeleteAllSoundControls.hpp>
+#include <controls/sampler/dialog/DeleteProgramControls.hpp>
+#include <controls/sampler/dialog/DeleteSoundControls.hpp>
+#include <controls/sampler/dialog/MonoToStereoControls.hpp>
+#include <controls/sampler/dialog/ResampleControls.hpp>
+#include <controls/sampler/dialog/StereoToMonoControls.hpp>
+#include <controls/sampler/window/AssignmentViewControls.hpp>
+#include <controls/sampler/window/AutoChromaticAssignmentControls.hpp>
+#include <controls/sampler/window/CopyNoteParametersControls.hpp>
+#include <controls/sampler/window/EditSoundControls.hpp>
+#include <controls/sampler/window/KeepOrRetryControls.hpp>
+#include <controls/sampler/window/MuteAssignControls.hpp>
+#include <controls/sampler/window/NumberOfZonesControls.hpp>
+#include <controls/sampler/window/ProgramControls.hpp>
+#include <controls/sampler/window/SoundControls.hpp>
+#include <controls/sampler/window/VeloEnvFilterControls.hpp>
+#include <controls/sampler/window/VeloPitchControls.hpp>
+#include <controls/sampler/window/VelocityModulationControls.hpp>
+#include <controls/sampler/window/ZoomControls.hpp>
+
 #include <controls/disk/FormatControls.hpp>
 #include <controls/disk/LoadControls.hpp>
 #include <controls/disk/SaveControls.hpp>
@@ -94,42 +130,6 @@
 #include <controls/mixer/MixerSetupControls.hpp>
 #include <controls/mixer/SelectDrumMixerControls.hpp>
 #include <controls/mixer/window/ChannelSettingsControls.hpp>
-
-#include <controls/sampler/DrumControls.hpp>
-#include <controls/sampler/InitPadAssignControls.hpp>
-#include <controls/sampler/LoopControls.hpp>
-#include <controls/sampler/PgmAssignControls.hpp>
-#include <controls/sampler/PgmParamsControls.hpp>
-#include <controls/sampler/PurgeControls.hpp>
-#include <controls/sampler/SampleControls.hpp>
-#include <controls/sampler/SelectDrumControls.hpp>
-#include <controls/sampler/SndParamsControls.hpp>
-#include <controls/sampler/TrimControls.hpp>
-#include <controls/sampler/ZoneControls.hpp>
-#include <controls/sampler/dialog/ConvertSoundControls.hpp>
-#include <controls/sampler/dialog/CopyProgramControls.hpp>
-#include <controls/sampler/dialog/CopySoundControls.hpp>
-#include <controls/sampler/dialog/CreateNewProgramControls.hpp>
-#include <controls/sampler/dialog/DeleteAllProgramsControls.hpp>
-#include <controls/sampler/dialog/DeleteAllSoundControls.hpp>
-#include <controls/sampler/dialog/DeleteProgramControls.hpp>
-#include <controls/sampler/dialog/DeleteSoundControls.hpp>
-#include <controls/sampler/dialog/MonoToStereoControls.hpp>
-#include <controls/sampler/dialog/ResampleControls.hpp>
-#include <controls/sampler/dialog/StereoToMonoControls.hpp>
-#include <controls/sampler/window/AssignmentViewControls.hpp>
-#include <controls/sampler/window/AutoChromaticAssignmentControls.hpp>
-#include <controls/sampler/window/CopyNoteParametersControls.hpp>
-#include <controls/sampler/window/EditSoundControls.hpp>
-#include <controls/sampler/window/KeepOrRetryControls.hpp>
-#include <controls/sampler/window/MuteAssignControls.hpp>
-#include <controls/sampler/window/NumberOfZonesControls.hpp>
-#include <controls/sampler/window/ProgramControls.hpp>
-#include <controls/sampler/window/SoundControls.hpp>
-#include <controls/sampler/window/VeloEnvFilterControls.hpp>
-#include <controls/sampler/window/VeloPitchControls.hpp>
-#include <controls/sampler/window/VelocityModulationControls.hpp>
-#include <controls/sampler/window/ZoomControls.hpp>
 
 //#include <controls/slider/Slider.hpp>
 #include <controls/vmpc/AudioControls.hpp>
@@ -195,6 +195,48 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["deletetrack"] = new sequencer::dialog::DeleteTrackControls(mpc);
 	controls["deletesequence"] = new sequencer::dialog::DeleteSequenceControls(mpc);
 
+	controls["trim"] = new sampler::TrimControls(mpc);
+	controls["loop"] = new sampler::LoopControls(mpc);
+	controls["zone"] = new sampler::ZoneControls(mpc);
+	controls["numberofzones"] = new sampler::window::NumberOfZonesControls(mpc);
+	controls["params"] = new sampler::SndParamsControls(mpc);
+	controls["drum"] = new sampler::DrumControls(mpc);
+	controls["purge"] = new sampler::PurgeControls(mpc);
+	controls["editsound"] = new sampler::window::EditSoundControls(mpc);
+
+	controls["programassign"] = new sampler::PgmAssignControls(mpc);
+	controls["programparams"] = new sampler::PgmParamsControls(mpc);
+	controls["sample"] = new sampler::SampleControls(mpc);
+	controls["initpadassign"] = new sampler::InitPadAssignControls(mpc);
+
+	controls["keeporretry"] = new sampler::window::KeepOrRetryControls(mpc);
+	controls["assignmentview"] = new sampler::window::AssignmentViewControls(mpc);
+	controls["program"] = new sampler::window::ProgramControls(mpc);
+	controls["copynoteparameters"] = new sampler::window::CopyNoteParametersControls(mpc);
+	controls["veloenvfilter"] = new sampler::window::VeloEnvFilterControls(mpc);
+	controls["muteassign"] = new sampler::window::MuteAssignControls(mpc);
+	controls["velopitch"] = new sampler::window::VeloPitchControls(mpc);
+	controls["velocitymodulation"] = new sampler::window::VelocityModulationControls(mpc);
+	controls["sound"] = new sampler::window::SoundControls(mpc);
+	controls["autochromaticassignment"] = new sampler::window::AutoChromaticAssignmentControls(mpc);
+
+	controls["createnewprogram"] = new sampler::dialog::CreateNewProgramControls(mpc);
+	controls["copyprogram"] = new sampler::dialog::CopyProgramControls(mpc);
+	controls["deleteallprograms"] = new sampler::dialog::DeleteAllProgramsControls(mpc);
+	controls["deleteprogram"] = new sampler::dialog::DeleteProgramControls(mpc);
+	controls["deletesound"] = new sampler::dialog::DeleteSoundControls(mpc);
+	controls["deleteallsound"] = new sampler::dialog::DeleteAllSoundControls(mpc);
+	controls["convertsound"] = new sampler::dialog::ConvertSoundControls(mpc);
+	controls["monotostereo"] = new sampler::dialog::MonoToStereoControls(mpc);
+	controls["copysound"] = new sampler::dialog::CopySoundControls(mpc);
+	controls["resample"] = new sampler::dialog::ResampleControls(mpc);
+	controls["stereotomono"] = new sampler::dialog::StereoToMonoControls(mpc);
+
+	controls["startfine"] = new sampler::window::ZoomControls(mpc);
+	controls["endfine"] = new sampler::window::ZoomControls(mpc);
+	controls["looptofine"] = new sampler::window::ZoomControls(mpc);
+	controls["loopendfine"] = new sampler::window::ZoomControls(mpc);
+	controls["selectdrum"] = new sampler::SelectDrumControls(mpc);
 
 	controls["load"] = new disk::LoadControls(mpc);
 	controls["save"] = new disk::SaveControls(mpc);
@@ -234,54 +276,12 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["transposepermanent"] = new misc::window::TransposePermanentControls(mpc);
 
 	
+	controls["selectdrum_mixer"] = new mixer::SelectDrumMixerControls(mpc);
 	controls["mixer"] = new mixer::MixerControls(mpc);
 	controls["channelsettings"] = new mixer::window::ChannelSettingsControls(mpc);
 	controls["mixersetup"] = new mixer::MixerSetupControls(mpc);
 	controls["disk"] = new vmpc::VmpcDiskControls(mpc);
 	
-	controls["trim"] = new sampler::TrimControls(mpc);
-	controls["loop"] = new sampler::LoopControls(mpc);
-	controls["zone"] = new sampler::ZoneControls(mpc);
-	controls["numberofzones"] = new sampler::window::NumberOfZonesControls(mpc);
-	controls["params"] = new sampler::SndParamsControls(mpc);
-	controls["drum"] = new sampler::DrumControls(mpc);
-	controls["purge"] = new sampler::PurgeControls(mpc);
-	controls["editsound"] = new sampler::window::EditSoundControls(mpc);
-
-	controls["programassign"] = new sampler::PgmAssignControls(mpc);
-	controls["programparams"] = new sampler::PgmParamsControls(mpc);
-	controls["sample"] = new sampler::SampleControls(mpc);
-	controls["keeporretry"] = new sampler::window::KeepOrRetryControls(mpc);
-	controls["program"] = new sampler::window::ProgramControls(mpc);
-	controls["createnewprogram"] = new sampler::dialog::CreateNewProgramControls(mpc);
-	controls["copyprogram"] = new sampler::dialog::CopyProgramControls(mpc);
-	controls["assignmentview"] = new sampler::window::AssignmentViewControls(mpc);
-	controls["initpadassign"] = new sampler::InitPadAssignControls(mpc);
-	controls["copynoteparameters"] = new sampler::window::CopyNoteParametersControls(mpc);
-	controls["veloenvfilter"] = new sampler::window::VeloEnvFilterControls(mpc);
-	controls["muteassign"] = new sampler::window::MuteAssignControls(mpc);
-	controls["velopitch"] = new sampler::window::VeloPitchControls(mpc);
-	controls["velocitymodulation"] = new sampler::window::VelocityModulationControls(mpc);
-	controls["autochromaticassignment"] = new sampler::window::AutoChromaticAssignmentControls(mpc);
-	controls["deleteallprograms"] = new sampler::dialog::DeleteAllProgramsControls(mpc);
-	controls["deleteprogram"] = new sampler::dialog::DeleteProgramControls(mpc);
-	
-	controls["sound"] = new sampler::window::SoundControls(mpc);
-	controls["deletesound"] = new sampler::dialog::DeleteSoundControls(mpc);
-	controls["deleteallsound"] = new sampler::dialog::DeleteAllSoundControls(mpc);
-	controls["convertsound"] = new sampler::dialog::ConvertSoundControls(mpc);
-	controls["monotostereo"] = new sampler::dialog::MonoToStereoControls(mpc);
-	controls["copysound"] = new sampler::dialog::CopySoundControls(mpc);
-	controls["resample"] = new sampler::dialog::ResampleControls(mpc);
-	controls["stereotomono"] = new sampler::dialog::StereoToMonoControls(mpc);
-
-	controls["startfine"] = new sampler::window::ZoomControls(mpc);
-	controls["endfine"] = new sampler::window::ZoomControls(mpc);
-	controls["looptofine"] = new sampler::window::ZoomControls(mpc);
-	controls["loopendfine"] = new sampler::window::ZoomControls(mpc);
-	controls["selectdrum"] = new sampler::SelectDrumControls(mpc);
-	controls["selectdrum_mixer"] = new mixer::SelectDrumMixerControls(mpc);
-
 	controls["sync"] = new midisync::SyncControls(mpc);
 
 	controls["midi"] = new vmpc::MidiControls(mpc);

@@ -43,7 +43,7 @@ void StartUp::runBootSequence(weak_ptr<Gui> gui) {
 void StartUp::startUp()
 {
 /*
-	auto lMainFrame = mainFrame.lock();
+	auto lLs = ls.lock();
 	auto ledPanel = lMainFrame->getLedPanel().lock();
 	ledPanel->setPadBankA(true);
 	ledPanel->setPadBankB(true);

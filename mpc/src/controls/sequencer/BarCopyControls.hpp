@@ -12,7 +12,7 @@ namespace mpc {
 			public:
 				typedef AbstractSequencerControls super;
 				void function(int j) override;
-				void turnWheel(int increment) override;
+				void turnWheel(int i) override;
 
 				BarCopyControls(mpc::Mpc* mpc);
 

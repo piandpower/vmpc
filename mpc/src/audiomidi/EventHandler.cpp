@@ -139,8 +139,7 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 void EventHandler::midiOut(weak_ptr<mpc::sequencer::Event> e, mpc::sequencer::Track* track)
 {
 	/*
-	auto lGui = gui.lock();
-	auto event = e.lock();
+		auto event = e.lock();
 	auto ne = dynamic_pointer_cast<mpc::sequencer::NoteEvent>(event);
 	if (ne) {
 		if (lGui->getTransGui()->getTr() == -1 || lGui->getTransGui()->getTr() == ne->getTrack()) {

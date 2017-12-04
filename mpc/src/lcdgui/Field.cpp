@@ -2,8 +2,7 @@
 #include "Label.hpp"
 //#include <maingui/Constants.hpp>
 //#include <StartUp.hpp>
-//////#include <maingui/Gui.hpp>
-#include "LayeredScreen.hpp"
+//////#include "LayeredScreen.hpp"
 //#include <lcdgui/LayeredScreen.hpp>
 #include <ui/NameGui.hpp>
 //#include <lcdgui/Field_Blinker.hpp>
@@ -67,8 +66,7 @@ void Field::takeFocus(string prev)
 	focus = true;
 	inverted = true;
 	//if (csn.compare("name") == 0) setOpaque(true);
-	//auto lGui = gui.lock();
-	//auto lMainFrame = lGui->getMainFrame().lock();
+	//	//auto lMainFrame = lGui->getMainFrame().lock();
 	//auto lMainFrame = mainFrame;
 	//auto focusEvent = layeredScreen->getFocus();
 	//auto focusField = layeredScreen->lookupField(focusEvent);

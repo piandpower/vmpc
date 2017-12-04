@@ -381,31 +381,31 @@ void StepEditorControls::keyEvent(unsigned char e)
 		seGui->setChanged();
 		seGui->notifyObservers(string("selection"));
 	}
-	auto lMainFrame = mainFrame.lock();
+	auto lLs = ls.lock();
 	if (e == mpc::controls::KbMapping::numPadShift()) {
 		if (param.length() == 2) {
 			auto eventNumber = stoi(param.substr(1, 2));
 			seGui->setSelectionStartIndex(eventNumber + seGui->getyOffset());
 		}
 	}
-	if (e == KbMapping::down() && !lMainFrame->lookupField("a0").lock()->IsHidden() && param.compare("viewmodenumber") == 0) {
+	if (e == KbMapping::down() && !lLs->lookupField("a0").lock()->IsHidden() && param.compare("viewmodenumber") == 0) {
 		lMainFrame->setFocus("a0", 0);
 		return;
 	}
 	if (e == KbMapping::down() && param.find("now") != string::npos) {
-		if (!lMainFrame->lookupLabel("e0").lock()->IsHidden()) {
+		if (!lLs->lookupLabel("e0").lock()->IsHidden()) {
 			lMainFrame->setFocus("e0", 0);
 		}
-		else if (!lMainFrame->lookupLabel("d0").lock()->IsHidden()) {
+		else if (!lLs->lookupLabel("d0").lock()->IsHidden()) {
 			lMainFrame->setFocus("d0", 0);
 		}
-		else if (!lMainFrame->lookupLabel("c0").lock()->IsHidden()) {
+		else if (!lLs->lookupLabel("c0").lock()->IsHidden()) {
 			lMainFrame->setFocus("c0", 0);
 		}
-		else if (!lMainFrame->lookupLabel("b0").lock()->IsHidden()) {
+		else if (!lLs->lookupLabel("b0").lock()->IsHidden()) {
 			lMainFrame->setFocus("b0", 0);
 		}
-		else if (!lMainFrame->lookupLabel("a0").lock()->IsHidden()) {
+		else if (!lLs->lookupLabel("a0").lock()->IsHidden()) {
 			lMainFrame->setFocus("a0", 0);
 		}
 		return;
@@ -447,7 +447,7 @@ void StepEditorControls::keyEvent(unsigned char e)
 		auto destination = srcLetter + to_string(srcNumber + increment);
 		if (srcNumber + increment != -1) {
 			if (!(lKbmc->shiftIsPressed() && dynamic_pointer_cast<EmptyEvent>(visibleEvents[(int)(srcNumber + increment)].lock()))) {
-				auto tf = lMainFrame->lookupField(destination).lock();
+				auto tf = lLs->lookupField(destination).lock();
 				if (tf && !tf->IsHidden()) lMainFrame->setFocus(tf->getName(), 0);
 			}
 		}

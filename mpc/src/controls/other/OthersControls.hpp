@@ -12,7 +12,7 @@ namespace mpc {
 			public:
 				typedef mpc::controls::AbstractControls super;
 				void function(int i) override;
-				void turnWheel(int increment) override;
+				void turnWheel(int i) override;
 
 				OthersControls(mpc::Mpc* mpc) ;
 			};
