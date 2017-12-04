@@ -23,7 +23,7 @@ namespace mpc {
 
 		protected:
 			bool inverted{ false };
-
+			bool noLeftMargin{ false };
 
 		protected:
 			unsigned int x{ 0 };
@@ -59,6 +59,7 @@ namespace mpc {
 		public:
 			void setOpaque(bool b);
 			void setInverted(bool b);
+			void setNoLeftMargin(bool b);
 			int getX();
 			int getY();
 			int getW();

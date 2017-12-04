@@ -9,6 +9,7 @@ Label::Label()
 }
 
 void Label::initialize(string name, string text, int x, int y, int columns) {
+	noLeftMargin = false;
 	opaque = true;
 	inverted = false;
 	Hide(false);

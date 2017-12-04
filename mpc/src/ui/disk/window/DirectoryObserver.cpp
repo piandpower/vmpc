@@ -37,6 +37,7 @@ DirectoryObserver::DirectoryObserver(weak_ptr<mpc::disk::AbstractDisk> disk, mpc
 	left = { a0Field, a1Field, a2Field, a3Field, a4Field };
 	right = { b0Field, b1Field, b2Field, b3Field, b4Field };
 	topLeftLabel = ls->lookupLabel("topleft");
+	topLeftLabel.lock()->setNoLeftMargin(true);
 	a0Label = ls->lookupLabel("a0i");
 	a1Label = ls->lookupLabel("a1i");
 	a2Label = ls->lookupLabel("a2i");
@@ -57,7 +58,6 @@ DirectoryObserver::DirectoryObserver(weak_ptr<mpc::disk::AbstractDisk> disk, mpc
 	drawGraphicsLeft();
 	drawGraphicsRight();
 	updateFocus();
-	initOpacity();
 }
 
 void DirectoryObserver::updateLeft()
@@ -69,14 +69,12 @@ void DirectoryObserver::updateLeft()
 void DirectoryObserver::updateRight()
 {
 	right = { b0Field, b1Field, b2Field, b3Field, b4Field };
-    directoryGui->displayRightFields(right);
+	directoryGui->displayRightFields(right);
 }
 
 void DirectoryObserver::update(moduru::observer::Observable* o, boost::any a)
 {
 	string param = boost::any_cast<string>(a);
-
-	MLOG("DirObs update param " + param);
 
 	if (param.compare("disk") == 0) {
 		updateLeft();
@@ -100,22 +98,7 @@ void DirectoryObserver::update(moduru::observer::Observable* o, boost::any a)
 
 void DirectoryObserver::updateFocus()
 {
-    directoryGui->refreshFocus(left, right);
-}
-
-void DirectoryObserver::initOpacity()
-{
-	auto ls = mpc->getLayeredScreen().lock();
-	for (auto tf : left) {
-		auto lTf = tf.lock();
-		if (!ls->getFocus().compare(lTf->getName()) == 0)
-			lTf->setOpaque(false);
-	}
-	for (auto tf : right) {
-		auto lTf = tf.lock();
-		if (!ls->getFocus().compare(lTf->getName()) == 0)
-			lTf->setOpaque(false);
-	}
+	directoryGui->refreshFocus(left, right);
 }
 
 void DirectoryObserver::drawGraphicsLeft()
@@ -181,7 +164,7 @@ void DirectoryObserver::drawGraphicsLeft()
 		}
 		return;
 	}
-	auto aLabels = vector < shared_ptr<mpc::lcdgui::Label>>{ a0, a1, a2, a3, a4};
+	auto aLabels = vector < shared_ptr<mpc::lcdgui::Label>>{ a0, a1, a2, a3, a4 };
 	if (size - offset <= 4) {
 		if (firstVisibleFile->getName().compare(dirName) == 0) {
 			a0->setText(currentDirIcons[0]);
@@ -271,7 +254,7 @@ void DirectoryObserver::drawGraphicsRight()
 	auto dirName = lDisk->getDirectoryName();
 	int yOffset1 = directoryGui->getYOffsetFirst();
 	int yOffset2 = directoryGui->getYOffsetSecond();
-	
+
 	auto a0 = a0Field.lock();
 	auto a1 = a1Field.lock();
 	auto a2 = a2Field.lock();
@@ -305,7 +288,7 @@ void DirectoryObserver::drawGraphicsRight()
 		b4->setText(u8"\u00E0");
 		a4Field.lock()->setText(padFileName(a4->getText(), u8"\u00DF"));
 	}
-	
+
 	auto c0 = c0Label.lock();
 	auto c1 = c1Label.lock();
 	auto c2 = c2Label.lock();

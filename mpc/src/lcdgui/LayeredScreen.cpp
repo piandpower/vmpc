@@ -865,28 +865,7 @@ string LayeredScreen::getFocus() {
 void LayeredScreen::setFocus(string focus) {
 	string oldFocus = getFocus();
 	layers[currentLayer]->setFocus(focus);
-	MLOG("setFocus called, csn == " + currentScreenName);
-	if (currentScreenName.compare("directory") == 0) {
-		MLOG("oldFocus " + oldFocus);
-		MLOG("focus " + focus);
-	}
-	if (currentScreenName.compare("directory") == 0 && oldFocus.compare(focus) != 0 && oldFocus.compare("") != 0) {
-		auto oldtf = lookupField(oldFocus);
-		auto newtf = lookupField(focus);
-		MLOG("old tf " + oldtf.lock()->getName());
-		MLOG("new tf " + newtf.lock()->getName());
-		//oldtf.lock()->setOpaque(false);
-		//oldtf.lock()->setInverted(false);
-		newtf.lock()->setOpaque(true);
-		//newtf.lock()->setInverted(true);
-	}
 }
-
-/*
-void LayeredScreen::setFocus(string focus, int layer) {
-	layers[layer]->setFocus(focus);
-}
-*/
 
 LayeredScreen::~LayeredScreen() {
 	if (currentBackground != nullptr) {

@@ -73,7 +73,6 @@ namespace mpc {
 
 				private:
 					void updateFocus();
-					void initOpacity();
 					void drawGraphicsLeft();
 					void drawGraphicsRight();
 

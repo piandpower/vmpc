@@ -14,11 +14,7 @@ using namespace std;
 moduru::gui::BMFParser* TextComp::bmfParser = new moduru::gui::BMFParser();
 
 TextComp::TextComp()
-//	: IPanelControl(pPlug, IRECT(0,0,0,0), Constants::TRANS_BLACK())
 {
-	//Hide(true);
-	//textControl = make_unique<ITextControl>(pPlug, IRECT(0,0,0,0), Constants::FONT_ON(), text.c_str());
-	//textOffsetX = 2;
 }
 
 void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
@@ -36,13 +32,14 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 	int next = utf8_decode_next();
 	int charCounter = 0;
 	if (name.compare("tsig") == 0) columns = 5;
+	const int margin = noLeftMargin ? 0 : 1;
 	if (opaque) {
-		for (int j = 0; j < (TEXT_WIDTH * columns) + 1; j++) {
+		for (int j = 0; j < (TEXT_WIDTH * columns) + margin; j++) {
 			for (int k = 0; k < TEXT_HEIGHT + 2; k++) {
-				int x1 = textx + j - 1;
+				int x1 = textx + j - margin;
 				int y1 = texty + k;
 				if (x1 < 0 || x1 > 247 || y1 < 0 || y1 > 59) continue;
-				(*pixels)[textx + j - 1][texty + k] = inverted ? true : false;
+				(*pixels)[textx + j - margin][texty + k] = inverted ? true : false;
 			}
 		}
 	}
@@ -124,6 +121,11 @@ void TextComp::setOpaque(bool b) {
 
 void TextComp::setInverted(bool b) {
 	inverted = b;
+	SetDirty();
+}
+
+void TextComp::setNoLeftMargin(bool b) {
+	noLeftMargin = true;
 	SetDirty();
 }
 

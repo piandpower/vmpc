@@ -26,6 +26,7 @@ Field::Field(LayeredScreen* layeredScreen)
 }
 
 void Field::initialize(std::string name, int x, int y, int columns) {
+	noLeftMargin = false;
 	split = false;
 	focusable = true;
 	opaque = true;

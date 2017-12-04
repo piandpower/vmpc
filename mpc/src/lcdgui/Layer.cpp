@@ -1,7 +1,6 @@
 #include "Layer.hpp"
 #include "Field.hpp"
 #include "Label.hpp"
-//#include <maingui/Constants.hpp>
 
 #include <string>
 
@@ -13,7 +12,6 @@ using namespace mpc::lcdgui;
 using namespace std;
 
 Layer::Layer(mpc::lcdgui::LayeredScreen* layeredScreen)
-	//: IPanelControl(pPlug, *Constants::LCD_RECT(), Constants::LCD_OFF())
 {
 	bg = new Background();
 	fk = new FunctionKeys();
