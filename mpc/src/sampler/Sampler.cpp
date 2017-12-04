@@ -7,10 +7,9 @@
 //#include <hardware/ControlPanel.hpp>
 #include <ui/Uis.hpp>
 #include <ui/UserDefaults.hpp>
-//#include <lcdgui/Background.hpp>
-#include <lcdgui/LayeredScreen.hpp>
-//#include <ui/sampler/SamplerGui.hpp>
-//#include <ui/sampler/SoundGui.hpp>
+#include <lcdgui/Background.hpp>
+#include <ui/sampler/SamplerGui.hpp>
+#include <ui/sampler/SoundGui.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Pad.hpp>
@@ -537,11 +536,15 @@ Sound* Sampler::createZone(Sound* source, int start, int end, int endMargin)
 
 	auto zone = new Sound(source->getSampleRate(), sounds.size());
 	auto zoneLength = end - start + overlap;
-	auto zoneData = new vector<float>(zoneLength);
-	for (int i = 0; i < zoneLength; i++)
-		(*zoneData)[i] = (*source->getSampleData())[i + start];
-
-	//zone->setSampleData(*zoneData);
+	auto zoneData = vector<float>(zoneLength);
+	for (int i = 0; i < zoneLength; i++) {
+		zoneData[i] = (*source->getSampleData())[i + start];
+	}
+	auto zoneDataPointer = zone->getSampleData();
+	zoneDataPointer->clear();
+	for (int i = 0; i < zoneData.size(); i++) {
+		zoneDataPointer->push_back(zoneData[i]);
+	}
 	zone->setMono(source->isMono());
 	return zone;
 }
@@ -565,8 +568,7 @@ void Sampler::finishVoices() {
 
 void Sampler::playX(int playXMode, vector<int>* zone)
 {
-	/*
-	int index = gui.lock()->getSoundGui()->getSoundIndex();
+	int index = mpc->getUis().lock()->getSoundGui()->getSoundIndex();
 	auto sound = sounds[index];
 	auto start = 0;
 	auto end = sound->getSampleData()->size() - 1;
@@ -578,11 +580,12 @@ void Sampler::playX(int playXMode, vector<int>* zone)
 		start = (*zone)[0];
 		end = (*zone)[1];
 	}
-	if (playXMode == 2)
+	if (playXMode == 2) {
 		end = sound->getStart();
-
-	if (playXMode == 3)
+	}
+	if (playXMode == 3) {
 		end = sound->getLoopTo();
+	}
 
 	if (playXMode == 4) {
 		start = sound->getEnd();
@@ -595,12 +598,10 @@ void Sampler::playX(int playXMode, vector<int>* zone)
 	mpc->getBasicPlayer()->noteOn(-4, 127);
 	sound->setStart(oldStart);
 	sound->setEnd(oldEnd);
-	*/
 }
 
 weak_ptr<Sound> Sampler::getPlayXSound() {
-	//return sounds[gui.lock()->getSoundGui()->getSoundIndex()];
-	return weak_ptr<Sound>();
+	return sounds[mpc->getUis().lock()->getSoundGui()->getSoundIndex()];
 }
 
 int Sampler::getFreeSampleSpace()
@@ -621,9 +622,9 @@ int Sampler::getLastInt(string s)
 			offset--;
 		}
 		else {
-
-			if (offset == s.length())
+			if (offset == s.length()) {
 				return INT_MIN;
+			}
 			break;
 		}
 	}
@@ -674,22 +675,18 @@ string Sampler::addOrIncreaseNumber2(string s) {
 
 Pad* Sampler::getLastPad(Program* program)
 {
-	/*
-		auto lastValidPad = lGui->getSamplerGui()->getPad();
-	if (lastValidPad == -1) lastValidPad = lGui->getSamplerGui()->getPrevPad();
+	auto sGui = mpc->getUis().lock()->getSamplerGui();
+	auto lastValidPad = sGui->getPad();
+	if (lastValidPad == -1) lastValidPad = sGui->getPrevPad();
 	return program->getPad(lastValidPad);
-	*/
-	return program->getPad(0);
 }
 
 NoteParameters* Sampler::getLastNp(Program* program)
 {
-	/*
-		auto lastValidNote = lGui->getSamplerGui()->getNote();
-	if (lastValidNote == 34) lastValidNote = lGui->getSamplerGui()->getPrevNote();
+	auto sGui = mpc->getUis().lock()->getSamplerGui();
+	auto lastValidNote = sGui->getNote();
+	if (lastValidNote == 34) lastValidNote = sGui->getPrevNote();
 	return program->getNoteParameters(lastValidNote);
-	*/
-	return program->getNoteParameters(0);
 }
 
 int Sampler::getUnusedSampleAmount()
@@ -743,8 +740,9 @@ void Sampler::purge()
 		}
 		if (!contains) toRemove.push_back(s);
 	}
-	for (auto& s : toRemove)
+	for (auto& s : toRemove) {
 		deleteSound(s);
+	}
 }
 
 void Sampler::deleteSound(weak_ptr<Sound> sound) {
@@ -760,8 +758,9 @@ void Sampler::deleteSound(weak_ptr<Sound> sound) {
 vector<float> Sampler::mergeToStereo(vector<float> fa0, vector<float> fa1)
 {
 	int newSampleLength = fa0.size() * 2;
-	if (fa1.size() > fa0.size()) newSampleLength = fa1.size() * 2;
-
+	if (fa1.size() > fa0.size()) {
+		newSampleLength = fa1.size() * 2;
+	}
 	auto newSampleData = vector<float>(newSampleLength);
 	int k = 0;
 	for (int i = 0; i < newSampleLength; i = i + 2) {
@@ -816,15 +815,14 @@ void Sampler::arm()
 
 void Sampler::record()
 {
-	/*
-		int recSize = 0;
-	recSize = lGui->getSamplerGui()->getTime() * 4410;
-	lGui->getMainFrame().lock()->getLayeredScreen().lock()->getCurrentBackground()->setName("recording");
+	int recSize = 0;
+	auto samplerGui = mpc->getUis().lock()->getSamplerGui();
+	recSize = samplerGui->getTime() * 4410;
+	mpc->getLayeredScreen().lock()->getCurrentBackground()->setName("recording");
 	recordBufferL = vector<float>(recSize);
 	recordBufferR = vector<float>(recSize);
 	recordFrame = 0;
 	recording = true;
-	*/
 }
 
 void Sampler::stopRecordingEarlier()
@@ -835,17 +833,18 @@ void Sampler::stopRecordingEarlier()
 	int newSize = s->isMono() ? stopFrameIndex : stopFrameIndex * 2;
 	auto sampleData = s->getSampleData();
 	sampleData->resize(newSize);
-	//gui.lock()->getMainFrame().lock()->openScreen("keeporretry");
+	mpc->getLayeredScreen().lock()->openScreen("keeporretry");
 }
 
 void Sampler::stopRecording()
 {
 	stopRecordingBasic();
-	//gui.lock()->getMainFrame().lock()->openScreen("keeporretry");
+	mpc->getLayeredScreen().lock()->openScreen("keeporretry");
 }
 
 void Sampler::stopRecordingBasic()
 {
+	auto samplerGui = mpc->getUis().lock()->getSamplerGui();
 	auto counter = 0;
 	auto s = addSound().lock();
 	s->setName(addOrIncreaseNumber("sound"));
@@ -853,26 +852,26 @@ void Sampler::stopRecordingBasic()
 	auto sampleDataR = vector<float>(preRecBufferR.size() + recordBufferR.size());
 	auto preRecCounter = 0;
 	for (float f : preRecBufferL) {
-		//while (preRecCounter != 4410 - (lGui->getSamplerGui()->getPreRec() * 44.1))
-		//	preRecCounter++;
-
+		while (preRecCounter != 4410 - (samplerGui->getPreRec() * 44.1)) {
+			preRecCounter++;
+		}
 		sampleDataL[counter++] = f;
 	}
-	for (auto f : recordBufferL)
+	for (auto f : recordBufferL) {
 		sampleDataL[counter++] = f;
-
+	}
 	counter = 0;
 	preRecCounter = 0;
 	for (float f : preRecBufferR) {
-	//	while (preRecCounter != 4410 - (lGui->getSamplerGui()->getPreRec() * 44.1))
-		//	preRecCounter++;
+		while (preRecCounter != 4410 - (samplerGui->getPreRec() * 44.1)) {
+			preRecCounter++;
+		}
 
 		sampleDataR[counter++] = f;
 	}
 	for (auto f : recordBufferR)
 		sampleDataR[counter++] = f;
-	/*
-	auto mode = lGui->getSamplerGui()->getMode();
+	auto mode = samplerGui->getMode();
 	auto data = s->getSampleData();
 	data->clear();
 	if (mode == 2) {
@@ -890,7 +889,6 @@ void Sampler::stopRecordingBasic()
 			data->at(i) = src->at(i);
 		s->setMono(true);
 	}
-	*/
 	recording = false;
 }
 
@@ -970,14 +968,15 @@ void Sampler::cancelRecording()
 
 void Sampler::setSampleBackground()
 {
-	//gui.lock()->getMainFrame().lock()->getLayeredScreen().lock()->getCurrentBackground()->setName("sample");
+	mpc->getLayeredScreen().lock()->getCurrentBackground()->setName("sample");
 }
 
 int Sampler::checkExists(string soundName)
 {
 	for (int i = 0; i < getSoundCount(); i++) {
-		if (moduru::lang::StrUtil::eqIgnoreCase(moduru::lang::StrUtil::replaceAll(soundName, ' ', ""), getSoundName(i)))
+		if (moduru::lang::StrUtil::eqIgnoreCase(moduru::lang::StrUtil::replaceAll(soundName, ' ', ""), getSoundName(i))) {
 			return i;
+		}
 	}
 	return -1;
 }
@@ -990,35 +989,39 @@ int Sampler::getNextSoundIndex(int j, bool up)
 
 	if (getSoundSortingType() == 1) {
 		auto nextIndex = getSampleIndexName(j) + inc;
-		if (nextIndex > getSoundCount() - 1)
+		if (nextIndex > getSoundCount() - 1) {
 			return j;
-
-		for (int i = 0; i < getSoundCount(); i++)
-			if (getSampleIndexName(i) == nextIndex)
+		}
+		for (int i = 0; i < getSoundCount(); i++) {
+			if (getSampleIndexName(i) == nextIndex) {
 				return i;
+			}
+		}
 	}
 	else if (getSoundSortingType() == 2) {
 		auto nextIndex = getSampleIndexSize(j) + inc;
-		if (nextIndex > getSoundCount() - 1)
+		if (nextIndex > getSoundCount() - 1) {
 			return j;
-
-		for (int i = 0; i < getSoundCount(); i++)
-			if (getSampleIndexSize(i) == nextIndex)
+		}
+		for (int i = 0; i < getSoundCount(); i++) {
+			if (getSampleIndexSize(i) == nextIndex) {
 				return i;
+			}
+		}
 	}
 	return j;
 }
 
 void Sampler::setSoundGuiPrevSound()
 {
-	//auto soundGui = gui.lock()->getSoundGui();
-	//soundGui->setSoundIndex(getNextSoundIndex(soundGui->getSoundIndex(), false), getSoundCount());
+	auto soundGui = mpc->getUis().lock()->getSoundGui();
+	soundGui->setSoundIndex(getNextSoundIndex(soundGui->getSoundIndex(), false), getSoundCount());
 }
 
 void Sampler::setSoundGuiNextSound()
 {
-	//auto soundGui = gui.lock()->getSoundGui();
-	//soundGui->setSoundIndex(getNextSoundIndex(soundGui->getSoundIndex(), true), getSoundCount());
+	auto soundGui = mpc->getUis().lock()->getSoundGui();
+	soundGui->setSoundIndex(getNextSoundIndex(soundGui->getSoundIndex(), true), getSoundCount());
 }
 
 Sound* Sampler::copySound(Sound* sound)
