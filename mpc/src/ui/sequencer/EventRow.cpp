@@ -481,6 +481,8 @@ bool EventRow::isSelected()
 }
 
 EventRow::~EventRow() {
-	horizontalBar.lock()->Hide(true);
-	selectedEventBar.lock()->Hide(true);
+	if (horizontalBar.lock())
+		horizontalBar.lock()->Hide(true);
+	if (selectedEventBar.lock())
+		selectedEventBar.lock()->Hide(true);
 }

@@ -37,3 +37,6 @@ void Popup::Draw(std::vector<std::vector<bool> >* pixels)
 	l.Draw(pixels);
 	dirty = false;
 }
+
+Popup::~Popup() {
+}

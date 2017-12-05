@@ -20,10 +20,13 @@ namespace mpc {
 			void setInverted(bool b);
 			void setSelected(int i, bool b);
 			void setVisible(int i, bool b);
-			//bool Draw(IGraphics* g1) override;
 
+		public:
+			void Draw(std::vector<std::vector<bool> >* pixels) override;
+
+		public:
 			TwoDots();
-
+			~TwoDots();
 		};
 
 	}

@@ -1,6 +1,5 @@
 #pragma once
 #include "Component.hpp"
-//#include <IControl.h>
 
 #include <memory>
 #include <vector>
@@ -54,7 +53,7 @@ namespace mpc {
 			std::vector<std::weak_ptr<Field>> jta;
 
 		public:
-			std::vector<std::weak_ptr<Component>> getMixerStrip();
+			std::vector<std::weak_ptr<Component> > getMixerStrip();
 			void setValueA(int i);
 			void setValueB(int i);
 			void initFields();
@@ -62,6 +61,7 @@ namespace mpc {
 			void setSelection(int i);
 			void setValueAString(std::string str);
 
+		public:
 			MixerStrip(int columnIndex, int bank, mpc::Mpc* mpc);
 			~MixerStrip();
 

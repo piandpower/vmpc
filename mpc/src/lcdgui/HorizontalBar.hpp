@@ -13,9 +13,13 @@ namespace mpc {
 
 		public:
 			void setValue(int value);
-			//bool Draw(IGraphics* mGraphics) override;
 
-			HorizontalBar(int value);
+		public:
+			void Draw(std::vector<std::vector<bool> >* pixels) override;
+
+		public:
+			HorizontalBar(MRECT rect, int value);
+			~HorizontalBar();
 
 		};
 

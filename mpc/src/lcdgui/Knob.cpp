@@ -10,24 +10,25 @@ using namespace mpc::lcdgui;
 using namespace moduru::gui;
 using namespace std;
 
-Knob::Knob() 
+Knob::Knob(MRECT rect) 
 {
+	this->rect = rect;
 }
 
 void Knob::setValue(int value)
 {
     this->value = value;
-	//SetDirty(true);
+	SetDirty();
 }
 
 void Knob::setColor(bool on)
 {
     color = on;
-	//SetDirty(false);
+	SetDirty();
 }
 
-//bool Knob::Draw(IGraphics* g)
-//{
+void Knob::Draw(std::vector<std::vector<bool> >* pixels)
+{
 //	vector<vector<vector<int>>> lines;
 //	lines.push_back(Bressenham::Line(0, 3, 0, 7));
 //	lines.push_back(Bressenham::Line(0, 7, 3, 10));
@@ -49,5 +50,8 @@ void Knob::setColor(bool on)
 //	vector<int> offsetxy { mpc::maingui::Constants::LCD_RECT()->L + rect.L, mpc::maingui::Constants::LCD_RECT()->T + rect.T };
 //	auto c = color ? Constants::LCD_ON() : Constants::LCD_OFF();
 //	mpc::Util::drawScaled(g, lines, 2, c, offsetxy);
-//	return true;
-//}
+	dirty = false;
+}
+
+Knob::~Knob() {
+}

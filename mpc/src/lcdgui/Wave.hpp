@@ -39,7 +39,7 @@ namespace mpc {
 			void setCenterSamplePos(unsigned int centerSamplePos);
 
 		public:
-			//bool Draw(IGraphics* g) override;
+			void Draw(std::vector<std::vector<bool> >* pixels) override;
 
 		public:
 			Wave();

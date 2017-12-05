@@ -32,8 +32,8 @@ void TwoDots::setVisible(int i, bool b)
 	SetDirty();
 }
 
-//bool TwoDots::Draw(IGraphics* g)
-//{
+void TwoDots::Draw(std::vector<std::vector<bool> >* pixels)
+{
 //	vector<vector<vector<int>>> lines;
 //	vector<IColor*> colors;
 //    for (int i = 0; i < 4; i++) {
@@ -99,5 +99,8 @@ void TwoDots::setVisible(int i, bool b)
 //	vector<int> offsetxy{ xoff, yoff };
 //
 //	mpc::Util::drawScaled(g, lines, 2, colors, offsetxy);
-//	return true;
-//}
+	dirty = false;
+}
+
+TwoDots::~TwoDots() {
+}

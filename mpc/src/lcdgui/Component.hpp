@@ -1,7 +1,7 @@
 #ifndef COMPONENT
 #define COMPONENT
 
-//#include <gui/BasicStructs.hpp>
+#include <gui/BasicStructs.hpp>
 
 #include <vector>
 

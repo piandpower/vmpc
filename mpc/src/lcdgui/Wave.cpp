@@ -32,14 +32,14 @@ void Wave::zoomPlus() {
 	if (zoomFactor == 7) return;
 	zoomFactor++;
 	initSamplesPerPixel();
-	//SetDirty(false);
+	SetDirty();
 }
 
 void Wave::zoomMinus() {
 	if (zoomFactor == 1) return;
 	zoomFactor--;
 	initSamplesPerPixel();
-	//SetDirty(false);
+	SetDirty();
 }
 
 void Wave::initSamplesPerPixel() {
@@ -56,7 +56,7 @@ void Wave::initSamplesPerPixel() {
 
 void Wave::setCenterSamplePos(unsigned int centerSamplePos) {
 	this->centerSamplePos = centerSamplePos;
-	//SetDirty(false);
+	SetDirty();
 }
 
 void Wave::initRect() {
@@ -77,7 +77,7 @@ void Wave::setSampleData(vector<float>* sampleData, bool mono, unsigned int view
 	this->view = view;
 	frames = mono ? sampleData->size() : (sampleData->size() / 2);
 	initSamplesPerPixel();
-	//SetDirty(false);
+	SetDirty();
 }
 
 void Wave::setSelection(unsigned int start, unsigned int end) {
@@ -87,7 +87,7 @@ void Wave::setSelection(unsigned int start, unsigned int end) {
 		selectionStart += frames;
 		selectionEnd += frames;
 	}
-	//SetDirty(false);
+	SetDirty();
 }
 
 void Wave::makeLine(std::vector<std::vector<std::vector<int> > >* lines, std::vector<bool>* colors, unsigned int x) {
@@ -174,9 +174,9 @@ void Wave::makeLine(std::vector<std::vector<std::vector<int> > >* lines, std::ve
 	}
 }
 
+void Wave::Draw(std::vector<std::vector<bool> >* pixels) {
 /*
-bool Wave::Draw(IGraphics* g) {
-	if (sampleData == nullptr) return false;
+if (sampleData == nullptr) return false;
 	vector<vector<vector<int>>> lines;
 	vector<IColor*> colors;
 	vector<int> offsetxy{ mRECT.L, mRECT.T };
@@ -185,9 +185,9 @@ bool Wave::Draw(IGraphics* g) {
 		makeLine(&lines, &colors, i);
 		Util::drawScaled(g, lines, 2, colors, offsetxy);
 	}
-	return true;
+	*/
+	dirty = false;
 }
-*/
 
 Wave::~Wave() {
 }

@@ -1,6 +1,6 @@
 #include "lcdgui/LayeredScreen.hpp"
 
-#include <Logger.hpp>
+#include <gui/BasicStructs.hpp>
 
 #include <Mpc.hpp>
 #include <StartUp.hpp>
@@ -136,69 +136,67 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	underline = make_shared<mpc::lcdgui::Underline>();
 	envGraph = make_shared<mpc::lcdgui::EnvGraph>();
 
-	//IRECT dotsRect(0, 0, 496, 50);
+	MRECT dotsRect(0, 0, 248, 25);
 
 	twoDots = make_shared<TwoDots>();
 
 	int x, y, w, h;
-	/*
-	IRECT rect;
+	MRECT rect;
 	for (int i = 0; i < 4; i++) {
-		w = 160;
-		h = 10;
-		x = 382;
-		y = 26 + (i * 18);
-		rect = IRECT(x, y, x + w, y + h);
-		horizontalBarsTempoChangeEditor[i] = make_shared<HorizontalBar>(50, rect, pPlug);
+		w = 80;
+		h = 5;
+		x = 191;
+		y = 13 + (i * 9);
+		rect = MRECT(x, y, x + w, y + h);
+		horizontalBarsTempoChangeEditor[i] = make_shared<HorizontalBar>(rect, 50);
 		horizontalBarsTempoChangeEditor[i]->Hide(true);
 
-		x = 396;
-		rect = IRECT(x, y, x + w, y + h);
-		horizontalBarsStepEditor[i] = make_shared<HorizontalBar>(50, rect, pPlug);
+		x = 198;
+		rect = MRECT(x, y, x + w, y + h);
+		horizontalBarsStepEditor[i] = make_shared<HorizontalBar>(rect, 50);
 		horizontalBarsStepEditor[i]->Hide(true);
 
-		w = 496;
-		h = 18;
+		w = 248;
+		h = 9;
 		x = 0;
-		y = 22 + (i * 18);
-		rect = IRECT(x, y, x + w, y + h);
-		selectedEventBarsStepEditor[i] = make_shared<mpc::lcdgui::SelectedEventBar>(rect, pPlug);
+		y = 11 + (i * 9);
+		rect = MRECT(x, y, x + w, y + h);
+		selectedEventBarsStepEditor[i] = make_shared<mpc::lcdgui::SelectedEventBar>(rect);
 		selectedEventBarsStepEditor[i]->Hide(true);
 	}
 
 	for (int i = 0; i < 16; i++) {
-		w = 10;
-		h = 75;
-		x = 24 + (i * 30);
-		y = 33;
-		rect = IRECT(x, y, x + w, y + h);
-		verticalBarsMixer[i] = make_shared<VerticalBar>(rect, pPlug);
+		w = 5;
+		h = 37;
+		x = 12 + (i * 15);
+		y = 16;
+		rect = MRECT(x, y, x + w, y + h);
+		verticalBarsMixer[i] = make_shared<VerticalBar>(rect);
 		verticalBarsMixer[i]->Hide(true);
 
-		w = 28;
-		h = 26;
-		x = 8 + (i * 30);
+		w = 14;
+		h = 13;
+		x = 4 + (i * 15);
 		y = 0;
-		rect = IRECT(x, y, x + w, y + h);
-		mixerKnobBackgrounds[i] = make_shared<MixerKnobBackground>(rect, pPlug);
+		rect = MRECT(x, y, x + w, y + h);
+		mixerKnobBackgrounds[i] = make_shared<MixerKnobBackground>(rect);
 		mixerKnobBackgrounds[i]->Hide(true);
 
-		h = 81;
-		y = 30;
-		rect = IRECT(x, y, x + w, y + h);
-		mixerFaderBackgrounds[i] = make_shared<MixerFaderBackground>(rect, pPlug);
+		h = 40;
+		y = 15;
+		rect = MRECT(x, y, x + w, y + h);
+		mixerFaderBackgrounds[i] = make_shared<MixerFaderBackground>(rect);
 		mixerFaderBackgrounds[i]->Hide(true);
 
-		w = 26;
-		h = 26;
-		x = 10 + (i * 30);
-		y = 2;
-		rect = IRECT(x, y, x + w, y + h);
-		knobs[i] = make_shared<Knob>(rect, pPlug);
+		w = 13;
+		h = 13;
+		x = 5 + (i * 15);
+
+		y = 1;
+		rect = MRECT(x, y, x + w, y + h);
+		knobs[i] = make_shared<Knob>(rect);
 		knobs[i]->Hide(true);
 	}
-	*/
-
 
 	fineWave = make_shared <mpc::lcdgui::Wave>();
 	fineWave->setFine(true);
@@ -315,6 +313,32 @@ void LayeredScreen::Draw() {
 	}
 	if (popup->IsDirty()) popup->Draw(&pixels);
 	if (envGraph->IsDirty()) envGraph->Draw(&pixels);
+
+	if (twoDots->IsDirty()) twoDots->Draw(&pixels);
+	if (fineWave->IsDirty()) fineWave->Draw(&pixels);
+	if (wave->IsDirty()) wave->Draw(&pixels);
+
+	for (auto& c : horizontalBarsStepEditor) {
+		if (c->IsDirty()) c->Draw(&pixels);
+	}
+	for (auto& c : selectedEventBarsStepEditor) {
+		if (c->IsDirty()) c->Draw(&pixels);
+	}
+	for (auto& c : horizontalBarsTempoChangeEditor) {
+		if (c->IsDirty()) c->Draw(&pixels);
+	}
+	for (auto& c : verticalBarsMixer) {
+		if (c->IsDirty()) c->Draw(&pixels);
+	}
+	for (auto& c : mixerKnobBackgrounds) {
+		if (c->IsDirty()) c->Draw(&pixels);
+	}
+	for (auto& c : mixerFaderBackgrounds) {
+		if (c->IsDirty()) c->Draw(&pixels);
+	}
+	for (auto& c : knobs) {
+		if (c->IsDirty()) c->Draw(&pixels);
+	}
 }
 
 bool LayeredScreen::IsDirty() {
@@ -335,6 +359,32 @@ bool LayeredScreen::IsDirty() {
 	}
 	if (popup->IsDirty()) return true;
 	if (envGraph->IsDirty()) return true;
+
+	if (twoDots->IsDirty()) return true;
+	if (fineWave->IsDirty()) return true;
+	if (wave->IsDirty()) return true;
+
+	for (auto& c : horizontalBarsStepEditor) {
+		if (c->IsDirty()) return true;
+	}
+	for (auto& c : selectedEventBarsStepEditor) {
+		if (c->IsDirty()) return true;
+	}
+	for (auto& c : horizontalBarsTempoChangeEditor) {
+		if (c->IsDirty()) return true;
+	}
+	for (auto& c : verticalBarsMixer) {
+		if (c->IsDirty()) return true;
+	}
+	for (auto& c : mixerKnobBackgrounds) {
+		if (c->IsDirty()) return true;
+	}
+	for (auto& c : mixerFaderBackgrounds) {
+		if (c->IsDirty()) return true;
+	}
+	for (auto& c : knobs) {
+		if (c->IsDirty()) return true;
+	}
 	return false;
 }
 
@@ -536,7 +586,7 @@ void LayeredScreen::drawFunctionKeys(string screenName)
 	Value& fblabels = screenJson["fblabels"];
 	Value& fbtypes = screenJson["fbtypes"];
 	getFunctionKeys()->clearAll(&pixels);
-	getCurrentBackground()->SetDirty();
+	//getCurrentBackground()->SetDirty(); // only redraw fk area
 	getFunctionKeys()->initialize(fblabels, fbtypes);
 }
 

@@ -2,8 +2,9 @@
 
 using namespace mpc::lcdgui;
 
-VerticalBar::VerticalBar() 
+VerticalBar::VerticalBar(MRECT rect) 
 {
+	this->rect = rect;
 }
 
 void VerticalBar::setValue(int value)
@@ -18,9 +19,9 @@ void VerticalBar::setColor(bool on)
 	SetDirty();
 }
 
-/*
-bool VerticalBar::Draw(IGraphics* g)
+void VerticalBar::Draw(std::vector<std::vector<bool> >* pixels)
 {
+/*
 	if (value > 2) {
 		int valuePixels = (int)((value - 2) / 1.5);
 		int lcdx = mpc::maingui::Constants::LCD_RECT()->L;
@@ -29,6 +30,10 @@ bool VerticalBar::Draw(IGraphics* g)
 		g->DrawRect(color ? Constants::LCD_ON() : Constants::LCD_OFF(), &tmp);
 		g->FillIRect(color ? Constants::LCD_ON() : Constants::LCD_OFF(), &tmp);
 	}
-	return true;
+	*/
+	dirty = false;
 }
-*/
+
+VerticalBar::~VerticalBar() {
+}
+

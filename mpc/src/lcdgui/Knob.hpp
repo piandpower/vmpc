@@ -9,15 +9,20 @@ namespace mpc {
 		{
 
 		private:
+			MRECT rect;
 			int value{};
 			bool color{ true };
 
 		public:
 			void setValue(int value);
 			void setColor(bool on);
-			//bool Draw(IGraphics* g1) override;
 
-			Knob();
+		public:
+			void Draw(std::vector<std::vector<bool> >* pixels) override;
+
+		public:
+			Knob(MRECT rect);
+			~Knob();
 
 		};
 
