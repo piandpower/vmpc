@@ -10,7 +10,7 @@ Pad::Pad(int number)
 {
 	this->number = number;
 	//note = StartUp::getUserDefaults().lock()->getPadNotes()[number];
-	note = number;
+	note = number + 35;
 	mixerChannel = make_shared<MixerChannel>();
 }
 

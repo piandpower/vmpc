@@ -27,7 +27,6 @@ StepEditorObserver::StepEditorObserver(mpc::Mpc* mpc)
 	emptyEvent = make_shared<EmptyEvent>();
 	viewNames = { "ALL EVENTS", "NOTES", "PITCH BEND", "CTRL:", "PROG CHANGE", "CH PRESSURE", "POLY PRESS", "EXCLUSIVE" };
 	stepEditorGui = mpc->getUis().lock()->getStepEditorGui();
-	stepEditorGui->deleteObservers();
 	stepEditorGui->addObserver(this);
 	sequencer = mpc->getSequencer();
 	sampler = mpc->getSampler();
@@ -56,13 +55,9 @@ StepEditorObserver::StepEditorObserver(mpc::Mpc* mpc)
 	controlNumberLabel.lock()->Hide(true);
 	refreshViewModeNotes();
 	setViewModeNotesText();
-	lSequencer->deleteObservers();
 	lSequencer->addObserver(this);
-	lTrk->deleteObservers();
 	lTrk->addObserver(this);
-	timeSig.deleteObservers();
 	timeSig.addObserver(this);
-	viewField.lock()->setText(viewNames[stepEditorGui->getViewModeNumber()]);
 	now0Field.lock()->setTextPadded(lSequencer->getCurrentBarNumber() + 1, "0");
 	now1Field.lock()->setTextPadded(lSequencer->getCurrentBeatNumber() + 1, "0");
 	now2Field.lock()->setTextPadded(lSequencer->getCurrentClockNumber(), "0");
@@ -333,8 +328,8 @@ void StepEditorObserver::refreshViewModeNotes()
 		fromNoteLabel.lock()->Hide(false);
 		fromNoteField.lock()->Hide(false);
 		fromNoteField.lock()->setLocation(90, 0);
-		fromNoteField.lock()->setSize(8 * 6 * 2, 18);
-		toNoteField.lock()->setSize(8 * 6 * 2, 18);
+		fromNoteField.lock()->setSize(8 * 6, 9);
+		toNoteField.lock()->setSize(8 * 6, 9);
 		toNoteLabel.lock()->Hide(false);
 		toNoteField.lock()->Hide(false);
 		controlNumberField.lock()->Hide(true);
@@ -375,7 +370,7 @@ void StepEditorObserver::setViewModeNotesText()
 		if (stepEditorGui->getControlNumber() != -1) controlNumberField.lock()->setText(EventRow::controlNames[stepEditorGui->getControlNumber()]);
 	}
 	viewField.lock()->setText(viewNames[stepEditorGui->getViewModeNumber()]);
-	viewField.lock()->setSize(viewField.lock()->getText().length() * 6 * 2 + 2, 18);
+	viewField.lock()->setSize(viewField.lock()->getText().length() * 6 + 1, 9);
 }
 
 StepEditorObserver::~StepEditorObserver() {
@@ -385,4 +380,5 @@ StepEditorObserver::~StepEditorObserver() {
 	stepEditorGui->deleteObserver(this);
 	sequencer.lock()->deleteObserver(this);
 	track.lock()->deleteObserver(this);
+	timeSig.deleteObserver(this);
 }

@@ -1,7 +1,5 @@
 #include "StepEditorControls.hpp"
 
-//#include <controls/KbMapping.hpp>
-
 #include <Mpc.hpp>
 #include <audiomidi/EventHandler.hpp>
 #include <command/CopySelectedNote.hpp>
@@ -31,6 +29,7 @@ using namespace std;
 StepEditorControls::StepEditorControls(mpc::Mpc* mpc)
 	: AbstractSequencerControls(mpc)
 {
+	seGui = mpc->getUis().lock()->getStepEditorGui();
 }
 
 void StepEditorControls::init()
@@ -138,13 +137,13 @@ void StepEditorControls::function(int i)
 			else if (pce) {
 				seGui->setEditValue(pce->getProgram());
 			}
-			if (cpe) {
+			else if (cpe) {
 				seGui->setEditValue(cpe->getAmount());
 			}
-			if (ppe) {
+			else if (ppe) {
 				seGui->setEditValue(ppe->getAmount());
 			}
-			if (cce) {
+			else if (cce) {
 				seGui->setEditValue(cce->getAmount());
 			}
 			seGui->setSelectedEvent(visibleEvents[eventNumber]);
@@ -180,7 +179,7 @@ void StepEditorControls::function(int i)
 
 void StepEditorControls::turnWheel(int i)
 {
-    init();
+	init();
 	auto lSequencer = sequencer.lock();
 	auto lTrk = track.lock();
 	if (param.compare("viewmodenumber") == 0) {
@@ -209,9 +208,9 @@ void StepEditorControls::turnWheel(int i)
 		seGui->setControlNumber(seGui->getControlNumber() + i);
 	}
 	else if (param.length() == 2) {
-        
+
 		auto eventNumber = stoi(param.substr(1, 2));
-		
+
 		auto sysEx = dynamic_pointer_cast<SystemExclusiveEvent>(visibleEvents[eventNumber].lock());
 		auto channelPressure = dynamic_pointer_cast<ChannelPressureEvent>(visibleEvents[eventNumber].lock());
 		auto polyPressure = dynamic_pointer_cast<PolyPressureEvent>(visibleEvents[eventNumber].lock());
@@ -228,21 +227,21 @@ void StepEditorControls::turnWheel(int i)
 			else if (param.find("b") != string::npos) {
 				sysEx->setByteB(sysEx->getByteB() + i);
 			}
-        }
-        else if (channelPressure) {
+		}
+		else if (channelPressure) {
 			if (param.find("a") != string::npos) {
 				channelPressure->setAmount(channelPressure->getAmount() + i);
 			}
-        }
-        else if (polyPressure) {
+		}
+		else if (polyPressure) {
 			if (param.find("a") != string::npos) {
 				polyPressure->setNote(polyPressure->getNote() + i);
 			}
 			else if (param.find("b") != string::npos) {
 				polyPressure->setAmount(polyPressure->getAmount() + i);
 			}
-        }
-        else if (controlChange) {
+		}
+		else if (controlChange) {
 			if (param.find("a") != string::npos) {
 				controlChange->setController(controlChange->getController() + i);
 			}
@@ -250,20 +249,20 @@ void StepEditorControls::turnWheel(int i)
 				controlChange->setAmount(controlChange->getAmount() + i);
 			}
 
-        }
-        else if (programChange) {
+		}
+		else if (programChange) {
 			if (param.find("a") != string::npos) {
 				programChange->setProgram(programChange->getProgram() + i);
 			}
 
-        }
-        else if (pitchBend) {
+		}
+		else if (pitchBend) {
 			if (param.find("a") != string::npos) {
 				pitchBend->setAmount(pitchBend->getAmount() + i);
 			}
 
-        }
-        else if (mixer) {
+		}
+		else if (mixer) {
 			if (param.find("a") != string::npos) {
 				mixer->setParameter(mixer->getParameter() + i);
 			}
@@ -273,7 +272,7 @@ void StepEditorControls::turnWheel(int i)
 			else if (param.find("c") != string::npos) {
 				mixer->setValue(mixer->getValue() + i);
 			}
-        }
+		}
 		else if (note && lTrk->getBusNumber() == 0) {
 			if (param.find("a") != string::npos) {
 				note->setNote(note->getNote() + i);
@@ -284,23 +283,29 @@ void StepEditorControls::turnWheel(int i)
 			else if (param.find("c") != string::npos) {
 				note->setVelocity(note->getVelocity() + i);
 			}
-        }
-        else if (note && lTrk->getBusNumber() != 0) {
-            if(param.find("a") != string::npos) {
+		}
+		else if (note && lTrk->getBusNumber() != 0) {
+			if (param.find("a") != string::npos) {
 				if (note->getNote() + i > 98) {
+					if (note->getNote() != 98) note->setNote(98);
+					return;
+				}
+				if (note->getNote() + i < 35) {
+					if (note->getNote() != 35) note->setNote(35);
 					return;
 				}
 
-                if (note->getNote() < 35) {
-                    note->setNote(35);
-                    return;
-                }
-                if (note->getNote() > 98) {
-                    note->setNote(98);
-                    return;
-                }
-                note->setNote(note->getNote() + i);
-            }
+				if (note->getNote() < 35) {
+					note->setNote(35);
+					return;
+				}
+				if (note->getNote() > 98) {
+					note->setNote(98);
+					return;
+				}
+				
+				note->setNote(note->getNote() + i);
+			}
 			else if (param.find("b") != string::npos) {
 				note->setVariationTypeNumber(note->getVariationTypeNumber() + i);
 			}
@@ -313,8 +318,8 @@ void StepEditorControls::turnWheel(int i)
 			else if (param.find("e") != string::npos) {
 				note->setVelocity(note->getVelocity() + i);
 			}
-        }
-    }
+		}
+	}
 }
 
 void StepEditorControls::prevStepEvent()
@@ -331,7 +336,7 @@ void StepEditorControls::prevStepEvent()
 
 void StepEditorControls::nextStepEvent()
 {
-    init();
+	init();
 	auto lSequencer = sequencer.lock();
 	if (goToPressed) {
 		lSequencer->goToNextEvent();
@@ -362,103 +367,117 @@ void StepEditorControls::nextBarEnd()
 }
 
 void StepEditorControls::left() {
+	seGui->setChanged();
+	seGui->notifyObservers(string("selection"));
 }
 
 void StepEditorControls::right() {
+	seGui->setChanged();
+	seGui->notifyObservers(string("selection"));
 }
 
 void StepEditorControls::up() {
-}
-
-void StepEditorControls::down() {
-}
-
-/*
-void StepEditorControls::keyEvent(unsigned char e)
-{
 	init();
-	if (e == KbMapping::left() || e == KbMapping::right()) {
-		seGui->setChanged();
-		seGui->notifyObservers(string("selection"));
-	}
 	auto lLs = ls.lock();
-	if (e == mpc::controls::KbMapping::numPadShift()) {
-		if (param.length() == 2) {
-			auto eventNumber = stoi(param.substr(1, 2));
-			seGui->setSelectionStartIndex(eventNumber + seGui->getyOffset());
-		}
-	}
-	if (e == KbMapping::down() && !lLs->lookupField("a0").lock()->IsHidden() && param.compare("viewmodenumber") == 0) {
-		lMainFrame->setFocus("a0", 0);
-		return;
-	}
-	if (e == KbMapping::down() && param.find("now") != string::npos) {
-		if (!lLs->lookupLabel("e0").lock()->IsHidden()) {
-			lMainFrame->setFocus("e0", 0);
-		}
-		else if (!lLs->lookupLabel("d0").lock()->IsHidden()) {
-			lMainFrame->setFocus("d0", 0);
-		}
-		else if (!lLs->lookupLabel("c0").lock()->IsHidden()) {
-			lMainFrame->setFocus("c0", 0);
-		}
-		else if (!lLs->lookupLabel("b0").lock()->IsHidden()) {
-			lMainFrame->setFocus("b0", 0);
-		}
-		else if (!lLs->lookupLabel("a0").lock()->IsHidden()) {
-			lMainFrame->setFocus("a0", 0);
-		}
-		return;
-	}
-
-	if ((e == KbMapping::down() || e == KbMapping::up()) && param.length() == 2) {
+	if (param.length() == 2) {
 		auto src = param;
 		auto srcLetter = src.substr(0, 1);
 		int srcNumber = stoi(src.substr(1, 2));
 		auto increment = 0;
-		auto lKbmc = kbmc.lock();
-		if (e == KbMapping::down()) {
-			if (srcNumber == 3) {
-				if (seGui->getyOffset() + 4 == seGui->getEventsAtCurrentTick().size()) return;
-				seGui->setyOffset(seGui->getyOffset() + 1);
-				if (lKbmc->shiftIsPressed() && dynamic_pointer_cast<EmptyEvent>(visibleEvents[3].lock())) {
-					seGui->setSelectionEndIndex(srcNumber + seGui->getyOffset());
-				}
-				seGui->setChanged();
-				seGui->notifyObservers(string("selection"));
-				return;
-			}
-			increment = 1;
+
+		if (!shiftPressed && srcNumber == 0 && seGui->getyOffset() == 0) {
+			seGui->clearSelection();
+			lLs->setFocus("viewmodenumber");
+			seGui->setChanged();
+			seGui->notifyObservers(string("selection"));
+			return;
 		}
-		if (e == KbMapping::up()) {
-			if (!lKbmc->shiftIsPressed() && srcNumber == 0 && seGui->getyOffset() == 0) {
-				seGui->clearSelection();
-				lMainFrame->setFocus("viewmodenumber", 0);
-				seGui->setChanged();
-				seGui->notifyObservers(string("selection"));
-				return;
-			}
-			if (srcNumber == 0 && seGui->getyOffset() != 0) {
-				seGui->setyOffset(seGui->getyOffset() - 1);
-				if (lKbmc->shiftIsPressed()) seGui->setSelectionEndIndex(srcNumber + seGui->getyOffset());
-			}
-			increment = -1;
+		if (srcNumber == 0 && seGui->getyOffset() != 0) {
+			seGui->setyOffset(seGui->getyOffset() - 1);
+			if (shiftPressed) seGui->setSelectionEndIndex(srcNumber + seGui->getyOffset());
 		}
+		increment = -1;
+		downOrUp(increment);
+	}
+}
+
+void StepEditorControls::down() {
+	init();
+	auto lLs = ls.lock();
+	if (!lLs->lookupField("a0").lock()->IsHidden() && param.compare("viewmodenumber") == 0) {
+		lLs->setFocus("a0");
+		return;
+	}
+	else if (param.find("now") != string::npos) {
+		if (!lLs->lookupLabel("e0").lock()->IsHidden()) {
+			lLs->setFocus("e0");
+		}
+		else if (!lLs->lookupLabel("d0").lock()->IsHidden()) {
+			lLs->setFocus("d0");
+		}
+		else if (!lLs->lookupLabel("c0").lock()->IsHidden()) {
+			lLs->setFocus("c0");
+		}
+		else if (!lLs->lookupLabel("b0").lock()->IsHidden()) {
+			lLs->setFocus("b0");
+		}
+		else if (!lLs->lookupLabel("a0").lock()->IsHidden()) {
+			lLs->setFocus("a0");
+		}
+		return;
+	}
+
+	if (param.length() == 2) {
+		auto src = param;
+		auto srcLetter = src.substr(0, 1);
+		int srcNumber = stoi(src.substr(1, 2));
+		auto increment = 0;
+
+		if (srcNumber == 3) {
+			if (seGui->getyOffset() + 4 == seGui->getEventsAtCurrentTick().size()) return;
+			seGui->setyOffset(seGui->getyOffset() + 1);
+			if (shiftPressed && dynamic_pointer_cast<EmptyEvent>(visibleEvents[3].lock())) {
+				seGui->setSelectionEndIndex(srcNumber + seGui->getyOffset());
+			}
+			seGui->setChanged();
+			seGui->notifyObservers(string("selection"));
+			return;
+		}
+		increment = 1;
+		downOrUp(increment);
+	}
+}
+
+void StepEditorControls::shift() {
+	super::shift();
+	if (param.length() == 2) {
+		auto eventNumber = stoi(param.substr(1, 2));
+		seGui->setSelectionStartIndex(eventNumber + seGui->getyOffset());
+	}
+}
+
+void StepEditorControls::downOrUp(int increment) {
+	if (param.length() == 2) {
+		auto lLs = ls.lock();
+		auto src = param;
+		auto srcLetter = src.substr(0, 1);
+		int srcNumber = stoi(src.substr(1, 2));
+
 		auto destination = srcLetter + to_string(srcNumber + increment);
 		if (srcNumber + increment != -1) {
-			if (!(lKbmc->shiftIsPressed() && dynamic_pointer_cast<EmptyEvent>(visibleEvents[(int)(srcNumber + increment)].lock()))) {
+			if (!(shiftPressed && dynamic_pointer_cast<EmptyEvent>(visibleEvents[(int)(srcNumber + increment)].lock()))) {
 				auto tf = lLs->lookupField(destination).lock();
-				if (tf && !tf->IsHidden()) lMainFrame->setFocus(tf->getName(), 0);
+				if (tf && !tf->IsHidden()) lLs->setFocus(tf->getName());
 			}
 		}
-		if (lKbmc->shiftIsPressed()) seGui->setSelectionEndIndex(srcNumber + increment + seGui->getyOffset());
 
-		if (!lKbmc->shiftIsPressed()) {
+		if (shiftPressed) {
+			seGui->setSelectionEndIndex(srcNumber + increment + seGui->getyOffset());
+		}
+		else {
 			seGui->checkSelection();
 			seGui->setChanged();
 			seGui->notifyObservers(string("selection"));
 		}
-		return;
 	}
 }
-*/

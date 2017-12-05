@@ -42,7 +42,6 @@ StepWindowObserver::StepWindowObserver(mpc::Mpc* mpc)
 	sampler = mpc->getSampler();
 	seqGui = mpc->getUis().lock()->getStepEditorGui();
 	samplerGui = mpc->getUis().lock()->getSamplerGui();
-	seqGui->deleteObservers();
 	seqGui->addObserver(this);
 	auto lSequencer = sequencer.lock();
 	auto seqNum = lSequencer->getActiveSequenceIndex();
@@ -51,7 +50,6 @@ StepWindowObserver::StepWindowObserver(mpc::Mpc* mpc)
 	auto lSampler = sampler.lock();
 	mpcSoundPlayerChannel = lSampler->getDrum(track.lock()->getBusNumber() -1);
 	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
-	lSequencer->deleteObservers();
 	lSequencer->addObserver(this);
 	auto ls = mpc->getLayeredScreen().lock();
 	auto csn = ls->getCurrentScreenName();
@@ -99,18 +97,18 @@ void StepWindowObserver::updateEditMultiple()
 			editMultiParam0Label.lock()->setLocation(xPosSingle/2, yPosSingle/2);
 			if (seqGui->getParamLetter().compare("a") == 0) {
 				editMultiParam0Label.lock()->setText(singleLabels[0]);
-				editMultiValue0Field.lock()->setSize(6 * 6 * 2 + 2, 18);
+				editMultiValue0Field.lock()->setSize(6 * 6 + 1, 9);
 				editMultiValue0Field.lock()->setText(to_string(seqGui->getChangeNoteToNumber()) + "/" + lSampler->getPadName(program.lock()->getPadNumberFromNote(seqGui->getChangeNoteToNumber())));
 			}
 			if (seqGui->getParamLetter().compare("b") == 0) {
 				editMultiParam0Label.lock()->setText(singleLabels[1]);
-				editMultiValue0Field.lock()->setSize(3 * 6 * 2 + 2, 18);
+				editMultiValue0Field.lock()->setSize(3 * 6 + 1, 9);
 				editMultiValue0Field.lock()->setText(noteVariationParameterNames[seqGui->getChangeVariationTypeNumber()]);
 			}
 			if (seqGui->getParamLetter().compare("c") == 0) {
 				editMultiParam0Label.lock()->setText(singleLabels[2]);
 				if (seqGui->getChangeVariationTypeNumber() == 0) {
-					editMultiValue0Field.lock()->setSize(4 * 6 * 2 + 2, 18);
+					editMultiValue0Field.lock()->setSize(4 * 6 + 1, 9);
 					editMultiValue0Field.lock()->setLocation(90/2, editMultiValue0Field.lock()->getY());
 					auto noteVarValue = (seqGui->getChangeVariationValue() * 2) - 128;
 
@@ -138,11 +136,11 @@ void StepWindowObserver::updateEditMultiple()
 						noteVarValue = 100;
 
 					editMultiValue0Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(noteVarValue), " ", 3));
-					editMultiValue0Field.lock()->setSize(3 * 6 * 2 + 2, 18);
+					editMultiValue0Field.lock()->setSize(3 * 6 + 1, 9);
 					editMultiValue0Field.lock()->setLocation((90 + 12)/2, editMultiValue0Field.lock()->getY());
 				}
 				else if (seqGui->getChangeVariationTypeNumber() == 3) {
-					editMultiValue0Field.lock()->setSize(4 * 6 * 2 + 2, 18);
+					editMultiValue0Field.lock()->setSize(4 * 6 + 1, 9);
 					editMultiValue0Field.lock()->setLocation(90/2, editMultiValue0Field.lock()->getY());
 					auto noteVarValue = seqGui->getChangeVariationValue() - 50;
 					if (noteVarValue > 50)
@@ -159,9 +157,9 @@ void StepWindowObserver::updateEditMultiple()
 					}
 				}
 			}
-			editMultiParam0Label.lock()->setSize(editMultiParam0Label.lock()->getText().length() * 6 * 2 + 2, 18);
+			editMultiParam0Label.lock()->setSize(editMultiParam0Label.lock()->getText().length() * 6 + 1, 9);
 			editMultiValue0Field.lock()->Hide(false);
-			//editMultiValue0Field.lock()->setLocation((xPosSingle/2) + (editMultiParam0Label.lock()->GetRECT()->W()/2), yPosSingle/2);
+			editMultiValue0Field.lock()->setLocation((xPosSingle/2) + (editMultiParam0Label.lock()->getW()/2), yPosSingle/2);
 		}
 		if (seqGui->getParamLetter().compare("d") == 0 || seqGui->getParamLetter().compare("e") == 0) {
 			updateDouble();
@@ -175,11 +173,11 @@ void StepWindowObserver::updateEditMultiple()
 			editMultiParam0Label.lock()->Hide(false);
 			editMultiParam0Label.lock()->setLocation(xPosSingle/2, yPosSingle/2);
 			editMultiParam0Label.lock()->setText(singleLabels[0]);
-			editMultiValue0Field.lock()->setSize(8 * 6 * 2 + 2, 18);
+			editMultiValue0Field.lock()->setSize(8 * 6 + 1, 9);
 			editMultiValue0Field.lock()->setText((moduru::lang::StrUtil::padLeft(to_string(seqGui->getChangeNoteToNumber()), " ", 3) + "(" + mpc::ui::Uis::noteNames[seqGui->getChangeNoteToNumber()]) + ")");
-			editMultiParam0Label.lock()->setSize(editMultiParam0Label.lock()->GetTextEntryLength() * 6 * 2 + 2, 18);
+			editMultiParam0Label.lock()->setSize(editMultiParam0Label.lock()->GetTextEntryLength() * 6 + 1, 9);
 			editMultiValue0Field.lock()->Hide(false);
-			//editMultiValue0Field.lock()->setLocation((xPosSingle/2) + (editMultiParam0Label.lock()->GetRECT()->W()/2), yPosSingle/2);
+			editMultiValue0Field.lock()->setLocation((xPosSingle/2) + (editMultiParam0Label.lock()->getW()/2), yPosSingle/2);
 		}
 		else if (seqGui->getParamLetter().compare("b") == 0 || seqGui->getParamLetter().compare("c") == 0) {
 			updateDouble();
@@ -201,17 +199,19 @@ void StepWindowObserver::updateDouble()
     editMultiValue1Field.lock()->Hide(false);
     editMultiParam0Label.lock()->setText(doubleLabels[0]);
     editMultiParam1Label.lock()->setText(doubleLabels[1]);
-	editMultiParam0Label.lock()->setSize(editMultiParam0Label.lock()->GetTextEntryLength() * 6 * 2 + 2, 18);
+	editMultiParam0Label.lock()->setSize(editMultiParam0Label.lock()->GetTextEntryLength() * 6 + 1, 9);
     editMultiParam0Label.lock()->setLocation(xPosDouble[0]/2, yPosDouble[0]/2);
-    editMultiParam1Label.lock()->setSize(editMultiParam1Label.lock()->GetTextEntryLength() * 6 * 2 + 2, 18);
+    editMultiParam1Label.lock()->setSize(editMultiParam1Label.lock()->GetTextEntryLength() * 6 + 1, 9);
     editMultiParam1Label.lock()->setLocation(xPosDouble[1]/2, yPosDouble[1]/2);
-    //editMultiValue0Field.lock()->setLocation((xPosDouble[0] + editMultiParam0Label.lock()->GetRECT()->W())/2, yPosDouble[0]/2);
-    //editMultiValue1Field.lock()->setLocation((xPosDouble[1] + editMultiParam1Label.lock()->GetRECT()->W())/2, yPosDouble[1]/2);
+    editMultiValue0Field.lock()->setLocation((xPosDouble[0] + editMultiParam0Label.lock()->getW())/2, yPosDouble[0]/2);
+    editMultiValue1Field.lock()->setLocation((xPosDouble[1] + editMultiParam1Label.lock()->getW())/2, yPosDouble[1]/2);
     editMultiValue0Field.lock()->setText(editTypeNames[seqGui->getEditTypeNumber()]);
 	editMultiValue1Field.lock()->setText(to_string(seqGui->getEditValue()));
-    editMultiValue0Field.lock()->setSize(editMultiValue0Field.lock()->GetTextEntryLength() * 6 * 2 + 2, 18);
-    editMultiValue1Field.lock()->setSize(editMultiValue1Field.lock()->GetTextEntryLength() * 6 * 2 + 2, 18);
+    editMultiValue0Field.lock()->setSize(editMultiValue0Field.lock()->GetTextEntryLength() * 6 + 1, 9);
+    editMultiValue1Field.lock()->setSize(editMultiValue1Field.lock()->GetTextEntryLength() * 6 + 1, 9);
 }
 
 StepWindowObserver::~StepWindowObserver() {
+	seqGui->deleteObserver(this);
+	sequencer.lock()->deleteObserver(this);
 }

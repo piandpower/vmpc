@@ -20,6 +20,9 @@ namespace mpc {
 			private:
 				std::vector<std::weak_ptr<mpc::sequencer::Event>> visibleEvents{};
 
+			private:
+				void downOrUp(int increment);
+
 			public:
 				void init() override;
 
@@ -34,6 +37,7 @@ namespace mpc {
 				void right() override;
 				void up() override;
 				void down() override;
+				void shift() override;
 
 				StepEditorControls(mpc::Mpc* mpc);
 

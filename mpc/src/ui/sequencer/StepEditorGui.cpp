@@ -1,15 +1,15 @@
 #include <ui/sequencer/StepEditorGui.hpp>
 
-//#include <lcdgui/LayeredScreen.hpp>
-//#include <lcdgui/LayeredScreen.hpp>
-//#include <lcdgui/SelectedEventBar.hpp>
+#include <Mpc.hpp>
+#include <lcdgui/SelectedEventBar.hpp>
 #include <sequencer/EmptyEvent.hpp>
 
 using namespace mpc::ui::sequencer;
 using namespace std;
 
-StepEditorGui::StepEditorGui() 
+StepEditorGui::StepEditorGui(mpc::Mpc* mpc) 
 {
+	this->mpc = mpc;
 	viewModeNumber = 0;
 	noteA = 0;
 	noteB = 127;
@@ -37,10 +37,10 @@ int StepEditorGui::getInsertEventType()
 
 void StepEditorGui::setInsertEventType(int i)
 {
-    if(i < 0 || i > 7) return;
-    insertEventType = i;
-    setChanged();
-    notifyObservers(string("eventtype"));
+	if (i < 0 || i > 7) return;
+	insertEventType = i;
+	setChanged();
+	notifyObservers(string("eventtype"));
 }
 
 int StepEditorGui::getViewModeNumber()
@@ -50,12 +50,12 @@ int StepEditorGui::getViewModeNumber()
 
 void StepEditorGui::setViewModeNumber(int i)
 {
-    if(i < 0 || i > 7) return;
+	if (i < 0 || i > 7) return;
 
-    this->viewModeNumber = i;
-    setChanged();
-    notifyObservers(string("stepviewmodenumber"));
-    setyOffset(0);
+	this->viewModeNumber = i;
+	setChanged();
+	notifyObservers(string("stepviewmodenumber"));
+	setyOffset(0);
 }
 
 int StepEditorGui::getNoteA()
@@ -65,14 +65,14 @@ int StepEditorGui::getNoteA()
 
 void StepEditorGui::setNoteA(int i)
 {
-    if(i < 0 || i > 127) return;
+	if (i < 0 || i > 127) return;
 
-    this->noteA = i;
-    if(i > noteB) setNoteB(i);
-    setChanged();
-    notifyObservers(string("viewmodestext"));
-    setChanged();
-    notifyObservers(string("resetstepeditor"));
+	this->noteA = i;
+	if (i > noteB) setNoteB(i);
+	setChanged();
+	notifyObservers(string("viewmodestext"));
+	setChanged();
+	notifyObservers(string("resetstepeditor"));
 }
 
 int StepEditorGui::getNoteB()
@@ -82,14 +82,14 @@ int StepEditorGui::getNoteB()
 
 void StepEditorGui::setNoteB(int i)
 {
-    if(i < 0 || i > 127) return;
-    this->noteB = i;
-    if(i < noteA) setNoteA(i);
+	if (i < 0 || i > 127) return;
+	this->noteB = i;
+	if (i < noteA) setNoteA(i);
 
-    setChanged();
-    notifyObservers(string("viewmodestext"));
-    setChanged();
-    notifyObservers(string("resetstepeditor"));
+	setChanged();
+	notifyObservers(string("viewmodestext"));
+	setChanged();
+	notifyObservers(string("resetstepeditor"));
 }
 
 int StepEditorGui::getControlNumber()
@@ -99,13 +99,13 @@ int StepEditorGui::getControlNumber()
 
 void StepEditorGui::setControlNumber(int i)
 {
-    if(i < -1 || i > 127) return;
+	if (i < -1 || i > 127) return;
 
-    this->controlNumber = i;
-    setChanged();
-    notifyObservers(string("viewmodestext"));
-    setChanged();
-    notifyObservers(string("resetstepeditor"));
+	this->controlNumber = i;
+	setChanged();
+	notifyObservers(string("viewmodestext"));
+	setChanged();
+	notifyObservers(string("resetstepeditor"));
 }
 
 bool StepEditorGui::isAutoStepIncrementEnabled()
@@ -153,11 +153,10 @@ int StepEditorGui::getyOffset()
 
 void StepEditorGui::setyOffset(int i)
 {
-    if(i < 0) return;
-
-    this->yOffset = i;
-    setChanged();
-    notifyObservers(string("resetstepeditor"));
+	if (i < 0) return;
+	this->yOffset = i;
+	setChanged();
+	notifyObservers(string("resetstepeditor"));
 }
 
 int StepEditorGui::getSelectedEventNumber()
@@ -192,12 +191,12 @@ vector<weak_ptr<mpc::sequencer::Event>> StepEditorGui::getEventsAtCurrentTick()
 
 void StepEditorGui::setFromNotePad(int i)
 {
-    if(i < 34 || i > 98) return;
-    fromNotePad = i;
-    setChanged();
-    notifyObservers(string("viewmodestext"));
-    setChanged();
-    notifyObservers(string("resetstepeditor"));
+	if (i < 34 || i > 98) return;
+	fromNotePad = i;
+	setChanged();
+	notifyObservers(string("viewmodestext"));
+	setChanged();
+	notifyObservers(string("resetstepeditor"));
 }
 
 int StepEditorGui::getFromNotePad()
@@ -276,35 +275,34 @@ vector<weak_ptr<mpc::sequencer::Event>> StepEditorGui::getPlaceHolder()
 
 void StepEditorGui::checkSelection()
 {
-	/*
-	auto lLs = ls.lock();
-	string focus = lMainFrame->getFocus(0);
-    if (focus.length() == 2) {
-        int eventNumber = stoi(focus.substr(1, 2));
-        int  visibleEventCounter = 0;
-        int firstSelectedVisibleEventIndex = -1;
-        auto selectedEventCounter = 0;
-        for (auto& seb : lMainFrame->getLayeredScreen().lock()->getSelectedEventBarsStepEditor()) {
-            if (!seb.lock()->IsHidden()) {
+	auto ls = mpc->getLayeredScreen().lock();
+	string focus = ls->getFocus();
+	if (focus.length() == 2) {
+		int eventNumber = stoi(focus.substr(1, 2));
+		int  visibleEventCounter = 0;
+		int firstSelectedVisibleEventIndex = -1;
+		auto selectedEventCounter = 0;
+		for (auto& seb : ls->getSelectedEventBarsStepEditor()) {
+			if (!seb.lock()->IsHidden()) {
 				if (firstSelectedVisibleEventIndex == -1) {
 					firstSelectedVisibleEventIndex = visibleEventCounter;
 				}
-                selectedEventCounter++;
-            }
-            visibleEventCounter++;
-        }
+				selectedEventCounter++;
+			}
+			visibleEventCounter++;
+		}
 		if (firstSelectedVisibleEventIndex != -1) {
-            int lastSelectedVisibleEventIndex = firstSelectedVisibleEventIndex + selectedEventCounter - 1;
-            if (!dynamic_pointer_cast<mpc::sequencer::EmptyEvent>(visibleEvents[eventNumber].lock())) {
-                if (eventNumber < firstSelectedVisibleEventIndex || eventNumber > lastSelectedVisibleEventIndex) {
-                    clearSelection();
-                }
-            }
-        }
-    } else {
-        clearSelection();
-    }
-	*/
+			int lastSelectedVisibleEventIndex = firstSelectedVisibleEventIndex + selectedEventCounter - 1;
+			if (!dynamic_pointer_cast<mpc::sequencer::EmptyEvent>(visibleEvents[eventNumber].lock())) {
+				if (eventNumber < firstSelectedVisibleEventIndex || eventNumber > lastSelectedVisibleEventIndex) {
+					clearSelection();
+				}
+			}
+		}
+	}
+	else {
+		clearSelection();
+	}
 }
 
 int StepEditorGui::getEditTypeNumber()
@@ -346,10 +344,10 @@ int StepEditorGui::getChangeNoteToNumber()
 
 void StepEditorGui::setChangeNoteToNumber(int i)
 {
-    if(i < 0 || i > 127) return;
-    this->changeNoteToNumber = i;
-    setChanged();
-    notifyObservers(string("editmultiple"));
+	if (i < 0 || i > 127) return;
+	this->changeNoteToNumber = i;
+	setChanged();
+	notifyObservers(string("editmultiple"));
 }
 
 int StepEditorGui::getChangeVariationTypeNumber()
@@ -359,10 +357,10 @@ int StepEditorGui::getChangeVariationTypeNumber()
 
 void StepEditorGui::setChangeVariationTypeNumber(int i)
 {
-    if(i < 0 || i > 3) return;
-    this->changeVariationTypeNumber = i;
-    setChanged();
-    notifyObservers(string("editmultiple"));
+	if (i < 0 || i > 3) return;
+	this->changeVariationTypeNumber = i;
+	setChanged();
+	notifyObservers(string("editmultiple"));
 }
 
 int StepEditorGui::getChangeVariationValue()
@@ -372,11 +370,11 @@ int StepEditorGui::getChangeVariationValue()
 
 void StepEditorGui::setChangeVariationValue(int i)
 {
-    if(i < 0 || i > 128) return;
-    if(changeVariationTypeNumber != 0 && i > 100) i = 100;
-    this->changeVariationValue = i;
-    setChanged();
-    notifyObservers(string("editmultiple"));
+	if (i < 0 || i > 128) return;
+	if (changeVariationTypeNumber != 0 && i > 100) i = 100;
+	this->changeVariationValue = i;
+	setChanged();
+	notifyObservers(string("editmultiple"));
 }
 
 int StepEditorGui::getEditValue()
@@ -386,11 +384,11 @@ int StepEditorGui::getEditValue()
 
 void StepEditorGui::setEditValue(int i)
 {
-    if(i < 0 || i > 127) return;
+	if (i < 0 || i > 127) return;
 
-    this->editValue = i;
-    setChanged();
-    notifyObservers(string("editmultiple"));
+	this->editValue = i;
+	setChanged();
+	notifyObservers(string("editmultiple"));
 }
 
 bool StepEditorGui::isDurationTcPercentageEnabled()

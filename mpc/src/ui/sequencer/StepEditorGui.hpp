@@ -5,7 +5,7 @@
 #include <vector>
 
 namespace mpc {
-
+	class Mpc;
 	namespace sequencer {
 		class Event;
 	}
@@ -22,6 +22,7 @@ namespace mpc {
 				typedef moduru::observer::Observable super;
 
 			private:
+				mpc::Mpc* mpc;
 				std::vector<std::weak_ptr<mpc::sequencer::Event>> visibleEvents{};
 				std::vector <std::weak_ptr<mpc::sequencer::Event>> eventsAtCurrentTick{};
 				std::vector<std::weak_ptr<mpc::sequencer::Event>> placeHolder{};
@@ -101,7 +102,8 @@ namespace mpc {
 				void setEditValue(int i);
 				bool isDurationTcPercentageEnabled();
 
-				StepEditorGui();
+			public:
+				StepEditorGui(mpc::Mpc* mpc);
 				~StepEditorGui();
 
 			};

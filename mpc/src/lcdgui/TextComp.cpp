@@ -3,6 +3,8 @@
 
 #include <lang/utf8_decode.h>
 
+#include <Mpc.hpp>
+
 using namespace mpc::lcdgui;
 
 using namespace moduru::lang;
@@ -44,7 +46,6 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 		}
 	}
 	if (name.compare("tsig") == 0) columns = 7;
-
 	if (!IsHidden()) {
 		while (next != UTF8_END && next >= 0) {
 			moduru::gui::bmfont_char current_char;
@@ -146,7 +147,7 @@ void TextComp::setColumns(int i) {
 }
 
 unsigned int TextComp::GetTextEntryLength() {
-	return 0;
+	return text.length();
 }
 
 void TextComp::setText(string s)

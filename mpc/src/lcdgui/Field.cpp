@@ -199,7 +199,7 @@ void Field::setSplit(bool b)
 			//letters[i]->setFocusable(false);
 			//GetGUI()->AttachControl(letters[i]);
 		}
-		setText(this->getText());
+		setText(getText());
 		redrawSplit();
 		//SetDirty(true);
 	}
