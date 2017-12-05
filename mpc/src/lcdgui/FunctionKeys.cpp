@@ -4,6 +4,8 @@
 
 #include <StartUp.hpp>
 
+#include <Mpc.hpp>
+
 using namespace mpc::lcdgui;
 using namespace std;
 
@@ -65,6 +67,14 @@ void FunctionKeys::enable(int i)
 	SetDirty();
 }
 
+void FunctionKeys::clearAll(std::vector<std::vector<bool> >* pixels) {
+	for (int j = 0; j < 248; j++) {
+		for (int k = 51; k < 60; k++) {
+			pixels->at(j).at(k) = false;
+		}
+	}
+}
+
 void FunctionKeys::Draw(std::vector<std::vector<bool> >* pixels) {
 	vector<int> xPos = vector<int>{ 2, 43, 84, 125, 166, 207 };
 	vector<int> types = vector<int>{ box0, box1, box2, box3, box4, box5 };
@@ -73,8 +83,17 @@ void FunctionKeys::Draw(std::vector<std::vector<bool> >* pixels) {
 	bool label = false;
 
 	for (int i = 0; i < xPos.size(); i++) {
-		if (names[i] == "") continue;
-		if (!enabled[i]) continue;
+		if (names[i] == "" || !enabled[i]) {
+			/*
+			for (int j = 0; j < 39; j++) {
+				for (int k = 51; k < 60; k++) {
+					int x1 = j + xPos[i];
+					pixels->at(x1).at(k) = false;
+				}
+			}
+			*/
+			continue;
+		}
 
 		auto stringSize = names[i].size();
 		auto lengthInPixels = stringSize * 6;

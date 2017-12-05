@@ -535,6 +535,8 @@ void LayeredScreen::drawFunctionKeys(string screenName)
 	auto& screenJson = layerJsons[currentLayer][screenName.c_str()];
 	Value& fblabels = screenJson["fblabels"];
 	Value& fbtypes = screenJson["fbtypes"];
+	getFunctionKeys()->clearAll(&pixels);
+	getCurrentBackground()->SetDirty();
 	getFunctionKeys()->initialize(fblabels, fbtypes);
 }
 

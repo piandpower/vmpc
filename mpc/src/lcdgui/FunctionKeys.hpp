@@ -29,6 +29,7 @@ namespace mpc {
 			void initialize(rapidjson::Value& fbLabels, rapidjson::Value& fbTypes);
 			void disable(int i);
 			void enable(int i);
+			void clearAll(std::vector<std::vector<bool> >* pixels);
 
 		public:
 			void Draw(std::vector<std::vector<bool> >* pixels) override;

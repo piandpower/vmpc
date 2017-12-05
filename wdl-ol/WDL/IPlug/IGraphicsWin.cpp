@@ -83,6 +83,7 @@ LRESULT CALLBACK IGraphicsWin::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 		int mSec = int(1000.0 / sFPS);
 		SetTimer(hWnd, IPLUG_TIMER_ID, mSec, NULL);
 		SetFocus(hWnd); // gets scroll wheel working straight away
+		SetForegroundWindow(hWnd);
 		return 0;
 	}
 
