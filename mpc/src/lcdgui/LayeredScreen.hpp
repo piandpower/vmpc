@@ -126,7 +126,7 @@ namespace mpc {
 			std::vector<std::weak_ptr<mpc::lcdgui::Knob>> getKnobs();
 			std::vector<std::weak_ptr<mpc::lcdgui::MixerKnobBackground>> getMixerKnobBackgrounds();
 			std::vector<std::weak_ptr<mpc::lcdgui::MixerFaderBackground>> getMixerFaderBackgrounds();
-			void drawFunctionKeyses(std::string screenName);
+			void drawFunctionKeys(std::string screenName);
 			mpc::lcdgui::Underline* getUnderline();
 			mpc::lcdgui::TwoDots* getTwoDots();
 			mpc::lcdgui::Wave* getFineWave();

@@ -178,10 +178,10 @@ void StepEditorObserver::update(moduru::observer::Observable* o, boost::any arg)
 		refreshSelection();
 	}
 	else if (s.compare("selectionstart") == 0) {
-		ls->drawFunctionKeyses("sequencer_step_selection");
+		ls->drawFunctionKeys("sequencer_step_selection");
 	}
 	else if (s.compare("clearselection") == 0) {
-		ls->drawFunctionKeyses("sequencer_step");
+		ls->drawFunctionKeys("sequencer_step");
 	}
 }
 

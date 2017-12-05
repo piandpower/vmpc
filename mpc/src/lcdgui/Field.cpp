@@ -111,7 +111,7 @@ void Field::takeFocus(string prev)
 //	}
 //	if (csn.compare("trmove") == 0) {
 //		//if (focusEvent.compare("tr1") == 0 && !lGui->getTrMoveGui()->isSelected())
-//		//	lLs->drawFunctionKeyses("trmove_notselected");
+//		//	lLs->drawFunctionKeys("trmove_notselected");
 //	}
 	SetDirty();
 }
@@ -166,7 +166,7 @@ void Field::loseFocus(string next)
 	////}
 	//if (csn.compare("trmove") == 0) {
 	////	if (focusEvent.compare("tr1") == 0 && !lGui->getTrMoveGui()->isSelected())
-	////		lLs->drawFunctionKeyses("trmove");
+	////		lLs->drawFunctionKeys("trmove");
 	//}
 	//else if (csn.compare("directory") == 0 || csn.compare("save") == 0) {
 	//	setOpaque(false);

@@ -530,7 +530,7 @@ vector<weak_ptr<mpc::lcdgui::MixerFaderBackground>> LayeredScreen::getMixerFader
 	return res;
 }
 
-void LayeredScreen::drawFunctionKeyses(string screenName)
+void LayeredScreen::drawFunctionKeys(string screenName)
 {
 	auto& screenJson = layerJsons[currentLayer][screenName.c_str()];
 	Value& fblabels = screenJson["fblabels"];

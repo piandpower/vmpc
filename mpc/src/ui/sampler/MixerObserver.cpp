@@ -456,13 +456,13 @@ void MixerObserver::displayFunctionKeys()
 	auto lLs = ls.lock();
 
 	if (mixGui->getTab() == 0) {
-		lLs->drawFunctionKeyses("mixer_stereo" + link);
+		lLs->drawFunctionKeys("mixer_stereo" + link);
 	}
 	else if (mixGui->getTab() == 1) {
-		lLs->drawFunctionKeyses("mixer_indiv" + link);
+		lLs->drawFunctionKeys("mixer_indiv" + link);
 	}
 	else if (mixGui->getTab() == 2) {
-		lLs->drawFunctionKeyses("mixer_fxsend" + link);
+		lLs->drawFunctionKeys("mixer_fxsend" + link);
 	}
 }
 

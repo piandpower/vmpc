@@ -86,10 +86,10 @@ void SoundObserver::displayLSource()
 	auto ls = mpc->getLayeredScreen().lock();
 	lSourceField.lock()->setText(lSampler->getSoundName(soundGui->getSoundIndex()));
 	if (lSampler->getSound(soundGui->getSoundIndex()).lock()->isMono() && lSampler->getSound(soundGui->getRSource()).lock()->isMono()) {
-		ls->drawFunctionKeyses("monotostereo");
+		ls->drawFunctionKeys("monotostereo");
 	}
 	else {
-		ls->drawFunctionKeyses("convertnodoit");
+		ls->drawFunctionKeys("convertnodoit");
 	}
 }
 
@@ -99,10 +99,10 @@ void SoundObserver::displayRSource()
 	auto ls = mpc->getLayeredScreen().lock();
 	rSourceField.lock()->setText(lSampler->getSoundName(soundGui->getRSource()));
 	if (lSampler->getSound(soundGui->getSoundIndex()).lock()->isMono() && lSampler->getSound(soundGui->getRSource()).lock()->isMono()) {
-		ls->drawFunctionKeyses("monotostereo");
+		ls->drawFunctionKeys("monotostereo");
 	}
 	else {
-		ls->drawFunctionKeyses("convertnodoit");
+		ls->drawFunctionKeys("convertnodoit");
 	}
 }
 
@@ -117,10 +117,10 @@ void SoundObserver::displayStereoSource()
 	auto ls = mpc->getLayeredScreen().lock();
 	stereoSourceField.lock()->setText(lSampler->getSoundName(soundGui->getSoundIndex()));
 	if (lSampler->getSound(soundGui->getSoundIndex()).lock()->isMono()) {
-		ls->drawFunctionKeyses("convertnodoit");
+		ls->drawFunctionKeys("convertnodoit");
 	}
 	else {
-		ls->drawFunctionKeyses("stereotomono");
+		ls->drawFunctionKeys("stereotomono");
 	}
 }
 

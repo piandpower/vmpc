@@ -117,10 +117,10 @@ void AudioObserver::update(moduru::observer::Observable* o, boost::any a)
 void AudioObserver::displayFunctionKeys()
 {
 	if (ams.lock()->getServerIndex() == audioGui->getServer()) {
-		//mainFrame->getLayeredScreen().lock()->drawFunctionKeyses("audio_no_start");
+		//mainFrame->getLayeredScreen().lock()->drawFunctionKeys("audio_no_start");
 	}
 	else {
-		//mainFrame->getLayeredScreen().lock()->drawFunctionKeyses("audio");
+		//mainFrame->getLayeredScreen().lock()->drawFunctionKeys("audio");
 	}
 }
 
