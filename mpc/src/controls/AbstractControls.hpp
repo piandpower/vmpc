@@ -48,7 +48,7 @@ namespace mpc {
 
 		class AbstractControls
 		{
-		protected:
+		public:
 			static bool shiftPressed;
 			static bool recPressed;
 			static bool overDubPressed;

@@ -1,21 +1,23 @@
 #include <sequencer/Track.hpp>
 
 #include <Mpc.hpp>
+#include <controls/AbstractControls.hpp>
+#include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <audiomidi/EventHandler.hpp>
 #include <sequencer/Event.hpp>
 #include <sequencer/Sequence.hpp>
 #include <sequencer/NoteEvent.hpp>
-//#include <sequencer/MidiClockEvent.hpp>
-//#include <sequencer/MixerEvent.hpp>
+#include <sequencer/MidiClockEvent.hpp>
+#include <sequencer/MixerEvent.hpp>
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/TempoChangeEvent.hpp>
-//#include <sequencer/PitchBendEvent.hpp>
-//#include <sequencer/ControlChangeEvent.hpp>
-//#include <sequencer/ProgramChangeEvent.hpp>
-//#include <sequencer/SystemExclusiveEvent.hpp>
-//#include <sequencer/PolyPressureEvent.hpp>
-//#include <sequencer/ChannelPressureEvent.hpp>
-//#include <sequencer/MixerEvent.hpp>
+#include <sequencer/PitchBendEvent.hpp>
+#include <sequencer/ControlChangeEvent.hpp>
+#include <sequencer/ProgramChangeEvent.hpp>
+#include <sequencer/SystemExclusiveEvent.hpp>
+#include <sequencer/PolyPressureEvent.hpp>
+#include <sequencer/ChannelPressureEvent.hpp>
+#include <sequencer/MixerEvent.hpp>
 
 using namespace mpc::sequencer;
 using namespace std;
@@ -206,7 +208,7 @@ void Track::addEventRealTime(shared_ptr<Event> event)
 			}
 		}
 	}
-  //  tcValue = mpc->getGui().lock()->getSequencerWindowGui()->getNoteValue();
+    tcValue = mpc->getUis().lock()->getSequencerWindowGui()->getNoteValue();
 	auto lSequencer = sequencer.lock();
 	if (tcValue > 0 && dynamic_pointer_cast<NoteEvent>(event)) {
 		timingCorrect(0, lSequencer->getCurrentlyPlayingSequence().lock()->getLastBar(), dynamic_cast<NoteEvent*>(event.get()), lSequencer->getTickValues()[tcValue]);
@@ -244,25 +246,25 @@ weak_ptr<Event> Track::addEvent(int tick, string type) {
 		res = make_shared<TempoChangeEvent>(parent);
 	}
 	else if (type.compare("pitchbend") == 0) {
-		//res = make_shared<PitchBendEvent>();
+		res = make_shared<PitchBendEvent>();
 	}
 	else if (type.compare("controlchange") == 0) {
-		//res = make_shared<ControlChangeEvent>();
+		res = make_shared<ControlChangeEvent>();
 	}
 	else if (type.compare("programchange") == 0) {
-		//res = make_shared<ProgramChangeEvent>();
+		res = make_shared<ProgramChangeEvent>();
 	}
 	else if (type.compare("channelpressure") == 0) {
-		//res = make_shared<ChannelPressureEvent>();
+		res = make_shared<ChannelPressureEvent>();
 	}
 	else if (type.compare("polypressure") == 0) {
-		//res = make_shared<PolyPressureEvent>();
+		res = make_shared<PolyPressureEvent>();
 	}
 	else if (type.compare("systemexclusive") == 0) {
-		//res = make_shared<SystemExclusiveEvent>();
+		res = make_shared<SystemExclusiveEvent>();
 	}
 	else if (type.compare("mixer") == 0) {
-		//res = make_shared<MixerEvent>();
+		res = make_shared<MixerEvent>();
 	}
 	if (events.size() == 0) setUsed(true);
 	res->setTick(tick);
@@ -279,9 +281,9 @@ weak_ptr<Event> Track::cloneEvent(weak_ptr<Event> src) {
 
 	shared_ptr<Event> res;
 	auto tce = dynamic_pointer_cast<TempoChangeEvent>(src.lock());
-//	auto mce = dynamic_pointer_cast<MidiClockEvent>(src.lock());
+	auto mce = dynamic_pointer_cast<MidiClockEvent>(src.lock());
 	auto ne = dynamic_pointer_cast<NoteEvent>(src.lock());
-//	auto me = dynamic_pointer_cast<MixerEvent>(src.lock());
+	auto me = dynamic_pointer_cast<MixerEvent>(src.lock());
 
 	if (ne) {
 		res = make_shared<NoteEvent>();
@@ -290,16 +292,16 @@ weak_ptr<Event> Track::cloneEvent(weak_ptr<Event> src) {
 	}
 	else if (tce) {
 		res = make_shared<TempoChangeEvent>(seq);
-		//tce->CopyValuesTo(res);
+		tce->CopyValuesTo(res);
 	}
-	//else if (mce) {
-		//res = make_shared<MidiClockEvent>(0);
-		//mce->CopyValuesTo(res);
-	//}
-	//else if (me) {
-		//res = make_shared<MixerEvent>();
-		//me->CopyValuesTo(res);
-	//}
+	else if (mce) {
+		res = make_shared<MidiClockEvent>(0);
+		mce->CopyValuesTo(res);
+	}
+	else if (me) {
+		res = make_shared<MixerEvent>();
+		me->CopyValuesTo(res);
+	}
 
 	events.push_back(res);
 
@@ -453,8 +455,8 @@ void Track::playNext()
 	auto lSequencer = sequencer.lock();
 	multi = lSequencer->isRecordingModeMulti();
 	delete_ = lSequencer->isRecording() && (trackIndex == lSequencer->getActiveTrackIndex() || multi) && (trackIndex < 64);
-	//if (lSequencer->isOverDubbing() && controls::KbMouseController::eraseIsPressed() && (trackIndex == lSequencer->getActiveTrackIndex() || multi) && trackIndex < 64)
-	//	delete_ = true;
+	if (lSequencer->isOverDubbing() && mpc->getActiveControls()->erasePressed && (trackIndex == lSequencer->getActiveTrackIndex() || multi) && trackIndex < 64)
+		delete_ = true;
 
 	int counter = 0;
 //	vector<weak_ptr<NoteEvent>> noteOffsVec;
@@ -560,24 +562,24 @@ void Track::correctTimeRange(int startPos, int endPos, int stepLength)
 
 	auto lSequencer = sequencer.lock();
 
-    auto s = lSequencer->getActiveSequence().lock();
-    int accumBarLengths = 0;
-    auto fromBar = 0;
-    auto toBar = 0;
-    for (int i = 0; i < 999; i++) {
-        accumBarLengths += (*s->getBarLengths())[i];
-        if(accumBarLengths >= startPos) {
-            fromBar = i;
-            break;
-        }
-    }
-    for (int i = 0; i < 999; i++) {
-        accumBarLengths += (*s->getBarLengths())[i];
-        if(accumBarLengths > endPos) {
-            toBar = i;
-            break;
-        }
-    }
+	auto s = lSequencer->getActiveSequence().lock();
+	int accumBarLengths = 0;
+	auto fromBar = 0;
+	auto toBar = 0;
+	for (int i = 0; i < 999; i++) {
+		accumBarLengths += (*s->getBarLengths())[i];
+		if (accumBarLengths >= startPos) {
+			fromBar = i;
+			break;
+		}
+	}
+	for (int i = 0; i < 999; i++) {
+		accumBarLengths += (*s->getBarLengths())[i];
+		if (accumBarLengths > endPos) {
+			toBar = i;
+			break;
+		}
+	}
 
 	for (auto& event : events) {
 		auto ne = dynamic_pointer_cast<NoteEvent>(event);
@@ -590,9 +592,9 @@ void Track::correctTimeRange(int startPos, int endPos, int stepLength)
 
 		}
 	}
-    
-    removeDoubles();
-    sortEvents();
+
+	removeDoubles();
+	sortEvents();
 }
 
 void Track::timingCorrect(int fromBar, int toBar, NoteEvent* noteEvent, int stepLength)

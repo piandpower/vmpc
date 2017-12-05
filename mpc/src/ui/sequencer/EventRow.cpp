@@ -452,8 +452,8 @@ void EventRow::setLabelTexts(vector<string> labels)
 void EventRow::setSizeAndLocation(vector<int> xPosArray, vector<int> sizeArray)
 {
 	for (int i = 0; i < xPosArray.size(); i++) {
-		tfArray[i].lock()->setSize((sizeArray[i] * 6 * 2) + 2, 18);
-		labelArray[i].lock()->setSize((labelArray[i].lock()->getText().length() * 6) * 2, 18);
+		tfArray[i].lock()->setSize((sizeArray[i] * 6) + 1, 9);
+		labelArray[i].lock()->setSize(labelArray[i].lock()->getText().length() * 6, 9);
 		labelArray[i].lock()->setLocation(xPosArray[i] - 1, 11 + (rowNumber * 9));
 		tfArray[i].lock()->setLocation(xPosArray[i] + (labelArray[i].lock()->getText().length() * 6) - 1, 11 + (rowNumber * 9));
 	}

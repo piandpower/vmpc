@@ -10,6 +10,7 @@ namespace mpc {
 
 		private:
 			int value;
+			MRECT rect;
 
 		public:
 			void setValue(int value);

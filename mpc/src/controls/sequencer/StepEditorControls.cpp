@@ -367,11 +367,13 @@ void StepEditorControls::nextBarEnd()
 }
 
 void StepEditorControls::left() {
+	super::left();
 	seGui->setChanged();
 	seGui->notifyObservers(string("selection"));
 }
 
 void StepEditorControls::right() {
+	super::right();
 	seGui->setChanged();
 	seGui->notifyObservers(string("selection"));
 }

@@ -143,17 +143,17 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	int x, y, w, h;
 	MRECT rect;
 	for (int i = 0; i < 4; i++) {
-		w = 80;
+		w = 50;
 		h = 5;
 		x = 191;
 		y = 13 + (i * 9);
 		rect = MRECT(x, y, x + w, y + h);
-		horizontalBarsTempoChangeEditor[i] = make_shared<HorizontalBar>(rect, 50);
+		horizontalBarsTempoChangeEditor[i] = make_shared<HorizontalBar>(rect, 0);
 		horizontalBarsTempoChangeEditor[i]->Hide(true);
 
 		x = 198;
 		rect = MRECT(x, y, x + w, y + h);
-		horizontalBarsStepEditor[i] = make_shared<HorizontalBar>(rect, 50);
+		horizontalBarsStepEditor[i] = make_shared<HorizontalBar>(rect, 0);
 		horizontalBarsStepEditor[i]->Hide(true);
 
 		w = 248;

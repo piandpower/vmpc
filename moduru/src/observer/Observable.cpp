@@ -1,5 +1,7 @@
 #include <observer/Observable.hpp>
 
+#include <Logger.hpp>
+
 using namespace moduru::observer;
 using namespace std;
 
