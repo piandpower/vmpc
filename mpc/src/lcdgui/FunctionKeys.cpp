@@ -70,7 +70,7 @@ void FunctionKeys::enable(int i)
 void FunctionKeys::clearAll(std::vector<std::vector<bool> >* pixels) {
 	for (int j = 0; j < 248; j++) {
 		for (int k = 51; k < 60; k++) {
-			pixels->at(j).at(k) = false;
+			(*pixels)[j][k] = false;
 		}
 	}
 }

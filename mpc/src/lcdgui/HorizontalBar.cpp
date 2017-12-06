@@ -25,12 +25,12 @@ void HorizontalBar::Draw(std::vector<std::vector<bool> >* pixels) {
 		MRECT r(x, y, x2, y + 6);
 		for (int i = rect.L; i < rect.R; i++) {
 			for (int j = y; j < y + 5; j++) {
-				pixels->at(i).at(j) = false;
+				(*pixels)[i][j] = false;
 			}
 		}
 		for (int i = x; i < x2; i++) {
 			for (int j = y; j < y + 5; j++) {
-				pixels->at(i).at(j) = true;
+				(*pixels)[i][j] = true;
 			}
 		}
 	//}

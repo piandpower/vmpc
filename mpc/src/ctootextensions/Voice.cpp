@@ -265,7 +265,8 @@ int Voice::processAudio(ctoot::audio::core::AudioBuffer* buffer, int nFrames)
 {
 	buffer->makeSilence();
 	if (finished) {
-		return AUDIO_SILENCE;
+		return AUDIO_OK;
+		// maybe should be AUDIO_SILENCE
 	}
 	left = buffer->getChannel(0);
 	right = buffer->getChannel(1);

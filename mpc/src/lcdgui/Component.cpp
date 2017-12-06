@@ -42,7 +42,7 @@ void Component::Clear(std::vector<std::vector<bool> >* pixels) {
 		for (int i = r.L; i < r.R; i++) {
 			for (int j = r.T; j < r.B; j++) {
 				if (i < 0 || i > 247 || j < 0 || j > 59) continue;
-				pixels->at(i).at(j) = false;
+				(*pixels)[i][j] = false;
 			}
 		}
 	}

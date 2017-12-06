@@ -135,11 +135,11 @@ float AudioBuffer::square()
 	auto ns = getSampleCount();
 	auto nc = getChannelCount();
 	auto sumOfSquares = 0.0f;
-	vector<float> samples;
+	vector<float>* samples;
 	for (auto c = 0; c < nc; c++) {
-		samples = *getChannel(c);
+		samples = getChannel(c);
 		for (auto s = 0; s < ns; s++) {
-			auto sample = samples[s];
+			auto sample = (*samples)[s];
 			sumOfSquares += sample * sample;
 		}
 	}
@@ -203,9 +203,10 @@ void AudioBuffer::copyFrom(AudioBuffer* src, int nFrames)
     for (auto c = 0; c < nc; c++) {
         auto from = src->getChannel(c);
         auto to = getChannel(c);
-        for (auto s = 0; s < ns; s++) {
-            (*to)[s] = (*from)[s];
-        }
+		(*to) = (*from);
+        //for (auto s = 0; s < ns; s++) {
+        //   (*to)[s] = (*from)[s];
+        //}
     }
 }
 
