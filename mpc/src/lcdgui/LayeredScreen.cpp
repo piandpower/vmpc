@@ -149,6 +149,15 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	int x, y, w, h;
 	MRECT rect;
 	for (int i = 0; i < 4; i++) {
+		w = 193;
+		h = 9;
+		x = 0;
+		y = 11 + (i * 9);
+		rect = MRECT(x, y, x + w, y + h);
+		selectedEventBarsStepEditor[i] = make_shared<mpc::lcdgui::SelectedEventBar>(rect);
+		selectedEventBarsStepEditor[i]->Hide(true);
+		nonTextComps.push_back(selectedEventBarsStepEditor[i]);
+
 		w = 50;
 		h = 5;
 		x = 191;
@@ -164,14 +173,6 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		horizontalBarsStepEditor[i]->Hide(true);
 		nonTextComps.push_back(horizontalBarsStepEditor[i]);
 
-		w = 248;
-		h = 9;
-		x = 0;
-		y = 11 + (i * 9);
-		rect = MRECT(x, y, x + w, y + h);
-		selectedEventBarsStepEditor[i] = make_shared<mpc::lcdgui::SelectedEventBar>(rect);
-		selectedEventBarsStepEditor[i]->Hide(true);
-		nonTextComps.push_back(selectedEventBarsStepEditor[i]);
 	}
 
 	for (int i = 0; i < 16; i++) {
@@ -325,16 +326,16 @@ void LayeredScreen::Draw() {
 
 	if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
 
+	for (auto& c : nonTextComps) {
+		if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
+	}
+
 	components = layers[i]->getAllLabelsAndFields();
 	for (auto& c : components) {
 		if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
 	}
 
 	if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
-
-	for (auto& c : nonTextComps) {
-		if (c.lock()->IsDirty()) c.lock()->Draw(&pixels);
-	}
 }
 
 bool LayeredScreen::IsDirty() {

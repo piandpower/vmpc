@@ -264,7 +264,7 @@ void EventRow::setMiscEventValues()
     if(dynamic_pointer_cast< mpc::sequencer::ProgramChangeEvent>(event.lock()) != nullptr) {
         parameterValue = dynamic_pointer_cast< mpc::sequencer::ProgramChangeEvent>(event.lock())->getProgram();
         labelArray[0].lock()->setText(">PROGRAM CHANGE:");
-        tfArray[0].lock()->setSize(3 * 6 * 2 + 2, 18);
+        tfArray[0].lock()->setSize(3 * 6 + 2, 9);
     }
     for (int i = 0; i < 2; i++) {
         tfArray[i].lock()->Hide(false);
@@ -345,7 +345,7 @@ void EventRow::setDrumNoteEventValues()
 	}
 	tfArray[1].lock()->setText(noteVarParamNames[ne->getVariationTypeNumber()]);
 	if (ne->getVariationTypeNumber() == 0) {
-		tfArray[2].lock()->setSize(4 * 6 * 2 + 2, 18);
+		tfArray[2].lock()->setSize(4 * 6 + 1, 9);
 		tfArray[2].lock()->setLocation(90, tfArray[2].lock()->getY());
 		auto noteVarValue = (ne->getVariationValue() * 2) - 128;
 		if (noteVarValue < -120) noteVarValue = -120;
@@ -358,11 +358,11 @@ void EventRow::setDrumNoteEventValues()
 		auto noteVarValue = ne->getVariationValue();
 		if (noteVarValue > 100) noteVarValue = 100;
 		tfArray[2].lock()->setText(moduru::lang::StrUtil::padLeft(to_string(noteVarValue), " ", 3));
-		tfArray[2].lock()->setSize(3 * 6 * 2 + 2, 18);
+		tfArray[2].lock()->setSize(3 * 6 + 1, 9);
 		tfArray[2].lock()->setLocation(90 + 6, tfArray[2].lock()->getY());
 	}
 	else if (ne->getVariationTypeNumber() == 3) {
-		tfArray[2].lock()->setSize(4 * 6 * 2 + 2, 18);
+		tfArray[2].lock()->setSize(4 * 6 + 1, 9);
 		tfArray[2].lock()->setLocation(90, tfArray[2].lock()->getY());
 		auto noteVarValue = ne->getVariationValue() - 50;
 		if (noteVarValue > 50) noteVarValue = 50;
@@ -416,6 +416,7 @@ void EventRow::setColors()
 	for (int i = 0; i < 5; i++) {
 		if (selected) {
 			selectedEventBar.lock()->Hide(false);
+			selectedEventBar.lock()->SetDirty();
 			labelArray[i].lock()->setInverted(true);
 			labelArray[i].lock()->setOpaque(true);
 			if (ls->getFocus().compare(tfArray[i].lock()->getName()) == 0) {
@@ -424,7 +425,6 @@ void EventRow::setColors()
 			}
 			else {
 				tfArray[i].lock()->setInverted(true);
-				//tfArray[i].lock()->setBackground(mpc::maingui::StartUp::lcdOn());
 			}
 		}
 		else {
@@ -433,11 +433,9 @@ void EventRow::setColors()
 			//labelArray[i].lock()->setOpaque(false);
 			if (tfArray[i].lock()->hasFocus()) {
 				tfArray[i].lock()->setInverted(true);
-				//tfArray[i].lock()->setBackground(mpc::maingui::StartUp::lcdOn());
 			}
 			else {
 				tfArray[i].lock()->setInverted(false);
-				//tfArray[i].lock()->setBackground(mpc::maingui::StartUp::lcdOff());
 			}
 		}
 	}

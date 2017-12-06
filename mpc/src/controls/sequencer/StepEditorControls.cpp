@@ -320,6 +320,8 @@ void StepEditorControls::turnWheel(int i)
 			}
 		}
 	}
+	seGui->setChanged();
+	seGui->notifyObservers(string("selection"));
 }
 
 void StepEditorControls::prevStepEvent()
@@ -368,12 +370,14 @@ void StepEditorControls::nextBarEnd()
 
 void StepEditorControls::left() {
 	super::left();
+	seGui->checkSelection();
 	seGui->setChanged();
 	seGui->notifyObservers(string("selection"));
 }
 
 void StepEditorControls::right() {
 	super::right();
+	seGui->checkSelection();
 	seGui->setChanged();
 	seGui->notifyObservers(string("selection"));
 }
@@ -451,6 +455,7 @@ void StepEditorControls::down() {
 }
 
 void StepEditorControls::shift() {
+	init();
 	super::shift();
 	if (param.length() == 2) {
 		auto eventNumber = stoi(param.substr(1, 2));
