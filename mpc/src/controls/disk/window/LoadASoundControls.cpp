@@ -60,8 +60,8 @@ void LoadASoundControls::function(int i)
 		ls.lock()->openScreen("load");
 		break;
 	case 4:
-		//auto command = mpc::command::KeepSound(gui, mpc, lSampler->getPreviewSound());
-		//command.execute();
+		auto command = mpc::command::KeepSound(mpc, lSampler->getPreviewSound());
+		command.execute();
 		ls.lock()->openScreen("load");
 		break;
 	}

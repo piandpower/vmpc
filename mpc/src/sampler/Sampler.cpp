@@ -984,10 +984,11 @@ int Sampler::checkExists(string soundName)
 int Sampler::getNextSoundIndex(int j, bool up)
 {
 	auto inc = up ? 1 : -1;
-	if (getSoundSortingType() == 0)
+	if (getSoundSortingType() == 0) {
+		if (j + inc < -1 || j + inc > getSoundCount() - 1) return j;
 		return j + inc;
-
-	if (getSoundSortingType() == 1) {
+	}
+	else if (getSoundSortingType() == 1) {
 		auto nextIndex = getSampleIndexName(j) + inc;
 		if (nextIndex > getSoundCount() - 1) {
 			return j;
