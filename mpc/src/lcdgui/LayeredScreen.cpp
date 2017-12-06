@@ -124,6 +124,9 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	pixels = std::vector < std::vector <bool>>(248, std::vector<bool>(60));
 	popup = make_unique<mpc::lcdgui::Popup>();
 	popup->Hide(true);
+
+	nonTextComps.push_back(popup);
+
 	horizontalBarsTempoChangeEditor = vector<shared_ptr<HorizontalBar>>(4);
 	horizontalBarsStepEditor = vector<shared_ptr<HorizontalBar>>(4);
 	selectedEventBarsStepEditor = vector<shared_ptr<mpc::lcdgui::SelectedEventBar>>(4);
@@ -134,11 +137,14 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	knobs = vector<shared_ptr<Knob>>(16);
 
 	underline = make_shared<mpc::lcdgui::Underline>();
+	nonTextComps.push_back(underline);
 	envGraph = make_shared<mpc::lcdgui::EnvGraph>();
+	nonTextComps.push_back(envGraph);
 
 	MRECT dotsRect(0, 0, 248, 25);
 
 	twoDots = make_shared<TwoDots>();
+	nonTextComps.push_back(twoDots);
 
 	int x, y, w, h;
 	MRECT rect;
@@ -150,11 +156,13 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		rect = MRECT(x, y, x + w, y + h);
 		horizontalBarsTempoChangeEditor[i] = make_shared<HorizontalBar>(rect, 0);
 		horizontalBarsTempoChangeEditor[i]->Hide(true);
+		nonTextComps.push_back(horizontalBarsTempoChangeEditor[i]);
 
 		x = 198;
 		rect = MRECT(x, y, x + w, y + h);
 		horizontalBarsStepEditor[i] = make_shared<HorizontalBar>(rect, 0);
 		horizontalBarsStepEditor[i]->Hide(true);
+		nonTextComps.push_back(horizontalBarsStepEditor[i]);
 
 		w = 248;
 		h = 9;
@@ -163,6 +171,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		rect = MRECT(x, y, x + w, y + h);
 		selectedEventBarsStepEditor[i] = make_shared<mpc::lcdgui::SelectedEventBar>(rect);
 		selectedEventBarsStepEditor[i]->Hide(true);
+		nonTextComps.push_back(selectedEventBarsStepEditor[i]);
 	}
 
 	for (int i = 0; i < 16; i++) {
@@ -173,6 +182,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		rect = MRECT(x, y, x + w, y + h);
 		verticalBarsMixer[i] = make_shared<VerticalBar>(rect);
 		verticalBarsMixer[i]->Hide(true);
+		nonTextComps.push_back(verticalBarsMixer[i]);
 
 		w = 14;
 		h = 13;
@@ -181,12 +191,14 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		rect = MRECT(x, y, x + w, y + h);
 		mixerKnobBackgrounds[i] = make_shared<MixerKnobBackground>(rect);
 		mixerKnobBackgrounds[i]->Hide(true);
+		nonTextComps.push_back(mixerKnobBackgrounds[i]);
 
 		h = 40;
 		y = 15;
 		rect = MRECT(x, y, x + w, y + h);
 		mixerFaderBackgrounds[i] = make_shared<MixerFaderBackground>(rect);
 		mixerFaderBackgrounds[i]->Hide(true);
+		nonTextComps.push_back(mixerFaderBackgrounds[i]);
 
 		w = 13;
 		h = 13;
@@ -196,15 +208,18 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		rect = MRECT(x, y, x + w, y + h);
 		knobs[i] = make_shared<Knob>(rect);
 		knobs[i]->Hide(true);
+		nonTextComps.push_back(knobs[i]);
 	}
 
 	fineWave = make_shared <mpc::lcdgui::Wave>();
 	fineWave->setFine(true);
 	fineWave->Hide(true);
+	nonTextComps.push_back(fineWave);
 
 	wave = make_shared<mpc::lcdgui::Wave>();
 	wave->Hide(true);
 	wave->setFine(false);
+	nonTextComps.push_back(wave);
 
 	FILE* fp0 = fopen(string(mpc::StartUp::resPath + "mainpanel.json").c_str(), "r"); // non-Windows use "r"
 	FILE* fp1 = fopen(string(mpc::StartUp::resPath + "windowpanel.json").c_str(), "r"); // non-Windows use "r"
@@ -297,101 +312,47 @@ std::vector<std::vector<bool> >* LayeredScreen::getPixels() {
 }
 
 void LayeredScreen::Draw() {
-	for (int i = currentLayer; i <= currentLayer; i++) {
-	
-		auto components = layers[i]->getComponentsThatNeedClearing();
-		for (auto& c : components) {
-			c.lock()->Clear(&pixels);
-		}
+	auto i = currentLayer;
 
-		if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
+	auto components = layers[i]->getComponentsThatNeedClearing();
+	for (auto& c : components) {
+		c.lock()->Clear(&pixels);
+	}
 
-		components = layers[i]->getAllLabels();
-		for (auto& c : components) {
-			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
-		}
+	for (auto& c : nonTextComps) {
+		if (c.lock()->NeedsClearing()) c.lock()->Clear(&pixels);
+	}
 
-		components = layers[i]->getAllFields();
-		for (auto& c : components) {
-			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
-		}
+	if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
 
-		if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
-		if (i == currentLayer && currentScreenName.compare("name") == 0 && underline->IsDirty()) underline->Draw(&pixels);
+	components = layers[i]->getAllLabelsAndFields();
+	for (auto& c : components) {
+		if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
 	}
-	if (popup->IsDirty()) popup->Draw(&pixels);
-	if (envGraph->IsDirty()) envGraph->Draw(&pixels);
 
-	if (twoDots->IsDirty()) twoDots->Draw(&pixels);
-	if (fineWave->IsDirty()) fineWave->Draw(&pixels);
-	if (wave->IsDirty()) wave->Draw(&pixels);
+	if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
 
-	for (auto& c : horizontalBarsStepEditor) {
-		if (c->IsDirty()) c->Draw(&pixels);
-	}
-	for (auto& c : selectedEventBarsStepEditor) {
-		if (c->IsDirty()) c->Draw(&pixels);
-	}
-	for (auto& c : horizontalBarsTempoChangeEditor) {
-		if (c->IsDirty()) c->Draw(&pixels);
-	}
-	for (auto& c : verticalBarsMixer) {
-		if (c->IsDirty()) c->Draw(&pixels);
-	}
-	for (auto& c : mixerKnobBackgrounds) {
-		if (c->IsDirty()) c->Draw(&pixels);
-	}
-	for (auto& c : mixerFaderBackgrounds) {
-		if (c->IsDirty()) c->Draw(&pixels);
-	}
-	for (auto& c : knobs) {
-		if (c->IsDirty()) c->Draw(&pixels);
+	for (auto& c : nonTextComps) {
+		if (c.lock()->IsDirty()) c.lock()->Draw(&pixels);
 	}
 }
 
 bool LayeredScreen::IsDirty() {
-	for (int i = currentLayer; i <= currentLayer; i++) {
-		if (layers[i]->getBackground()->IsDirty() || layers[i]->getFunctionKeys()->IsDirty()) return true;
+	auto i = currentLayer;
+	if (layers[i]->getBackground()->IsDirty() || layers[i]->getFunctionKeys()->IsDirty()) return true;
 
-		auto components = layers[i]->getAllLabels();
-		for (auto& c : components) {
-			if (c.lock()->IsDirty()) return true;
-		}
+	auto components = layers[i]->getAllLabels();
+	for (auto& c : components) {
+		if (c.lock()->IsDirty()) return true;
+	}
 
-		components = layers[i]->getAllFields();
-		for (auto& c : components) {
-			if (c.lock()->IsDirty()) return true;
-		}
-		if (layers[i]->getFunctionKeys()->IsDirty()) return true;
-		if (underline->IsDirty()) return true;
+	components = layers[i]->getAllFields();
+	for (auto& c : components) {
+		if (c.lock()->IsDirty()) return true;
 	}
-	if (popup->IsDirty()) return true;
-	if (envGraph->IsDirty()) return true;
-
-	if (twoDots->IsDirty()) return true;
-	if (fineWave->IsDirty()) return true;
-	if (wave->IsDirty()) return true;
-
-	for (auto& c : horizontalBarsStepEditor) {
-		if (c->IsDirty()) return true;
-	}
-	for (auto& c : selectedEventBarsStepEditor) {
-		if (c->IsDirty()) return true;
-	}
-	for (auto& c : horizontalBarsTempoChangeEditor) {
-		if (c->IsDirty()) return true;
-	}
-	for (auto& c : verticalBarsMixer) {
-		if (c->IsDirty()) return true;
-	}
-	for (auto& c : mixerKnobBackgrounds) {
-		if (c->IsDirty()) return true;
-	}
-	for (auto& c : mixerFaderBackgrounds) {
-		if (c->IsDirty()) return true;
-	}
-	for (auto& c : knobs) {
-		if (c->IsDirty()) return true;
+	if (layers[i]->getFunctionKeys()->IsDirty()) return true;
+	for (auto& c : nonTextComps) {
+		if (c.lock()->IsDirty()) return true;
 	}
 	return false;
 }
@@ -930,7 +891,4 @@ void LayeredScreen::setFocus(string focus) {
 }
 
 LayeredScreen::~LayeredScreen() {
-	if (currentBackground != nullptr) {
-		delete currentBackground;
-	}
 }
