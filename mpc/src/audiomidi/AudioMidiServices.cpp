@@ -267,7 +267,7 @@ void AudioMidiServices::setupServer(int index)
 	if (serverNames[index].find("host") != string::npos) {
 		server = make_shared<ctoot::audio::server::PluginAudioServer>(4, 10); // 4 mono in, 10 mono out, like real mpc2000xl
 		//server->setRequestedBufferSize(requestedBufferSize == -1 ? 4096 : requestedBufferSize);
-		//moduru::Logger::l.log("NInChannels() " + to_string(gui.lock()->getIPlugBase()->NInChannels()) + "\n");
+		//MLOG("NInChannels() " + to_string(gui.lock()->getIPlugBase()->NInChannels()) + "\n");
 	}
 	requestedBufferSize = -1;
 	offlineServer = make_shared<ctoot::audio::server::NonRealTimeAudioServer>(server);
@@ -531,7 +531,7 @@ void AudioMidiServices::initializeDiskWriter()
 
 void AudioMidiServices::destroyServices()
 {
-	moduru::Logger::l.log("Trying to destroy services...\n");
+	MLOG("Trying to destroy services...");
 	if (disabled) {
 		return;
 	}

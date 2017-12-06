@@ -1,9 +1,7 @@
 #include "StepEditorObserver.hpp"
 
 #include <Mpc.hpp>
-#include <ui/Uis.hpp>
 #include <Util.hpp>
-#include <lcdgui/LayeredScreen.hpp>
 
 #include <lcdgui/Field.hpp>
 #include <lcdgui/Label.hpp>
@@ -31,12 +29,10 @@ StepEditorObserver::StepEditorObserver(mpc::Mpc* mpc)
 	sequencer = mpc->getSequencer();
 	sampler = mpc->getSampler();
 	auto lSequencer = sequencer.lock();
-	seqNum = lSequencer->getActiveSequenceIndex();
+	auto seqNum = lSequencer->getActiveSequenceIndex();
 	sequence = lSequencer->getSequence(seqNum);
 	auto seq = sequence.lock();
-	trackNum = lSequencer->getActiveTrackIndex();
-	track = seq->getTrack(trackNum);
-	timeSig = seq->getTimeSignature();
+	track = seq->getTrack(lSequencer->getActiveTrackIndex());
 	auto lTrk = track.lock();
 	auto ls = mpc->getLayeredScreen().lock();
 	viewField = ls->lookupField("viewmodenumber");
@@ -55,9 +51,9 @@ StepEditorObserver::StepEditorObserver(mpc::Mpc* mpc)
 	controlNumberLabel.lock()->Hide(true);
 	refreshViewModeNotes();
 	setViewModeNotesText();
+
 	lSequencer->addObserver(this);
 	lTrk->addObserver(this);
-	timeSig.addObserver(this);
 	now0Field.lock()->setTextPadded(lSequencer->getCurrentBarNumber() + 1, "0");
 	now1Field.lock()->setTextPadded(lSequencer->getCurrentBeatNumber() + 1, "0");
 	now2Field.lock()->setTextPadded(lSequencer->getCurrentClockNumber(), "0");
@@ -82,21 +78,6 @@ StepEditorObserver::StepEditorObserver(mpc::Mpc* mpc)
 
 void StepEditorObserver::update(moduru::observer::Observable* o, boost::any arg)
 {
-	auto lSequencer = sequencer.lock();
-	auto lTrk = track.lock();
-	lTrk->deleteObserver(this);
-	sequence.lock()->deleteObserver(this);
-	timeSig.deleteObserver(this);
-	seqNum = lSequencer->getActiveSequenceIndex();
-	sequence = lSequencer->getSequence(seqNum);
-	auto seq = sequence.lock();
-	trackNum = lSequencer->getActiveTrackIndex();
-	track = seq->getTrack(trackNum);
-	lTrk = track.lock();
-	timeSig = seq->getTimeSignature();
-	lTrk->addObserver(this);
-	seq->addObserver(this);
-	timeSig.addObserver(this);
 	string s = boost::any_cast<string>(arg);
 	auto ls = mpc->getLayeredScreen().lock();
 	if (s.compare("viewmodestext") == 0) {
@@ -121,7 +102,7 @@ void StepEditorObserver::update(moduru::observer::Observable* o, boost::any arg)
 				return;
 			}
 			if (dynamic_pointer_cast<NoteEvent>(visibleEvents[eventNumber].lock())) {
-				if (lTrk->getBusNumber() != 0) {
+				if (track.lock()->getBusNumber() != 0) {
 					eventRows[eventNumber]->setDrumNoteEventValues();
 				}
 				else {
@@ -158,15 +139,15 @@ void StepEditorObserver::update(moduru::observer::Observable* o, boost::any arg)
 		refreshSelection();
 	}
 	else if (s.compare("bar") == 0) {
-		now0Field.lock()->setTextPadded(lSequencer->getCurrentBarNumber() + 1, "0");
+		now0Field.lock()->setTextPadded(sequencer.lock()->getCurrentBarNumber() + 1, "0");
 		stepEditorGui->setyOffset(0);
 	}
 	else if (s.compare("beat") == 0) {
-		now1Field.lock()->setTextPadded(lSequencer->getCurrentBeatNumber() + 1, "0");
+		now1Field.lock()->setTextPadded(sequencer.lock()->getCurrentBeatNumber() + 1, "0");
 		stepEditorGui->setyOffset(0);
 	}
 	else if (s.compare("clock") == 0) {
-		now2Field.lock()->setTextPadded(lSequencer->getCurrentClockNumber(), "0");
+		now2Field.lock()->setTextPadded(sequencer.lock()->getCurrentClockNumber(), "0");
 		stepEditorGui->setyOffset(0);
 	}
 	else if (s.compare("selection") == 0) {
@@ -383,5 +364,4 @@ StepEditorObserver::~StepEditorObserver() {
 	stepEditorGui->deleteObserver(this);
 	sequencer.lock()->deleteObserver(this);
 	track.lock()->deleteObserver(this);
-	timeSig.deleteObserver(this);
 }

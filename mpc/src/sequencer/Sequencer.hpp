@@ -106,13 +106,12 @@ namespace mpc {
 			void copyTempoChangeEvents(std::weak_ptr<Sequence> src, std::weak_ptr<Sequence> dst);
 			void copyTrackParameters(std::weak_ptr<Track> source, std::weak_ptr<Track> dest);
 			void copyTrack(std::weak_ptr<Track> src, std::weak_ptr<Track> dest);
-			void notifyTimeDisplay();
 
 			void runStopBounceThread();
 			static void static_stopBounce(void * args);
 
 		public:
-
+			void notifyTimeDisplay();
 			void init();
 			void setTempo(BCMath t);
 			BCMath getTempo();

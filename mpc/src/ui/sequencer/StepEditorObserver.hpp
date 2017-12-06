@@ -18,7 +18,6 @@
 #include <sequencer/PolyPressureEvent.hpp>
 #include <sequencer/ProgramChangeEvent.hpp>
 #include <sequencer/SystemExclusiveEvent.hpp>
-#include <sequencer/TimeSignature.hpp>
 
 namespace mpc {
 	class Mpc;
@@ -52,11 +51,8 @@ namespace mpc {
 				std::vector<std::string> viewNames{};
 				std::vector<std::weak_ptr<mpc::sequencer::Event>> visibleEvents;
 				std::weak_ptr<mpc::sequencer::Sequencer> sequencer{};
-				int trackNum{};
-				int seqNum{};
 				std::weak_ptr<mpc::sequencer::Sequence> sequence{};
 				std::weak_ptr<mpc::sequencer::Track> track{};
-				mpc::sequencer::TimeSignature timeSig;
 				std::weak_ptr<mpc::lcdgui::Field> viewField{};
 				std::weak_ptr<mpc::lcdgui::Field> controlNumberField{};
 				std::weak_ptr<mpc::lcdgui::Field> fromNoteField{};

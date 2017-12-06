@@ -198,6 +198,7 @@ void SequencerObserver::displayTempo()
 	auto part2 = tempo.substr(dotindex + 1);
 	tempo = part1 + tempodot + part2;
 	tempoField.lock()->setText(tempo);
+	MLOG("tempo text: " + tempo);
     displayTempoLabel();
 }
 
@@ -221,17 +222,25 @@ void SequencerObserver::displayTempoLabel()
 
 void SequencerObserver::update(moduru::observer::Observable* o, boost::any arg)
 {
-	auto lTrk = track.lock();
-	lTrk->deleteObserver(this);
-    seq.lock()->deleteObserver(this);
-	auto lSequencer = sequencer.lock();
-    seqNum = lSequencer->getActiveSequenceIndex();
-    seq = lSequencer->getSequence(seqNum);
-    trackNum = lSequencer->getActiveTrackIndex();
-    track = seq.lock()->getTrack(trackNum);
-	lTrk = track.lock();
-    lTrk->addObserver(this);
-    seq.lock()->addObserver(this);
+    auto lSequencer = sequencer.lock();
+
+	bool seqChanged = false;
+	
+	if (seqNum != lSequencer->getActiveSequenceIndex()) {
+		seq.lock()->deleteObserver(this);
+		seqNum = lSequencer->getActiveSequenceIndex();
+		seq = lSequencer->getSequence(seqNum);
+		seq.lock()->addObserver(this);
+		seqChanged = true;
+	}
+
+	if (seqChanged || trackNum != lSequencer->getActiveTrackIndex()) {
+		trackNum = lSequencer->getActiveTrackIndex();
+		track.lock()->deleteObserver(this);
+		track = seq.lock()->getTrack(trackNum);
+		track.lock()->addObserver(this);
+	}
+
 	string s = boost::any_cast<string>(arg);
 
 	auto lNextSqField = nextSqField.lock();
@@ -288,7 +297,7 @@ void SequencerObserver::update(moduru::observer::Observable* o, boost::any arg)
 	else if (s.compare("clock") == 0) {
 		displayNow2();
 	}
-	else if (s.compare("tempo") == 0 || s.compare("playtempo") == 0) {
+	else if (s.compare("tempo") == 0) {
 		displayTempo();
 	}
 	else if (s.compare("temposource") == 0) {
@@ -314,12 +323,6 @@ void SequencerObserver::update(moduru::observer::Observable* o, boost::any arg)
 	}
 	else if (s.compare("soloenabled") == 0) {
 		//mainFrame->setBlink("soloblink", 0, lSequencer->isSoloEnabled());
-	}
-	else if (s.compare("now") == 0) {
-		displayNow0();
-		displayNow1();
-		displayNow2();
-		displayTempo();
 	}
 }
 

@@ -27,12 +27,24 @@ void Observable::notifyObservers(boost::any arg) {
 }
 
 void Observable::addObserver(moduru::observer::Observer* o) {
+	/*
+	string observerClass = typeid(*o).name();
+	string observableClass = typeid(*this).name();
+	if (observableClass.compare("class mpc::sequencer::Sequence") == 0)
+		MLOG(observableClass + ": observer added of class " + observerClass);
+		*/
 	for (auto& obs : observers)
 		if (obs == o) return;
 	observers.push_back(o);
 }
 
 void Observable::deleteObserver(moduru::observer::Observer* o) {
+	/*
+	string observerClass = typeid(*o).name();
+	string observableClass = typeid(*this).name();
+	if (observableClass.compare("class mpc::sequencer::Sequence") == 0)
+		MLOG(observableClass + ": observer deleted of class " + observerClass);
+		*/
 	int counter = 0;
 	for (auto& o1 : observers) {
 		if (o1 == o) {

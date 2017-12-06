@@ -43,14 +43,14 @@ void FrameSeq::work(int nFrames) {
 	if (!running) {
 		return;
 	}
-	//	//auto kbmc = lGui->getKb().lock();
 	auto lSequencer = sequencer.lock();
-	if (!lSequencer->isCountingIn()) lSequencer->notify("now");
+	if (!lSequencer->isCountingIn()) lSequencer->notifyTimeDisplay();
 
 	auto seq = lSequencer->getCurrentlyPlayingSequence().lock();
 	double tempo = lSequencer->getTempo().toDouble();
 	if (tempo != clock.getBpm()) {
 		clock.set_bpm(tempo);
+		lSequencer->notify("tempo");
 	}
 
 	for (int i = 0; i < nFrames; i++) {

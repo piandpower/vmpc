@@ -3,6 +3,8 @@
 #include <disk/RawDisk.hpp>
 #include <disk/Stores.hpp>
 
+#include <Logger.hpp>
+
 using namespace mpc::disk;
 using namespace std;
 
@@ -13,7 +15,8 @@ Store::Store(Stores* stores, string path, int totalSpace, string volumeLabel, bo
 	this->volumeLabel = volumeLabel;
 	this->raw = raw;
 
-	string msg = "initializing store " + path + " with total space " + to_string(totalSpace) + "\n";
+	string msg = "initializing store " + path + " with total space " + to_string(totalSpace);
+	MLOG(msg);
 }
 
 string Store::toString()

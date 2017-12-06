@@ -39,7 +39,7 @@ using namespace std;
 
 Mpc::Mpc()
 {
-	moduru::Logger::l.log("Mpc ctor\n");
+	MLOG("Mpc constructor");
 }
 
 void Mpc::init()
@@ -49,28 +49,28 @@ void Mpc::init()
 	layeredScreen = make_shared<lcdgui::LayeredScreen>(this);
 
 	sequencer = make_shared<mpc::sequencer::Sequencer>(this);
-	moduru::Logger::l.log("sequencer created.\n");
+	MLOG("sequencer created.");
 
 	sampler = make_shared<mpc::sampler::Sampler>();
-	moduru::Logger::l.log("sampler created.\n");
+	MLOG("sampler created.");
 	
 	/*
 	* AudioMidiServices requires sampler to exist.
 	*/
 	audioMidiServices = make_shared<mpc::audiomidi::AudioMidiServices>(this);
-	moduru::Logger::l.log("audio-midi-services created.\n");
+	MLOG("audio-midi-services created.");
 
 	sequencer->init();
-	moduru::Logger::l.log("sequencer initialized.\n");
+	MLOG("sequencer initialized.");
 
 	sampler->init(this);
-	moduru::Logger::l.log("sampler initialized.\n");
+	MLOG("sampler initialized.");
 
 	eventHandler = make_shared<mpc::audiomidi::EventHandler>(this);
-	moduru::Logger::l.log("eventhandler created.\n");
+	MLOG("eventhandler created.");
 
 	audioMidiServices->startTestMode();
-	moduru::Logger::l.log("audioMidiServices test mode started.\n");
+	MLOG("audioMidiServices test mode started.");
 
 	controls = make_shared<controls::Controls>(this);
 
@@ -217,9 +217,9 @@ mpc::ctootextensions::MpcMultiMidiSynth* Mpc::getMms()
 }
 
 Mpc::~Mpc() {
-	moduru::Logger::l.log("Mpc dtor\n");
+	MLOG("Mpc destructor.");
 	layeredScreen.reset();
 	audioMidiServices->destroyServices();
-	moduru::Logger::l.log("audio midi services destroyed.\n");
+	MLOG("audio midi services destroyed.");
 	if (loadSoundThread.joinable()) loadSoundThread.join();
 }

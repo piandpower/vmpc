@@ -304,8 +304,7 @@ int LayeredScreen::openScreen(string screenName) {
 
 	returnToLastFocus(firstField);
 
-	//if (screenName.compare("step_tc") != 0) 
-		initObserver();
+	initObserver();
 	return currentLayer;
 }
 

@@ -13,8 +13,6 @@
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/TempoChangeEvent.hpp>
 
-//#include <lcdgui/LayeredScreen.hpp>
-
 #include <ui/Uis.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <ui/midisync/MidiSyncGui.hpp>
@@ -87,7 +85,7 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 	auto ne = dynamic_pointer_cast<mpc::sequencer::NoteEvent>(event);
 	auto me = dynamic_pointer_cast<mpc::sequencer::MixerEvent>(event);
 
-	if (tce) {
+	if (tce && tce->getTempo().toDouble() != lSequencer->getTempo().toDouble()) {
 		lSequencer->setTempo(tce->getTempo());
 		return;
 	}
