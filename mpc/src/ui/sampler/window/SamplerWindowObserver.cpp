@@ -407,10 +407,10 @@ void SamplerWindowObserver::update(moduru::observer::Observable* o, boost::any a
 	}
 	else if (s.compare("note") == 0) {
 		if (csn.compare("assignmentview") == 0) {
-			//auto pn = swGui->getPadNumberFromFocus(mpc->getLayeredScreen().lock->getFocus(0), samplerGui->getBank());
+			auto pn = swGui->getPadNumberFromFocus(mpc->getLayeredScreen().lock()->getFocus(), samplerGui->getBank());
 			displayInfo1();
 			displayInfo2();
-			//displayPad(pn);
+			displayPad(pn);
 		}
 	}
 	else if (s.compare("initpadassign") == 0) {

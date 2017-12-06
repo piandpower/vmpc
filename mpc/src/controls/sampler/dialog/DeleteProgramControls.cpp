@@ -27,7 +27,6 @@ void DeleteProgramControls::function(int i)
     case 4:
         if (lSampler->getProgramCount() > 1) {
 			lSampler->deleteProgram(lSampler->getProgram(swGui->getDeletePgm()));
-			//lSampler->checkProgramReferences();
         } else {
 			const bool initPgms = true;
 			lSampler->deleteAllPrograms(initPgms);

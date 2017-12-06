@@ -155,6 +155,7 @@ void Sampler::init(mpc::Mpc* mpc)
 	this->mpc = mpc;
 	auto program = addProgram().lock();;
 	program->setName("NewPgm-A");
+	program->initPadAssign();
 	for (int i = 0; i < 4; i++) {
 		for (auto j = 0; j < 16; j++) {
 			string result = "";
