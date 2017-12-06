@@ -28,9 +28,7 @@ file(
 add_library(ctoot ${_source_list})
 
 if(MSVC)
-	set_target_properties(ctoot PROPERTIES COMPILE_FLAGS_RELEASE "/MD")
-	set_target_properties(ctoot PROPERTIES COMPILE_FLAGS_DEBUG "/MDd")
-  add_compile_options(/MP)
+  target_compile_options(mpc PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
 	#configure_msvc_runtime()
 endif(MSVC)
 

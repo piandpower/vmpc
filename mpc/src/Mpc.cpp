@@ -186,7 +186,7 @@ void Mpc::loadSound(bool replace)
 	soundLoader.setPartOfProgram(false);
 	auto exists = soundLoader.loadSound(uis->getDiskGui()->getSelectedFile()) != -1;
 	if (!exists) {
-		//loadSoundThread = thread(&Mpc::static_loadSound, this, soundLoader.getSize());
+		loadSoundThread = thread(&Mpc::static_loadSound, this, soundLoader.getSize());
 	}
 	else {
 		lDisk->setBusy(false);
@@ -214,6 +214,20 @@ void Mpc::importLoadedProgram()
 mpc::ctootextensions::MpcMultiMidiSynth* Mpc::getMms()
 {
 	return audioMidiServices->getMms().lock().get();
+}
+
+void Mpc::static_loadSound(void* this_p, int size)
+{
+	static_cast<Mpc*>(this_p)->runLoadSoundThread(size);
+}
+
+void Mpc::runLoadSoundThread(int size) {
+	int sleepTime = size / 400;
+	if (sleepTime < 300) sleepTime = 300;
+	this_thread::sleep_for(chrono::milliseconds((int)(sleepTime * 0.1)));
+	uis->getDiskGui()->removePopup();
+	layeredScreen->openScreen("loadasound");
+	getDisk().lock()->setBusy(false);
 }
 
 Mpc::~Mpc() {

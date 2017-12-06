@@ -28,9 +28,9 @@ endif(APPLE)
 add_library(moduru ${_source_list})
 
 if(MSVC)
-	set_target_properties(moduru PROPERTIES COMPILE_FLAGS_RELEASE "/MD")
-	set_target_properties(moduru PROPERTIES COMPILE_FLAGS_DEBUG "/MDd")
-  add_compile_options(/MP)
+	#set_target_properties(moduru PROPERTIES COMPILE_FLAGS_RELEASE "/MD /MP")
+	#set_target_properties(moduru PROPERTIES COMPILE_FLAGS_DEBUG "/MDd /MP")
+    target_compile_options(mpc PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
 	#configure_msvc_runtime()
 endif(MSVC)
 

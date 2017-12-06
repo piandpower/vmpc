@@ -14,3 +14,5 @@ add_subdirectory(wdl-ol)
 #add_subdirectory(vmpc-sa-win)
 
 project(vmpc)
+
+set_property( DIRECTORY PROPERTY VS_STARTUP_PROJECT "VMPCWDL" )

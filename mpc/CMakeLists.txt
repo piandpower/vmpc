@@ -33,9 +33,10 @@ add_library(mpc ${_source_list})
 
 if(MSVC)
   #add_definitions(-DMSVC_RUNTIME=static)
-  add_compile_options(/MP)
-	set_target_properties(mpc PROPERTIES COMPILE_FLAGS_RELEASE "/MD")
-	set_target_properties(mpc PROPERTIES COMPILE_FLAGS_DEBUG "/MDd")
+	#set_target_properties(mpc PROPERTIES COMPILE_FLAGS_RELEASE "/MD")
+	#set_target_properties(mpc PROPERTIES COMPILE_FLAGS_DEBUG "/MDd")
+  target_compile_options(mpc PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
+  #add_compile_options(/MP)
 
 #configure_msvc_runtime()
 endif(MSVC)
