@@ -32,11 +32,11 @@ StepWindowObserver::StepWindowObserver(mpc::Mpc* mpc)
 	eventTypeNames = { "NOTE", "PITCH BEND", "CONTROL CHANGE", "PROGRAM CHANGE", "CH PRESSURE", "POLY PRESSURE", "EXCLUSIVE", "MIXER" };
 	noteVariationParameterNames = { "Tun", "Dcy", "Atk", "Flt" };
 	editTypeNames = { "ADD VALUE", "SUB VALUE", "MULT VAL%", "SET TO VAL" };
-	xPosSingle = 120;
-	yPosSingle = 50;
+	xPosSingle = 60;
+	yPosSingle = 25;
 	singleLabels = { "Change note to:", "Variation type:", "Variation value:" };
-	xPosDouble = { 120, 144 };
-	yPosDouble = { 45, 63 };
+	xPosDouble = { 60, 84 };
+	yPosDouble = { 22, 33 };
 	doubleLabels = { "Edit type:", "Value:" };
 	sequencer = mpc->getSequencer();
 	sampler = mpc->getSampler();
@@ -94,22 +94,22 @@ void StepWindowObserver::updateEditMultiple()
 			editMultiParam1Label.lock()->Hide(true);
 			editMultiValue1Field.lock()->Hide(true);
 			editMultiParam0Label.lock()->Hide(false);
-			editMultiParam0Label.lock()->setLocation(xPosSingle/2, yPosSingle/2);
+			editMultiParam0Label.lock()->setLocation(xPosSingle, yPosSingle);
 			if (seqGui->getParamLetter().compare("a") == 0) {
 				editMultiParam0Label.lock()->setText(singleLabels[0]);
 				editMultiValue0Field.lock()->setSize(6 * 6 + 1, 9);
 				editMultiValue0Field.lock()->setText(to_string(seqGui->getChangeNoteToNumber()) + "/" + lSampler->getPadName(program.lock()->getPadNumberFromNote(seqGui->getChangeNoteToNumber())));
 			}
-			if (seqGui->getParamLetter().compare("b") == 0) {
+			else if (seqGui->getParamLetter().compare("b") == 0) {
 				editMultiParam0Label.lock()->setText(singleLabels[1]);
 				editMultiValue0Field.lock()->setSize(3 * 6 + 1, 9);
 				editMultiValue0Field.lock()->setText(noteVariationParameterNames[seqGui->getChangeVariationTypeNumber()]);
 			}
-			if (seqGui->getParamLetter().compare("c") == 0) {
+			else if (seqGui->getParamLetter().compare("c") == 0) {
 				editMultiParam0Label.lock()->setText(singleLabels[2]);
 				if (seqGui->getChangeVariationTypeNumber() == 0) {
 					editMultiValue0Field.lock()->setSize(4 * 6 + 1, 9);
-					editMultiValue0Field.lock()->setLocation(90/2, editMultiValue0Field.lock()->getY());
+					editMultiValue0Field.lock()->setLocation(45, editMultiValue0Field.lock()->getY());
 					auto noteVarValue = (seqGui->getChangeVariationValue() * 2) - 128;
 
 					if (noteVarValue < -120) {
@@ -137,11 +137,11 @@ void StepWindowObserver::updateEditMultiple()
 
 					editMultiValue0Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(noteVarValue), " ", 3));
 					editMultiValue0Field.lock()->setSize(3 * 6 + 1, 9);
-					editMultiValue0Field.lock()->setLocation((90 + 12)/2, editMultiValue0Field.lock()->getY());
+					editMultiValue0Field.lock()->setLocation(51, editMultiValue0Field.lock()->getY());
 				}
 				else if (seqGui->getChangeVariationTypeNumber() == 3) {
 					editMultiValue0Field.lock()->setSize(4 * 6 + 1, 9);
-					editMultiValue0Field.lock()->setLocation(90/2, editMultiValue0Field.lock()->getY());
+					editMultiValue0Field.lock()->setLocation(45, editMultiValue0Field.lock()->getY());
 					auto noteVarValue = seqGui->getChangeVariationValue() - 50;
 					if (noteVarValue > 50)
 						noteVarValue = 50;
@@ -159,9 +159,9 @@ void StepWindowObserver::updateEditMultiple()
 			}
 			editMultiParam0Label.lock()->setSize(editMultiParam0Label.lock()->getText().length() * 6 + 1, 9);
 			editMultiValue0Field.lock()->Hide(false);
-			editMultiValue0Field.lock()->setLocation((xPosSingle/2) + (editMultiParam0Label.lock()->getW()/2), yPosSingle/2);
+			editMultiValue0Field.lock()->setLocation((xPosSingle) + (editMultiParam0Label.lock()->getW()), yPosSingle);
 		}
-		if (seqGui->getParamLetter().compare("d") == 0 || seqGui->getParamLetter().compare("e") == 0) {
+		else if (seqGui->getParamLetter().compare("d") == 0 || seqGui->getParamLetter().compare("e") == 0) {
 			updateDouble();
 		}
 	}
@@ -171,13 +171,13 @@ void StepWindowObserver::updateEditMultiple()
 			editMultiParam1Label.lock()->Hide(true);
 			editMultiValue1Field.lock()->Hide(true);
 			editMultiParam0Label.lock()->Hide(false);
-			editMultiParam0Label.lock()->setLocation(xPosSingle/2, yPosSingle/2);
+			editMultiParam0Label.lock()->setLocation(xPosSingle, yPosSingle);
 			editMultiParam0Label.lock()->setText(singleLabels[0]);
 			editMultiValue0Field.lock()->setSize(8 * 6 + 1, 9);
 			editMultiValue0Field.lock()->setText((moduru::lang::StrUtil::padLeft(to_string(seqGui->getChangeNoteToNumber()), " ", 3) + "(" + mpc::ui::Uis::noteNames[seqGui->getChangeNoteToNumber()]) + ")");
 			editMultiParam0Label.lock()->setSize(editMultiParam0Label.lock()->GetTextEntryLength() * 6 + 1, 9);
 			editMultiValue0Field.lock()->Hide(false);
-			editMultiValue0Field.lock()->setLocation((xPosSingle/2) + (editMultiParam0Label.lock()->getW()/2), yPosSingle/2);
+			editMultiValue0Field.lock()->setLocation((xPosSingle) + (editMultiParam0Label.lock()->getW()), yPosSingle);
 		}
 		else if (seqGui->getParamLetter().compare("b") == 0 || seqGui->getParamLetter().compare("c") == 0) {
 			updateDouble();
@@ -200,11 +200,11 @@ void StepWindowObserver::updateDouble()
     editMultiParam0Label.lock()->setText(doubleLabels[0]);
     editMultiParam1Label.lock()->setText(doubleLabels[1]);
 	editMultiParam0Label.lock()->setSize(editMultiParam0Label.lock()->GetTextEntryLength() * 6 + 1, 9);
-    editMultiParam0Label.lock()->setLocation(xPosDouble[0]/2, yPosDouble[0]/2);
+    editMultiParam0Label.lock()->setLocation(xPosDouble[0], yPosDouble[0]);
     editMultiParam1Label.lock()->setSize(editMultiParam1Label.lock()->GetTextEntryLength() * 6 + 1, 9);
-    editMultiParam1Label.lock()->setLocation(xPosDouble[1]/2, yPosDouble[1]/2);
-    editMultiValue0Field.lock()->setLocation((xPosDouble[0] + editMultiParam0Label.lock()->getW())/2, yPosDouble[0]/2);
-    editMultiValue1Field.lock()->setLocation((xPosDouble[1] + editMultiParam1Label.lock()->getW())/2, yPosDouble[1]/2);
+    editMultiParam1Label.lock()->setLocation(xPosDouble[1], yPosDouble[1]);
+    editMultiValue0Field.lock()->setLocation((xPosDouble[0] + editMultiParam0Label.lock()->getW()), yPosDouble[0]);
+    editMultiValue1Field.lock()->setLocation((xPosDouble[1] + editMultiParam1Label.lock()->getW()), yPosDouble[1]);
     editMultiValue0Field.lock()->setText(editTypeNames[seqGui->getEditTypeNumber()]);
 	editMultiValue1Field.lock()->setText(to_string(seqGui->getEditValue()));
     editMultiValue0Field.lock()->setSize(editMultiValue0Field.lock()->GetTextEntryLength() * 6 + 1, 9);

@@ -78,6 +78,7 @@ StepEditorObserver::StepEditorObserver(mpc::Mpc* mpc)
 		eventRows.push_back(move(eventRow));
 	}
 	refreshEventRows();
+	refreshSelection();
 }
 
 void StepEditorObserver::update(moduru::observer::Observable* o, boost::any arg)
@@ -184,6 +185,7 @@ void StepEditorObserver::refreshSelection()
 {
 	auto firstEventIndex = stepEditorGui->getSelectionStartIndex();
 	auto lastEventIndex = stepEditorGui->getSelectionEndIndex();
+	bool somethingSelected = false;
 	if (firstEventIndex != -1) {
 		if (firstEventIndex > lastEventIndex) {
 			firstEventIndex = stepEditorGui->getSelectionEndIndex();
@@ -193,6 +195,7 @@ void StepEditorObserver::refreshSelection()
 			int absoluteEventNumber = i + stepEditorGui->getyOffset();
 			if (absoluteEventNumber >= firstEventIndex && absoluteEventNumber < lastEventIndex + 1) {
 				eventRows[i]->setSelected(true);
+				somethingSelected = true;
 			}
 			else {
 				eventRows[i]->setSelected(false);
@@ -204,6 +207,7 @@ void StepEditorObserver::refreshSelection()
 			eventRows[i]->setSelected(false);
 		}
 	}
+	if (somethingSelected) mpc->getLayeredScreen().lock()->drawFunctionKeys("sequencer_step_selection");
 }
 
 void StepEditorObserver::initVisibleEvents()

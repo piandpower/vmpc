@@ -310,9 +310,10 @@ int StepEditorGui::getEditTypeNumber()
     return editTypeNumber;
 }
 
-void StepEditorGui::setEditTypeNumber(int se_editTypeNumber)
+void StepEditorGui::setEditTypeNumber(int i)
 {
-    this->editTypeNumber = se_editTypeNumber;
+	if (i < 0 || i > 3) return;
+    editTypeNumber = i;
     setChanged();
     notifyObservers(string("editmultiple"));
 }
