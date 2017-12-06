@@ -198,7 +198,6 @@ void SequencerObserver::displayTempo()
 	auto part2 = tempo.substr(dotindex + 1);
 	tempo = part1 + tempodot + part2;
 	tempoField.lock()->setText(tempo);
-	MLOG("tempo text: " + tempo);
     displayTempoLabel();
 }
 
