@@ -37,6 +37,8 @@ namespace mpc {
 
 			namespace window {
 
+				class SequencerWindowGui;
+
 				class StepWindowObserver
 					: public moduru::observer::Observer
 				{
@@ -61,6 +63,7 @@ namespace mpc {
 					std::weak_ptr<mpc::lcdgui::Label> editMultiParam0Label{};
 					std::weak_ptr<mpc::lcdgui::Label> editMultiParam1Label{};
 					mpc::ui::sequencer::StepEditorGui* seqGui{};
+					mpc::ui::sequencer::window::SequencerWindowGui* swGui;
 					int xPosSingle{};
 					int yPosSingle{};
 					std::weak_ptr<mpc::sampler::Sampler> sampler{};

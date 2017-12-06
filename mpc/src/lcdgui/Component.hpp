@@ -18,28 +18,19 @@ namespace mpc {
 			bool dirty{ false };
 
 		public:
-			virtual void Hide(bool b) { if (hidden != b) { hidden = b; SetDirty(); if (!rect.Empty()) clearRects.push_back(rect); } }
-			void SetDirty() { dirty = true; }
+			virtual void Hide(bool b);
+			void SetDirty();
 
-			bool IsHidden() { return hidden; }
-			bool IsDirty() { return dirty; }
-			bool NeedsClearing() { return clearRects.size() != 0; }
+			bool IsHidden();
+			bool IsDirty();
+			bool NeedsClearing();
 
 		public:
 			virtual void Draw(std::vector<std::vector<bool> >* pixels) {}
-			virtual void Clear(std::vector<std::vector<bool> >* pixels) {
-				for (auto& r : clearRects) {
-					for (int i = r.L; i < r.R; i++) {
-						for (int j = r.T; j < r.B; j++) {
-							if (i < 0 || i > 247 || j < 0 || j > 59) continue;
-							pixels->at(i).at(j) = false;
-						}
-					}
-				}
-				clearRects.clear();
-			}
+			virtual void Clear(std::vector<std::vector<bool> >* pixels);
 
-			MRECT* GetRECT() { return &rect; }
+			MRECT* GetRECT();
+
 		public:
 			virtual ~Component() {}
 

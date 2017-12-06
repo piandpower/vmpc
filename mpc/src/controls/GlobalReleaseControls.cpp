@@ -4,7 +4,7 @@
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audiomidi/EventHandler.hpp>
 #include <controls/KbMapping.hpp>
-//#include <controls/StepEditorKbRelease.hpp>
+#include <ui/sequencer/StepEditorGui.hpp>
 //#include <hardware/LedPanel.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <sampler/Pad.hpp>
@@ -23,6 +23,13 @@ using namespace std;
 GlobalReleaseControls::GlobalReleaseControls(mpc::Mpc* mpc)
 	: AbstractControls(mpc)
 {
+}
+
+void GlobalReleaseControls::function(int i) {
+	init();
+	if (csn.compare("step_tc") == 0 && i == 0) {
+		ls.lock()->openScreen("sequencer_step");
+	}
 }
 
 /*
@@ -129,6 +136,13 @@ void GlobalReleaseControls::tap()
 void GlobalReleaseControls::shift()
 {
     shiftPressed = false;
+	init();
+	if (csn.compare("sequencer_step") == 0 && param.length() == 2) {
+		auto eventNumber = stoi(param.substr(1, 2));
+		auto seGui = mpc->getUis().lock()->getStepEditorGui();
+		auto res = eventNumber + seGui->getyOffset();
+		seGui->setSelectionEndIndex(res);
+	}
 }
 
 void GlobalReleaseControls::erase()

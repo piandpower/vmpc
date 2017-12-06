@@ -234,6 +234,9 @@ bool InputCatcherControl::OnKeyUp(int x, int y, int c) {
 		hw->getButton("shift").lock()->release();
 		return true;
 	}
+	else if (c == KbMapping::f1()) {
+		hw->getButton("f1").lock()->release();
+	}
 	return false;
 }
 

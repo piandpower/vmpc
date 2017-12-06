@@ -42,6 +42,8 @@ StepWindowObserver::StepWindowObserver(mpc::Mpc* mpc)
 	sampler = mpc->getSampler();
 	seqGui = mpc->getUis().lock()->getStepEditorGui();
 	samplerGui = mpc->getUis().lock()->getSamplerGui();
+	swGui = mpc->getUis().lock()->getSequencerWindowGui();
+	swGui->addObserver(this);
 	seqGui->addObserver(this);
 	auto lSequencer = sequencer.lock();
 	auto seqNum = lSequencer->getActiveSequenceIndex();
@@ -55,7 +57,7 @@ StepWindowObserver::StepWindowObserver(mpc::Mpc* mpc)
 	auto csn = ls->getCurrentScreenName();
 	if (csn.compare("step_tc") == 0) {
 		tcValueField = ls->lookupField("tcvalue");
-		tcValueField.lock()->setText(timingCorrectNames[mpc->getUis().lock()->getSequencerWindowGui()->getNoteValue()]);
+		tcValueField.lock()->setText(timingCorrectNames[swGui->getNoteValue()]);
 	}
 	else if (csn.compare("insertevent") == 0) {
 		eventtypeField = ls->lookupField("eventtype");
@@ -73,8 +75,8 @@ StepWindowObserver::StepWindowObserver(mpc::Mpc* mpc)
 void StepWindowObserver::update(moduru::observer::Observable* o, boost::any arg)
 {
 	string s = boost::any_cast<string>(arg);
-	if (s.compare("timing") == 0) {
-		tcValueField.lock()->setText(timingCorrectNames[mpc->getUis().lock()->getSequencerWindowGui()->getNoteValue()]);
+	if (s.compare("notevalue") == 0) {
+		tcValueField.lock()->setText(timingCorrectNames[swGui->getNoteValue()]);
 	}
 	else if (s.compare("eventtype") == 0) {
 		eventtypeField.lock()->setText(eventTypeNames[seqGui->getInsertEventType()]);
@@ -214,4 +216,5 @@ void StepWindowObserver::updateDouble()
 StepWindowObserver::~StepWindowObserver() {
 	seqGui->deleteObserver(this);
 	sequencer.lock()->deleteObserver(this);
+	swGui->deleteObserver(this);
 }

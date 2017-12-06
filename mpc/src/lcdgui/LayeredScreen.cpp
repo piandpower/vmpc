@@ -304,7 +304,8 @@ int LayeredScreen::openScreen(string screenName) {
 
 	returnToLastFocus(firstField);
 
-	initObserver();
+	//if (screenName.compare("step_tc") != 0) 
+		initObserver();
 	return currentLayer;
 }
 
@@ -728,7 +729,6 @@ static inline bool checkActiveScreen(vector<string>* sa, string csn)
 
 void LayeredScreen::initObserver()
 {
-	//removeObservers();
 
 	auto csn = currentScreenName;
 

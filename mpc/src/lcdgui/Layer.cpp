@@ -198,11 +198,15 @@ vector<weak_ptr<mpc::lcdgui::Component>> Layer::getComponentsThatNeedClearing() 
 	vector<weak_ptr<mpc::lcdgui::Component>> result;
 	for (auto& c : getAllFields()) {
 		if (c.lock()->NeedsClearing()) {
+			//auto name = dynamic_pointer_cast<Field>(c.lock())->getName();
+			//MLOG("About to clear field " + name);
 			result.push_back(c);
 		}
 	}
 	for (auto& c : getAllLabels()) {
 		if (c.lock()->NeedsClearing()) {
+			//auto name = dynamic_pointer_cast<Label>(c.lock())->getName();
+			//MLOG("About to clear label " + name);
 			result.push_back(c);
 		}
 	}

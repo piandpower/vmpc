@@ -19,6 +19,7 @@ void Label::initialize(string name, string text, int x, int y, int columns) {
 	setText(text);
 	setSize(columns * TEXT_WIDTH + 1, TEXT_HEIGHT + 2);
 	setLocation(x, y);
+	clearRects.clear();
 }
 
 Label::~Label() {

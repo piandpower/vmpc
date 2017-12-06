@@ -479,8 +479,9 @@ bool EventRow::isSelected()
 }
 
 EventRow::~EventRow() {
-	if (horizontalBar.lock())
-		horizontalBar.lock()->Hide(true);
-	if (selectedEventBar.lock())
-		selectedEventBar.lock()->Hide(true);
+	// hide these things exactly when they need to be hidden, so not in this dtor
+	//if (horizontalBar.lock())
+		//horizontalBar.lock()->Hide(true);
+	//if (selectedEventBar.lock())
+		//selectedEventBar.lock()->Hide(true);
 }

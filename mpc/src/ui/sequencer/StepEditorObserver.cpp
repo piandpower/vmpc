@@ -67,7 +67,6 @@ StepEditorObserver::StepEditorObserver(mpc::Mpc* mpc)
 		auto eventRow = make_unique<EventRow>(mpc, lTrk->getBusNumber() -1, visibleEvents[i], i);
 		auto event = visibleEvents[i].lock();
 		if (event) {
-			event->deleteObserver(this);
 			event->addObserver(this);
 		}
 		if (lTrk->getBusNumber() == 0) eventRow->setMidi(true);

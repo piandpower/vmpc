@@ -169,6 +169,9 @@ void Button::release() {
 	else if (label.compare("erase") == 0) {
 		c->erase();
 	}
+	else if (label.compare("f1") == 0) {
+		c->function(0);
+	}
 }
 
 Button::~Button() {
