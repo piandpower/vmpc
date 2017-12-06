@@ -37,8 +37,8 @@ void UnrealAudioServer::work() {
 	if (activeOutputs.size() != 0) {
 		int counter = 0;
 		for (int i = 0; i < bufferSize; i++) {
-			auto sampleL = activeOutputs.at(0)->localBuffer.at(counter++);
-			auto sampleR = activeOutputs.at(0)->localBuffer[counter++];
+			auto sampleL = activeOutputs[0]->localBuffer[counter++];
+			auto sampleR = activeOutputs[0]->localBuffer[counter++];
 			if (sampleL != 0)
 				moduru::Logger::l.log(to_string(sampleL) + "\n");
 		}
@@ -50,8 +50,8 @@ void UnrealAudioServer::work(float* OutAudio, int NumSamples) {
 	if (activeOutputs.size() != 0) {
 		int counter = 0;
 		for (int i = 0; i < NumSamples; i+=2) {
-			auto sampleL = activeOutputs.at(0)->localBuffer[counter++];
-			auto sampleR = activeOutputs.at(0)->localBuffer[counter++];
+			auto sampleL = activeOutputs[0]->localBuffer[counter++];
+			auto sampleR = activeOutputs[0]->localBuffer[counter++];
 			OutAudio[i] = sampleL;
 			OutAudio[i + 1] = sampleR;
 		}
@@ -63,8 +63,8 @@ void UnrealAudioServer::work(double** OutAudio, int nFrames) {
 	if (activeOutputs.size() != 0) {
 		int counter = 0;
 		for (int i = 0; i < nFrames; i++) {
-			auto sampleL = activeOutputs.at(0)->localBuffer[counter++];
-			auto sampleR = activeOutputs.at(0)->localBuffer[counter++];
+			auto sampleL = activeOutputs[0]->localBuffer[counter++];
+			auto sampleR = activeOutputs[0]->localBuffer[counter++];
 			OutAudio[0][i] = sampleL;
 			OutAudio[1][i] = sampleR;
 		}

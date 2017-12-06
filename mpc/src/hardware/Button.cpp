@@ -4,6 +4,7 @@
 
 #include <controls/AbstractControls.hpp>
 #include <controls/GlobalReleaseControls.hpp>
+#include <disk/AbstractDisk.hpp>
 
 using namespace mpc::hardware;
 using namespace std;
@@ -19,6 +20,7 @@ string Button::getLabel() {
 }
 
 void Button::push() {
+	if (mpc->getDisk().lock()->isBusy()) return;
 	auto c = mpc->getActiveControls();
 	if (!c) return;
 	if (label.compare("left") == 0) {
@@ -162,6 +164,7 @@ void Button::push() {
 }
 
 void Button::release() {
+	if (mpc->getDisk().lock()->isBusy()) return;
 	auto c = mpc->getReleaseControls();
 	if (label.compare("shift") == 0) {
 		c->shift();

@@ -191,6 +191,7 @@ void SequencerObserver::displayDeviceName()
 
 void SequencerObserver::displayTempo()
 {
+	displayTempoLabel();
 	auto tempo = sequencer.lock()->getTempo().toString();
 	string tempodot = u8"\u00CB";
 	auto dotindex = (int)(tempo.find('.'));
@@ -198,7 +199,6 @@ void SequencerObserver::displayTempo()
 	auto part2 = tempo.substr(dotindex + 1);
 	tempo = part1 + tempodot + part2;
 	tempoField.lock()->setText(tempo);
-    displayTempoLabel();
 }
 
 void SequencerObserver::displayTempoLabel()

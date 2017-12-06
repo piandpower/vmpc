@@ -53,7 +53,6 @@ void ApsLoader::load()
 	auto sampler = mpc->getSampler().lock();
 	sampler->deleteAllSamples();
 	const bool initPgms = false;
-	sampler->deleteAllPrograms(initPgms);
 	for (int i = 0; i < apsParser->getSoundNames().size(); i++) {
 		auto ext = "snd";
 		mpc::disk::MpcFile* soundFile = nullptr;
@@ -93,6 +92,7 @@ void ApsLoader::load()
 			}
 		}
 	}
+	sampler->deleteAllPrograms(initPgms);
 	for (auto& p : apsParser->getPrograms()) {
 		auto newProgram = sampler->addProgram(p->index).lock();
 		auto assignTable = p->getAssignTable()->get();

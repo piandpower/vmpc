@@ -242,12 +242,12 @@ void Voice::readFrame() {
 	frac = position - j;
 
 	if (oscVars.lock()->isMono()) {
-		tempFrame[0] = (sampleData->at(j) * (1.0f - frac)) + (sampleData->at(k) * frac);
+		tempFrame[0] = ((*sampleData)[j] * (1.0f - frac)) + ((*sampleData)[k] * frac);
 	}
 	else {
 		auto rOffset = sampleData->size() / 2;
-		tempFrame[0] = (sampleData->at(j) * (1.0f - frac)) + (sampleData->at(k) * frac);
-		tempFrame[1] = (sampleData->at(j + rOffset) * (1.0f - frac)) + (sampleData->at(k + rOffset) * frac);
+		tempFrame[0] = ((*sampleData)[j] * (1.0f - frac)) + ((*sampleData)[k] * frac);
+		tempFrame[1] = ((*sampleData)[j + rOffset] * (1.0f - frac)) + ((*sampleData)[k + rOffset] * frac);
 	}
 	position += increment;
 }

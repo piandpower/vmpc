@@ -112,14 +112,14 @@ void AudioMixer::work(int nFrames)
 {
     if(!enabled) return;
 	processMutations();
-	silenceStrips(groupStrips);
-	silenceStrips(fxStrips);
-    silenceStrips(auxStrips);
+	silenceStrips(&groupStrips);
+	silenceStrips(&fxStrips);
+    silenceStrips(&auxStrips);
 	mainStrip->silence();
-	evaluateStrips(channelStrips, nFrames);
-	evaluateStrips(groupStrips, nFrames);
-    evaluateStrips(fxStrips, nFrames);
-    evaluateStrips(auxStrips, nFrames);
+	evaluateStrips(&channelStrips, nFrames);
+	evaluateStrips(&groupStrips, nFrames);
+    evaluateStrips(&fxStrips, nFrames);
+    evaluateStrips(&auxStrips, nFrames);
 	mainStrip->processBuffer(nFrames);
     writeBusBuffers(nFrames);
 }
@@ -148,15 +148,15 @@ void AudioMixer::processMutation(Mutation* m)
 	delete m;
 }
 
-void AudioMixer::evaluateStrips(vector<shared_ptr<AudioMixerStrip>> strips, int nFrames)
+void AudioMixer::evaluateStrips(vector<shared_ptr<AudioMixerStrip>>* strips, int nFrames)
 {
-	for (auto& strip : strips)
+	for (auto& strip : (*strips))
 		strip->processBuffer(nFrames);
 }
 
-void AudioMixer::silenceStrips(vector<shared_ptr<AudioMixerStrip>> strips)
+void AudioMixer::silenceStrips(vector<shared_ptr<AudioMixerStrip>>* strips)
 {
-	for (auto& strip : strips)
+	for (auto& strip : (*strips))
 		strip->silence();
 }
 

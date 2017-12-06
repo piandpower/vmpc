@@ -61,8 +61,8 @@ namespace ctoot {
 			public:
 				virtual void processMutations();
 				virtual void processMutation(Mutation* m);
-				virtual void evaluateStrips(std::vector<std::shared_ptr<AudioMixerStrip>> evalStrips, int nFrames);
-				virtual void silenceStrips(std::vector<std::shared_ptr<AudioMixerStrip>> evalStrips);
+				virtual void evaluateStrips(std::vector<std::shared_ptr<AudioMixerStrip>>* evalStrips, int nFrames);
+				virtual void silenceStrips(std::vector<std::shared_ptr<AudioMixerStrip>>* evalStrips);
 				virtual void writeBusBuffers(int nFrames);
 				virtual void createBusses(std::shared_ptr<MixerControls> mixerControls);
 				virtual std::shared_ptr<AudioMixerBus> createBus(std::weak_ptr<BusControls> busControls);
