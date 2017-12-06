@@ -19,6 +19,27 @@ TextComp::TextComp()
 {
 }
 
+void TextComp::Hide(bool b) {
+	const int margin = noLeftMargin ? 0 : 1;
+	if (b) {
+		MRECT clearRect(x, y, x + (TEXT_WIDTH * columns) + margin, y + TEXT_HEIGHT + 2);
+		clearRects.push_back(clearRect);
+	}
+	Component::Hide(b);
+}
+
+void TextComp::Clear(std::vector<std::vector<bool> >* pixels) {
+	for (auto& r : clearRects) {
+		for (int i = r.L; i < r.R; i++) {
+			for (int j = r.T; j < r.B; j++) {
+				if (i < 0 || i > 247 || j < 0 || j > 59) continue;
+				pixels->at(i).at(j) = false;
+			}
+		}
+	}
+	clearRects.clear();
+}
+
 void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 	auto atlas = bmfParser->getAtlas();
 	auto font = bmfParser->getLoadedFont();
@@ -41,7 +62,7 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 				int x1 = textx + j - margin;
 				int y1 = texty + k;
 				if (x1 < 0 || x1 > 247 || y1 < 0 || y1 > 59) continue;
-				(*pixels)[textx + j - margin][texty + k] = inverted ? true : false;
+				(*pixels)[x1][y1] = inverted ? true : false;
 			}
 		}
 	}
@@ -79,24 +100,30 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 }
 
 void TextComp::setSize(int w, int h) {
+	const int margin = noLeftMargin ? 0 : 1;
+	MRECT clearRect(x, y, x + (TEXT_WIDTH * columns) + margin, y + TEXT_HEIGHT + 2);
+	clearRects.push_back(clearRect);
+
 	columns = w / TEXT_WIDTH;
 	this->w = w;
 	this->h = h;
 	initRECT();
+	SetDirty();
 }
 
 void TextComp::setLocation(int x, int y) {
+	const int margin = noLeftMargin ? 0 : 1;
+	MRECT clearRect(x, y, x + (TEXT_WIDTH * columns) + margin, y + TEXT_HEIGHT + 2);
+	clearRects.push_back(clearRect);
+
 	this->x = x;
 	this->y = y;
 	initRECT();
+	SetDirty();
 }
 
 void TextComp::initRECT() {
-	//int lcdX = maingui::Constants::LCD_RECT()->L;
-	//int lcdY = maingui::Constants::LCD_RECT()->T;
-	//mRECT = IRECT(x + lcdX, y + lcdY, x + w + lcdX, y + h  + lcdY);
-	//textControl->SetRECT(IRECT(x + lcdX + textOffsetX, y + lcdY, x + lcdX + textOffsetX + w, y + lcdY + h));
-	//SetDirty(false);
+	rect = MRECT(x, y, x + w, y + h);
 }
 
 int TextComp::getX() {

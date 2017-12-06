@@ -75,6 +75,8 @@ namespace mpc {
 
 		public:
 			void Draw(std::vector<std::vector<bool> >* pixels) override;
+			void Clear(std::vector<std::vector<bool> >* pixels) override;
+			void Hide(bool b) override;
 
 		public:
 			TextComp();

@@ -298,22 +298,24 @@ std::vector<std::vector<bool> >* LayeredScreen::getPixels() {
 
 void LayeredScreen::Draw() {
 	for (int i = currentLayer; i <= currentLayer; i++) {
-		if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
-		auto components = layers[i]->getAllLabels();
+	
+		auto components = layers[i]->getComponentsThatNeedClearing();
 		for (auto& c : components) {
-			if (c.lock()->IsDirty()) c.lock()->Draw(&pixels);
+			c.lock()->Clear(&pixels);
 		}
+
+		if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
+
+		components = layers[i]->getAllLabels();
+		for (auto& c : components) {
+			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
+		}
+
 		components = layers[i]->getAllFields();
 		for (auto& c : components) {
-			if (c.lock()->IsDirty() && c.lock()->IsHidden()) { // first draw what's hidden
-				c.lock()->Draw(&pixels);
-			}
+			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
 		}
-		for (auto& c : components) {
-			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) { // then draw what's not hidden
-				c.lock()->Draw(&pixels);
-			}
-		}
+
 		if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
 		if (i == currentLayer && currentScreenName.compare("name") == 0 && underline->IsDirty()) underline->Draw(&pixels);
 	}

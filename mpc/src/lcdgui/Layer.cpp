@@ -194,6 +194,21 @@ void Layer::clear() {
 	fk->Hide(true);
 }
 
+vector<weak_ptr<mpc::lcdgui::Component>> Layer::getComponentsThatNeedClearing() {
+	vector<weak_ptr<mpc::lcdgui::Component>> result;
+	for (auto& c : getAllFields()) {
+		if (c.lock()->NeedsClearing()) {
+			result.push_back(c);
+		}
+	}
+	for (auto& c : getAllLabels()) {
+		if (c.lock()->NeedsClearing()) {
+			result.push_back(c);
+		}
+	}
+	return result;
+}
+
 vector<weak_ptr<mpc::lcdgui::Component>> Layer::getAllFields() {
 	vector<weak_ptr<mpc::lcdgui::Component>> result;
 	weak_ptr<mpc::lcdgui::Component> focus;

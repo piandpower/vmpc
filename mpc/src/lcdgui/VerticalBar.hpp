@@ -9,7 +9,6 @@ namespace mpc {
 		{
 
 		private:
-			MRECT rect;
 			int value{ 100 };
 			bool color = true;
 
