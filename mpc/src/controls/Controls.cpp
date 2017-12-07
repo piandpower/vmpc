@@ -324,6 +324,14 @@ bool Controls::isF3Pressed() {
 	return f3Pressed;
 }
 
+bool Controls::isF5Pressed() {
+	return f5Pressed;
+}
+
+bool Controls::isF6Pressed() {
+	return f6Pressed;
+}
+
 std::set<int>* Controls::getPressedPads() {
 	return &pressedPads;
 }
@@ -358,6 +366,14 @@ void Controls::setShiftPressed(bool b) {
 
 void Controls::setF3Pressed(bool b) {
 	f3Pressed = b;
+}
+
+void Controls::setF5Pressed(bool b) {
+	f5Pressed = b;
+}
+
+void Controls::setF6Pressed(bool b) {
+	f6Pressed = b;
 }
 
 AbstractControls* Controls::getControls(std::string s)

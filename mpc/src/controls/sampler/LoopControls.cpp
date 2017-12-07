@@ -1,5 +1,7 @@
 #include <controls/sampler/LoopControls.hpp>
 
+#include <Mpc.hpp>
+#include <controls/Controls.hpp>
 #include <lcdgui/Field.hpp>
 #include <ui/sampler/SoundGui.hpp>
 #include <ui/sampler/window/EditSoundGui.hpp>
@@ -70,7 +72,8 @@ void LoopControls::function(int f)
 		lLs->openScreen("editsound");
 		break;
 	case 5:
-		//lSampler->setPreviewSound(sound);
+		if (mpc->getControls().lock()->isF6Pressed()) return;
+		mpc->getControls().lock()->setF6Pressed(true);
 		zone = vector<int>{ soundGui->getZoneStart(soundGui->getZoneNumber()), soundGui->getZoneEnd(soundGui->getZoneNumber()) };
 		lSampler->playX(soundGui->getPlayX(), &zone);
 		break;

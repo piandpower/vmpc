@@ -24,6 +24,8 @@ namespace mpc {
 			bool goToPressed{ false };
 			bool erasePressed{ false };
 			bool f3Pressed{ false };
+			bool f5Pressed{ false };
+			bool f6Pressed{ false };
 			std::set<int> pressedPads;
 			std::vector<int> pressedPadVelos;
 
@@ -35,6 +37,8 @@ namespace mpc {
 			void setGoToPressed(bool b);
 			void setShiftPressed(bool b);
 			void setF3Pressed(bool b);
+			void setF5Pressed(bool b);
+			void setF6Pressed(bool b);
 
 			bool isErasePressed();
 			bool isRecPressed();
@@ -43,6 +47,8 @@ namespace mpc {
 			bool isGoToPressed();
 			bool isShiftPressed();
 			bool isF3Pressed();
+			bool isF5Pressed();
+			bool isF6Pressed();
 
 			std::set<int>* getPressedPads();
 			std::vector<int>* getPressedPadVelos();

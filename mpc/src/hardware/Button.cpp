@@ -178,6 +178,12 @@ void Button::release() {
 	else if (label.compare("f3") == 0) {
 		c->function(2);
 	}
+	else if (label.compare("f5") == 0) {
+		c->function(4);
+	}
+	else if (label.compare("f6") == 0) {
+		c->function(5);
+	}
 	else if (label.compare("rec") == 0) {
 		c->rec();
 	}

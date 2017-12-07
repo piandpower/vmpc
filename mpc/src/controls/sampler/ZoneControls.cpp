@@ -1,5 +1,8 @@
 #include <controls/sampler/ZoneControls.hpp>
 
+#include <Mpc.hpp>
+#include <controls/Controls.hpp>
+
 #include <lcdgui/Field.hpp>
 #include <ui/sampler/SoundGui.hpp>
 #include <ui/sampler/window/EditSoundGui.hpp>
@@ -28,16 +31,16 @@ void ZoneControls::openWindow()
 		soundGui->setPreviousScreenName("zone");
 		lLs->openScreen("sound");
 	}
-	if (param.compare("zone") == 0) {
+	else if (param.compare("zone") == 0) {
 		soundGui->setPreviousNumberOfZones(soundGui->getNumberOfZones());
 		lLs->openScreen("numberofzones");
 	}
-	if (param.compare("st") == 0)
+	else if (param.compare("st") == 0) {
 		lLs->openScreen("zonestartfine");
-
-	if (param.compare("end") == 0)
+	}
+	else if (param.compare("end") == 0) {
 		lLs->openScreen("zoneendfine");
-
+	}
 }
 
 void ZoneControls::function(int f)
@@ -72,7 +75,8 @@ void ZoneControls::function(int f)
 		lLs->openScreen("editsound");
 		break;
 	case 5:
-		//lSampler->setPreviewSound(sound);
+		if (mpc->getControls().lock()->isF6Pressed()) return;
+		mpc->getControls().lock()->setF6Pressed(true);
 		zone = vector<int>{ soundGui->getZoneStart(soundGui->getZoneNumber()) , soundGui->getZoneEnd(soundGui->getZoneNumber()) };
 		lSampler->playX(soundGui->getPlayX(), &zone);
 		break;

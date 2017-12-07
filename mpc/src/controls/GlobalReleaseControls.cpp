@@ -43,6 +43,14 @@ void GlobalReleaseControls::function(int i) {
 			sampler.lock()->finishBasicVoice();
 		}
 		break;
+	case 4:
+		controls->setF5Pressed(false);
+	case 5:
+		controls->setF6Pressed(false);
+		if (!sequencer.lock()->isPlaying() && csn.compare("sequencer") != 0) {
+			sampler.lock()->finishBasicVoice();
+		}
+		break;
 	}
 }
 
