@@ -15,9 +15,8 @@
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audiomidi/EventHandler.hpp>
 #include <disk/AbstractDisk.hpp>
-//#include <hardware/ControlPanel.hpp>
-#include <lcdgui/LayeredScreen.hpp>
-//#include <hardware/LedPanel.hpp>
+#include <hardware/Hardware.hpp>
+#include <hardware/Led.hpp>
 #include <ui/NameGui.hpp>
 #include <lcdgui/Field.hpp>
 #include <ui/disk/DiskGui.hpp>
@@ -367,15 +366,15 @@ void AbstractControls::rec()
 	controls->setRecPressed(true);
     init();
 	auto lSequencer = sequencer.lock();
-	//auto ledPanel = lMainFrame->getLedPanel().lock();
+	auto hw = mpc->getHardware().lock();
 	if(!lSequencer->isPlaying()) {
-       // ledPanel->setRec(true);
+		hw->getLed("rec").lock()->light(true);
     } else {
         if(lSequencer->isRecordingOrOverdubbing()) {
             lSequencer->setRecording(false);
             lSequencer->setOverdubbing(false);
-            //ledPanel->setRec(false);
-            //ledPanel->setOverDub(false);
+			hw->getLed("rec").lock()->light(false);
+			hw->getLed("overdub").lock()->light(false);
         }
     }
 }
@@ -385,17 +384,17 @@ void AbstractControls::overDub()
 	auto controls = mpc->getControls().lock();
 	controls->setOverDubPressed(true);
 	init();
-	//auto ledPanel = lMainFrame->getLedPanel().lock();
+	auto hw = mpc->getHardware().lock();
 	auto lSequencer = sequencer.lock();
 	if (!lSequencer->isPlaying()) {
-		//ledPanel->setOverDub(true);
+		hw->getLed("overdub").lock()->light(true);
 	}
 	else {
 		if (lSequencer->isRecordingOrOverdubbing()) {
 			lSequencer->setRecording(false);
 			lSequencer->setOverdubbing(false);
-			//ledPanel->setRec(false);
-			//ledPanel->setOverDub(false);
+			hw->getLed("rec").lock()->light(false);
+			hw->getLed("overdub").lock()->light(false);
 		}
 	}
 }
@@ -414,21 +413,21 @@ void AbstractControls::play()
 {
 	init();
 	auto controls = mpc->getControls().lock();
-	//auto ledPanel = lMainFrame->getLedPanel().lock();
+	auto hw = mpc->getHardware().lock();
 	auto lSequencer = sequencer.lock();
 
 	if (lSequencer->isPlaying()) {
 		if (controls->isRecPressed() && !lSequencer->isOverDubbing()) {
 			lSequencer->setOverdubbing(false);
 			lSequencer->setRecording(true);
-			//ledPanel->setOverDub(false);
-			//ledPanel->setRec(true);
+			hw->getLed("overdub").lock()->light(false);
+			hw->getLed("rec").lock()->light(true);
 		}
 		else if (controls->isOverDubPressed() && !lSequencer->isRecording()) {
 			lSequencer->setOverdubbing(true);
 			lSequencer->setRecording(false);
-			//ledPanel->setOverDub(true);
-			//ledPanel->setRec(false);
+			hw->getLed("overdub").lock()->light(true);
+			hw->getLed("rec").lock()->light(false);
 		}
 	}
 	else {
@@ -453,7 +452,7 @@ void AbstractControls::play()
 void AbstractControls::playStart()
 {
 	init();
-	//auto ledPanel = lMainFrame->getLedPanel().lock();
+	auto hw = mpc->getHardware().lock();
 	auto controls = mpc->getControls().lock();
 	auto lSequencer = sequencer.lock();
 	if (lSequencer->isPlaying()) return;
@@ -473,9 +472,9 @@ void AbstractControls::playStart()
 			lSequencer->playFromStart();
 		}
 	}
-	//ledPanel->setPlay(lSequencer->isPlaying());
-	//ledPanel->setRec(lSequencer->isRecording());
-	//ledPanel->setOverDub(lSequencer->isOverDubbing());
+	hw->getLed("play").lock()->light(lSequencer->isPlaying());
+	hw->getLed("rec").lock()->light(lSequencer->isRecording());
+	hw->getLed("overdub").lock()->light(lSequencer->isOverDubbing());
 }
 
 void AbstractControls::mainScreen()
@@ -483,7 +482,6 @@ void AbstractControls::mainScreen()
     init();
 	ls.lock()->openScreen("sequencer");
 	auto lSequencer = sequencer.lock();
-    //invokeLater(AbstractControls_mainScreen_1(this));
     lSequencer->setSoloEnabled(lSequencer->isSoloEnabled());
 }
 
@@ -539,7 +537,7 @@ void AbstractControls::bank(int i)
 {
 	init();
 	auto oldBank = samplerGui->getBank();
-	//samplerGui->setBank(i, mainFrame.lock()->getLedPanel().lock().get());
+	samplerGui->setBank(i);
 	auto diff = 16 * (i - oldBank);
 	auto newPadNr = samplerGui->getPad() + diff;
 	auto newNN = program.lock()->getPad(newPadNr)->getNote();
@@ -550,17 +548,17 @@ void AbstractControls::fullLevel()
 {
     init();
     sequencerGui->setFullLevelEnabled(!sequencerGui->isFullLevelEnabled());
-    //mainFrame.lock()->getLedPanel().lock()->setFullLevel(sequencerGui->isFullLevelEnabled());
+	auto hw = mpc->getHardware().lock();
+	hw->getLed("fulllevel").lock()->light(sequencerGui->isFullLevelEnabled());
 }
 
 void AbstractControls::sixteenLevels()
 {
 	init();
-	
-	//auto ledPanel = lMainFrame->getLedPanel().lock();
+	auto hw = mpc->getHardware().lock();
 	if (sequencerGui->isSixteenLevelsEnabled()) {
 		sequencerGui->setSixteenLevelsEnabled(false);
-		//ledPanel->setSixteenLevels(false);
+		hw->getLed("sixteenlevels").lock()->light(false);
 	}
 	else {
 		ls.lock()->openScreen("assign16levels");
@@ -570,14 +568,14 @@ void AbstractControls::sixteenLevels()
 void AbstractControls::after()
 {
 	init();
-	//auto ledPanel = lMainFrame->getLedPanel().lock();
+	auto hw = mpc->getHardware().lock();
 	auto controls = mpc->getControls().lock();
 	if (controls->isShiftPressed()) {
 		ls.lock()->openScreen("assign");
 	}
 	else {
 		sequencerGui->setAfterEnabled(!sequencerGui->isAfterEnabled());
-		//ledPanel->setAfter(sequencerGui->isAfterEnabled());
+		hw->getLed("after").lock()->light(sequencerGui->isAfterEnabled());
 	}
 }
 

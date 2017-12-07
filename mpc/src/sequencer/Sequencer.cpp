@@ -1,6 +1,8 @@
 #include "Sequencer.hpp"
 
 #include <Mpc.hpp>
+#include <hardware/Hardware.hpp>
+#include <hardware/Led.hpp>
 #include <ui/Uis.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <StartUp.hpp>
@@ -375,8 +377,7 @@ void Sequencer::play(bool fromStart)
     }
 	*/
 
-	//auto lMainFrame = lGui->getMainFrame().lock();
-	//auto ledPanel = lMainFrame->getLedPanel().lock();
+	auto hw = mpc->getHardware().lock();
 	if (!songMode) {
 		if (!s->isUsed())
 			return;
@@ -386,10 +387,10 @@ void Sequencer::play(bool fromStart)
 			undoPlaceHolder = copySequence(s);
 			lastRecordingActive = true;
 			recordStartTick = getTickPosition();
-			//ledPanel->setUndoSeq(lastRecordingActive);
+			hw->getLed("undoseq").lock()->light(lastRecordingActive);
 		}
 	}
-	//ledPanel->setPlay(true);
+	hw->getLed("play").lock()->light(true);
 	auto lAms = mpc->getAudioMidiServices().lock();
 	lAms->getFrameSequencer().lock()->start();
 	if (lAms->isBouncePrepared()) {
@@ -411,7 +412,8 @@ void Sequencer::undoSeq()
 	undoPlaceHolder = copySequence(sequences[activeSequenceIndex]);
 	sequences[activeSequenceIndex] = s;
 	lastRecordingActive = !lastRecordingActive;
-	//	//lGui->getMainFrame().lock()->getLedPanel().lock()->setUndoSeq(lastRecordingActive);
+	auto hw = mpc->getHardware().lock();
+	hw->getLed("undoseq").lock()->light(lastRecordingActive);
 }
 
 void Sequencer::clearUndoSeq()
@@ -419,7 +421,8 @@ void Sequencer::clearUndoSeq()
     if(isPlaying()) return;
     undoPlaceHolder = nullptr;
     lastRecordingActive = false;
-	//	//lGui->getMainFrame().lock()->getLedPanel().lock()->setUndoSeq(false);
+	auto hw = mpc->getHardware().lock();
+	hw->getLed("undoseq").lock()->light(false);
 }
 
 void Sequencer::playFromStart()
@@ -460,10 +463,9 @@ void Sequencer::switchRecordToOverDub()
 	if (!isRecording()) return;
 	recording = false;
 	overdubbing = true;
-	//	//auto lMainFrame = lGui->getMainFrame().lock();
-	//auto ledPanel = lMainFrame->getLedPanel().lock();
-	//ledPanel->setOverDub(true);
-	//ledPanel->setRec(false);
+	auto hw = mpc->getHardware().lock();
+	hw->getLed("overdub").lock()->light(true);
+	hw->getLed("rec").lock()->light(false);
 }
 
 void Sequencer::overdubFromStart()
@@ -520,12 +522,10 @@ void Sequencer::stop(int tick)
 		if (stopBounceThread.joinable()) stopBounceThread.join();
 		stopBounceThread = thread(&Sequencer::static_stopBounce, this);
 	}
-	/*
-	auto ledPanel = lMainFrame->getLedPanel().lock();
-	ledPanel->setOverDub(false);
-	ledPanel->setPlay(false);
-	ledPanel->setRec(false);
-	*/
+	auto hw = mpc->getHardware().lock();
+	hw->getLed("overdub").lock()->light(false);
+	hw->getLed("play").lock()->light(false);
+	hw->getLed("rec").lock()->light(false);
     setChanged();
     notifyObservers(string("stop"));
 }
@@ -1274,7 +1274,8 @@ void Sequencer::storeActiveSequenceInPlaceHolder()
 {
 	undoPlaceHolder = copySequence(sequences[activeSequenceIndex]);
 	lastRecordingActive = true;
-	//	//lGui->getMainFrame().lock()->getLedPanel().lock()->setUndoSeq(lastRecordingActive);
+	auto hw = mpc->getHardware().lock();
+	hw->getLed("undoseq").lock()->light(lastRecordingActive);
 }
 
 bool Sequencer::isOverDubbing()

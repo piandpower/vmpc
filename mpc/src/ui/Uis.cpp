@@ -70,7 +70,7 @@ Uis::Uis(mpc::Mpc* mpc)
 	eraseGui = new mpc::ui::sequencer::window::EraseGui();
 	sequencerWindowGui = new mpc::ui::sequencer::window::SequencerWindowGui();
 
-	samplerGui = new mpc::ui::sampler::SamplerGui();
+	samplerGui = new mpc::ui::sampler::SamplerGui(mpc);
 	nameGui = new mpc::ui::NameGui();
 	soundGui = new mpc::ui::sampler::SoundGui();
 

@@ -1,7 +1,8 @@
 #include <ui/sampler/SamplerGui.hpp>
 
 #include <Mpc.hpp>
-//#include <hardware/LedPanel.hpp>
+#include <hardware/Hardware.hpp>
+#include <hardware/Led.hpp>
 //////#include <sequencer/Sequence.hpp>
 #include <sequencer/Track.hpp>
 #include <sequencer/Sequencer.hpp>
@@ -9,8 +10,9 @@
 using namespace mpc::ui::sampler;
 using namespace std;
 
-SamplerGui::SamplerGui() 
+SamplerGui::SamplerGui(mpc::Mpc* mpc) 
 {
+	this->mpc = mpc;
 }
 
 bool SamplerGui::padAssignMaster = false;
@@ -52,22 +54,17 @@ bool SamplerGui::isPadAssignMaster()
     return padAssignMaster;
 }
 
-void SamplerGui::setBank(int i, mpc::hwgui::LedPanel* ledPanel)
+void SamplerGui::setBank(int i)
 {
 	if (i == bank) return;
 	if (i < 0 || i > 3) return;
 
 	bank = i;
-	/*
-	ledPanel->setPadBankA(false);
-	ledPanel->setPadBankB(false);
-	ledPanel->setPadBankC(false);
-	ledPanel->setPadBankD(false);
-	if (i == 0) ledPanel->setPadBankA(true);
-	if (i == 1) ledPanel->setPadBankB(true);
-	if (i == 2) ledPanel->setPadBankC(true);
-	if (i == 3) ledPanel->setPadBankD(true);
-	*/
+	auto hw = mpc->getHardware().lock();
+	hw->getLed("padbanka").lock()->light(i == 0);
+	hw->getLed("padbankb").lock()->light(i == 1);
+	hw->getLed("padbankc").lock()->light(i == 2);
+	hw->getLed("padbankd").lock()->light(i == 3);
 	setChanged();
 	notifyObservers(string("bank"));
 }

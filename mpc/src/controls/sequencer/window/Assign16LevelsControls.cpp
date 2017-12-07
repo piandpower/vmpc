@@ -1,7 +1,9 @@
 #include <controls/sequencer/window/Assign16LevelsControls.hpp>
 
+#include <Mpc.hpp>
 #include <lcdgui/LayeredScreen.hpp>
-//#include <hardware/LedPanel.hpp>
+#include <hardware/Hardware.hpp>
+#include <hardware/Led.hpp>
 #include <ui/sequencer/SequencerGui.hpp>
 
 using namespace mpc::controls::sequencer::window;
@@ -17,8 +19,7 @@ void Assign16LevelsControls::function(int i)
     super::function(i);
 	switch (i) {
     case 4:
-        sequencerGui->setSixteenLevelsEnabled(true);
-        //lMainFrame->getLedPanel().lock()->setSixteenLevels(true);
+		mpc->getHardware().lock()->getLed("sixteenlevels").lock()->light(true);
         ls.lock()->openScreen(ls.lock()->getPreviousScreenName());
         break;
     }

@@ -4,11 +4,7 @@
 #include <memory>
 
 namespace mpc {
-
-	namespace hwgui {
-		class LedPanel;
-	}
-
+	class Mpc;
 	namespace ui {
 
 		namespace sampler {
@@ -19,6 +15,9 @@ namespace mpc {
 				
 			private:
 				static bool padAssignMaster;
+
+			private:
+				mpc::Mpc* mpc;
 
 			private:
 				int bank{ 0 };
@@ -43,7 +42,7 @@ namespace mpc {
 				int getPad();
 				void setPadAssignMaster(bool b);
 				static bool isPadAssignMaster();
-				void setBank(int i, mpc::hwgui::LedPanel* ledPanel);
+				void setBank(int i);
 				int getBank();
 				void setSelectedDrum(int i);
 				int getSelectedDrum();
@@ -70,7 +69,7 @@ namespace mpc {
 				void notify(std::string str);
 
 			public:
-				SamplerGui();
+				SamplerGui(mpc::Mpc* mpc);
 				~SamplerGui();
 
 			};

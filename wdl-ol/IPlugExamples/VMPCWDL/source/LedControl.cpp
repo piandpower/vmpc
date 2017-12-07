@@ -1,8 +1,6 @@
 #include "LedControl.hpp"
 #include "Constants.hpp"
 
-#include <Logger.hpp>
-
 #include <string>
 
 #include "../resource.h"
@@ -168,7 +166,6 @@ void LedControl::setUndoSeq(bool b)
 
 void LedControl::update(moduru::observer::Observable* o, boost::any arg) {
 	string s = boost::any_cast<string>(arg);
-	MLOG("LedControl update string " + s);
 	if (s.compare("fulllevelon") == 0) {
 		setFullLevel(true);
 	}
