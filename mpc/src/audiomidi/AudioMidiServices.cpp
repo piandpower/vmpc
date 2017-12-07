@@ -80,7 +80,7 @@ using namespace std;
 AudioMidiServices::AudioMidiServices(mpc::Mpc* mpc)
 {
 	this->mpc = mpc;
-	frameSeq = make_shared<mpc::sequencer::FrameSeq>(mpc->getSequencer());
+	frameSeq = make_shared<mpc::sequencer::FrameSeq>(mpc);
 	disabled = true;
 	selectedInputs = vector<int>{ -1, -1 };
 	selectedOutputs = vector<int>{ 0, -1, -1, -1, -1 };

@@ -1,7 +1,7 @@
 #include <sequencer/Track.hpp>
 
 #include <Mpc.hpp>
-#include <controls/AbstractControls.hpp>
+#include <controls/Controls.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <audiomidi/EventHandler.hpp>
 #include <sequencer/Event.hpp>
@@ -455,7 +455,7 @@ void Track::playNext()
 	auto lSequencer = sequencer.lock();
 	multi = lSequencer->isRecordingModeMulti();
 	delete_ = lSequencer->isRecording() && (trackIndex == lSequencer->getActiveTrackIndex() || multi) && (trackIndex < 64);
-	if (lSequencer->isOverDubbing() && mpc->getActiveControls()->erasePressed && (trackIndex == lSequencer->getActiveTrackIndex() || multi) && trackIndex < 64)
+	if (lSequencer->isOverDubbing() && mpc->getControls().lock()->isErasePressed() && (trackIndex == lSequencer->getActiveTrackIndex() || multi) && trackIndex < 64)
 		delete_ = true;
 
 	int counter = 0;

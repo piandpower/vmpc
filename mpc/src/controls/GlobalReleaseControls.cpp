@@ -1,5 +1,7 @@
 #include <controls/GlobalReleaseControls.hpp>
 
+#include <controls/Controls.hpp>
+
 #include <Mpc.hpp>
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audiomidi/EventHandler.hpp>
@@ -27,8 +29,19 @@ GlobalReleaseControls::GlobalReleaseControls(mpc::Mpc* mpc)
 
 void GlobalReleaseControls::function(int i) {
 	init();
-	if (csn.compare("step_tc") == 0 && i == 0) {
-		ls.lock()->openScreen("sequencer_step");
+	auto controls = mpc->getControls().lock();
+	switch (i) {
+	case 0:
+		if (csn.compare("step_tc") == 0) {
+			ls.lock()->openScreen("sequencer_step");
+		}
+		break;
+	case 2:
+		controls->setF3Pressed(false);
+		if (csn.compare("loadasound") == 0) {
+			sampler.lock()->finishBasicVoice();
+		}
+		break;
 	}
 }
 
@@ -72,13 +85,34 @@ void GlobalReleaseControls::keyEvent(unsigned char kc)
 }
 */
 
+void GlobalReleaseControls::pad(int i)
+{
+	init();
+	auto bank = samplerGui->getBank();
+	auto controls = mpc->getControls().lock();
+	if (controls->getPressedPads()->find(i) == controls->getPressedPads()->end()) return;
+	controls->getPressedPads()->erase(controls->getPressedPads()->find(i));
+
+	if (csn.compare("loadasound") == 0) return;
+
+	auto lTrk = track.lock();
+	auto note = lTrk->getBusNumber() > 0 ? program.lock()->getPad(i + (bank * 16))->getNote() : i + (bank * 16) + 35;
+	generateNoteOff(note);
+
+	if (csn.compare("sequencer_step") == 0) {
+		auto newDur = static_cast<int>(mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->getTickPosition());
+		sequencer.lock()->stopMetronomeTrack();
+		lTrk->adjustDurLastEvent(newDur);
+	}
+}
+
+/*
 void GlobalReleaseControls::pad(int i, int velo, bool repeat, int tick)
 {
 	init();
-	/*
-	if (KbMouseController::pressedPads().find(i) == KbMouseController::pressedPads().end()) return;
-	KbMouseController::pressedPads().erase(KbMouseController::pressedPads().find(i));
-	*/
+	auto controls = mpc->getControls().lock();
+	if (controls->getPressedPads()->find(i) == controls->getPressedPads()->end()) return;
+	controls->getPressedPads()->erase(controls->getPressedPads()->find(i));
 	if (csn.compare("loadasound") == 0) return;
 
 	auto lTrk = track.lock();
@@ -91,6 +125,7 @@ void GlobalReleaseControls::pad(int i, int velo, bool repeat, int tick)
 		lTrk->adjustDurLastEvent(newDur);
 	}
 }
+*/
 
 void GlobalReleaseControls::generateNoteOff(int nn)
 {
@@ -113,21 +148,24 @@ void GlobalReleaseControls::generateNoteOff(int nn)
 
 void GlobalReleaseControls::overDub()
 {
-	overDubPressed = false;
+	auto controls = mpc->getControls().lock();
+	controls->setOverDubPressed(false);
     init();
    //getLedPanel().lock()->setOverDub(sequencer.lock()->isOverDubbing());
 }
 
 void GlobalReleaseControls::rec()
 {
-    recPressed = false;
+	auto controls = mpc->getControls().lock();
+	controls->setRecPressed(false);
     init();
     //mainFrame.lock()->getLedPanel().lock()->setRec(sequencer.lock()->isRecording());
 }
 
 void GlobalReleaseControls::tap()
 {
-    tapPressed = false;
+	auto controls = mpc->getControls().lock();
+	controls->setTapPressed(false);
 	auto lSequencer = sequencer.lock();
     if (lSequencer->isRecordingOrOverdubbing())
         lSequencer->flushTrackNoteCache();
@@ -135,7 +173,8 @@ void GlobalReleaseControls::tap()
 
 void GlobalReleaseControls::shift()
 {
-    shiftPressed = false;
+	auto controls = mpc->getControls().lock();
+	controls->setShiftPressed(false);
 	init();
 	if (csn.compare("sequencer_step") == 0 && param.length() == 2) {
 		auto eventNumber = stoi(param.substr(1, 2));
@@ -147,7 +186,8 @@ void GlobalReleaseControls::shift()
 
 void GlobalReleaseControls::erase()
 {
-    erasePressed = false;
+	auto controls = mpc->getControls().lock();
+	controls->setErasePressed(false);
 }
 
 GlobalReleaseControls::~GlobalReleaseControls() {

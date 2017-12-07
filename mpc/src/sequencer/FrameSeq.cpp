@@ -1,4 +1,9 @@
-#include <sequencer/FrameSeq.hpp>
+#include "FrameSeq.hpp"
+
+#include <Mpc.hpp>
+#include <controls/Controls.hpp>
+#include <controls/AbstractControls.hpp>
+
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/Clock.hpp>
 #include <sequencer/Sequence.hpp>
@@ -15,8 +20,9 @@
 using namespace mpc::sequencer;
 using namespace std;
 
-FrameSeq::FrameSeq(weak_ptr<Sequencer> sequencer) {
-	this->sequencer = sequencer;
+FrameSeq::FrameSeq(mpc::Mpc* mpc) {
+	this->mpc = mpc;
+	sequencer = mpc->getSequencer();
 }
 
 //void FrameSeq::setGui(mpc::Mpc* mpc) {
@@ -192,14 +198,11 @@ void FrameSeq::move(int newTickPos) {
 }
 
 void FrameSeq::repeatPad(int tick) {
-	/*
-	auto kbmc = gui.lock()->getKb().lock();
-	auto controls = kbmc->getControls();
+	auto controls = mpc->getControls().lock();
 	if (controls == nullptr) return;
-	auto pp = kbmc->pressedPads();
-	for (auto& i : pp)
-		controls->pad(i, kbmc->pressedPadVelos[i], true, tick);
-		*/
+	auto pp = controls->getPressedPads();
+	for (auto& i : *pp)
+		mpc->getActiveControls()->pad(i, (*controls->getPressedPadVelos())[i], true, tick);
 }
 
 void FrameSeq::checkNextSq() {

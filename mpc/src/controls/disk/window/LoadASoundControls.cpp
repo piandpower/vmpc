@@ -1,5 +1,8 @@
 #include <controls/disk/window/LoadASoundControls.hpp>
 
+#include <Mpc.hpp>
+#include <controls/Controls.hpp>
+
 #include <command/KeepSound.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <sampler/Program.hpp>
@@ -11,10 +14,6 @@ using namespace std;
 
 LoadASoundControls::LoadASoundControls(mpc::Mpc* mpc) 
 	: AbstractDiskControls(mpc)
-{
-}
-
-void LoadASoundControls::pad(int i)
 {
 }
 
@@ -31,6 +30,7 @@ void LoadASoundControls::turnWheel(int i)
 void LoadASoundControls::function(int i)
 {
 	init();
+	auto controls = mpc->getControls().lock();
 	shared_ptr<mpc::sampler::Sound> s;
 	int start;
 	int end;
@@ -39,7 +39,9 @@ void LoadASoundControls::function(int i)
 	auto lSampler = sampler.lock();
 	switch (i) {
 	case 2:
-		lSampler->stopAllVoices();
+		if (controls->isF3Pressed()) return;
+		controls->setF3Pressed(true);
+		//lSampler->stopAllVoices();
 		s = lSampler->getPreviewSound().lock();
 		start = s->getStart();
 		end = s->getSampleData()->size();
@@ -55,7 +57,7 @@ void LoadASoundControls::function(int i)
 		lSampler->playPreviewSample(start, end, loopTo, overlapMode);
 		break;
 	case 3:
-		lSampler->finishVoices(); // Here we make sure the sound is not being played, so it can be removed from memory.
+		lSampler->finishBasicVoice(); // Here we make sure the sound is not being played, so it can be removed from memory.
 		lSampler->deleteSound(lSampler->getPreviewSound());
 		ls.lock()->openScreen("load");
 		break;
@@ -65,4 +67,7 @@ void LoadASoundControls::function(int i)
 		ls.lock()->openScreen("load");
 		break;
 	}
+}
+
+LoadASoundControls::~LoadASoundControls() {
 }

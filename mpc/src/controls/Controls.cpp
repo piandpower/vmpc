@@ -147,6 +147,9 @@ using namespace mpc::controls;
 
 Controls::Controls(mpc::Mpc* mpc)
 {
+	
+	pressedPadVelos = std::vector<int>(16);
+
 	controls["release"] = new GlobalReleaseControls(mpc);
 
 	controls["sequencer"] = new sequencer::SequencerControls(mpc);
@@ -292,6 +295,71 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["recordjam"] = new vmpc::RecordJamControls(mpc);
 	controls["recordingfinished"] = new vmpc::RecordingFinishedControls(mpc);
 	*/
+}
+
+
+bool Controls::isErasePressed() {
+	return erasePressed;
+}
+
+bool Controls::isRecPressed() {
+	return recPressed;
+}
+
+bool Controls::isOverDubPressed() {
+	return overDubPressed;
+}
+
+bool Controls::isTapPressed() {
+	return tapPressed;
+}
+
+bool Controls::isGoToPressed() {
+	return goToPressed;
+}
+
+bool Controls::isShiftPressed() {
+	return shiftPressed;
+}
+
+bool Controls::isF3Pressed() {
+	return f3Pressed;
+}
+
+std::set<int>* Controls::getPressedPads() {
+	return &pressedPads;
+}
+
+std::vector<int>* Controls::getPressedPadVelos() {
+	return &pressedPadVelos;
+}
+
+void Controls::setErasePressed(bool b) {
+	erasePressed = b;
+}
+
+void Controls::setRecPressed(bool b) {
+	recPressed = b;
+}
+
+void Controls::setOverDubPressed(bool b) {
+	overDubPressed = b;
+}
+
+void Controls::setTapPressed(bool b) {
+	tapPressed = b;
+}
+
+void Controls::setGoToPressed(bool b) {
+	goToPressed = b;
+}
+
+void Controls::setShiftPressed(bool b) {
+	shiftPressed = b;
+}
+
+void Controls::setF3Pressed(bool b) {
+	f3Pressed = b;
 }
 
 AbstractControls* Controls::getControls(std::string s)

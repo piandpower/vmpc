@@ -1,7 +1,9 @@
 #pragma once
 
+#include <vector>
 #include <unordered_map>
 #include <string>
+#include <set>
 
 namespace mpc {
 
@@ -14,6 +16,36 @@ namespace mpc {
 
 		class Controls
 		{
+		private:
+			bool shiftPressed{ false };
+			bool recPressed{ false };
+			bool overDubPressed{ false };
+			bool tapPressed{ false };
+			bool goToPressed{ false };
+			bool erasePressed{ false };
+			bool f3Pressed{ false };
+			std::set<int> pressedPads;
+			std::vector<int> pressedPadVelos;
+
+		public:
+			void setErasePressed(bool b);
+			void setRecPressed(bool b);
+			void setOverDubPressed(bool b);
+			void setTapPressed(bool b);
+			void setGoToPressed(bool b);
+			void setShiftPressed(bool b);
+			void setF3Pressed(bool b);
+
+			bool isErasePressed();
+			bool isRecPressed();
+			bool isOverDubPressed();
+			bool isTapPressed();
+			bool isGoToPressed();
+			bool isShiftPressed();
+			bool isF3Pressed();
+
+			std::set<int>* getPressedPads();
+			std::vector<int>* getPressedPadVelos();
 
 		private:
 			std::unordered_map<std::string, controls::AbstractControls*> controls{};

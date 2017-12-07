@@ -562,8 +562,7 @@ void Sampler::stopAllVoices(int frameOffset) {
 	dynamic_cast<ctootextensions::MpcSoundPlayerChannel*>(mpc->getDrums()[0])->allSoundOff(frameOffset);
 }
 
-// Like stopAllVoices, but without short fade-out/decay, so associated sample data can be removed from memory directly.
-void Sampler::finishVoices() {
+void Sampler::finishBasicVoice() {
 	mpc->getBasicPlayer()->finishVoice();
 }
 

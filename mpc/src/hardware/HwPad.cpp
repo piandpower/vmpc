@@ -3,6 +3,7 @@
 #include <Mpc.hpp>
 
 #include <controls/AbstractControls.hpp>
+#include <controls/GlobalReleaseControls.hpp>
 
 using namespace mpc::hardware;
 using namespace std;
@@ -21,6 +22,13 @@ void HwPad::push(int velo) {
 	auto c = mpc->getActiveControls();
 	if (!c) return;
 	c->pad(index, velo, false, 0);
+}
+
+void HwPad::release() {
+	auto c = mpc->getReleaseControls();
+	auto controls = mpc->getControls();
+	if (!c) return;
+	c->pad(index);
 }
 
 HwPad::~HwPad() {

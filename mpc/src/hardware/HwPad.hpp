@@ -24,6 +24,7 @@ namespace mpc {
 		public:
 			int getIndex();
 			void push(int velo);
+			void release();
 
 		public:
 			HwPad(mpc::Mpc* mpc, int index);

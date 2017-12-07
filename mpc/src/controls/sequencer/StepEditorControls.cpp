@@ -1,5 +1,7 @@
 #include "StepEditorControls.hpp"
 
+#include <controls/Controls.hpp>
+
 #include <Mpc.hpp>
 #include <audiomidi/EventHandler.hpp>
 #include <command/CopySelectedNote.hpp>
@@ -326,12 +328,13 @@ void StepEditorControls::turnWheel(int i)
 
 void StepEditorControls::prevStepEvent()
 {
-    init();
+	init();
 	auto lSequencer = sequencer.lock();
-	if (goToPressed) {
+	auto controls = mpc->getControls().lock();
+	if (controls->isGoToPressed()) {
 		lSequencer->goToPreviousEvent();
 	}
-	else if (!goToPressed) {
+	else {
 		lSequencer->goToPreviousStep();
 	}
 }
@@ -340,22 +343,24 @@ void StepEditorControls::nextStepEvent()
 {
 	init();
 	auto lSequencer = sequencer.lock();
-	if (goToPressed) {
+	auto controls = mpc->getControls().lock();
+	if (controls->isGoToPressed()) {
 		lSequencer->goToNextEvent();
 	}
-	else if (!goToPressed) {
+	else {
 		lSequencer->goToNextStep();
 	}
 }
 
 void StepEditorControls::prevBarStart()
 {
-    init();
+	init();
+	auto controls = mpc->getControls().lock();
 	auto lSequencer = sequencer.lock();
-	if (goToPressed) {
+	if (controls->isGoToPressed()) {
 		lSequencer->setBar(0);
 	}
-	else if (!goToPressed) {
+	else {
 		lSequencer->setBar(lSequencer->getCurrentBarNumber() - 1);
 	}
 }
@@ -364,8 +369,13 @@ void StepEditorControls::nextBarEnd()
 {
 	init();
 	auto lSequencer = sequencer.lock();
-	if (goToPressed) lSequencer->setBar(lSequencer->getActiveSequence().lock()->getLastBar() + 1);
-	if (!goToPressed) lSequencer->setBar(lSequencer->getCurrentBarNumber() + 1);
+	auto controls = mpc->getControls().lock();
+	if (controls->isGoToPressed()) {
+		lSequencer->setBar(lSequencer->getActiveSequence().lock()->getLastBar() + 1);
+	}
+	else {
+		lSequencer->setBar(lSequencer->getCurrentBarNumber() + 1);
+	}
 }
 
 void StepEditorControls::left() {
@@ -390,8 +400,8 @@ void StepEditorControls::up() {
 		auto srcLetter = src.substr(0, 1);
 		int srcNumber = stoi(src.substr(1, 2));
 		auto increment = 0;
-
-		if (!shiftPressed && srcNumber == 0 && seGui->getyOffset() == 0) {
+		auto controls = mpc->getControls().lock();
+		if (!controls->isShiftPressed() && srcNumber == 0 && seGui->getyOffset() == 0) {
 			seGui->clearSelection();
 			lLs->setFocus("viewmodenumber");
 			seGui->setChanged();
@@ -400,7 +410,7 @@ void StepEditorControls::up() {
 		}
 		if (srcNumber == 0 && seGui->getyOffset() != 0) {
 			seGui->setyOffset(seGui->getyOffset() - 1);
-			if (shiftPressed) seGui->setSelectionEndIndex(srcNumber + seGui->getyOffset());
+			if (controls->isShiftPressed()) seGui->setSelectionEndIndex(srcNumber + seGui->getyOffset());
 		}
 		increment = -1;
 		downOrUp(increment);
@@ -438,11 +448,11 @@ void StepEditorControls::down() {
 		auto srcLetter = src.substr(0, 1);
 		int srcNumber = stoi(src.substr(1, 2));
 		auto increment = 0;
-
+		auto controls = mpc->getControls().lock();
 		if (srcNumber == 3) {
 			if (seGui->getyOffset() + 4 == seGui->getEventsAtCurrentTick().size()) return;
 			seGui->setyOffset(seGui->getyOffset() + 1);
-			if (shiftPressed && dynamic_pointer_cast<EmptyEvent>(visibleEvents[3].lock())) {
+			if (controls->isShiftPressed() && dynamic_pointer_cast<EmptyEvent>(visibleEvents[3].lock())) {
 				seGui->setSelectionEndIndex(srcNumber + seGui->getyOffset());
 			}
 			seGui->setChanged();
@@ -469,16 +479,16 @@ void StepEditorControls::downOrUp(int increment) {
 		auto src = param;
 		auto srcLetter = src.substr(0, 1);
 		int srcNumber = stoi(src.substr(1, 2));
-
+		auto controls = mpc->getControls().lock();
 		auto destination = srcLetter + to_string(srcNumber + increment);
 		if (srcNumber + increment != -1) {
-			if (!(shiftPressed && dynamic_pointer_cast<EmptyEvent>(visibleEvents[(int)(srcNumber + increment)].lock()))) {
+			if (!(controls->isShiftPressed() && dynamic_pointer_cast<EmptyEvent>(visibleEvents[(int)(srcNumber + increment)].lock()))) {
 				auto tf = lLs->lookupField(destination).lock();
 				if (tf && !tf->IsHidden()) lLs->setFocus(tf->getName());
 			}
 		}
 
-		if (shiftPressed) {
+		if (controls->isShiftPressed()) {
 			seGui->setSelectionEndIndex(srcNumber + increment + seGui->getyOffset());
 		}
 		else {

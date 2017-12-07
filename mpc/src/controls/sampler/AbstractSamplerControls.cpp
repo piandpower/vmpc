@@ -1,5 +1,7 @@
 #include "AbstractSamplerControls.hpp"
 
+#include <controls/Controls.hpp>
+
 #include <Mpc.hpp>
 #include <lcdgui/Field.hpp>
 #include <ui/sampler/SamplerGui.hpp>
@@ -67,7 +69,8 @@ void AbstractSamplerControls::splitLeft()
 {
 	init();
 	auto mtf = ls.lock()->lookupField(param).lock();
-	if (shiftPressed) {
+	auto controls = mpc->getControls().lock();
+	if (controls->isShiftPressed()) {
 		if (splittable) {
 			if (!mtf->isSplit()) {
 				mtf->setSplit(true);
@@ -86,7 +89,8 @@ void AbstractSamplerControls::splitRight()
 {
 	init();
 	auto mtf = ls.lock()->lookupField(param).lock();
-	if (shiftPressed) {
+	auto controls = mpc->getControls().lock();
+	if (controls->isShiftPressed()) {
 		if (splittable && mtf->isSplit()) {
 			if (!mtf->setActiveSplit(mtf->getActiveSplit() + 1))
 				mtf->setSplit(false);
