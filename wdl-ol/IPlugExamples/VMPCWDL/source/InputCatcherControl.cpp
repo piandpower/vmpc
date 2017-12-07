@@ -226,6 +226,14 @@ bool InputCatcherControl::OnKeyDown(int x, int y, int c) {
 
 bool InputCatcherControl::OnKeyUp(int x, int y, int c) {	
 	auto hw = mpc->getHardware().lock();
+
+	for (int i = 0; i < KbMapping::padKeys().size(); i++) {
+		if (c == KbMapping::padKeys().at(i)) {
+			hw->getPad(i).lock()->release();
+			return true;
+		}
+	}
+
 	if (c == KbMapping::erase()) {
 		hw->getButton("erase").lock()->release();
 		return true;
@@ -236,6 +244,9 @@ bool InputCatcherControl::OnKeyUp(int x, int y, int c) {
 	}
 	else if (c == KbMapping::f1()) {
 		hw->getButton("f1").lock()->release();
+	}
+	else if (c == KbMapping::f3()) {
+		hw->getButton("f3").lock()->release();
 	}
 	return false;
 }
