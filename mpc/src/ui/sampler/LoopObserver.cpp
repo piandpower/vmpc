@@ -68,6 +68,7 @@ LoopObserver::LoopObserver(mpc::Mpc* mpc)
 		endLengthValueField.lock()->setFocusable(false);
 		loopField.lock()->setFocusable(false);
 	}
+	soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
 }
 
 void LoopObserver::displaySnd()

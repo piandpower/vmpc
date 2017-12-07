@@ -67,6 +67,7 @@ TrimObserver::TrimObserver(mpc::Mpc* mpc)
 		viewField.lock()->setFocusable(false);
 	}
 	displayView();
+	soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
 }
 
 void TrimObserver::displaySnd()
