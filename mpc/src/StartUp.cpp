@@ -3,8 +3,8 @@
 #include <thread>
 
 #include <Mpc.hpp>
-//#include <lcdgui/LayeredScreen.hpp>
-//#include <hardware/LedPanel.hpp>
+#include <hardware/Hardware.hpp>
+#include <hardware/Led.hpp>
 //#include <nvram/NvRam.hpp>
 
 #include <sys/Home.hpp>
@@ -40,8 +40,9 @@ void StartUp::runBootSequence(weak_ptr<Gui> gui) {
 }
 */
 
-void StartUp::startUp()
+void StartUp::runStartUpRoutine(mpc::Mpc* mpc)
 {
+	mpc->getHardware().lock()->getLed("padbanka").lock()->light(true);
 /*
 	auto lLs = ls.lock();
 	auto ledPanel = lMainFrame->getLedPanel().lock();
@@ -92,9 +93,11 @@ void StartUp::startUp()
 	*/
 }
 
+/*
 thread StartUp::spawn() {
 	return thread(&StartUp::startUp, this);
 }
+*/
 
 StartUp::~StartUp() {
 	try {

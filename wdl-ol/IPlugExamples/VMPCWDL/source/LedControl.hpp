@@ -2,8 +2,11 @@
 
 #include <IControl.h>
 
+#include <observer/Observer.hpp>
+
 class LedControl
 	: public IPanelControl
+	, public moduru::observer::Observer
 {
 
 private:
@@ -53,8 +56,19 @@ public:
 	void setPlay(bool b);
 	void setUndoSeq(bool b);
 
+	/*
+	* Implement IPanelControl
+	*/
 	bool Draw(IGraphics* pGraphics) override;
+
+	/*
+	* Implement Observer
+	*/
+public:
+	void update(moduru::observer::Observable* o, boost::any arg) override;
 
 public:
 	LedControl(IPlugBase* pPlug, IGraphics* pGraphics);
+	~LedControl();
+
 };

@@ -19,6 +19,9 @@ namespace mpc {
 			std::string getLabel();
 
 		public:
+			void light(bool b);
+
+		public:
 			Led(std::string label);
 			~Led();
 

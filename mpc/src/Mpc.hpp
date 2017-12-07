@@ -84,6 +84,7 @@ namespace mpc {
 
 	public:
 		void init();
+		void powerOn();
 		//void startMidi();
 
 	public:

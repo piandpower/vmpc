@@ -7,7 +7,7 @@
 #include <memory>
 
 namespace mpc {
-
+	class Mpc;
 	class StartUp
 	{
 
@@ -15,7 +15,7 @@ namespace mpc {
 		std::thread startupThread;
 
 	private:
-		std::thread spawn();
+		//std::thread spawn();
 		static std::shared_ptr<ui::UserDefaults> userDefaults;
 
 	public:
@@ -25,7 +25,7 @@ namespace mpc {
 		static std::string storesPath;
 
 	public:
-		void startUp();
+		void runStartUpRoutine(mpc::Mpc* mpc);
 
 	public:
 		static std::weak_ptr<ui::UserDefaults> getUserDefaults();

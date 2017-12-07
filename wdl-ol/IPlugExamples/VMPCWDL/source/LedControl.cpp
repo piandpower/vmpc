@@ -1,11 +1,13 @@
 #include "LedControl.hpp"
 #include "Constants.hpp"
 
-//#include <mpc/gui/StartUp.hpp>
+#include <Logger.hpp>
+
+#include <string>
 
 #include "../resource.h"
 
-//#include <moduru/file/File.hpp>
+using namespace std;
 
 LedControl::LedControl(IPlugBase* pPlug, IGraphics* pGraphics) 
 	: IPanelControl(pPlug, *Constants::PLUG_RECT(), Constants::LCD_OFF())
@@ -162,4 +164,90 @@ void LedControl::setUndoSeq(bool b)
 {
     undoSeqOn = b;
 	SetDirty(true);
+}
+
+void LedControl::update(moduru::observer::Observable* o, boost::any arg) {
+	string s = boost::any_cast<string>(arg);
+	MLOG("LedControl update string " + s);
+	if (s.compare("fulllevelon") == 0) {
+		setFullLevel(true);
+	}
+	else if(s.compare("fullleveloff") == 0) {
+		setFullLevel(false);
+	}
+	else if (s.compare("sixteenlevelson") == 0) {
+		setSixteenLevels(true);
+	}
+	else if (s.compare("sixteenlevelsoff") == 0) {
+		setSixteenLevels(false);
+	}
+	else if (s.compare("nextseqon") == 0) {
+		setNextSeq(true);
+	}
+	else if (s.compare("nextseqoff") == 0) {
+		setNextSeq(false);
+	}
+	else if (s.compare("trackmuteon") == 0) {
+		setTrackMute(true);
+	}
+	else if (s.compare("trackmuteoff") == 0) {
+		setTrackMute(false);
+	}
+	else if (s.compare("padbankaon") == 0) {
+		setPadBankA(true);
+	}
+	else if (s.compare("padbankaoff") == 0) {
+		setPadBankA(false);
+	}
+	else if (s.compare("padbankbon") == 0) {
+		setPadBankB(true);
+	}
+	else if (s.compare("padbankboff") == 0) {
+		setPadBankB(false);
+	}
+	else if (s.compare("padbankcon") == 0) {
+		setPadBankC(true);
+	}
+	else if (s.compare("padbankcoff") == 0) {
+		setPadBankC(false);
+	}
+	else if (s.compare("padbankdon") == 0) {
+		setPadBankD(true);
+	}
+	else if (s.compare("padbankdoff") == 0) {
+		setPadBankD(false);
+	}
+	else if (s.compare("afteron") == 0) {
+		setAfter(true);
+	}
+	else if (s.compare("afteroff") == 0) {
+		setAfter(false);
+	}
+	else if (s.compare("undoseqon") == 0) {
+		setUndoSeq(true);
+	}
+	else if (s.compare("undoseqoff") == 0) {
+		setUndoSeq(false);
+	}
+	else if (s.compare("recon") == 0) {
+		setRec(true);
+	}
+	else if (s.compare("recoff") == 0) {
+		setRec(false);
+	}
+	else if (s.compare("overdubon") == 0) {
+		setOverDub(true);
+	}
+	else if (s.compare("overduboff") == 0) {
+		setOverDub(false);
+	}
+	else if (s.compare("playon") == 0) {
+		setPlay(true);
+	}
+	else if (s.compare("playoff") == 0) {
+		setPlay(false);
+	}
+}
+
+LedControl::~LedControl() {
 }

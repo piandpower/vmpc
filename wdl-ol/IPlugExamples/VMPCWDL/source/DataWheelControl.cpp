@@ -3,11 +3,8 @@
 #include <hardware/DataWheel.hpp>
 
 #include "Constants.hpp"
-//#include <mpc/gui/Gui.hpp>
 
 #include "../resource.h"
-
-//using namespace mpc::gui;
 
 DataWheelControl::DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels, std::weak_ptr<mpc::hardware::DataWheel> dataWheel)
 	: IPanelControl(pPlug, *Constants::DATAWHEEL_RECT(), Constants::LCD_OFF())
@@ -45,5 +42,4 @@ void DataWheelControl::update(moduru::observer::Observable* o, boost::any arg) {
 }
 
 DataWheelControl::~DataWheelControl() {
-	//GetGUI()->ReleaseBitmap(&dataWheels);
 }

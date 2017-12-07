@@ -18,6 +18,7 @@
 #include <hardware/Hardware.hpp>
 #include <hardware/DataWheel.hpp>
 #include <lcdgui/LayeredScreen.hpp>
+#include <hardware/Led.hpp>
 
 const int kNumPrograms = 8;
 const int kNumParams = 0;
@@ -26,7 +27,6 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	: IPLUG_CTOR(kNumParams, kNumPrograms, instanceInfo),
 	mSampleRate(44100.)
 {
-
 	mpc = new mpc::Mpc();
 	mpc->init();
 
@@ -35,7 +35,9 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	IGraphics* pGraphics = MakeGraphics(this, GUI_WIDTH, GUI_HEIGHT);
 	pGraphics->AttachBackground(BG_ID, BG_FN);
 	mLedPanel = new LedControl(this, pGraphics);
-	mLedPanel->setPadBankA(true);
+	for (auto& l : mpc->getHardware().lock()->getLeds()) {
+		l->addObserver(mLedPanel);
+	}
 	pGraphics->AttachControl(mLedPanel);
 
 	mInputCatcher = new InputCatcherControl(this, mpc);
@@ -45,8 +47,8 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	mDataWheel = new DataWheelControl(this, dataWheels, mpc->getHardware().lock()->getDataWheel());
 
 	mpc->getHardware().lock()->getDataWheel().lock()->addObserver(mDataWheel);
-
 	pGraphics->AttachControl(mDataWheel);
+
 	auto knobs = pGraphics->LoadIBitmap(RECKNOB_ID, RECKNOB_FN);
 	mRecKnob = new KnobControl(this, 0, knobs);
 	knobs = pGraphics->LoadIBitmap(VOLKNOB_ID, VOLKNOB_FN);
@@ -61,6 +63,8 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 
 	//MakePreset("preset 1", ... );
 	MakeDefaultPreset((char *) "-", kNumPrograms);
+
+	mpc->powerOn();
 }
 
 VMPCWDL::~VMPCWDL()

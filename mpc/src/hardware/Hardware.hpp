@@ -35,6 +35,8 @@ namespace mpc {
 		public:
 			std::weak_ptr<HwPad> getPad(int index);
 			std::weak_ptr<Button> getButton(std::string label);
+			std::weak_ptr<Led> getLed(std::string label);
+			std::vector<std::shared_ptr<Led> > getLeds();
 			std::weak_ptr<DataWheel> getDataWheel();
 
 		public:

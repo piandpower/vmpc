@@ -1,5 +1,7 @@
 #include "Mpc.hpp"
 
+#include "StartUp.hpp"
+
 #include "DiskController.hpp"
 
 #include <disk/AbstractDisk.hpp>
@@ -95,6 +97,10 @@ void Mpc::init()
 	*/
 
 	layeredScreen->openScreen("sequencer");
+}
+
+void Mpc::powerOn() {
+	mpc::StartUp().runStartUpRoutine(this);
 }
 
 weak_ptr<ui::Uis> Mpc::getUis() {
