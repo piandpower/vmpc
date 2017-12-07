@@ -175,17 +175,20 @@ void Wave::makeLine(std::vector<std::vector<std::vector<int> > >* lines, std::ve
 }
 
 void Wave::Draw(std::vector<std::vector<bool> >* pixels) {
-/*
-if (sampleData == nullptr) return false;
-	vector<vector<vector<int>>> lines;
-	vector<IColor*> colors;
-	vector<int> offsetxy{ mRECT.L, mRECT.T };
+	if (sampleData == nullptr) return;
+	if (IsHidden()) return;
+	vector<vector<vector<int> > > lines;
+	vector<bool> colors;
+	vector<int> offsetxy{ fine ? 22 : 1 , fine ? 16 : 21 };
 	for (int i = 0; i < width; i++) {
 		if (i == 55 && fine) continue;
 		makeLine(&lines, &colors, i);
-		Util::drawScaled(g, lines, 2, colors, offsetxy);
+		int counter = 0;
+		for (auto& l : lines) {
+			mpc::Util::drawLine(pixels, &l, colors[counter++], &offsetxy);
+		}
+		//Util::drawScaled(g, lines, 2, colors, offsetxy);
 	}
-	*/
 	dirty = false;
 }
 

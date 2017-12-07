@@ -38,7 +38,7 @@ namespace mpc {
 					//std::vector<float> trimmedData;
 					ZoomGui* zoomGui{ nullptr };
 					mpc::ui::sampler::SoundGui* soundGui{ nullptr };
-					mpc::lcdgui::TwoDots* twoDots{ nullptr };
+					std::weak_ptr<mpc::lcdgui::TwoDots> twoDots;
 					std::weak_ptr<mpc::lcdgui::Field> startField{};
 					std::weak_ptr<mpc::lcdgui::Field> endField{};
 					std::weak_ptr<mpc::lcdgui::Field> toField{};
@@ -49,7 +49,7 @@ namespace mpc {
 					std::weak_ptr<mpc::lcdgui::Field> lngthField{};
 					std::weak_ptr<mpc::sampler::Sound> sound{};
 					std::vector<std::string> playXNames{};
-					mpc::lcdgui::Wave* wave{};
+					std::weak_ptr<mpc::lcdgui::Wave> wave;
 					std::string csn{ "" };
 
 				private:

@@ -52,7 +52,6 @@ void GlobalReleaseControls::keyEvent(unsigned char kc)
 	init();
 	auto lSequencer = sequencer.lock();
 	auto lLs = ls.lock();
-	auto ledPanel = lMainFrame->getLedPanel().lock();
 	if (kc == KbMapping::goTo())
 		KbMouseController::goToIsPressed() = false;
 
@@ -63,14 +62,6 @@ void GlobalReleaseControls::keyEvent(unsigned char kc)
 		//KbMouseController::f6IsPressed() = false;
 		return;
 	}
-	if (KbMouseController::getPressedPad(kc) != -1) {
-		auto pressedPad = KbMouseController::getPressedPad(kc);
-		pad(pressedPad);
-	}
-	if (csn.compare("step_tc") == 0 || csn.compare("sequencer_step") == 0) {
-		StepEditorKbRelease(lMainFrame.get()).stepEditorKbRelease(kc);
-	}
-
 	if ((kc == KbMapping::f6() || kc == KbMapping::f5()) && !lSequencer->isPlaying() && csn.compare("sequencer") != 0)
 		sampler.lock()->stopAllVoices();
 }

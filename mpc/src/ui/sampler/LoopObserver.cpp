@@ -18,8 +18,8 @@ using namespace std;
 LoopObserver::LoopObserver(mpc::Mpc* mpc)
 {
 	this->mpc = mpc;
+	this->sampler = mpc->getSampler();
 	playXNames = vector<string>{ "ALL", "ZONE", "BEFOR ST", "BEFOR TO", "AFTR END" };
-	this->sampler = sampler;
 	soundGui = mpc->getUis().lock()->getSoundGui();
 	soundGui->addObserver(this);
 	auto lSampler = sampler.lock();
@@ -31,13 +31,13 @@ LoopObserver::LoopObserver(mpc::Mpc* mpc)
 	}
 	auto ls = mpc->getLayeredScreen().lock();
 	twoDots = ls->getTwoDots();
-	twoDots->Hide(false);
-	twoDots->setVisible(0, true);
-	twoDots->setVisible(1, true);
-	twoDots->setVisible(2, false);
-	twoDots->setVisible(3, false);
+	twoDots.lock()->Hide(false);
+	twoDots.lock()->setVisible(0, true);
+	twoDots.lock()->setVisible(1, true);
+	twoDots.lock()->setVisible(2, false);
+	twoDots.lock()->setVisible(3, false);
 	wave = ls->getWave();
-	wave->Hide(false);
+	wave.lock()->Hide(false);
 	sndField = ls->lookupField("snd");
 	playXField = ls->lookupField("playx");
 	toField = ls->lookupField("to");
@@ -45,8 +45,8 @@ LoopObserver::LoopObserver(mpc::Mpc* mpc)
 	endLengthValueField = ls->lookupField("endlengthvalue");
 	loopField = ls->lookupField("loop");
 	dummyField = ls->lookupField("dummy");
-	toField.lock()->setSize(8 * 6 * 2 + 2, 18);
-	endLengthValueField.lock()->setSize(8 * 6 * 2 + 2, 18);
+	toField.lock()->setSize(8 * 6 + 1, 9);
+	endLengthValueField.lock()->setSize(8 * 6 + 1, 9);
 	displaySnd();
 	displayPlayX();
 	displayTo();
@@ -57,10 +57,10 @@ LoopObserver::LoopObserver(mpc::Mpc* mpc)
 		dummyField.lock()->setFocusable(false);
 		waveformLoadData();
 		auto lSound = sound.lock();
-		wave->setSelection(lSound->getLoopTo(), lSound->getEnd());
+		wave.lock()->setSelection(lSound->getLoopTo(), lSound->getEnd());
 	}
 	else {
-		wave->setSampleData(nullptr, false, 0);
+		wave.lock()->setSampleData(nullptr, false, 0);
 		sndField.lock()->setFocusable(false);
 		playXField.lock()->setFocusable(false);
 		toField.lock()->setFocusable(false);
@@ -152,13 +152,13 @@ void LoopObserver::update(moduru::observer::Observable* o, boost::any arg)
 		displayTo();
 		displayEndLength();
 		waveformLoadData();
-		wave->setSelection(lSound->getLoopTo(), lSound->getEnd());
+		wave.lock()->setSelection(lSound->getLoopTo(), lSound->getEnd());
 		soundGui->initZones(lSound->getLastFrameIndex() + 1);
 	}
 	else if (s.compare("loopto") == 0) {
 		displayTo();
 		auto lSound = sound.lock();
-		wave->setSelection(lSound->getLoopTo(), lSound->getEnd());
+		wave.lock()->setSelection(lSound->getLoopTo(), lSound->getEnd());
 	}
 	else if (s.compare("endlength") == 0) {
 		displayEndLength();
@@ -166,7 +166,7 @@ void LoopObserver::update(moduru::observer::Observable* o, boost::any arg)
 	else if (s.compare("end") == 0) {
 		displayEndLengthValue();
 		auto lSound = sound.lock();
-		wave->setSelection(lSound->getLoopTo(), lSound->getEnd());
+		wave.lock()->setSelection(lSound->getLoopTo(), lSound->getEnd());
 	}
 	else if (s.compare("loopenabled") == 0) {
 		displayLoop();
@@ -180,13 +180,17 @@ void LoopObserver::waveformLoadData()
 {
 	auto lSound = sound.lock();
 	auto sampleData = lSound->getSampleData();
-	wave->setSampleData(sampleData, lSound->isMono(), soundGui->getView());
+	wave.lock()->setSampleData(sampleData, lSound->isMono(), soundGui->getView());
 }
 
 LoopObserver::~LoopObserver() {
-	wave->setSampleData(nullptr, false, 0);
-	wave->Hide(true);
-	twoDots->Hide(true);
+	if (wave.lock()) {
+		wave.lock()->Hide(true);
+		wave.lock()->setSampleData(nullptr, false, 0);
+	}
+	if (twoDots.lock()) {
+		twoDots.lock()->Hide(true);
+	}
 	soundGui->deleteObserver(this);
 	auto lSound = sound.lock();
 	if (lSound) {

@@ -24,13 +24,14 @@
 #include <ui/sequencer/window/EraseGui.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 
-//#include <ui/sampler/window/ZoomGui.hpp>
 #include <ui/sampler/MixerSetupGui.hpp>
 #include <ui/sampler/MixerGui.hpp>
-//#include <ui/sampler/window/SamplerWindowGui.hpp>
-//#include <ui/sampler/window/EditSoundGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <ui/sampler/SoundGui.hpp>
+
+#include <ui/sampler/window/ZoomGui.hpp>
+#include <ui/sampler/window/SamplerWindowGui.hpp>
+#include <ui/sampler/window/EditSoundGui.hpp>
 
 //#include <ui/vmpc/AudioGui.hpp>
 #include <ui/vmpc/DeviceGui.hpp>
@@ -74,13 +75,13 @@ Uis::Uis(mpc::Mpc* mpc)
 	nameGui = new mpc::ui::NameGui();
 	soundGui = new mpc::ui::sampler::SoundGui();
 
-	//editSoundGui = new mpc::ui::sampler::window::EditSoundGui();
-	//zoomGui = new mpc::ui::sampler::window::ZoomGui();
-	//samplerWindowGui = new mpc::ui::sampler::window::SamplerWindowGui();
 	mixerGui = new mpc::ui::sampler::MixerGui();
 	mixerSetupGui = new mpc::ui::sampler::MixerSetupGui();
 
-	
+	editSoundGui = new mpc::ui::sampler::window::EditSoundGui();
+	zoomGui = new mpc::ui::sampler::window::ZoomGui();
+	samplerWindowGui = new mpc::ui::sampler::window::SamplerWindowGui();
+
 	diskGui = new mpc::ui::disk::DiskGui(mpc);
 	directoryGui = new mpc::ui::disk::window::DirectoryGui(mpc, diskGui);
 	diskWindowGui = new mpc::ui::disk::window::DiskWindowGui();

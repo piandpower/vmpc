@@ -40,8 +40,8 @@ namespace mpc {
 				std::weak_ptr<mpc::lcdgui::Field> endField{};
 				std::weak_ptr<mpc::lcdgui::Field> zoneField{};
 				std::weak_ptr<mpc::lcdgui::Field> dummyField{};
-				mpc::lcdgui::TwoDots* twoDots{ nullptr };
-				mpc::lcdgui::Wave* wave{ nullptr };
+				std::weak_ptr<mpc::lcdgui::TwoDots> twoDots;
+				std::weak_ptr<mpc::lcdgui::Wave> wave;
 				std::weak_ptr<mpc::lcdgui::Field> numberOfZonesField{};
 				std::string csn{ "" };
 

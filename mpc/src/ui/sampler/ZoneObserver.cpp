@@ -30,27 +30,27 @@ ZoneObserver::ZoneObserver(mpc::Mpc* mpc)
 		lSound->getMsoc()->addObserver(this);
 	}
 	twoDots = ls->getTwoDots();
-	twoDots->setVisible(0, true);
-	twoDots->setVisible(1, true);
-	twoDots->setVisible(2, false);
-	twoDots->setVisible(3, false);
+	twoDots.lock()->setVisible(0, true);
+	twoDots.lock()->setVisible(1, true);
+	twoDots.lock()->setVisible(2, false);
+	twoDots.lock()->setVisible(3, false);
 	wave= ls->getWave();
-	wave->Hide(false);
+	wave.lock()->Hide(false);
 	if (csn.compare("zone") == 0) {
-		twoDots->Hide(false);
+		twoDots.lock()->Hide(false);
 		sndField = ls->lookupField("snd");
 		playXField = ls->lookupField("playx");
 		stField = ls->lookupField("st");
 		endField = ls->lookupField("end");
 		zoneField = ls->lookupField("zone");
 		dummyField = ls->lookupField("dummy");
-		stField.lock()->setSize(8 * 6 * 2 + 2, 18);
-		endField.lock()->setSize(8 * 6 * 2 + 2, 18);
+		stField.lock()->setSize(8 * 6 + 1, 9);
+		endField.lock()->setSize(8 * 6 + 1, 9);
 		displaySnd();
 		if (lSampler->getSoundCount() != 0) {
 			dummyField.lock()->setFocusable(false);
 			soundGui->initZones(lSampler->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
-			wave->setSelection(soundGui->getZoneStart(soundGui->getZoneNumber()), soundGui->getZoneEnd(soundGui->getZoneNumber()));
+			wave.lock()->setSelection(soundGui->getZoneStart(soundGui->getZoneNumber()), soundGui->getZoneEnd(soundGui->getZoneNumber()));
 		}
 		else {
 			sndField.lock()->setFocusable(false);
@@ -65,7 +65,7 @@ ZoneObserver::ZoneObserver(mpc::Mpc* mpc)
 		displayZone();
 	}
 	else if (csn.compare("numberofzones") == 0) {
-		twoDots->Hide(true);
+		twoDots.lock()->Hide(true);
 		numberOfZonesField = ls->lookupField("numberofzones");
 		displayNumberOfZones();
 	}
@@ -139,13 +139,13 @@ void ZoneObserver::update(moduru::observer::Observable* o, boost::any arg)
 		displaySt();
 		displayEnd();
 		waveformLoadData();
-		wave->setSelection(soundGui->getZoneStart(soundGui->getZoneNumber()), soundGui->getZoneEnd(soundGui->getZoneNumber()));
+		wave.lock()->setSelection(soundGui->getZoneStart(soundGui->getZoneNumber()), soundGui->getZoneEnd(soundGui->getZoneNumber()));
 	}
 	else if (s.compare("zone") == 0) {
 		displayZone();
 		displaySt();
 		displayEnd();
-		wave->setSelection(soundGui->getZoneStart(soundGui->getZoneNumber()), soundGui->getZoneEnd(soundGui->getZoneNumber()));
+		wave.lock()->setSelection(soundGui->getZoneStart(soundGui->getZoneNumber()), soundGui->getZoneEnd(soundGui->getZoneNumber()));
 	}
 	else if (s.compare("playx") == 0) {
 		displayPlayX();
@@ -164,13 +164,17 @@ void ZoneObserver::waveformLoadData()
 {
 	auto lSound = sound.lock();
 	auto sampleData = lSound->getSampleData();
-	wave->setSampleData(sampleData, lSound->isMono(), soundGui->getView());
+	wave.lock()->setSampleData(sampleData, lSound->isMono(), soundGui->getView());
 }
 
 ZoneObserver::~ZoneObserver() {
-	wave->setSampleData(nullptr, false, 0);
-	wave->Hide(true);
-	twoDots->Hide(true);
+	if (wave.lock()) {
+		wave.lock()->Hide(true);
+		wave.lock()->setSampleData(nullptr, false, 0);
+	}
+	if (twoDots.lock()) {
+		twoDots.lock()->Hide(true);
+	}
 	soundGui->deleteObserver(this);
 	auto lSound = sound.lock();
 	if (lSound) {

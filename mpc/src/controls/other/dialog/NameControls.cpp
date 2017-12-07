@@ -77,7 +77,7 @@ void NameControls::turnWheel(int j)
 				if (param.compare(to_string(i)) == 0) {
 					nameGui->changeNameCharacter(i, j > 0);
 					nameGui->setNameBeingEdited(true);
-					ls.lock()->getUnderline()->Hide(false);
+					ls.lock()->getUnderline().lock()->Hide(false);
 					initEditColors();
 					drawUnderline();
 					break;
@@ -358,7 +358,7 @@ void NameControls::drawUnderline()
 	if (nameGui->isNameBeingEdited()) {
 		string focus = ls.lock()->getFocus();
 		if (focus.length() != 1 && focus.length() != 2) return;
-		auto u = ls.lock()->getUnderline();
+		auto u = ls.lock()->getUnderline().lock();
 		for (int i = 0; i < 16; i++) {
 
 			if (i == stoi(focus)) {

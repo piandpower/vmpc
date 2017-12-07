@@ -2,6 +2,8 @@
 
 #include <gui/Bressenham.hpp>
 
+#include <Util.hpp>
+
 using namespace mpc::lcdgui;
 using namespace std;
 
@@ -35,9 +37,7 @@ void EnvGraph::Draw(std::vector<std::vector<bool> >* pixels)
 	}
 	for (auto& c : coordinates) {
 		auto linePixels = moduru::gui::Bressenham::Line(c[0], c[1], c[2], c[3]);
-		for (auto& l : linePixels) {
-			(*pixels)[l[0]][l[1]] = true;
-		}
+		mpc::Util::drawLine(pixels, &linePixels, true);
 	}
 	dirty = false;
 }

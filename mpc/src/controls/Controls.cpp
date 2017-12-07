@@ -118,8 +118,6 @@
 /*
 #include <controls/midisync/SyncControls.hpp>
 
-#include <hardware/LedPanel.hpp>
-
 #include <controls/misc/PunchControls.hpp>
 
 #include <controls/misc/SecondSeqControls.hpp>

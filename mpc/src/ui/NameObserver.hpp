@@ -34,7 +34,7 @@ namespace mpc {
 			std::weak_ptr<mpc::lcdgui::Field> a14Field{};
 			std::weak_ptr<mpc::lcdgui::Field> a15Field{};
 			NameGui* nameGui{ nullptr };
-			mpc::lcdgui::Underline* underline{ nullptr };
+			std::weak_ptr<mpc::lcdgui::Underline> underline;
 
 		private:
 			void displayName();

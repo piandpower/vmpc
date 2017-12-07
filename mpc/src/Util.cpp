@@ -82,6 +82,20 @@ string Util::distributeTimeSig(string s) {
 	if (s1.length() == 1) s1 = u8"\u00CE" + s1;
 	return s0 + "/" + s1;
 }
+
+void Util::drawLine(std::vector<std::vector<bool> >* pixels, std::vector<std::vector<int> >* line, bool color) {
+	for (auto& l : *line) {
+		(*pixels)[l[0]][l[1]] = color;
+	}
+}
+
+void Util::drawLine(std::vector<std::vector<bool> >* pixels, std::vector<std::vector<int> >* line, bool color, std::vector<int>* offsetxy) {
+	for (auto& l : *line) {
+		(*pixels)[l[0] + offsetxy->at(0)][l[1] + offsetxy->at(1)] = color;
+	}
+}
+
+
 /*
 void Util::drawScaled(IGraphics* g, std::vector<std::vector<int>> line, unsigned int scale, IColor* color, vector<int> offsetxy) {
 	int x, y;

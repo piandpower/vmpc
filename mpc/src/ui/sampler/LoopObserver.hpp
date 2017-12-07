@@ -41,8 +41,8 @@ namespace mpc {
 				std::weak_ptr<mpc::lcdgui::Field> endLengthValueField{};
 				std::weak_ptr<mpc::lcdgui::Field> loopField{};
 				std::weak_ptr<mpc::lcdgui::Field> dummyField{};
-				mpc::lcdgui::TwoDots* twoDots{ nullptr };
-				mpc::lcdgui::Wave* wave{ nullptr };
+				std::weak_ptr<mpc::lcdgui::TwoDots> twoDots;
+				std::weak_ptr<mpc::lcdgui::Wave> wave;
 
 			private:
 				void displaySnd();

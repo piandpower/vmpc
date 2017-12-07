@@ -33,21 +33,21 @@ TrimObserver::TrimObserver(mpc::Mpc* mpc)
 	}
 	auto ls = mpc->getLayeredScreen().lock();
 	wave = ls->getWave();
-	wave->Hide(false);
+	wave.lock()->Hide(false);
 	twoDots = ls->getTwoDots();
-	twoDots->Hide(false);
-	twoDots->setVisible(0, true);
-	twoDots->setVisible(1, true);
-	twoDots->setVisible(2, false);
-	twoDots->setVisible(3, false);
+	twoDots.lock()->Hide(false);
+	twoDots.lock()->setVisible(0, true);
+	twoDots.lock()->setVisible(1, true);
+	twoDots.lock()->setVisible(2, false);
+	twoDots.lock()->setVisible(3, false);
 	sndField = ls->lookupField("snd");
 	playXField = ls->lookupField("playx");
 	stField = ls->lookupField("st");
 	endField = ls->lookupField("end");
 	viewField = ls->lookupField("view");
 	dummyField = ls->lookupField("dummy");
-	stField.lock()->setSize(8 * 6 * 2 + 2, 18);
-	endField.lock()->setSize(8 * 6 * 2 + 2, 18);
+	stField.lock()->setSize(8 * 6 + 1, 9);
+	endField.lock()->setSize(8 * 6 + 1, 9);
 	displaySnd();
 	displayPlayX();
 	displaySt();
@@ -56,10 +56,10 @@ TrimObserver::TrimObserver(mpc::Mpc* mpc)
 		auto lSound = sound.lock();
 		dummyField.lock()->setFocusable(false);
 		waveformLoadData();
-		wave->setSelection(lSound->getStart(), lSound->getEnd());
+		wave.lock()->setSelection(lSound->getStart(), lSound->getEnd());
 	}
 	else {
-		wave->setSampleData(nullptr, false, 0);
+		wave.lock()->setSampleData(nullptr, false, 0);
 		sndField.lock()->setFocusable(false);
 		playXField.lock()->setFocusable(false);
 		stField.lock()->setFocusable(false);
@@ -139,24 +139,24 @@ void TrimObserver::update(moduru::observer::Observable* o, boost::any arg)
 		displayEnd();
 		waveformLoadData();
 		auto lSound = sound.lock();
-		wave->setSelection(lSound->getStart(), lSound->getEnd());
+		wave.lock()->setSelection(lSound->getStart(), lSound->getEnd());
 		soundGui->initZones(lSound->getLastFrameIndex() + 1);
 	}
 	else if (s.compare("start") == 0) {
 		displaySt();
 		auto lSound = sound.lock();
-		wave->setSelection(lSound->getStart(), lSound->getEnd());
+		wave.lock()->setSelection(lSound->getStart(), lSound->getEnd());
 	}
 	else if (s.compare("end") == 0) {
 		displayEnd();
 		auto lSound = sound.lock();
-		wave->setSelection(lSound->getStart(), lSound->getEnd());
+		wave.lock()->setSelection(lSound->getStart(), lSound->getEnd());
 	}
 	else if (s.compare("view") == 0) {
 		displayView();
 		waveformLoadData();
 		auto lSound = sound.lock();
-		wave->setSelection(lSound->getStart(), lSound->getEnd());
+		wave.lock()->setSelection(lSound->getStart(), lSound->getEnd());
 	}
 	else if (s.compare("playx") == 0) {
 		displayPlayX();
@@ -167,13 +167,17 @@ void TrimObserver::waveformLoadData()
 {
 	auto lSound = sound.lock();
 	auto sampleData = lSound->getSampleData();
-	wave->setSampleData(lSound->getSampleData(), lSound->isMono(), soundGui->getView());
+	wave.lock()->setSampleData(lSound->getSampleData(), lSound->isMono(), soundGui->getView());
 }
 
 TrimObserver::~TrimObserver() {
-	wave->setSampleData(nullptr, false, 0);
-	wave->Hide(true);
-	twoDots->Hide(true);
+	if (wave.lock()) {
+		wave.lock()->Hide(true);
+		wave.lock()->setSampleData(nullptr, false, 0);
+	}
+	if (twoDots.lock()) {
+		twoDots.lock()->Hide(true);
+	}
 	samplerGui->deleteObserver(this);
 	soundGui->deleteObserver(this);
 	auto lSound = sound.lock();

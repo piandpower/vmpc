@@ -33,9 +33,9 @@ NameObserver::NameObserver(mpc::Mpc* mpc)
 	nameGui->deleteObservers();
 	nameGui->addObserver(this);
 	underline = ls->getUnderline();
-	underline->Hide(true);
+	underline.lock()->Hide(true);
 	for (int i = 0; i < 16; i++) {
-		underline->setState(i, false);
+		underline.lock()->setState(i, false);
 	}
 	displayName();
 }
@@ -95,5 +95,5 @@ void NameObserver::update(moduru::observer::Observable* o, boost::any arg)
 
 NameObserver::~NameObserver() {
 	nameGui->deleteObserver(this);
-	underline->Hide(true);
+	if (underline.lock()) underline.lock()->Hide(true);
 }

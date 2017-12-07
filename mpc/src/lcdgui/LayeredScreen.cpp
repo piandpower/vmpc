@@ -560,18 +560,18 @@ void LayeredScreen::drawFunctionKeys(string screenName)
 	getFunctionKeys()->initialize(fblabels, fbtypes);
 }
 
-mpc::lcdgui::TwoDots* LayeredScreen::getTwoDots()
+std::weak_ptr<mpc::lcdgui::TwoDots> LayeredScreen::getTwoDots()
 {
-	return twoDots.get();
+	return twoDots;
 }
 
-Wave* LayeredScreen::getWave() {
-	return wave.get();
+std::weak_ptr<Wave> LayeredScreen::getWave() {
+	return wave;
 }
 
-Wave* LayeredScreen::getFineWave()
+std::weak_ptr<Wave> LayeredScreen::getFineWave()
 {
-	return fineWave.get();
+	return fineWave;
 }
 
 int LayeredScreen::getCurrentLayer() {
@@ -691,8 +691,8 @@ string LayeredScreen::findAbove(string tf0) {
 	return result;
 }
 
-mpc::lcdgui::Underline* LayeredScreen::getUnderline() {
-	return underline.get();
+std::weak_ptr<mpc::lcdgui::Underline> LayeredScreen::getUnderline() {
+	return underline;
 }
 
 std::weak_ptr<Field> LayeredScreen::lookupField(std::string s)

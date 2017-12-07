@@ -31,10 +31,10 @@ void ZoomControls::function(int i)
 	vector<int> zone;
 	switch (i) {
 	case 1:
-		ls.lock()->getFineWave()->zoomPlus();
+		ls.lock()->getFineWave().lock()->zoomPlus();
 		break;
 	case 2:
-		ls.lock()->getFineWave()->zoomMinus();
+		ls.lock()->getFineWave().lock()->zoomMinus();
 		break;
 	case 4:
 		zone = vector<int>{ soundGui->getZoneStart(soundGui->getZoneNumber()), soundGui->getZoneEnd(soundGui->getZoneNumber()) };

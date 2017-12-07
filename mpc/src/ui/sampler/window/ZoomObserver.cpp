@@ -33,16 +33,16 @@ ZoomObserver::ZoomObserver(mpc::Mpc* mpc)
 	lSound->addObserver(this);
 	lSound->getMsoc()->addObserver(this);
 	twoDots = ls->getTwoDots();
-	twoDots->Hide(false);
-	twoDots->setVisible(0, false);
-	twoDots->setVisible(1, false);
-	twoDots->setVisible(2, true);
-	twoDots->setVisible(3, true);
-	twoDots->setSelected(3, false);
+	twoDots.lock()->Hide(false);
+	twoDots.lock()->setVisible(0, false);
+	twoDots.lock()->setVisible(1, false);
+	twoDots.lock()->setVisible(2, true);
+	twoDots.lock()->setVisible(3, true);
+	twoDots.lock()->setSelected(3, false);
 	wave = ls->getFineWave();
-	wave->Hide(false);
+	wave.lock()->Hide(false);
 
-	wave->setSampleData(lSound->getSampleData(), lSound->isMono(), soundGui->getView());
+	wave.lock()->setSampleData(lSound->getSampleData(), lSound->isMono(), soundGui->getView());
 
 	startField = ls->lookupField("start");
 	endField = ls->lookupField("end");
@@ -109,19 +109,19 @@ void ZoomObserver::displayFineWaveform()
 {
 	auto lSound = sound.lock();
 	if (csn.compare("startfine") == 0) {
-		wave->setCenterSamplePos(lSound->getStart());
+		wave.lock()->setCenterSamplePos(lSound->getStart());
 	}
 	else if (csn.compare("zonestartfine") == 0) {
-		wave->setCenterSamplePos(soundGui->getZoneStart(soundGui->getZoneNumber()));
+		wave.lock()->setCenterSamplePos(soundGui->getZoneStart(soundGui->getZoneNumber()));
 	}
 	else if (csn.compare("endfine") == 0 || csn.compare("loopendfine") == 0) {
-		wave->setCenterSamplePos(lSound->getEnd());
+		wave.lock()->setCenterSamplePos(lSound->getEnd());
 	}
 	else if (csn.compare("zoneendfine") == 0) {
-		wave->setCenterSamplePos(soundGui->getZoneEnd(soundGui->getZoneNumber()));
+		wave.lock()->setCenterSamplePos(soundGui->getZoneEnd(soundGui->getZoneNumber()));
 	}
 	else if (csn.compare("looptofine") == 0) {
-		wave->setCenterSamplePos(lSound->getLoopTo());
+		wave.lock()->setCenterSamplePos(lSound->getLoopTo());
 	}
 }
 
@@ -228,7 +228,9 @@ void ZoomObserver::displayTo()
 }
 
 ZoomObserver::~ZoomObserver() {
-	wave->setSampleData(nullptr, false, 0);
+	if (wave.lock()) {
+		wave.lock()->setSampleData(nullptr, false, 0);
+	}
 	zoomGui->deleteObserver(this);
 	soundGui->deleteObserver(this);
 	auto lSound = sound.lock();
