@@ -5,6 +5,7 @@
 #include <Mpc.hpp>
 
 #include <controls/KbMapping.hpp>
+#include <controls/Controls.hpp>
 #include <hardware/Hardware.hpp>
 #include <hardware/DataWheel.hpp>
 #include <hardware/Button.hpp>
@@ -214,11 +215,17 @@ bool InputCatcherControl::OnKeyDown(int x, int y, int c) {
 		return true;
 	}
 	else if (c == KbMapping::dataWheelBack()) {
-		hw->getDataWheel().lock()->turn(-1);
+		auto controls = mpc->getControls().lock();
+		auto increment = -1;
+		if (controls->isShiftPressed()) increment *= 10;
+		hw->getDataWheel().lock()->turn(increment);
 		return true;
 	}
 	else if (c == KbMapping::dataWheelForward()) {
-		hw->getDataWheel().lock()->turn(1);
+		auto controls = mpc->getControls().lock();
+		auto increment = 1;
+		if (controls->isShiftPressed()) increment *= 10;
+		hw->getDataWheel().lock()->turn(increment);
 		return true;
 	}
 	return false;
