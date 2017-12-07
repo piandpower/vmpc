@@ -255,6 +255,12 @@ bool InputCatcherControl::OnKeyUp(int x, int y, int c) {
 	else if (c == KbMapping::f3()) {
 		hw->getButton("f3").lock()->release();
 	}
+	else if (c == KbMapping::rec()) {
+		hw->getButton("rec").lock()->release();
+	}
+	else if (c == KbMapping::overdub()) {
+		hw->getButton("overdub").lock()->release();
+	}
 	return false;
 }
 

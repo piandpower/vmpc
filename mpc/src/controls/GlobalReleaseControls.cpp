@@ -7,7 +7,8 @@
 #include <audiomidi/EventHandler.hpp>
 #include <controls/KbMapping.hpp>
 #include <ui/sequencer/StepEditorGui.hpp>
-//#include <hardware/LedPanel.hpp>
+#include <hardware/Hardware.hpp>
+#include <hardware/Led.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -55,16 +56,6 @@ void GlobalReleaseControls::keyEvent(unsigned char kc)
 	if (kc == KbMapping::goTo())
 		KbMouseController::goToIsPressed() = false;
 
-	if (kc == KbMapping::rec()) {
-		KbMouseController::recIsPressed() = false;
-		if (lSequencer->isRecording()) return;
-		ledPanel->setRec(false);
-	}
-	if (kc == KbMapping::overdub()) {
-		KbMouseController::overdubIsPressed() = false;
-		if (lSequencer->isOverDubbing()) return;
-		ledPanel->setOverDub(false);
-	}
 	if (csn.compare("trackmute") == 0 && kc == KbMapping::f6() && !lSequencer->isSoloEnabled()) {
 		auto ls = lMainFrame->getLayeredScreen().lock();
 		ls->removeCurrentBackground();
@@ -151,7 +142,8 @@ void GlobalReleaseControls::overDub()
 	auto controls = mpc->getControls().lock();
 	controls->setOverDubPressed(false);
     init();
-   //getLedPanel().lock()->setOverDub(sequencer.lock()->isOverDubbing());
+	auto hw = mpc->getHardware().lock();
+	hw->getLed("overdub").lock()->light(sequencer.lock()->isOverDubbing());
 }
 
 void GlobalReleaseControls::rec()
@@ -159,7 +151,8 @@ void GlobalReleaseControls::rec()
 	auto controls = mpc->getControls().lock();
 	controls->setRecPressed(false);
     init();
-    //mainFrame.lock()->getLedPanel().lock()->setRec(sequencer.lock()->isRecording());
+	auto hw = mpc->getHardware().lock();
+	hw->getLed("rec").lock()->light(sequencer.lock()->isRecording());
 }
 
 void GlobalReleaseControls::tap()

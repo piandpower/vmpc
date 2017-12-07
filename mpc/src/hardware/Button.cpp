@@ -178,6 +178,12 @@ void Button::release() {
 	else if (label.compare("f3") == 0) {
 		c->function(2);
 	}
+	else if (label.compare("rec") == 0) {
+		c->rec();
+	}
+	else if (label.compare("overdub") == 0) {
+		c->overDub();
+	}
 }
 
 Button::~Button() {

@@ -432,9 +432,15 @@ void AbstractControls::play()
 	}
 	else {
 		if (controls->isRecPressed()) {
+			if (csn.compare("sequencer") != 0) {
+				ls.lock()->openScreen("sequencer");
+			}
 			lSequencer->rec();
 		}
 		else if (controls->isOverDubPressed()) {
+			if (csn.compare("sequencer") != 0) {
+				ls.lock()->openScreen("sequencer");
+			}
 			lSequencer->overdub();
 		}
 		else {
@@ -443,6 +449,9 @@ void AbstractControls::play()
 				ls.lock()->openScreen("directtodiskrecorder");
 			}
 			else {
+				if (csn.compare("sequencer") != 0) {
+					ls.lock()->openScreen("sequencer");
+				}
 				lSequencer->play();
 			}
 		}
@@ -458,9 +467,15 @@ void AbstractControls::playStart()
 	if (lSequencer->isPlaying()) return;
 
 	if (controls->isRecPressed()) {
+		if (csn.compare("sequencer") != 0) {
+			ls.lock()->openScreen("sequencer");
+		}
 		lSequencer->recFromStart();
 	}
 	else if (controls->isOverDubPressed()) {
+		if (csn.compare("sequencer") != 0) {
+			ls.lock()->openScreen("sequencer");
+		}
 		lSequencer->overdubFromStart();
 	}
 	else {
@@ -469,6 +484,9 @@ void AbstractControls::playStart()
 			ls.lock()->openScreen("directtodiskrecorder");
 		}
 		else {
+			if (csn.compare("sequencer") != 0) {
+				ls.lock()->openScreen("sequencer");
+			}
 			lSequencer->playFromStart();
 		}
 	}

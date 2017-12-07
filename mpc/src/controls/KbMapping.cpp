@@ -39,7 +39,7 @@ int KbMapping::dataWheelForward()
 
 vector<int> KbMapping::bankKeys()
 {
-    return vector<int>{ kh->code("home"), kh->code("end"), kh->code("insert"), kh->code("delete") };
+	return vector<int>{ kh->code("home"), kh->code("end"), kh->code("insert"), kh->code("delete") };
 }
 
 vector<int> KbMapping::padKeys()
