@@ -69,7 +69,6 @@ ZoneObserver::ZoneObserver(mpc::Mpc* mpc)
 		numberOfZonesField = ls->lookupField("numberofzones");
 		displayNumberOfZones();
 	}
-	soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
 }
 
 void ZoneObserver::displaySnd()

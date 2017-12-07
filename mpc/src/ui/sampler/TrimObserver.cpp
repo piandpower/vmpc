@@ -57,6 +57,7 @@ TrimObserver::TrimObserver(mpc::Mpc* mpc)
 		dummyField.lock()->setFocusable(false);
 		waveformLoadData();
 		wave.lock()->setSelection(lSound->getStart(), lSound->getEnd());
+		soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
 	}
 	else {
 		wave.lock()->setSampleData(nullptr, false, 0);
@@ -67,7 +68,6 @@ TrimObserver::TrimObserver(mpc::Mpc* mpc)
 		viewField.lock()->setFocusable(false);
 	}
 	displayView();
-	soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
 }
 
 void TrimObserver::displaySnd()

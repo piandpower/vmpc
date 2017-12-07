@@ -30,6 +30,7 @@ SndParamsObserver::SndParamsObserver(mpc::Mpc* mpc)
 		auto lSound = sound.lock();
 		lSound->addObserver(this);
 		lSound->getMsoc()->addObserver(this);
+		soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
 	}
 	auto ls = mpc->getLayeredScreen().lock();
 	sndField = ls->lookupField("snd");
@@ -87,31 +88,50 @@ void SndParamsObserver::displayBeat()
 void SndParamsObserver::displaySampleAndNewTempo()
 {
 	auto lSound = sound.lock();
-    if(!lSound) {
-        sampleTempoLabel.lock()->setText("");
-        newTempoLabel.lock()->setText("");
-        return;
-    }
-    auto length = lSound->getEnd() - lSound->getLoopTo();
-    auto lengthMs = static_cast< float >((length / (lSound->getSampleRate() / 1000.0)));
-    auto bpm = (int)((600000.0 / lengthMs) * lSound->getBeatCount());
+	if (!lSound) {
+		sampleTempoLabel.lock()->setText("");
+		newTempoLabel.lock()->setText("");
+		return;
+	}
+	auto length = lSound->getEnd() - lSound->getLoopTo();
+	auto lengthMs = (float)(length / (lSound->getSampleRate() / 1000.0));
+	auto bpm = (int)(600000.0 / (lengthMs / lSound->getBeatCount()));
 	auto bpmString = to_string(bpm);
-    auto part1 = bpmString.substr(0, bpmString.length() - 1);
-    auto part2 = bpmString.substr(bpmString.length() - 1, bpmString.length());
-    if(bpm < 300 || bpm > 3000) {
-        part1 = "---";
-        part2 = "-";
-    }
-	sampleTempoLabel.lock()->setText("Sample tempo=" + moduru::lang::StrUtil::padLeft(part1 + u8"\u00CB" + part2, " ", 5));
-    auto newBpm = (int) (pow(2.0, (lSound->getTune() / 120.0) * bpm));
+	auto part1 = bpmString.substr(0, bpmString.length() - 1);
+	auto part2 = bpmString.substr(bpmString.length() - 1, bpmString.length());
+	if (bpm < 300 || bpm > 3000) {
+		part1 = "---";
+		part2 = "-";
+	}
+	bpmString = part1 + "." + part2;
+	bpmString = moduru::lang::StrUtil::padLeft(bpmString, " ", 5);
+
+	string tempodot = u8"\u00CB";
+	auto dotindex = (int)(bpmString.find('.'));
+	part1 = bpmString.substr(0, dotindex);
+	part2 = bpmString.substr(dotindex + 1);
+	bpmString = part1 + tempodot + part2;
+
+	sampleTempoLabel.lock()->setText("Sample tempo=" + bpmString);
+
+	auto newBpm = (int)(pow(2.0, (lSound->getTune() / 120.0)) * bpm);
 	bpmString = to_string(newBpm);
-    part1 = bpmString.substr(0, bpmString.length() - 1);
-    part2 = bpmString.substr(bpmString.length() - 1, bpmString.length());
-    if(newBpm < 300 || newBpm > 3000) {
-        part1 = "---";
-        part2 = "-";
-    }
-	newTempoLabel.lock()->setText("New tempo=" + moduru::lang::StrUtil::padLeft(part1 + u8"\u00CB" + part2, " ", 5));
+	part1 = bpmString.substr(0, bpmString.length() - 1);
+	part2 = bpmString.substr(bpmString.length() - 1, bpmString.length());
+	if (newBpm < 300 || newBpm > 3000) {
+		part1 = "---";
+		part2 = "-";
+	}
+
+	bpmString = part1 + "." + part2;
+	bpmString = moduru::lang::StrUtil::padLeft(bpmString, " ", 5);
+
+	dotindex = (int)(bpmString.find('.'));
+	part1 = bpmString.substr(0, dotindex);
+	part2 = bpmString.substr(dotindex + 1);
+	bpmString = part1 + tempodot + part2;
+
+	newTempoLabel.lock()->setText("New tempo=" + bpmString);
 }
 
 void SndParamsObserver::displaySnd()

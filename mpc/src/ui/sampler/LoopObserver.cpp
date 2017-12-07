@@ -58,6 +58,7 @@ LoopObserver::LoopObserver(mpc::Mpc* mpc)
 		waveformLoadData();
 		auto lSound = sound.lock();
 		wave.lock()->setSelection(lSound->getLoopTo(), lSound->getEnd());
+		soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
 	}
 	else {
 		wave.lock()->setSampleData(nullptr, false, 0);
@@ -68,7 +69,6 @@ LoopObserver::LoopObserver(mpc::Mpc* mpc)
 		endLengthValueField.lock()->setFocusable(false);
 		loopField.lock()->setFocusable(false);
 	}
-	soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
 }
 
 void LoopObserver::displaySnd()
