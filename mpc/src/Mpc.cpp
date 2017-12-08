@@ -1,6 +1,7 @@
 #include "Mpc.hpp"
 
 #include "StartUp.hpp"
+#include <nvram/NvRam.hpp>
 
 #include "DiskController.hpp"
 
@@ -242,4 +243,5 @@ Mpc::~Mpc() {
 	audioMidiServices->destroyServices();
 	MLOG("audio midi services destroyed.");
 	if (loadSoundThread.joinable()) loadSoundThread.join();
+	mpc::nvram::NvRam::saveUserDefaults();
 }
