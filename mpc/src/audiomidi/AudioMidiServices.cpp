@@ -1,11 +1,10 @@
 #include <audiomidi/AudioMidiServices.hpp>
-////////#include <StartUp.hpp>
+//#include <StartUp.hpp>
 #include <Mpc.hpp>
 //#include <audiomidi/SetupServer.hpp>
 //#include <audiomidi/DirectToDiskSettings.hpp>
 #include <audiomidi/ExportAudioProcessAdapter.hpp>
 //#include <audiomidi/MpcMidiPorts.hpp>
-//#include <lcdgui/LayeredScreen.hpp>
 //#include <ui/sampler/SamplerGui.hpp>
 //#include <ui/vmpc/AudioObserver.hpp>
 //#include <nvram/NvRam.hpp>
@@ -255,7 +254,7 @@ void AudioMidiServices::setupServer(int index)
 		const string outputName = devOut == -1 ? "none" : directSoundOutDevNames[devOut];
 		server = make_shared<ctoot::audio::server::DirectSoundServer>(inputName, outputName);
 		//server->setRequestedBufferSize(requestedBufferSize == -1 ? 4096 : requestedBufferSize);
-//		server->resizeBuffers(server->getRequestedBufferSize());
+		//		server->resizeBuffers(server->getRequestedBufferSize());
 	}
 	else if (index >= 1 && standalone) {
 		server = make_shared<ctoot::audio::server::AsioServer>(index - 1);
@@ -266,8 +265,8 @@ void AudioMidiServices::setupServer(int index)
 
 	if (serverNames[index].find("host") != string::npos) {
 		server = make_shared<ctoot::audio::server::PluginAudioServer>(4, 10); // 4 mono in, 10 mono out, like real mpc2000xl
-		//server->setRequestedBufferSize(requestedBufferSize == -1 ? 4096 : requestedBufferSize);
-		//MLOG("NInChannels() " + to_string(gui.lock()->getIPlugBase()->NInChannels()) + "\n");
+																			  //server->setRequestedBufferSize(requestedBufferSize == -1 ? 4096 : requestedBufferSize);
+																			  //MLOG("NInChannels() " + to_string(gui.lock()->getIPlugBase()->NInChannels()) + "\n");
 	}
 	requestedBufferSize = -1;
 	offlineServer = make_shared<ctoot::audio::server::NonRealTimeAudioServer>(server);
@@ -449,7 +448,7 @@ void AudioMidiServices::connectVoices()
 /*
 weak_ptr<MpcMidiPorts> AudioMidiServices::getMidiPorts()
 {
-	return mpcMidiPorts;
+return mpcMidiPorts;
 }
 */
 
@@ -667,7 +666,7 @@ void AudioMidiServices::startBouncing()
 		return;
 
 	for (auto& eapa : exportProcesses) {
-	//	eapa->start();
+		//	eapa->start();
 	}
 	bouncePrepared = false;
 	bouncing = true;
@@ -745,23 +744,23 @@ void AudioMidiServices::setBufferSize(int size)
 	if (size > 16384) return;
 	//server->setRequestedBufferSize(size);
 	//if (server->getRequestedBufferSize() != server->getBufferSize()) {
-		//if (isDirectSound()) {
-		//	dynamic_pointer_cast<ctoot::audio::server::DirectSoundServer>(server)->getRtAudio()->stopStream();
-		//	server->resizeBuffers(server->getRequestedBufferSize());
-		//	dynamic_pointer_cast<ctoot::audio::server::DirectSoundServer>(server)->startStream();
-		//}
-		//else if (isAsio()) {
-		//	dynamic_pointer_cast<ctoot::audio::server::AsioServer>(server)->getRtAudio()->stopStream();
-		//	server->resizeBuffers(server->getRequestedBufferSize());
-		//	dynamic_pointer_cast<ctoot::audio::server::AsioServer>(server)->startStream();
-		//}
-		//else if (isCoreAudio()) {
-		//	dynamic_pointer_cast<ctoot::audio::server::CoreAudioServer>(server)->getRtAudio()->stopStream();
-		//	server->resizeBuffers(server->getRequestedBufferSize());
-		//	dynamic_pointer_cast<ctoot::audio::server::CoreAudioServer>(server)->startStream();
-		//}
-		//else { // assume plugin and do nothing
-		//}
+	//if (isDirectSound()) {
+	//	dynamic_pointer_cast<ctoot::audio::server::DirectSoundServer>(server)->getRtAudio()->stopStream();
+	//	server->resizeBuffers(server->getRequestedBufferSize());
+	//	dynamic_pointer_cast<ctoot::audio::server::DirectSoundServer>(server)->startStream();
+	//}
+	//else if (isAsio()) {
+	//	dynamic_pointer_cast<ctoot::audio::server::AsioServer>(server)->getRtAudio()->stopStream();
+	//	server->resizeBuffers(server->getRequestedBufferSize());
+	//	dynamic_pointer_cast<ctoot::audio::server::AsioServer>(server)->startStream();
+	//}
+	//else if (isCoreAudio()) {
+	//	dynamic_pointer_cast<ctoot::audio::server::CoreAudioServer>(server)->getRtAudio()->stopStream();
+	//	server->resizeBuffers(server->getRequestedBufferSize());
+	//	dynamic_pointer_cast<ctoot::audio::server::CoreAudioServer>(server)->startStream();
+	//}
+	//else { // assume plugin and do nothing
+	//}
 	//}
 
 	setChanged();

@@ -5,7 +5,7 @@
 #include <file/sndreader/SndReader.hpp>
 #include <file/wav/WavFile.hpp>
 #include <ui/Uis.hpp>
-//#include <ui/disk/DiskGui.hpp>
+#include <ui/disk/DiskGui.hpp>
 #include <sampler/Sampler.hpp>
 #include <sampler/Sound.hpp>
 
@@ -60,7 +60,7 @@ int SoundLoader::loadSound(MpcFile* f)
 	auto sampler = mpc->getSampler().lock();
 	auto existIndex = sampler->checkExists(soundName);
 	if (!partOfProgram && existIndex == -1) {
-		//mpc->getUis().lock()->getDiskGui()->openPopup(soundFileName, extension);
+		mpc->getUis().lock()->getDiskGui()->openPopup(soundFileName, extension);
 	}
 
 	auto sound = sampler->addSound(sampleRate).lock();

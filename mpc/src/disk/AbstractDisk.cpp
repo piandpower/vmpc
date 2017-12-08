@@ -6,9 +6,9 @@
 #include <file/wav/WavFile.hpp>
 #include <disk/SoundSaver.hpp>
 #include <disk/device/Device.hpp>
-//#include <file/mid/MidiWriter.hpp>
-//#include <file/pgmwriter/PgmWriter.hpp>
-//#include <file/sndwriter/SndWriter.hpp>
+#include <file/mid/MidiWriter.hpp>
+#include <file/pgmwriter/PgmWriter.hpp>
+#include <file/sndwriter/SndWriter.hpp>
 #include <ui/Uis.hpp>
 #include <ui/disk/DiskGui.hpp>
 #include <ui/disk/window/DirectoryGui.hpp>
@@ -157,9 +157,9 @@ bool AbstractDisk::isDirectory(MpcFile* f)
 
 void AbstractDisk::writeSound(mpc::sampler::Sound* s, MpcFile* f)
 {
-	//auto sw = new mpc::file::sndwriter::SndWriter(s);
-	//auto sndArray = sw->getSndFileArray();
-	//f->setFileData(&sndArray);
+	auto sw = new mpc::file::sndwriter::SndWriter(s);
+	auto sndArray = sw->getSndFileArray();
+	f->setFileData(&sndArray);
 	flush();
 	initFiles();
 }
@@ -223,10 +223,10 @@ void AbstractDisk::writeWavToTemp(mpc::sampler::Sound* s)
 void AbstractDisk::writeSequence(mpc::sequencer::Sequence* s, string fileName)
 {
 	if (checkExists(fileName)) return;
-	//auto mw = mpc::file::mid::MidiWriter(s);
-	//auto mfArray_ = mw.getBytes();
+	auto mw = mpc::file::mid::MidiWriter(s);
+	auto mfArray_ = mw.getBytes();
 	auto newMidFile = newFile(fileName);
-	//newMidFile->setFileData(&mfArray_);
+	newMidFile->setFileData(&mfArray_);
 	flush();
 	initFiles();
 }
@@ -260,19 +260,19 @@ MpcFile* AbstractDisk::getFile(string fileName)
 void AbstractDisk::writeProgram(mpc::sampler::Program* program, string fileName)
 {
 	if (checkExists(fileName)) return;
-	//auto writer = mpc::file::pgmwriter::PgmWriter(program, lGui->getMpc()->getSampler());
+	auto writer = mpc::file::pgmwriter::PgmWriter(program, mpc->getSampler());
 	auto pgmFile = newFile(fileName);
-    //auto bytes = writer.get();
-	//pgmFile->setFileData(&bytes);
-	vector<mpc::sampler::Sound*> sounds;
+    auto bytes = writer.get();
+	pgmFile->setFileData(&bytes);
+	vector<std::weak_ptr<mpc::sampler::Sound> > sounds;
 	for (auto& n : program->getNotesParameters()) {
 		if (n->getSndNumber() != -1) {
-			//sounds.push_back(lGui->getMpc()->getSampler().lock()->getSound(n->getSndNumber()).lock().get());
+			sounds.push_back(mpc->getSampler().lock()->getSound(n->getSndNumber()));
 		}
 	}
 	auto save = mpc->getUis().lock()->getDiskGui()->getPgmSave();
 	if (save != 0) {
-		//SoundSaver(mpc, &sounds, save == 1 ? false : true);
+		SoundSaver(mpc, sounds, save == 1 ? false : true);
 	}
 	flush();
 	initFiles();

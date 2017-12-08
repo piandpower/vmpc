@@ -3,7 +3,7 @@
 #include <Mpc.hpp>
 #include <disk/AbstractDisk.hpp>
 #include <disk/MpcFile.hpp>
-//#include <file/mid/MidiReader.hpp>
+#include <file/mid/MidiReader.hpp>
 #include <ui/disk/DiskGui.hpp>
 #include <ui/disk/window/DirectoryGui.hpp>
 #include <ui/disk/window/DiskWindowGui.hpp>
@@ -55,8 +55,8 @@ void LoadControls::function(int i)
 			auto lSequencer = sequencer.lock();
 			auto newSeq = lSequencer->createSeqInPlaceHolder().lock();
 			newSeq->init(2);
-			//auto mr = mpc::file::mid::MidiReader(mpc, selectedFile, newSeq);
-			//mr.parseSequence();
+			auto mr = mpc::file::mid::MidiReader(mpc, selectedFile, newSeq);
+			mr.parseSequence();
 			ls.lock()->openScreen("loadasequence");
 			auto usedSeqs = lSequencer->getUsedSequenceIndexes();
 			int index;
