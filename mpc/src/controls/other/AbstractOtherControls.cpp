@@ -4,8 +4,6 @@
 #include <StartUp.hpp>
 #include <ui/NameGui.hpp>
 #include <ui/UserDefaults.hpp>
-//#include <ui/disk/window/DirectoryGui.hpp>
-//#include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <sampler/Program.hpp>
 #include <sampler/Sampler.hpp>
 #include <sequencer/Sequence.hpp>

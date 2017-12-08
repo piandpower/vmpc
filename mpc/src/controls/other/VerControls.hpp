@@ -13,7 +13,9 @@ namespace mpc {
 				typedef AbstractOtherControls super;
 				void function(int i) override;
 
+			public:
 				VerControls(mpc::Mpc* mpc) ;
+				~VerControls();
 			};
 
 		}

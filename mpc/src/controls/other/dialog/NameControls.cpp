@@ -13,8 +13,8 @@
 #include <ui/disk/window/DirectoryGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <ui/sampler/SoundGui.hpp>
-//#include <ui/sampler/window/EditSoundGui.hpp>
-//#include <ui/sampler/window/SamplerWindowGui.hpp>
+#include <ui/sampler/window/EditSoundGui.hpp>
+#include <ui/sampler/window/SamplerWindowGui.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <ui/vmpc/DirectToDiskRecorderGui.hpp>
 #include <sampler/Program.hpp>
@@ -176,14 +176,14 @@ void NameControls::saveName() {
 		return;
 	}
 	else if (ngParam.compare("createnewprogram") == 0) {
-		//uis->getSamplerWindowGui()->setNewName(nameGui->getName());
+		uis->getSamplerWindowGui()->setNewName(nameGui->getName());
 		nameGui->setNameBeingEdited(false);
 		lLs->setLastFocus("name", "0");
 		lLs->openScreen("program");
 		return;
 	}
 	else if (ngParam.compare("autochrom") == 0) {
-		//uis->getSamplerWindowGui()->setNewName(nameGui->getName());
+		uis->getSamplerWindowGui()->setNewName(nameGui->getName());
 		nameGui->setNameBeingEdited(false);
 		lLs->setLastFocus("name", "0");
 		lLs->openScreen("autochromaticassignment");
@@ -198,7 +198,6 @@ void NameControls::saveName() {
 		success = mpc->getDisk().lock()->renameSelectedFile(StrUtil::trim(StrUtil::toUpper(nameGui->getName())) + ext);
 		if (!success) {
 			lLs->createPopup("File name exists !!", 120);
-			//invokeLater(NameControls_keyEvent_1(this));
 			lLs->setPreviousScreenName("directory");
 			return;
 		}
@@ -238,7 +237,6 @@ void NameControls::saveName() {
 
 		if (!success) {
 			lLs->createPopup("Folder name exists !!", 120);
-			//invokeLater(NameControls_keyEvent_2(this));
 		}
 	}
 
@@ -280,7 +278,7 @@ void NameControls::saveName() {
 		return;
 	}
 	else if (prevScreen.compare("editsound") == 0) {
-		//uis->getEditSoundGui()->setNewName(nameGui->getName());
+		uis->getEditSoundGui()->setNewName(nameGui->getName());
 		nameGui->setNameBeingEdited(false);
 		lLs->setLastFocus("name", "0");
 		lLs->openScreen("editsound");

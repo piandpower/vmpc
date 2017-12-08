@@ -21,3 +21,6 @@ void VerControls::function(int i)
 	}
 
 }
+
+VerControls::~VerControls() {
+}

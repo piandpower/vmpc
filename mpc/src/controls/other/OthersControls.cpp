@@ -1,13 +1,17 @@
 #include <controls/other/OthersControls.hpp>
 
+#include <Mpc.hpp>
+#include <controls/Controls.hpp>
 #include <lcdgui/LayeredScreen.hpp>
-//#include <ui/other/OthersGui.hpp>
+#include <ui/other/OthersGui.hpp>
 
 using namespace mpc::controls::other;
 using namespace std;
 
-OthersControls::OthersControls(mpc::Mpc* mpc) : AbstractControls(mpc)
+OthersControls::OthersControls(mpc::Mpc* mpc) 
+	: AbstractControls(mpc)
 {
+	othersGui = mpc->getUis().lock()->getOthersGui();
 }
 
 void OthersControls::function(int i)
@@ -26,10 +30,15 @@ void OthersControls::function(int i)
 void OthersControls::turnWheel(int i)
 {
     init();
-    //if(param.compare("tapaveraging") == 0 && !mpc::controls::KbMouseController::altIsPressed())
-    //    lGui->getOthersGui()->setTapAveraging(lGui->getOthersGui()->getTapAveraging() + i);
+	auto controls = mpc->getControls().lock();
+	if (param.compare("tapaveraging") == 0) {
+		othersGui->setTapAveraging(othersGui->getTapAveraging() + i);
+	}
+	//if (mpc::controls::KbMouseController::altIsPressed()) {
+		//othersGui->setContrast(othersGui->getContrast() + i);
+	//}
+}
 
-  //  if(mpc::controls::KbMouseController::altIsPressed())
-//        lGui->getOthersGui()->setContrast(lGui->getOthersGui()->getContrast() + i);
 
+OthersControls::~OthersControls() {
 }
