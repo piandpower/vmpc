@@ -64,17 +64,17 @@
 #include <ui/disk/window/SaveAllFileObserver.hpp>
 
 #include <ui/midisync/SyncObserver.hpp>
-/*
+
 #include <ui/misc/PunchObserver.hpp>
 #include <ui/misc/SecondSeqObserver.hpp>
 #include <ui/misc/TransObserver.hpp>
+
 #include <ui/other/OthersObserver.hpp>
-*/
 
 #include <ui/vmpc/AudioObserver.hpp>
 #include <ui/vmpc/BufferSizeObserver.hpp>
 #include <ui/vmpc/DirectToDiskRecorderObserver.hpp>
-//#include <ui/vmpc/MidiObserver.hpp>
+#include <ui/vmpc/MidiObserver.hpp>
 #include <ui/vmpc/VmpcDiskObserver.hpp>
 
 
@@ -741,7 +741,7 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<BufferSizeObserver>(mpc);
 	}
 	else if (csn.compare("midi") == 0) {
-		//activeObserver = make_unique<MidiObserver>(mpc, this);
+		activeObserver = make_unique<MidiObserver>(mpc);
 	}
 	else if (csn.compare("directtodiskrecorder") == 0) {
 		activeObserver = make_unique<DirectToDiskRecorderObserver>(mpc);
@@ -750,16 +750,16 @@ void LayeredScreen::initObserver()
 		activeObserver = make_unique<VmpcDiskObserver>(mpc);
 	}
 	else if (csn.compare("punch") == 0) {
-		//activeObserver = make_unique<PunchObserver>(this);
+		activeObserver = make_unique<PunchObserver>(mpc);
 	}
 	else if (csn.compare("trans") == 0) {
-		//activeObserver = make_unique<TransObserver>(this);
+		activeObserver = make_unique<TransObserver>(mpc);
 	}
 	else if (csn.compare("2ndseq") == 0) {
-		//activeObserver = make_unique<SecondSeqObserver>(this);
+		activeObserver = make_unique<SecondSeqObserver>(mpc);
 	}
 	else if (csn.compare("others") == 0) {
-		//activeObserver = make_unique<OthersObserver>(this);
+		activeObserver = make_unique<OthersObserver>(mpc);
 	}
 	else if (csn.compare("erase") == 0) {
 		activeObserver = make_unique<EraseObserver>(mpc);
