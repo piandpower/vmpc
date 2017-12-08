@@ -109,13 +109,12 @@
 
 #include <controls/other/dialog/NameControls.hpp>
 
-//#include <controls/disk/dialog/CantFindFileControls.hpp>
-//#include <controls/disk/dialog/DeleteAllFilesControls.hpp>
-//#include <controls/disk/dialog/DeleteFileControls.hpp>
-//#include <controls/disk/dialog/DeleteFolderControls.hpp>
-//#include <controls/disk/dialog/FileAlreadyExistsControls.hpp>
+#include <controls/disk/dialog/CantFindFileControls.hpp>
+#include <controls/disk/dialog/DeleteAllFilesControls.hpp>
+#include <controls/disk/dialog/DeleteFileControls.hpp>
+#include <controls/disk/dialog/DeleteFolderControls.hpp>
+#include <controls/disk/dialog/FileAlreadyExistsControls.hpp>
 
-/*
 #include <controls/midisync/SyncControls.hpp>
 
 #include <controls/misc/PunchControls.hpp>
@@ -139,7 +138,6 @@
 #include <controls/vmpc/RecordJamControls.hpp>
 #include <controls/vmpc/RecordingFinishedControls.hpp>
 #include <controls/vmpc/VmpcDiskControls.hpp>
-*/
 
 using namespace mpc::controls;
 
@@ -263,13 +261,12 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["init"] = new other::InitControls(mpc);
 	controls["ver"] = new other::VerControls(mpc);
 
-	//controls["deleteallfiles"] = new disk::dialog::DeleteAllFilesControls(mpc);
-	//controls["deletefile"] = new disk::dialog::DeleteFileControls(mpc);
-	//controls["deletefolder"] = new disk::dialog::DeleteFolderControls(mpc);
-	//controls["cantfindfile"] = new disk::dialog::CantFindFileControls(mpc);
-	//controls["filealreadyexists"] = new disk::dialog::FileAlreadyExistsControls(mpc);
+	controls["deleteallfiles"] = new disk::dialog::DeleteAllFilesControls(mpc);
+	controls["deletefile"] = new disk::dialog::DeleteFileControls(mpc);
+	controls["deletefolder"] = new disk::dialog::DeleteFolderControls(mpc);
+	controls["cantfindfile"] = new disk::dialog::CantFindFileControls(mpc);
+	controls["filealreadyexists"] = new disk::dialog::FileAlreadyExistsControls(mpc);
 
-	/*
 	controls["punch"] = new misc::PunchControls(mpc);
 	controls["trans"] = new misc::TransControls(mpc);
 	controls["2ndseq"] = new misc::SecondSeqControls(mpc);
@@ -281,10 +278,10 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["mixer"] = new mixer::MixerControls(mpc);
 	controls["channelsettings"] = new mixer::window::ChannelSettingsControls(mpc);
 	controls["mixersetup"] = new mixer::MixerSetupControls(mpc);
-	controls["disk"] = new vmpc::VmpcDiskControls(mpc);
 	
 	controls["sync"] = new midisync::SyncControls(mpc);
 
+	controls["disk"] = new vmpc::VmpcDiskControls(mpc);
 	controls["midi"] = new vmpc::MidiControls(mpc);
 	controls["audio"] = new vmpc::AudioControls(mpc);
 	controls["buffersize"] = new vmpc::BufferSizeControls(mpc);
@@ -292,7 +289,6 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["directtodiskrecorder"] = new vmpc::DirectToDiskRecorderControls(mpc);
 	controls["recordjam"] = new vmpc::RecordJamControls(mpc);
 	controls["recordingfinished"] = new vmpc::RecordingFinishedControls(mpc);
-	*/
 }
 
 

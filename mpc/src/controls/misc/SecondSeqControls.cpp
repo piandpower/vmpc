@@ -32,3 +32,6 @@ void SecondSeqControls::turnWheel(int i)
 		secondSeqGui->setSq(secondSeqGui->getSq() + i);
 	}
 }
+
+SecondSeqControls::~SecondSeqControls() {
+}
