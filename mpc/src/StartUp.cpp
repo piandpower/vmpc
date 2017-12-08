@@ -5,7 +5,7 @@
 #include <Mpc.hpp>
 #include <hardware/Hardware.hpp>
 #include <hardware/Led.hpp>
-//#include <nvram/NvRam.hpp>
+#include <nvram/NvRam.hpp>
 
 #include <sys/Home.hpp>
 #include <file/FileUtil.hpp>
@@ -26,8 +26,8 @@ string StartUp::storesPath = home + FileUtil::getSeparator() + "vMPC" + FileUtil
 weak_ptr<mpc::ui::UserDefaults> StartUp::getUserDefaults() {
 	return userDefaults;
 }
-//shared_ptr<mpc::ui::UserDefaults> StartUp::userDefaults = shared_ptr<mpc::ui::UserDefaults>(mpc::nvram::NvRam::load());
-shared_ptr<mpc::ui::UserDefaults> StartUp::userDefaults = make_shared<mpc::ui::UserDefaults>();
+shared_ptr<mpc::ui::UserDefaults> StartUp::userDefaults = shared_ptr<mpc::ui::UserDefaults>(mpc::nvram::NvRam::load());
+//shared_ptr<mpc::ui::UserDefaults> StartUp::userDefaults = make_shared<mpc::ui::UserDefaults>();
 
 void StartUp::initUserDefaults() {
 	userDefaults = make_shared<mpc::ui::UserDefaults>();

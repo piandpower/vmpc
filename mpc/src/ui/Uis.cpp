@@ -1,12 +1,14 @@
 #include <ui/Uis.hpp>
 
+#include <audiomidi/AudioMidiServices.hpp>
+
 #include <ui/NameGui.hpp>
 
-//#include <ui/other/OthersGui.hpp>
+#include <ui/other/OthersGui.hpp>
 
-//#include <ui/misc/PunchGui.hpp>
-//#include <ui/misc/SecondSeqGui.hpp>
-//#include <ui/misc/TransGui.hpp>
+#include <ui/misc/PunchGui.hpp>
+#include <ui/misc/SecondSeqGui.hpp>
+#include <ui/misc/TransGui.hpp>
 
 #include <ui/disk/DiskGui.hpp>
 #include <ui/disk/window/DirectoryGui.hpp>
@@ -33,10 +35,10 @@
 #include <ui/sampler/window/SamplerWindowGui.hpp>
 #include <ui/sampler/window/EditSoundGui.hpp>
 
-//#include <ui/vmpc/AudioGui.hpp>
+#include <ui/vmpc/AudioGui.hpp>
 #include <ui/vmpc/DeviceGui.hpp>
-//#include <ui/vmpc/DirectToDiskRecorderGui.hpp>
-//#include <ui/vmpc/MidiGui.hpp>
+#include <ui/vmpc/DirectToDiskRecorderGui.hpp>
+#include <ui/vmpc/MidiGui.hpp>
 
 using namespace mpc::ui;
 using namespace std;
@@ -64,6 +66,7 @@ Uis::Uis(mpc::Mpc* mpc)
 		}
 	}
 	sequencerGui = new ui::sequencer::SequencerGui();
+	stepEditorGui = new mpc::ui::sequencer::StepEditorGui(mpc);
 	editSequenceGui = new mpc::ui::sequencer::EditSequenceGui();
 	songGui = new mpc::ui::sequencer::SongGui();
 	barCopyGui = new mpc::ui::sequencer::BarCopyGui();
@@ -88,18 +91,16 @@ Uis::Uis(mpc::Mpc* mpc)
 
 	midiSyncGui = new mpc::ui::midisync::MidiSyncGui();
 
-	//d2dRecorderGui = new mpc::ui::vmpc::DirectToDiskRecorderGui(weakThis);
-	//othersGui = new mpc::ui::other::OthersGui(weakThis);
-	stepEditorGui = new mpc::ui::sequencer::StepEditorGui(mpc);
-	//audioGui = new mpc::ui::vmpc::AudioGui(mpc->getAudioMidiServices());
+	punchGui = new mpc::ui::misc::PunchGui();
+	transGui = new mpc::ui::misc::TransGui();
+	secondSeqGui = new mpc::ui::misc::SecondSeqGui();
 
-
-	//punchGui = new mpc::ui::misc::PunchGui();
-	//transGui = new mpc::ui::misc::TransGui();
-
-	//midiGui = new mpc::ui::vmpc::MidiGui();
-	//secondSeqGui = new mpc::ui::misc::SecondSeqGui();
+	d2dRecorderGui = new mpc::ui::vmpc::DirectToDiskRecorderGui(mpc);
+	audioGui = new mpc::ui::vmpc::AudioGui(mpc->getAudioMidiServices());
+	midiGui = new mpc::ui::vmpc::MidiGui();
 	deviceGui = new mpc::ui::vmpc::DeviceGui();
+
+	othersGui = new mpc::ui::other::OthersGui(mpc);
 }
 vector<string> Uis::noteNames;
 

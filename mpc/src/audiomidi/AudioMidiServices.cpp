@@ -7,8 +7,8 @@
 //#include <audiomidi/MpcMidiPorts.hpp>
 //#include <ui/sampler/SamplerGui.hpp>
 //#include <ui/vmpc/AudioObserver.hpp>
-//#include <nvram/NvRam.hpp>
-//#include <nvram/AudioMidiConfig.hpp>
+#include <nvram/NvRam.hpp>
+#include <nvram/AudioMidiConfig.hpp>
 #include <sampler/Sampler.hpp>
 #include <sequencer/Sequencer.hpp>
 #include <ctootextensions/Voice.hpp>
