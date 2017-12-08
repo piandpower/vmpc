@@ -50,6 +50,15 @@ Sampler::Sampler()
 	programs = vector<shared_ptr<Program>>(24);
 }
 
+void Sampler::setInputLevel(int i) {
+	if (i < 0 || i > 100) return;
+	inputLevel = i;
+}
+
+int Sampler::getInputLevel() {
+	return inputLevel;
+}
+
 vector<weak_ptr<mpc::sampler::MixerChannel>> Sampler::getDrumMixer(int i)
 {
 	return mpc->getDrums()[i]->getMixerChannels();

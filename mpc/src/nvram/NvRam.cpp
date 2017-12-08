@@ -3,7 +3,8 @@
 #include <file/all/Defaults.hpp>
 //#include <hardware/SliderWidget.hpp>
 #include <StartUp.hpp>
-//#include <hardware/ControlPanel.hpp>
+#include <Mpc.hpp>
+#include <audiomidi/AudioMidiServices.hpp>
 #include <ui/UserDefaults.hpp>
 #include <nvram/DefaultsParser.hpp>
 #include <nvram/KnobPositions.hpp>
@@ -68,18 +69,17 @@ void NvRam::saveUserDefaults()
 
 void NvRam::saveKnobPositions(mpc::Mpc* mpc)
 {
-	//auto cp = gui->getMainFrame().lock()->getControlPanel().lock();
-	//if (!cp) return;
 	auto file = new moduru::file::File(mpc::StartUp::resPath + "knobpositions.vmp", nullptr);
 	if (!file->exists())
 		file->create();
 
 	auto fos = new moduru::io::FileOutputStream(file);
-	//char recordb = cp->getRecord();
-	//char volumeb = cp->getVolume();
+	char recordb = mpc->getAudioMidiServices().lock()->getRecordLevel();
+	char volumeb = mpc->getAudioMidiServices().lock()->getMasterLevel();
 	//auto sliderb = static_cast< int8_t >(cp->getSlider().lock()->GetValue());
-	//auto bytes = vector<char>{ recordb, volumeb, sliderb };
-	//fos->write(bytes);
+	char sliderb = 0;
+	auto bytes = vector<char>{ recordb, volumeb, sliderb };
+	fos->write(bytes);
 	fos->close();
 }
 

@@ -6,6 +6,7 @@
 #include "DataWheel.hpp"
 #include "HwPad.hpp"
 #include "Led.hpp"
+#include "Pot.hpp"
 
 using namespace mpc::hardware;
 using namespace std;
@@ -33,6 +34,17 @@ Hardware::Hardware(mpc::Mpc* mpc)
 
 	for (auto& l : ledLabels)
 		leds.push_back(std::make_shared<Led>(l));
+
+	recPot = make_shared<Pot>("rec", mpc);
+	volPot = make_shared<Pot>("vol", mpc);
+}
+
+weak_ptr<Pot> Hardware::getRecPot() {
+	return recPot;
+}
+
+weak_ptr<Pot> Hardware::getVolPot() {
+	return volPot;
 }
 
 weak_ptr<HwPad> Hardware::getPad(int index) {

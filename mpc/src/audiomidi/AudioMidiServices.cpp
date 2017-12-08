@@ -311,8 +311,8 @@ void AudioMidiServices::setupMixer()
 	mixer = make_shared<ctoot::audio::mixer::AudioMixer>(mixerControls, offlineServer);
 	audioSystem = make_shared<ctoot::audio::system::MixerConnectedAudioSystem>(mixer);
 	audioSystem->setAutoConnect(false);
-	//setMasterLevel(nvram::NvRam::getMasterLevel());
-	setMasterLevel(100);
+	setMasterLevel(nvram::NvRam::getMasterLevel());
+	setRecordLevel(nvram::NvRam::getRecordLevel());
 	setGroupLevel(100);
 }
 
@@ -321,6 +321,21 @@ void AudioMidiServices::setMasterLevel(int i)
 	auto sc = mixer->getMixerControls()->getStripControls("L-R");
 	auto cc = dynamic_pointer_cast<ctoot::control::CompoundControl>(sc->getControls()[0]);
 	dynamic_pointer_cast<ctootextensions::MpcFaderControl>(cc->getControls()[2])->setValue(i);
+}
+
+int AudioMidiServices::getMasterLevel() {
+	auto sc = mixer->getMixerControls()->getStripControls("L-R");
+	auto cc = dynamic_pointer_cast<ctoot::control::CompoundControl>(sc->getControls()[0]);
+	auto val = dynamic_pointer_cast<ctootextensions::MpcFaderControl>(cc->getControls()[2])->getValue();
+	return (int) dynamic_pointer_cast<ctootextensions::MpcFaderControl>(cc->getControls()[2])->getValue();
+}
+
+void AudioMidiServices::setRecordLevel(int i) {
+	mpc->getSampler().lock()->setInputLevel(i);
+}
+
+int AudioMidiServices::getRecordLevel() {
+	return mpc->getSampler().lock()->getInputLevel();
 }
 
 void AudioMidiServices::setGroupLevel(int i)

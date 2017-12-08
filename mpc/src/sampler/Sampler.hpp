@@ -35,6 +35,9 @@ namespace mpc {
 			, public virtual ctoot::audio::system::AudioDevice
 		{
 
+		private:
+			int inputLevel = 0;
+
 		protected:
 			std::vector<float>* monitorBufferL{ nullptr };
 			std::vector<float>* monitorBufferR{ nullptr };
@@ -77,6 +80,10 @@ namespace mpc {
 			float levelL{};
 			float levelR{};
 			mpc::Mpc* mpc{ nullptr };
+
+		public:
+			int getInputLevel();
+			void setInputLevel(int i);
 
 		public:
 			void work(int nFrames) override;
