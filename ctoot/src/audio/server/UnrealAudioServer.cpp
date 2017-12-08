@@ -58,7 +58,17 @@ void UnrealAudioServer::work(float* OutAudio, int NumSamples) {
 	}
 }
 
-void UnrealAudioServer::work(double** OutAudio, int nFrames) {
+void UnrealAudioServer::work(double** InAudio, double** OutAudio, int nFrames) {
+	auto activeInputs = getActiveInputs();
+	if (activeInputs.size() != 0) {
+		activeInputs.at(0)->localBuffer.clear();
+		double* inputBufferD = (double*)InAudio[0];
+		for (int i = 0; i < nFrames; i++) {
+			activeInputs.at(0)->localBuffer.push_back(inputBufferD[i]);
+			activeInputs.at(0)->localBuffer.push_back(inputBufferD[i + nFrames]);
+		}
+	}
+
 	client->work(nFrames);
 	if (activeOutputs.size() != 0) {
 		int counter = 0;
@@ -77,12 +87,12 @@ void UnrealAudioServer::setClient(weak_ptr<AudioClient> client) {
 }
 
 vector<string> UnrealAudioServer::getAvailableOutputNames() {
-	vector<string> res{ "SilentOut1" };
+	vector<string> res{ "Unreal Stereo Out 1" };
 	return res;
 }
 
 vector<string> UnrealAudioServer::getAvailableInputNames() {
-	vector<string> res;
+	vector<string> res{ "Unreal Stereo In 1" };
 	return res;
 }
 

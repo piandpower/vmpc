@@ -37,7 +37,7 @@ namespace ctoot {
 				void work() override;
 
 				void work(float* OutAudio, int NumSamples);
-				void work(double** OutAudio, int nFrames);
+				void work(double** InAudio, double** OutAudio, int nFrames);
 			public:
 				UnrealAudioServer();
 

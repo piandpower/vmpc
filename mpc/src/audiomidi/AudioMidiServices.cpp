@@ -5,7 +5,7 @@
 //#include <audiomidi/DirectToDiskSettings.hpp>
 #include <audiomidi/ExportAudioProcessAdapter.hpp>
 //#include <audiomidi/MpcMidiPorts.hpp>
-//#include <ui/sampler/SamplerGui.hpp>
+#include <ui/sampler/SamplerGui.hpp>
 //#include <ui/vmpc/AudioObserver.hpp>
 #include <nvram/NvRam.hpp>
 #include <nvram/AudioMidiConfig.hpp>
@@ -81,7 +81,7 @@ AudioMidiServices::AudioMidiServices(mpc::Mpc* mpc)
 	this->mpc = mpc;
 	frameSeq = make_shared<mpc::sequencer::FrameSeq>(mpc);
 	disabled = true;
-	selectedInputs = vector<int>{ -1, -1 };
+	selectedInputs = vector<int>{ 0, -1 };
 	selectedOutputs = vector<int>{ 0, -1, -1, -1, -1 };
 	format = make_shared<ctoot::audio::core::AudioFormat>(44100, 16, 2, true, false);
 	dummyProcess = make_shared<ctootextensions::DummyAudioProcess>();
@@ -105,7 +105,7 @@ void AudioMidiServices::startTestMode() {
 	inputProcesses = vector<ctoot::audio::server::IOAudioProcess*>(2);
 	outputProcesses = vector<ctoot::audio::server::IOAudioProcess*>(5);
 
-	selectedInputs = { -1, -1 };
+	selectedInputs = { 0, -1 };
 	selectedOutputs = { 0, -1, -1, -1, -1 };
 
 	for (auto& p : inputProcesses)
@@ -138,15 +138,15 @@ void AudioMidiServices::startTestMode() {
 	mpcMidiPorts->setMidiOutA(-1);
 	mpcMidiPorts->setMidiOutB(-1);
 	*/
-	//auto sampler = mpc->getSampler().lock();
-	//sampler->setActiveInput(inputProcesses[mpc->getGui().lock()->getSamplerGui()->getInput()]);
-	//mixer->getStrip("66").lock()->setInputProcess(sampler->getAudioOutputs()[0]);
+	auto sampler = mpc->getSampler().lock();
+	sampler->setActiveInput(inputProcesses[mpc->getUis().lock()->getSamplerGui()->getInput()]);
+	mixer->getStrip("66").lock()->setInputProcess(sampler->getAudioOutputs()[0]);
 	initializeDiskWriter();
 	cac = make_shared<ctoot::audio::server::CompoundAudioClient>();
 	cac->add(frameSeq.get());
 	cac->add(mixer.get());
 	//cac->add(midiSystem.get());
-	//cac->add(sampler.get());
+	cac->add(sampler.get());
 	offlineServer->setWeakPtr(offlineServer);
 	offlineServer->setClient(cac);
 	offlineServer->resizeBuffers(4096);

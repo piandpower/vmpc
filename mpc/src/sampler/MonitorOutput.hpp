@@ -6,7 +6,7 @@
 #include <string>
 
 namespace mpc {
-
+	class Mpc;
 	namespace sampler {
 
 		class Sampler;
@@ -16,7 +16,7 @@ namespace mpc {
 		{
 
 		private:
-			Sampler* sampler{ nullptr };
+			mpc::Mpc* mpc;
 
 		public: 
 			bool closed{ false };
@@ -29,7 +29,7 @@ namespace mpc {
 			std::string getLocation() override;
 
 		public:
-			MonitorOutput(Sampler* sampler);
+			MonitorOutput(mpc::Mpc* mpc);
 			~MonitorOutput();
 
 		};

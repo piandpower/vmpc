@@ -1,18 +1,17 @@
 #include <sampler/MonitorOutput.hpp>
 
+#include <Mpc.hpp>
 #include <sampler/Sampler.hpp>
-////////#include <lcdgui/LayeredScreen.hpp>
-//#include <lcdgui/LayeredScreen.hpp>
-//#include <ui/sampler/SamplerGui.hpp>
+#include <ui/sampler/SamplerGui.hpp>
 #include <sampler/Sampler.hpp>
 #include <audio/core/ChannelFormat.hpp>
 
 using namespace mpc::sampler;
 using namespace std;
 
-MonitorOutput::MonitorOutput(Sampler* sampler)
+MonitorOutput::MonitorOutput(mpc::Mpc* mpc)
 {
-	this->sampler = sampler;
+	this->mpc = mpc;
 }
 
 string MonitorOutput::getName()
@@ -27,12 +26,13 @@ void MonitorOutput::open()
 
 int32_t MonitorOutput::processAudio(ctoot::audio::core::AudioBuffer* buffer, int nFrames)
 {
-	/*
-		if (sampler->monitorBufferL == nullptr || sampler->monitorBufferR == nullptr || lGui->getSamplerGui()->getMonitor() == 0 || lGui->getMainFrame().lock()->getLayeredScreen().lock()->getCurrentScreenName().compare("sample") != 0 || closed) {
+	auto sampler = mpc->getSampler().lock();
+	if (!sampler) return AUDIO_SILENCE;
+	if (sampler->monitorBufferL == nullptr || sampler->monitorBufferR == nullptr || mpc->getUis().lock()->getSamplerGui()->getMonitor() == 0 || mpc->getLayeredScreen().lock()->getCurrentScreenName().compare("sample") != 0 || closed) {
 		buffer->makeSilence();
 		return AUDIO_SILENCE;
 	}
-	auto mode = lGui->getSamplerGui()->getMode();
+	auto mode = mpc->getUis().lock()->getSamplerGui()->getMode();
 	auto leftPairs = buffer->getChannelFormat()->getLeft();
 	auto rightPairs = buffer->getChannelFormat()->getRight();
 	auto left = buffer->getChannel(leftPairs[0]);
@@ -41,7 +41,6 @@ int32_t MonitorOutput::processAudio(ctoot::audio::core::AudioBuffer* buffer, int
 		(*left)[i] = mode != 1 ? (*sampler->monitorBufferL)[i] : (*sampler->monitorBufferR)[i];
 		(*right)[i] = mode != 0 ? (*sampler->monitorBufferR)[i] : (*sampler->monitorBufferL)[i];
 	}
-	*/
 	return AUDIO_OK;
 }
 

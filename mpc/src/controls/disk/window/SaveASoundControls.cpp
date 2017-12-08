@@ -57,10 +57,10 @@ void SaveASoundControls::function(int i)
 		disk.lock()->initFiles();
 		f = disk.lock()->newFile(fileName);
 		if (type == 0) {
-			//disk.lock()->writeSound(s, f);
+			disk.lock()->writeSound(s.lock().get(), f);
 		}
 		else {
-			//disk.lock()->writeWav(s, f);
+			disk.lock()->writeWav(s.lock().get(), f);
 		}
 		disk.lock()->flush();
 		disk.lock()->initFiles();

@@ -32,8 +32,9 @@
 using namespace mpc::sampler;
 using namespace std;
 
-Sampler::Sampler()
+Sampler::Sampler(mpc::Mpc* mpc)
 {
+	this->mpc = mpc;
 	vuCounter = 0;
 	vuBufferL = vector<float>(VU_BUFFER_SIZE);
 	vuBufferR = vector<float>(VU_BUFFER_SIZE);
@@ -43,7 +44,7 @@ Sampler::Sampler()
 	abcd = vector<string>{ "A", "B", "C", "D" };
 	sortNames = vector<string>{ "MEMORY", "NAME", "SIZE" };
 	recordBuffer = make_unique<ctoot::audio::core::AudioBuffer>("record", 2, 4096, 44100);
-	monitorOutput = make_shared<MonitorOutput>(this);
+	monitorOutput = make_shared<MonitorOutput>(mpc);
 	auto ud = mpc::StartUp::getUserDefaults().lock();
 	initMasterPadAssign = ud->getPadNotes();
 
@@ -87,12 +88,11 @@ vector<int>* Sampler::getAutoChromaticAssign()
 
 void Sampler::work(int nFrames)
 {
-	/*
 	if (input == nullptr && inputSwap == nullptr) return;
-		if (!lGui) return;
-	if (!lGui->getMainFrame().lock()) return;
-	auto lMainFrame = lGui->getMainFrame().lock();
-	auto ls = lMainFrame->getLayeredScreen().lock();
+	//if (!lGui) return;
+	//if (!lGui->getMainFrame().lock()) return;
+	//auto lMainFrame = lGui->getMainFrame().lock();
+	auto ls = mpc->getLayeredScreen().lock();
 	if (!ls) return;
 	if (ls->getCurrentScreenName().compare("sample") != 0) return;
 
@@ -101,17 +101,16 @@ void Sampler::work(int nFrames)
 		input = inputSwap;
 		inputSwap = nullptr;
 	}
-	if (recordBuffer->getSampleCount() != nFrames) recordBuffer->changeSampleCount(nFrames, false);
-	input->processAudio(recordBuffer.get());
+	//if (recordBuffer->getSampleCount() != nFrames) recordBuffer->changeSampleCount(nFrames, false);
+	input->processAudio(recordBuffer.get(), nFrames);
 	auto leftPairs = recordBuffer->getChannelFormat()->getLeft();
 	auto rightPairs = recordBuffer->getChannelFormat()->getRight();
 	monitorBufferL = recordBuffer->getChannel(leftPairs[0]);
 	monitorBufferR = recordBuffer->getChannel(rightPairs[0]);
-	auto controlPanel = lMainFrame->getControlPanel().lock();
 	for (int i = 0; i < nFrames; i++) {
-		monitorBufferL->at(i) *= controlPanel->getRecord() / 100.0;
-		monitorBufferR->at(i) *= controlPanel->getRecord() / 100.0;
-		if (armed && abs(monitorBufferL->at(i)) >(lGui->getSamplerGui()->getThreshold() + 64) / 64.0) arm = true;
+		monitorBufferL->at(i) *= inputLevel / 100.0;
+		monitorBufferR->at(i) *= inputLevel / 100.0;
+		if (armed && abs(monitorBufferL->at(i)) >(mpc->getUis().lock()->getSamplerGui()->getThreshold() + 64) / 64.0) arm = true;
 
 		if (recording) {
 			recordBufferL[recordFrame] = monitorBufferL->at(i);
@@ -144,7 +143,7 @@ void Sampler::work(int nFrames)
 
 				levelL = highestl;
 				levelR = highestr;
-				lGui->getSamplerGui()->notify("vumeter");
+				mpc->getUis().lock()->getSamplerGui()->notify("vumeter");
 				vuBufferL = vector<float>(VU_BUFFER_SIZE);
 				vuBufferR = vector<float>(VU_BUFFER_SIZE);
 			}
@@ -156,12 +155,10 @@ void Sampler::work(int nFrames)
 		armed = false;
 		record();
 	}
-	*/
 }
 
-void Sampler::init(mpc::Mpc* mpc)
+void Sampler::init()
 {
-	this->mpc = mpc;
 	auto program = addProgram().lock();;
 	program->setName("NewPgm-A");
 	program->initPadAssign();

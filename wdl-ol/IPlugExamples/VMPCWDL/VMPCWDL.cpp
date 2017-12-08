@@ -19,6 +19,7 @@
 #include <hardware/DataWheel.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 #include <hardware/Led.hpp>
+#include <hardware/Pot.hpp>
 
 const int kNumPrograms = 8;
 const int kNumParams = 0;
@@ -50,11 +51,14 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	pGraphics->AttachControl(mDataWheel);
 
 	auto knobs = pGraphics->LoadIBitmap(RECKNOB_ID, RECKNOB_FN);
-	mRecKnob = new KnobControl(this, 0, knobs);
+	mRecKnob = new KnobControl(this, 0, knobs, mpc->getHardware().lock()->getRecPot(), mpc->getAudioMidiServices().lock()->getRecordLevel());
 	knobs = pGraphics->LoadIBitmap(VOLKNOB_ID, VOLKNOB_FN);
-	mVolKnob = new KnobControl(this, 1, knobs);
+	mVolKnob = new KnobControl(this, 1, knobs, mpc->getHardware().lock()->getVolPot(), mpc->getAudioMidiServices().lock()->getMasterLevel());
 	pGraphics->AttachControl(mRecKnob);
 	pGraphics->AttachControl(mVolKnob);
+
+	//mpc->getHardware().lock()->getRecPot().lock()->addObserver(mRecKnob);
+	//mpc->getHardware().lock()->getVolPot().lock()->addObserver(mVolKnob);
 
 	mLCDControl = new LCDControl(this, mpc->getLayeredScreen());
 	pGraphics->AttachControl(mLCDControl);
@@ -92,7 +96,7 @@ void VMPCWDL::NoteOnOff(IMidiMsg* pMsg)
 void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames)
 {
 	auto urserver = mpc->getAudioMidiServices().lock()->getUnrealAudioServer();
-	urserver->work(outputs, nFrames);
+	urserver->work(inputs, outputs, nFrames);
 }
 
 void VMPCWDL::Reset()

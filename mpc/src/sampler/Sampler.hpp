@@ -92,7 +92,7 @@ namespace mpc {
 		public:
 			void silenceRecordBuffer();
 			void finishBasicVoice();
-			void init(mpc::Mpc* mpc);
+			void init();
 			void playMetronome(mpc::sequencer::NoteEvent* event, int framePos);
 			void playPreviewSample(int start, int end, int loopTo, int overlapMode);
 			std::weak_ptr<Program> getProgram(int programNumber);
@@ -208,7 +208,7 @@ namespace mpc {
 
 
 		public:
-			Sampler();
+			Sampler(mpc::Mpc* mpc);
 			~Sampler();
 
 		private:

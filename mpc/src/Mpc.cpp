@@ -54,7 +54,7 @@ void Mpc::init()
 	sequencer = make_shared<mpc::sequencer::Sequencer>(this);
 	MLOG("sequencer created.");
 
-	sampler = make_shared<mpc::sampler::Sampler>();
+	sampler = make_shared<mpc::sampler::Sampler>(this);
 	MLOG("sampler created.");
 	
 	/*
@@ -66,7 +66,7 @@ void Mpc::init()
 	sequencer->init();
 	MLOG("sequencer initialized.");
 
-	sampler->init(this);
+	sampler->init();
 	MLOG("sampler initialized.");
 
 	eventHandler = make_shared<mpc::audiomidi::EventHandler>(this);
