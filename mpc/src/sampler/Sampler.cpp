@@ -89,9 +89,6 @@ vector<int>* Sampler::getAutoChromaticAssign()
 void Sampler::work(int nFrames)
 {
 	if (input == nullptr && inputSwap == nullptr) return;
-	//if (!lGui) return;
-	//if (!lGui->getMainFrame().lock()) return;
-	//auto lMainFrame = lGui->getMainFrame().lock();
 	auto ls = mpc->getLayeredScreen().lock();
 	if (!ls) return;
 	if (ls->getCurrentScreenName().compare("sample") != 0) return;
@@ -113,13 +110,13 @@ void Sampler::work(int nFrames)
 		if (armed && abs(monitorBufferL->at(i)) >(mpc->getUis().lock()->getSamplerGui()->getThreshold() + 64) / 64.0) arm = true;
 
 		if (recording) {
-			recordBufferL[recordFrame] = monitorBufferL->at(i);
-			recordBufferR[recordFrame++] = monitorBufferR->at(i);
+			recordBufferL[recordFrame] = (*monitorBufferL)[i];
+			recordBufferR[recordFrame++] = (*monitorBufferR)[i];
 			if (recordFrame == recordBufferL.size()) stopRecording();
 		}
 		else {
-			preRecBufferL.push_back(monitorBufferL->at(i));
-			preRecBufferR.push_back(monitorBufferR->at(i));
+			preRecBufferL.push_back((*monitorBufferL)[i]);
+			preRecBufferR.push_back((*monitorBufferR)[i]);
 		}
 
 		if (monitorBufferL->at(i) > 0 && vuCounter++ == 5) {

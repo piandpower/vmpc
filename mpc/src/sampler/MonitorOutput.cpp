@@ -37,7 +37,7 @@ int32_t MonitorOutput::processAudio(ctoot::audio::core::AudioBuffer* buffer, int
 	auto rightPairs = buffer->getChannelFormat()->getRight();
 	auto left = buffer->getChannel(leftPairs[0]);
 	auto right = buffer->getChannel(rightPairs[0]);
-	for (int i = 0; i < buffer->getSampleCount(); i++) {
+	for (int i = 0; i < nFrames; i++) {
 		(*left)[i] = mode != 1 ? (*sampler->monitorBufferL)[i] : (*sampler->monitorBufferR)[i];
 		(*right)[i] = mode != 0 ? (*sampler->monitorBufferR)[i] : (*sampler->monitorBufferL)[i];
 	}

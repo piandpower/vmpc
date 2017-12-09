@@ -62,10 +62,11 @@ void UnrealAudioServer::work(double** InAudio, double** OutAudio, int nFrames) {
 	auto activeInputs = getActiveInputs();
 	if (activeInputs.size() != 0) {
 		activeInputs.at(0)->localBuffer.clear();
-		double* inputBufferD = (double*)InAudio[0];
+		double* inputBufferL = (double*)InAudio[0];
+		double* inputBufferR = (double*)InAudio[1];
 		for (int i = 0; i < nFrames; i++) {
-			activeInputs.at(0)->localBuffer.push_back(inputBufferD[i]);
-			activeInputs.at(0)->localBuffer.push_back(inputBufferD[i + nFrames]);
+			activeInputs.at(0)->localBuffer.push_back(inputBufferL[i]);
+			activeInputs.at(0)->localBuffer.push_back(inputBufferR[i]);
 		}
 	}
 
