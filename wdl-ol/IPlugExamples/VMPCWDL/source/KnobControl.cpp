@@ -8,15 +8,6 @@
 
 #include  "../resource.h"
 
-KnobControl::KnobControl(IPlugBase* pPlug, int type, IBitmap knobs, std::weak_ptr<mpc::hardware::Pot> pot, int startIndex)
-	: IPanelControl(pPlug, type == 0 ? *Constants::RECKNOB_RECT() : *Constants::VOLKNOB_RECT(), Constants::LCD_OFF())
-{
-	knobIndex = startIndex;
-	this->knobs = knobs;
-	this->pot = pot;
-	knobType = type;
-}
-
 static inline void clampIndex(int& knobIndex) {
 	if (knobIndex < 0) {
 		knobIndex = 0;
@@ -24,6 +15,18 @@ static inline void clampIndex(int& knobIndex) {
 	else if (knobIndex > 99) {
 		knobIndex = 99;
 	}
+}
+
+KnobControl::KnobControl(IPlugBase* pPlug, int type, IBitmap knobs, std::weak_ptr<mpc::hardware::Pot> pot, int startIndex)
+	: IPanelControl(pPlug, type == 0 ? *Constants::RECKNOB_RECT() : *Constants::VOLKNOB_RECT(), Constants::LCD_OFF())
+{
+	knobType = type;
+	knobIndex = startIndex;
+	this->knobs = knobs;
+	this->pot = pot;
+	knobIndex = pot.lock()->getValue();
+	clampIndex(knobIndex);
+	SetDirty(false);
 }
 
 //void KnobControl::update(moduru::observer::Observable* o, boost::any arg) {

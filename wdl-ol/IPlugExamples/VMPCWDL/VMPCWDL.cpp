@@ -9,6 +9,7 @@
 #include "source/LedControl.hpp"
 #include "source/LCDControl.hpp"
 #include "source/InputCatcherControl.hpp"
+#include "source/PadControl.hpp"
 
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/Sequence.hpp>
@@ -60,12 +61,29 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	mLCDControl = new LCDControl(this, mpc->getLayeredScreen());
 	pGraphics->AttachControl(mLCDControl);
 
+	const int padWidth = 96;
+	const int padSpacing = 25;
+	const int padOffsetX = 777;
+	const int padOffsetY = 398;
+	int padCounter = 0;
+	for (int j = 3; j >= 0; j--) {
+		for (int i = 0; i < 4; i++) {
+			int x1 = (padWidth + padSpacing) * i + padOffsetX;
+			int x2 = x1 + padWidth;
+			int y1 = (padWidth + padSpacing) * j + padOffsetY;
+			int y2 = y1 + padWidth;
+			IRECT rect(x1, y1, x2, y2);
+			auto pc = new PadControl(this, rect, mpc->getHardware().lock()->getPad(padCounter++));
+			pGraphics->AttachControl(pc);
+		}
+	}
+
 	AttachGraphics(pGraphics);
 
 	//MakePreset("preset 1", ... );
 	MakeDefaultPreset((char *) "-", kNumPrograms);
 
-	mpc->powerOn();
+	mpc->powerOn();	
 }
 
 VMPCWDL::~VMPCWDL()
