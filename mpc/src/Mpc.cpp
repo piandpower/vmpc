@@ -101,7 +101,8 @@ void Mpc::init()
 }
 
 void Mpc::powerOn() {
-	mpc::StartUp().runStartUpRoutine(this);
+	mpc::StartUp foo;
+	foo.runStartUpRoutine(this);
 }
 
 weak_ptr<ui::Uis> Mpc::getUis() {

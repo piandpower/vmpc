@@ -57,9 +57,6 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	pGraphics->AttachControl(mRecKnob);
 	pGraphics->AttachControl(mVolKnob);
 
-	//mpc->getHardware().lock()->getRecPot().lock()->addObserver(mRecKnob);
-	//mpc->getHardware().lock()->getVolPot().lock()->addObserver(mVolKnob);
-
 	mLCDControl = new LCDControl(this, mpc->getLayeredScreen());
 	pGraphics->AttachControl(mLCDControl);
 
