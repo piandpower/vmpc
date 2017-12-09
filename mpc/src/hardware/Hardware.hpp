@@ -41,6 +41,7 @@ namespace mpc {
 			std::weak_ptr<DataWheel> getDataWheel();
 			std::weak_ptr<Pot> getRecPot();
 			std::weak_ptr<Pot> getVolPot();
+			std::weak_ptr<Slider> getSlider();
 
 		public:
 			Hardware(mpc::Mpc* mpc);

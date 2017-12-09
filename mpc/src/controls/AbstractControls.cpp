@@ -6,6 +6,10 @@
 
 #include <ui/Uis.hpp>
 
+#include <hardware/Hardware.hpp>
+#include <hardware/Led.hpp>
+#include <hardware/HwSlider.hpp>
+
 #include <sequencer/Sequencer.hpp>
 #include <sampler/Sampler.hpp>
 #include <sampler/Program.hpp>
@@ -15,19 +19,18 @@
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audiomidi/EventHandler.hpp>
 #include <disk/AbstractDisk.hpp>
-#include <hardware/Hardware.hpp>
-#include <hardware/Led.hpp>
+
 #include <ui/NameGui.hpp>
 #include <lcdgui/Field.hpp>
 #include <ui/disk/DiskGui.hpp>
 #include <ui/disk/window/DirectoryGui.hpp>
-//#include <ui/misc/PunchGui.hpp>
+#include <ui/misc/PunchGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <ui/sampler/SoundGui.hpp>
-//#include <ui/sampler/window/EditSoundGui.hpp>
+#include <ui/sampler/window/EditSoundGui.hpp>
 #include <ui/sequencer/SequencerGui.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
-//#include <ui/vmpc/DirectToDiskRecorderGui.hpp>
+#include <ui/vmpc/DirectToDiskRecorderGui.hpp>
 //#include <ui/vmpc/AudioGui.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -121,7 +124,7 @@ void AbstractControls::function(int i)
 				lsLocked->setPreviousScreenName("sequencer");
 			}
 			else if (csn.compare("editsound") == 0) {
-				//lsLocked->setPreviousScreenName(mpc->getUis().lock()->getEditSoundGui()->getPreviousScreenName());
+				lsLocked->setPreviousScreenName(mpc->getUis().lock()->getEditSoundGui()->getPreviousScreenName());
 			}
 			else if (csn.compare("sound") == 0) {
 				lsLocked->setPreviousScreenName(mpc->getUis().lock()->getSoundGui()->getPreviousScreenName());
@@ -140,8 +143,9 @@ void AbstractControls::function(int i)
 				lsLocked->setPreviousScreenName(mpc->getUis().lock()->getDirectoryGui()->getPreviousScreenName());
 			}
 			if (lsLocked->getPreviousScreenName().compare("load") == 0) {
-				if (mpc->getUis().lock()->getDiskGui()->getFileLoad() + 1 > mpc->getDisk().lock()->getFiles().size())
+				if (mpc->getUis().lock()->getDiskGui()->getFileLoad() + 1 > mpc->getDisk().lock()->getFiles().size()) {
 					mpc->getUis().lock()->getDiskGui()->setFileLoad(0);
+				}
 			}
 			lsLocked->openScreen(lsLocked->getPreviousScreenName());
 		}
@@ -172,9 +176,9 @@ void AbstractControls::pad(int i, int velo, bool repeat, int tick)
 		if (mpc->getUis().lock()->getSequencerGui()->getParameter() == 0) {
 			note = mpc->getUis().lock()->getSequencerGui()->getNote();
 			velocity = static_cast<int>((i * (127.0 / 16.0)));
-			if (velocity == 0)
+			if (velocity == 0) {
 				velocity = 1;
-
+			}
 		}
 	}
 	else {
@@ -311,8 +315,8 @@ void AbstractControls::numpad(int i)
 		case 2:
 			if (lSequencer->isPlaying()) return;
 			ls.lock()->openScreen("punch");
-			//mpc->getUis().lock()->getPunchGui()->setTime0(0);
-			//mpc->getUis().lock()->getPunchGui()->setTime1(lSequencer->getActiveSequence().lock()->getLastTick());
+			mpc->getUis().lock()->getPunchGui()->setTime0(0);
+			mpc->getUis().lock()->getPunchGui()->setTime1(lSequencer->getActiveSequence().lock()->getLastTick());
 			return;
 		case 3:
 			if (lSequencer->isPlaying()) return;
@@ -445,7 +449,7 @@ void AbstractControls::play()
 		}
 		else {
 			if (controls->isShiftPressed() && !mpc->getAudioMidiServices().lock()->isBouncing()) {
-				//mpc->getUis().lock()->getD2DRecorderGui()->setSq(lSequencer->getActiveSequenceIndex());
+				mpc->getUis().lock()->getD2DRecorderGui()->setSq(lSequencer->getActiveSequenceIndex());
 				ls.lock()->openScreen("directtodiskrecorder");
 			}
 			else {
@@ -480,7 +484,7 @@ void AbstractControls::playStart()
 	}
 	else {
 		if (controls->isShiftPressed()) {
-			//mpc->getUis().lock()->getD2DRecorderGui()->setSq(lSequencer->getActiveSequenceIndex());
+			mpc->getUis().lock()->getD2DRecorderGui()->setSq(lSequencer->getActiveSequenceIndex());
 			ls.lock()->openScreen("directtodiskrecorder");
 		}
 		else {
@@ -620,8 +624,7 @@ void AbstractControls::setSliderNoteVar(mpc::sequencer::NoteEvent* n, weak_ptr<m
 	auto sliderParam = lProgram->getSlider()->getParameter();
 	int rangeLow = 0, rangeHigh = 0, sliderRange = 0;
 	n->setVariationTypeNumber(sliderParam);
-	//auto sliderValue = mainFrame.lock()->getControlPanel().lock()->getSlider().lock()->GetValue() * 127.0;
-	int sliderValue = 0;
+	int sliderValue = mpc->getHardware().lock()->getSlider().lock()->getValue();
 	double sliderRangeRatio = 0;
 	int tuneValue;
 	int decayValue;

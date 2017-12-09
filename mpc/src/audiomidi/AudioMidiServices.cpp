@@ -100,7 +100,6 @@ void AudioMidiServices::start(std::string mode) {
 	//requestedBufferSize = 4096;
 	setupMidi();
 
-	//server = make_shared<ctoot::audio::server::UnrealAudioServer>();
 	if (mode.compare("rtaudio") == 0) {
 		server = make_shared<ctoot::audio::server::RtAudioServer>();
 	}

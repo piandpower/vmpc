@@ -7,6 +7,7 @@
 #include "HwPad.hpp"
 #include "Led.hpp"
 #include "Pot.hpp"
+#include "HwSlider.hpp"
 
 using namespace mpc::hardware;
 using namespace std;
@@ -37,6 +38,8 @@ Hardware::Hardware(mpc::Mpc* mpc)
 
 	recPot = make_shared<Pot>("rec", mpc);
 	volPot = make_shared<Pot>("vol", mpc);
+
+	slider = make_shared<Slider>(mpc);
 }
 
 weak_ptr<Pot> Hardware::getRecPot() {
@@ -70,6 +73,10 @@ vector<shared_ptr<Led> > Hardware::getLeds() {
 
 weak_ptr<DataWheel> Hardware::getDataWheel() {
 	return dataWheel;
+}
+
+weak_ptr<Slider> Hardware::getSlider() {
+	return slider;
 }
 
 Hardware::~Hardware() {

@@ -31,6 +31,7 @@
 #include <synth/SynthChannel.hpp>
 
 #include <hardware/Hardware.hpp>
+#include <hardware/HwSlider.hpp>
 
 #include <file/all/AllLoader.hpp>
 #include <file/aps/ApsLoader.hpp>
@@ -96,6 +97,8 @@ void Mpc::init(std::string mode)
 	delete apsLoader;
 	sequencer->playFromStart();
 	*/
+
+	hardware->getSlider().lock()->setValue(mpc::nvram::NvRam::getSlider());
 
 	layeredScreen->openScreen("sequencer");
 }

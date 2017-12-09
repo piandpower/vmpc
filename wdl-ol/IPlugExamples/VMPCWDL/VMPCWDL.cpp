@@ -10,6 +10,7 @@
 #include "source/LCDControl.hpp"
 #include "source/InputCatcherControl.hpp"
 #include "source/PadControl.hpp"
+#include "source/SliderControl.hpp"
 
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/Sequence.hpp>
@@ -21,6 +22,7 @@
 #include <lcdgui/LayeredScreen.hpp>
 #include <hardware/Led.hpp>
 #include <hardware/Pot.hpp>
+#include <hardware/HwSlider.hpp>
 
 const int kNumPrograms = 8;
 const int kNumParams = 0;
@@ -77,6 +79,11 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 			pGraphics->AttachControl(pc);
 		}
 	}
+
+	auto sliders = pGraphics->LoadIBitmap(SLIDER_ID, SLIDER_FN);
+	auto sc = new SliderControl(this, sliders, mpc->getHardware().lock()->getSlider(), 0);
+
+	pGraphics->AttachControl(sc);
 
 	AttachGraphics(pGraphics);
 

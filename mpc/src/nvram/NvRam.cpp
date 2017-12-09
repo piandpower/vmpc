@@ -1,7 +1,8 @@
 #include <nvram/NvRam.hpp>
 
 #include <file/all/Defaults.hpp>
-//#include <hardware/SliderWidget.hpp>
+#include <hardware/Hardware.hpp>
+#include <hardware/HwSlider.hpp>
 #include <StartUp.hpp>
 #include <Mpc.hpp>
 #include <audiomidi/AudioMidiServices.hpp>
@@ -76,8 +77,7 @@ void NvRam::saveKnobPositions(mpc::Mpc* mpc)
 	auto fos = new moduru::io::FileOutputStream(file);
 	char recordb = mpc->getAudioMidiServices().lock()->getRecordLevel();
 	char volumeb = mpc->getAudioMidiServices().lock()->getMasterLevel();
-	//auto sliderb = static_cast< int8_t >(cp->getSlider().lock()->GetValue());
-	char sliderb = 0;
+	char sliderb = static_cast< int8_t >(mpc->getHardware().lock()->getSlider().lock()->getValue());
 	auto bytes = vector<char>{ recordb, volumeb, sliderb };
 	fos->write(bytes);
 	fos->close();
