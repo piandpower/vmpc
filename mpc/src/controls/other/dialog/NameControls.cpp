@@ -67,6 +67,7 @@ void NameControls::turnWheel(int j)
 		for (int i = 0; i < 16; i++) {
 			if (param.compare(to_string(i)) == 0) {
 				nameGui->changeNameCharacter(i, j > 0);
+				drawUnderline();
 				break;
 			}
 		}
@@ -353,12 +354,12 @@ void NameControls::keyEvent(unsigned char e)
 
 void NameControls::drawUnderline()
 {
+	MLOG("Draw underline.");
 	if (nameGui->isNameBeingEdited()) {
 		string focus = ls.lock()->getFocus();
 		if (focus.length() != 1 && focus.length() != 2) return;
 		auto u = ls.lock()->getUnderline().lock();
 		for (int i = 0; i < 16; i++) {
-
 			if (i == stoi(focus)) {
 				u->setState(i, true);
 			}
@@ -376,10 +377,10 @@ void NameControls::initEditColors()
 		field->setOpaque(true);
 		field->setInverted(false);
     }
-	//auto focus = ls.lock()->getFocus();
+	auto focus = ls.lock()->getFocus();
 	//ls.lock()->lookupField(focus).lock()->setForeground(true);
-	//ls.lock()->lookupField(focus).lock()->setInverted(false);
-	//ls.lock()->lookupField(focus).lock()->setOpaque(true);
+	ls.lock()->lookupField(focus).lock()->setInverted(false);
+	ls.lock()->lookupField(focus).lock()->setOpaque(true);
 }
 
 void NameControls::resetNameGui()

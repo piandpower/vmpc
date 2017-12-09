@@ -137,8 +137,8 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	knobs = vector<shared_ptr<Knob>>(16);
 
 	underline = make_shared<mpc::lcdgui::Underline>();
-	nonTextComps.push_back(underline);
 	envGraph = make_shared<mpc::lcdgui::EnvGraph>(mpc);
+	envGraph->Hide(true);
 	nonTextComps.push_back(envGraph);
 
 	MRECT dotsRect(0, 0, 248, 25);
@@ -334,6 +334,8 @@ void LayeredScreen::Draw() {
 	for (auto& c : components) {
 		if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
 	}
+
+	if (!underline->IsHidden() && underline->IsDirty()) underline->Draw(&pixels);
 
 	if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
 }
