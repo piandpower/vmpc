@@ -30,7 +30,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	mSampleRate(44100.)
 {
 	mpc = new mpc::Mpc();
-	mpc->init();
+	mpc->init("rtaudio");
 
 	TRACE;
 

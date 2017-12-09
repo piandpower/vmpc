@@ -174,7 +174,7 @@ namespace mpc {
 			int getDirectSoundOutputDevCount();
 
 		public:
-			void startTestMode();
+			void start(std::string mode);
 
 		public:
 			AudioMidiServices(Mpc* mpc);

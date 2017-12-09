@@ -96,12 +96,17 @@ AudioMidiServices::AudioMidiServices(mpc::Mpc* mpc)
 	initServerNames();
 }
 
-void AudioMidiServices::startTestMode() {
+void AudioMidiServices::start(std::string mode) {
 	//requestedBufferSize = 4096;
 	setupMidi();
 
 	//server = make_shared<ctoot::audio::server::UnrealAudioServer>();
-	server = make_shared<ctoot::audio::server::RtAudioServer>();
+	if (mode.compare("rtaudio") == 0) {
+		server = make_shared<ctoot::audio::server::RtAudioServer>();
+	}
+	else if (mode.compare("unreal") == 0) {
+		server = make_shared<ctoot::audio::server::UnrealAudioServer>();
+	}
 	offlineServer = make_shared<ctoot::audio::server::NonRealTimeAudioServer>(server);
 	setupMixer();
 	inputProcesses = vector<ctoot::audio::server::IOAudioProcess*>(2);
