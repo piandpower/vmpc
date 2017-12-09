@@ -138,7 +138,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 
 	underline = make_shared<mpc::lcdgui::Underline>();
 	nonTextComps.push_back(underline);
-	envGraph = make_shared<mpc::lcdgui::EnvGraph>();
+	envGraph = make_shared<mpc::lcdgui::EnvGraph>(mpc);
 	nonTextComps.push_back(envGraph);
 
 	MRECT dotsRect(0, 0, 248, 25);
@@ -462,11 +462,6 @@ string LayeredScreen::getPreviousScreenName()
 
 mpc::lcdgui::Popup* LayeredScreen::getPopup() {
 	return popup.get();
-}
-
-mpc::lcdgui::EnvGraph* LayeredScreen::getEnvGraph()
-{
-	return envGraph.get();
 }
 
 string LayeredScreen::getPreviousFromNoteText()

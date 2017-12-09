@@ -1,15 +1,18 @@
 #pragma once
 #include "Component.hpp"
 
+#include <memory>
 #include <vector>
 
 namespace mpc {
+	class Mpc;
 	namespace lcdgui {
 		class EnvGraph
 			: public Component
 		{
 
 		private:
+			mpc::Mpc* mpc;
 			std::vector<std::vector<int>> coordinates{};
 
 		public:
@@ -17,8 +20,7 @@ namespace mpc {
 			void Draw(std::vector<std::vector<bool> >* pixels) override;
 
 		public:
-			EnvGraph();
-			EnvGraph(std::vector<std::vector<int>> coordinates);
+			EnvGraph(mpc::Mpc* mpc);
 			~EnvGraph();
 
 		};

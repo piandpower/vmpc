@@ -30,7 +30,6 @@ PgmParamsObserver::PgmParamsObserver(mpc::Mpc* mpc)
 	auto lProgram = program.lock();
 	lProgram->addObserver(this);
 	mpcSoundPlayerChannel->addObserver(this);
-	lSampler->getLastNp(lProgram.get())->deleteObservers();
 	lSampler->getLastNp(lProgram.get())->addObserver(this);
 	pgmField = ls->lookupField("pgm");
 	noteField = ls->lookupField("note");
@@ -60,7 +59,7 @@ void PgmParamsObserver::update(moduru::observer::Observable* o, boost::any arg)
 	auto lSampler = sampler.lock();
 	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
 	lProgram = program.lock();
-	lSampler->getLastNp(lProgram.get())->deleteObservers();
+	lSampler->getLastNp(lProgram.get())->deleteObserver(this);
 	lSampler->getLastNp(lProgram.get())->addObserver(this);
 	lProgram->addObserver(this);
 	mpcSoundPlayerChannel->addObserver(this);
@@ -171,7 +170,7 @@ PgmParamsObserver::~PgmParamsObserver() {
 	samplerGui->deleteObserver(this);
 	program.lock()->deleteObserver(this);
 	mpcSoundPlayerChannel->deleteObserver(this);
-	/*
-	* See PgmAssignObserver dtor notes for observer deletion handling.
-	*/
+	samplerGui->deleteObserver(this);
+	sampler.lock()->getLastNp(program.lock().get())->deleteObserver(this);
+	sampler.lock()->getLastPad(program.lock().get())->deleteObserver(this);
 }

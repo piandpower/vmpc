@@ -228,14 +228,20 @@ void SamplerWindowObserver::displayAttack()
 {
 	auto lSampler = sampler.lock();
 	auto lProgram = program.lock();
-	attackField.lock()->setTextPadded(lSampler->getLastNp(lProgram.get())->getFilterAttack(), " ");
+	auto attack = lSampler->getLastNp(lProgram.get())->getFilterAttack();
+	auto decay = lSampler->getLastNp(lProgram.get())->getFilterDecay();
+	attackField.lock()->setTextPadded(attack, " ");
+	mpc->getLayeredScreen().lock()->redrawEnvGraph(attack, decay);
 }
 
 void SamplerWindowObserver::displayDecay()
 {
 	auto lSampler = sampler.lock();
 	auto lProgram = program.lock();
-	decayField.lock()->setTextPadded(lSampler->getLastNp(lProgram.get())->getFilterDecay(), " ");
+	auto attack = lSampler->getLastNp(lProgram.get())->getFilterAttack();
+	auto decay = lSampler->getLastNp(lProgram.get())->getFilterDecay();
+	decayField.lock()->setTextPadded(decay, " ");
+	mpc->getLayeredScreen().lock()->redrawEnvGraph(attack, decay);
 }
 
 void SamplerWindowObserver::displayAmount()

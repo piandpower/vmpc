@@ -114,7 +114,6 @@ namespace mpc {
 			std::string getCurrentScreenName();
 			void setPreviousScreenName(std::string screenName);
 			std::string getPreviousScreenName();
-			mpc::lcdgui::EnvGraph* getEnvGraph();
 			mpc::lcdgui::Popup* getPopup();
 			std::string getPreviousFromNoteText();
 			void setPreviousFromNoteText(std::string text);
