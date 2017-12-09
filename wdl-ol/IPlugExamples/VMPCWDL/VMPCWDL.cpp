@@ -15,7 +15,7 @@
 #include <sequencer/Sequence.hpp>
 
 #include <audiomidi/AudioMidiServices.hpp>
-#include <audio/server/UnrealAudioServer.hpp>
+#include <audio/server/RtAudioServer.hpp>
 #include <hardware/Hardware.hpp>
 #include <hardware/DataWheel.hpp>
 #include <lcdgui/LayeredScreen.hpp>
@@ -110,8 +110,8 @@ void VMPCWDL::NoteOnOff(IMidiMsg* pMsg)
 
 void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames)
 {
-	auto urserver = mpc->getAudioMidiServices().lock()->getUnrealAudioServer();
-	urserver->work(inputs, outputs, nFrames);
+	auto server = mpc->getAudioMidiServices().lock()->getRtAudioServer();
+	server->work(inputs, outputs, nFrames);
 }
 
 void VMPCWDL::Reset()

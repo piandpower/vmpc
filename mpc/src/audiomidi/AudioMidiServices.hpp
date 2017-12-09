@@ -107,6 +107,7 @@ namespace mpc {
 		public:
 			void init();
 			ctoot::audio::server::UnrealAudioServer* getUnrealAudioServer();
+			ctoot::audio::server::RtAudioServer* getRtAudioServer();
 
 		private:
 

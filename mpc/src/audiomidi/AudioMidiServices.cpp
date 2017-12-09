@@ -61,6 +61,7 @@
 
 //#include <audio/server/SilentAudioServer.hpp>
 #include <audio/server/UnrealAudioServer.hpp>
+#include <audio/server/RtAudioServer.hpp>
 
 #include <midi/core/LegacyDevices.hpp>
 
@@ -99,7 +100,8 @@ void AudioMidiServices::startTestMode() {
 	//requestedBufferSize = 4096;
 	setupMidi();
 
-	server = make_shared<ctoot::audio::server::UnrealAudioServer>();
+	//server = make_shared<ctoot::audio::server::UnrealAudioServer>();
+	server = make_shared<ctoot::audio::server::RtAudioServer>();
 	offlineServer = make_shared<ctoot::audio::server::NonRealTimeAudioServer>(server);
 	setupMixer();
 	inputProcesses = vector<ctoot::audio::server::IOAudioProcess*>(2);
@@ -852,6 +854,10 @@ void AudioMidiServices::loadIOConfig() {
 
 ctoot::audio::server::UnrealAudioServer* AudioMidiServices::getUnrealAudioServer() {
 	return dynamic_pointer_cast<ctoot::audio::server::UnrealAudioServer>(server).get();
+}
+
+ctoot::audio::server::RtAudioServer* AudioMidiServices::getRtAudioServer() {
+	return dynamic_pointer_cast<ctoot::audio::server::RtAudioServer>(server).get();
 }
 
 AudioMidiServices::~AudioMidiServices() {

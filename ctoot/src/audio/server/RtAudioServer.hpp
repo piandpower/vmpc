@@ -12,7 +12,7 @@ namespace ctoot {
 	namespace audio {
 		namespace server {
 
-			class UnrealAudioServer
+			class RtAudioServer
 				: public AudioServer {
 
 			public:
@@ -35,10 +35,10 @@ namespace ctoot {
 
 			public:
 				void work() override;
-				void work(float* OutAudio, int NumSamples);
+				void work(double** InAudio, double** OutAudio, int nFrames);
 
 			public:
-				UnrealAudioServer();
+				RtAudioServer();
 
 			};
 		}
