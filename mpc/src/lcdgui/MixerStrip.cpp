@@ -6,7 +6,6 @@
 #include <lcdgui/Knob.hpp>
 #include <lcdgui/Field.hpp>
 #include <lcdgui/MixerFaderBackground.hpp>
-#include <lcdgui/MixerKnobBackground.hpp>
 #include <lcdgui/VerticalBar.hpp>
 #include <ui/sampler/MixerGui.hpp>
 
@@ -32,11 +31,9 @@ MixerStrip::MixerStrip(int columnIndex, int bank, mpc::Mpc* mpc)
 	verticalBar = lLs->getVerticalBarsMixer()[columnIndex];
 	verticalBar.lock()->Hide(false);
 	knob = lLs->getKnobs()[columnIndex];
-	mixerKnobBackground = lLs->getMixerKnobBackgrounds()[columnIndex];
 	mixerFaderBackground = lLs->getMixerFaderBackgrounds()[columnIndex];
 	mixerStrip.push_back(verticalBar);
 	mixerStrip.push_back(knob);
-	mixerStrip.push_back(mixerKnobBackground);
 	mixerStrip.push_back(mixerFaderBackground);
 	tf0 = lLs->lookupField(letters[columnIndex] + "0");
 	tf1 = lLs->lookupField(letters[columnIndex] + "1");
@@ -100,7 +97,6 @@ void MixerStrip::setColors()
 		for (auto& tf : jta) {
 			tf.lock()->setInverted(false);
 		}
-		mixerKnobBackground.lock()->Hide(true);
 		mixerFaderBackground.lock()->Hide(true);
 		knob.lock()->setColor(true);
 		verticalBar.lock()->Hide(false);
@@ -115,7 +111,6 @@ void MixerStrip::setColors()
 		jta[2].lock()->setInverted(false);
 		jta[3].lock()->setInverted(false);
 		jta[4].lock()->setInverted(false);
-		mixerKnobBackground.lock()->Hide(false);
 		mixerFaderBackground.lock()->Hide(true);
 		knob.lock()->setColor(false);
 		verticalBar.lock()->Hide(false);
@@ -130,7 +125,6 @@ void MixerStrip::setColors()
         jta[2].lock()->setInverted(true);
         jta[3].lock()->setInverted(true);
         jta[4].lock()->setInverted(true);
-        mixerKnobBackground.lock()->Hide(true);
         mixerFaderBackground.lock()->Hide(false);
         knob.lock()->setColor(true);
 		verticalBar.lock()->Hide(false);
@@ -166,7 +160,6 @@ void MixerStrip::setValueAString(string str)
 
 MixerStrip::~MixerStrip() {
 	verticalBar.lock()->Hide(true);
-	mixerKnobBackground.lock()->Hide(true);
 	mixerFaderBackground.lock()->Hide(true);
 	knob.lock()->Hide(true);
 }

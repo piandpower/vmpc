@@ -13,7 +13,6 @@
 #include <lcdgui/HorizontalBar.hpp>
 #include <lcdgui/VerticalBar.hpp>
 #include <lcdgui/MixerFaderBackground.hpp>
-#include <lcdgui/MixerKnobBackground.hpp>
 #include <lcdgui/Knob.hpp>
 #include <lcdgui/TwoDots.hpp>
 #include <lcdgui/Wave.hpp>
@@ -132,7 +131,6 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	selectedEventBarsStepEditor = vector<shared_ptr<mpc::lcdgui::SelectedEventBar>>(4);
 
 	verticalBarsMixer = vector<shared_ptr<VerticalBar>>(16);
-	mixerKnobBackgrounds = vector<shared_ptr<MixerKnobBackground>>(16);
 	mixerFaderBackgrounds = vector<shared_ptr<MixerFaderBackground>>(16);
 	knobs = vector<shared_ptr<Knob>>(16);
 
@@ -170,6 +168,15 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	}
 
 	for (int i = 0; i < 16; i++) {
+		w = 13;
+		h = 34;
+		x = 4 + (i * 15);
+		y = 15;
+		rect = MRECT(x, y, x + w, y + h);
+		mixerFaderBackgrounds[i] = make_shared<MixerFaderBackground>(rect);
+		mixerFaderBackgrounds[i]->Hide(true);
+		nonTextComps.push_back(mixerFaderBackgrounds[i]);
+
 		w = 5;
 		h = 37;
 		x = 12 + (i * 15);
@@ -179,22 +186,6 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		verticalBarsMixer[i]->Hide(true);
 		nonTextComps.push_back(verticalBarsMixer[i]);
 
-		w = 14;
-		h = 13;
-		x = 4 + (i * 15);
-		y = 0;
-		rect = MRECT(x, y, x + w, y + h);
-		mixerKnobBackgrounds[i] = make_shared<MixerKnobBackground>(rect);
-		mixerKnobBackgrounds[i]->Hide(true);
-		nonTextComps.push_back(mixerKnobBackgrounds[i]);
-
-		h = 40;
-		y = 15;
-		rect = MRECT(x, y, x + w, y + h);
-		mixerFaderBackgrounds[i] = make_shared<MixerFaderBackground>(rect);
-		mixerFaderBackgrounds[i]->Hide(true);
-		nonTextComps.push_back(mixerFaderBackgrounds[i]);
-
 		w = 13;
 		h = 13;
 		x = 5 + (i * 15);
@@ -203,7 +194,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		rect = MRECT(x, y, x + w, y + h);
 		knobs[i] = make_shared<Knob>(rect);
 		knobs[i]->Hide(true);
-		nonTextComps.push_back(knobs[i]);
+		//nonTextComps.push_back(knobs[i]);
 	}
 
 	fineWave = make_shared <mpc::lcdgui::Wave>();
@@ -335,11 +326,17 @@ void LayeredScreen::Draw() {
 	for (auto& c : components) {
 		if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
 	}
-
+	
 	if (!underline->IsHidden() && underline->IsDirty()) underline->Draw(&pixels);
 	if (!twoDots->IsHidden() && twoDots->IsDirty()) twoDots->Draw(&pixels);
 
 	if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
+	if (currentScreenName.compare("mixer") == 0) {
+		for (auto& k : knobs) {
+			if (k->IsDirty()) 
+				k->Draw(&pixels);
+		}
+	}
 }
 
 bool LayeredScreen::IsDirty() {
@@ -362,6 +359,10 @@ bool LayeredScreen::IsDirty() {
 
 	if (underline->IsDirty()) return true;
 	if (twoDots->IsDirty()) return true;
+
+	for (auto& k : knobs) {
+		if (k->IsDirty()) return true;
+	}
 
 	return false;
 }
@@ -533,14 +534,6 @@ vector<weak_ptr<mpc::lcdgui::Knob>> LayeredScreen::getKnobs()
 {
 	auto res = vector<weak_ptr<mpc::lcdgui::Knob>>();
 	for (auto& b : knobs)
-		res.push_back(b);
-	return res;
-}
-
-vector<weak_ptr<mpc::lcdgui::MixerKnobBackground>> LayeredScreen::getMixerKnobBackgrounds()
-{
-	auto res = vector<weak_ptr<mpc::lcdgui::MixerKnobBackground>>();
-	for (auto& b : mixerKnobBackgrounds)
 		res.push_back(b);
 	return res;
 }

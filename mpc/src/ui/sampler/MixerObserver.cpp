@@ -49,12 +49,20 @@ MixerObserver::MixerObserver(mpc::Mpc* mpc)
 	auto lSampler = sampler.lock();
 	mpcSoundPlayerChannel = lSampler->getDrum(samplerGui->getSelectedDrum());
 	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
+
+	for (int i = (bank * 16); i < (bank * 16) + 16; i++) {
+		pad = program.lock()->getPad(i);
+		mixerChannel = pad->getMixerChannel();
+		auto lMc = mixerChannel.lock();
+		lMc->addObserver(this);
+	}
+
 	if (lLs->getCurrentScreenName().compare("mixer") == 0) {
 		initPadNameLabels();
 		initMixerStrips();
 		for (auto& m : mixerStrips) {
-				m->initFields();
-				m->setColors();
+			m->initFields();
+			m->setColors();
 		}
 		displayMixerStrips();
 		displayFunctionKeys();
@@ -94,7 +102,7 @@ void MixerObserver::initPadNameLabels()
 		auto tf = dynamic_pointer_cast<mpc::lcdgui::Field>(textField.lock());
 		if (tf) {
 			if (tf->getName().compare("e3") == 0 || tf->getName().compare("e4") == 0) {
-				tf->setSize(12, 18);
+				tf->setSize(6, 9);
 			}
 			if (tf->getName().length() == 2) {
 				if (tf->getName()[1] == '3') {
@@ -104,7 +112,7 @@ void MixerObserver::initPadNameLabels()
 					}
 					tfCounter3++;
 				}
-				if (tf->getName()[1] == '4') {
+				else if (tf->getName()[1] == '4') {
 					tf->setText(to_string(tfCounter4 + 1));
 					tfCounter4++;
 					if (tfCounter4 == 9)
@@ -213,7 +221,6 @@ void MixerObserver::displayMixerStrips()
 			mixerStrips[i]->setValueB(lMc->getFxSendLevel());
 		}
 	}
-	//ls.lock()->SetDirty(true);
 }
 
 void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
@@ -268,7 +275,7 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 				lMc = mixerChannel.lock();
 				mixerStrips[mixGui->getXPos()]->setValueB(lMc->getLevel());
 			}
-			if (mixGui->getLink()) {
+			else {
 				for (int i = 0; i < 16; i++) {
 					auto mc = lProgram->getPad(i + (bank * 16))->getMixerChannel().lock();
 					mixerStrips[i]->setValueB(mc->getLevel());
@@ -287,7 +294,7 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 			lMc = mixerChannel.lock();
 			setPanningField();
 		}
-		if (lLs->getCurrentScreenName().compare("mixer") == 0) {
+		else if (lLs->getCurrentScreenName().compare("mixer") == 0) {
 			if (!mixGui->getLink()) {
 				mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
 				lMc = mixerChannel.lock();
@@ -424,7 +431,6 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 		}
 		displayMixerStrips();
 		displayFunctionKeys();
-		//lMainFrame->getLayeredScreen().lock()->SetDirty(false);
 	}
 	else if (s.compare("masterlevel") == 0) {
 		displayMasterLevel();
@@ -471,7 +477,7 @@ void MixerObserver::displayMasterLevel() {
 		masterLevelField.lock()->setTextPadded(to_string(mixerSetupGui->getMasterLevel()) + "dB", " ");
 	}
 	else {
-		masterLevelField.lock()->setTextPadded("-\u00D9\u00DAdB", " ");
+		masterLevelField.lock()->setTextPadded(u8"-\u00D9\u00DAdB", " ");
 	}
 }
 

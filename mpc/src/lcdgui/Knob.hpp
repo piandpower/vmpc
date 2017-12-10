@@ -9,7 +9,7 @@ namespace mpc {
 		{
 
 		private:
-			int value{};
+			int value{ 32 };
 			bool color{ true };
 
 		public:

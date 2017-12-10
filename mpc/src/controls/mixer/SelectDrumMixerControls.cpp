@@ -1,6 +1,7 @@
 #include <controls/mixer/SelectDrumMixerControls.hpp>
 
 #include <ui/sampler/SamplerGui.hpp>
+#include <ui/sampler/MixerGui.hpp>
 
 using namespace mpc::controls::mixer;
 using namespace std;

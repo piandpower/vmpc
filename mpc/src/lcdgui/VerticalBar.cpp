@@ -1,5 +1,7 @@
 #include <lcdgui/VerticalBar.hpp>
 
+#include <Logger.hpp>
+
 using namespace mpc::lcdgui;
 
 VerticalBar::VerticalBar(MRECT rect) 
@@ -21,16 +23,20 @@ void VerticalBar::setColor(bool on)
 
 void VerticalBar::Draw(std::vector<std::vector<bool> >* pixels)
 {
-/*
 	if (value > 2) {
-		int valuePixels = (int)((value - 2) / 1.5);
-		int lcdx = mpc::maingui::Constants::LCD_RECT()->L;
-		int lcdy = mpc::maingui::Constants::LCD_RECT()->T;
-		IRECT tmp(0 + rect.L + lcdx, rect.T + lcdy + 64 - valuePixels, 6 + rect.L + lcdx, 64 + rect.T + lcdy);
-		g->DrawRect(color ? Constants::LCD_ON() : Constants::LCD_OFF(), &tmp);
-		g->FillIRect(color ? Constants::LCD_ON() : Constants::LCD_OFF(), &tmp);
+		int valuePixels = (int)((value - 2) / 3);
+		for (int i = rect.L; i < rect.L + 4; i++) {
+			for (int j = rect.T; j < rect.T + 32 - valuePixels; j++) {
+				(*pixels)[i][j] = !color;
+			}
+		}
+		MRECT tmp(rect.L, rect.T + 32 - valuePixels, rect.L + 3, rect.T + 32);
+		for (int i = tmp.L; i < tmp.R + 1; i++) {
+			for (int j = tmp.T; j < tmp.B + 1; j++) {
+				(*pixels)[i][j] = color;
+			}
+		}
 	}
-	*/
 	dirty = false;
 }
 

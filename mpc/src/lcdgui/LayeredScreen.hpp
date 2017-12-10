@@ -26,7 +26,6 @@ namespace mpc {
 		class HorizontalBar;
 		class Underline;
 		class VerticalBar;
-		class MixerKnobBackground;
 		class MixerFaderBackground;
 		class Knob;
 		class Popup;
@@ -86,7 +85,6 @@ namespace mpc {
 			std::vector<std::shared_ptr<mpc::lcdgui::HorizontalBar>> horizontalBarsTempoChangeEditor{};
 			std::shared_ptr<mpc::lcdgui::Underline> underline{};
 			std::vector<std::shared_ptr<mpc::lcdgui::VerticalBar>> verticalBarsMixer{};
-			std::vector<std::shared_ptr<mpc::lcdgui::MixerKnobBackground>> mixerKnobBackgrounds{};
 			std::vector<std::shared_ptr<mpc::lcdgui::MixerFaderBackground>> mixerFaderBackgrounds{};
 			std::vector<std::shared_ptr<mpc::lcdgui::Knob>> knobs{};
 			std::shared_ptr<mpc::lcdgui::Wave> fineWave{};
@@ -125,7 +123,6 @@ namespace mpc {
 			std::vector<std::weak_ptr<mpc::lcdgui::SelectedEventBar>> getSelectedEventBarsStepEditor();
 			FunctionKeys* getFunctionKeys();
 			std::vector<std::weak_ptr<mpc::lcdgui::Knob>> getKnobs();
-			std::vector<std::weak_ptr<mpc::lcdgui::MixerKnobBackground>> getMixerKnobBackgrounds();
 			std::vector<std::weak_ptr<mpc::lcdgui::MixerFaderBackground>> getMixerFaderBackgrounds();
 			void drawFunctionKeys(std::string screenName);
 			std::weak_ptr<mpc::lcdgui::Underline> getUnderline();
