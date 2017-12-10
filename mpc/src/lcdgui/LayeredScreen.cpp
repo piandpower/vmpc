@@ -138,10 +138,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 
 	underline = make_shared<mpc::lcdgui::Underline>();
 	envGraph = make_shared<mpc::lcdgui::EnvGraph>(mpc);
-	envGraph->Hide(true);
 	nonTextComps.push_back(envGraph);
-
-	MRECT dotsRect(0, 0, 248, 25);
 
 	int x, y, w, h;
 	MRECT rect;
@@ -236,6 +233,10 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		layerJsons[i].ParseStream(is);
 		fclose(fPointers[i]);
 	}
+}
+
+weak_ptr<mpc::lcdgui::EnvGraph> LayeredScreen::getEnvGraph() {
+	return envGraph;
 }
 
 int LayeredScreen::getCurrentParamIndex() {

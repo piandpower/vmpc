@@ -132,6 +132,7 @@ namespace mpc {
 			std::weak_ptr<mpc::lcdgui::TwoDots> getTwoDots();
 			std::weak_ptr<mpc::lcdgui::Wave> getFineWave();
 			std::weak_ptr<mpc::lcdgui::Wave> getWave();
+			std::weak_ptr<mpc::lcdgui::EnvGraph> getEnvGraph();
 
 		public:
 			std::vector<std::vector<bool> >* getPixels();

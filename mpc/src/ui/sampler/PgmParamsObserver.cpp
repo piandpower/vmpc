@@ -3,6 +3,7 @@
 #include <Mpc.hpp>
 #include <Util.hpp>
 #include <lcdgui/Field.hpp>
+#include <lcdgui/EnvGraph.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <sampler/MixerChannel.hpp>
 #include <sampler/NoteParameters.hpp>
@@ -48,6 +49,7 @@ PgmParamsObserver::PgmParamsObserver(mpc::Mpc* mpc)
 	displayTune();
 	displayVoiceOverlap();
 	displayAttackDecay();
+	ls->getEnvGraph().lock()->Hide(false);
 }
 
 void PgmParamsObserver::update(moduru::observer::Observable* o, boost::any arg)
@@ -173,4 +175,5 @@ PgmParamsObserver::~PgmParamsObserver() {
 	samplerGui->deleteObserver(this);
 	sampler.lock()->getLastNp(program.lock().get())->deleteObserver(this);
 	sampler.lock()->getLastPad(program.lock().get())->deleteObserver(this);
+	ls->getEnvGraph().lock()->Hide(true);
 }
