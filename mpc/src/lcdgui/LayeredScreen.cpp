@@ -143,9 +143,6 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 
 	MRECT dotsRect(0, 0, 248, 25);
 
-	twoDots = make_shared<TwoDots>();
-	nonTextComps.push_back(twoDots);
-
 	int x, y, w, h;
 	MRECT rect;
 	for (int i = 0; i < 4; i++) {
@@ -221,6 +218,9 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	wave->Hide(true);
 	wave->setFine(false);
 	nonTextComps.push_back(wave);
+
+	twoDots = make_shared<TwoDots>();
+	twoDots->Hide(true);
 
 	FILE* fp0 = fopen(string(mpc::StartUp::resPath + "mainpanel.json").c_str(), "r"); // non-Windows use "r"
 	FILE* fp1 = fopen(string(mpc::StartUp::resPath + "windowpanel.json").c_str(), "r"); // non-Windows use "r"
@@ -336,6 +336,7 @@ void LayeredScreen::Draw() {
 	}
 
 	if (!underline->IsHidden() && underline->IsDirty()) underline->Draw(&pixels);
+	if (!twoDots->IsHidden() && twoDots->IsDirty()) twoDots->Draw(&pixels);
 
 	if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
 }
@@ -357,6 +358,10 @@ bool LayeredScreen::IsDirty() {
 	for (auto& c : nonTextComps) {
 		if (c.lock()->IsDirty()) return true;
 	}
+
+	if (underline->IsDirty()) return true;
+	if (twoDots->IsDirty()) return true;
+
 	return false;
 }
 

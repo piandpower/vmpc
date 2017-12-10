@@ -65,7 +65,10 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 				for (int y1 = 0; y1 < current_char.height; y1++) {
 					bool on = atlas[atlasx + x1][atlasy + y1 + 1];
 					if (on) {
-						(*pixels)[textx + x1 + current_char.xoffset][texty + y1 + current_char.yoffset] = inverted ? false : true;
+						int xpos = textx + x1 + current_char.xoffset;
+						int ypos = texty + y1 + current_char.yoffset;
+						if (xpos < 0 || xpos > 247 || ypos < 0 || ypos > 247) continue;
+						(*pixels)[xpos][ypos] = inverted ? false : true;
 					}
 				}
 			}

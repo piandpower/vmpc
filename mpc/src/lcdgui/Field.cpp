@@ -2,11 +2,11 @@
 #include "Label.hpp"
 //#include <maingui/Constants.hpp>
 //#include <StartUp.hpp>
-//#include <lcdgui/LayeredScreen.hpp>
+#include <lcdgui/LayeredScreen.hpp>
 #include <ui/NameGui.hpp>
 //#include <lcdgui/Field_Blinker.hpp>
 //#include <lcdgui/Field_Scroller.hpp>
-//#include <lcdgui/TwoDots.hpp>
+#include <lcdgui/TwoDots.hpp>
 //#include <ui/sequencer/TrMoveGui.hpp>
 
 #include <lang/StrUtil.hpp>
@@ -62,36 +62,36 @@ const int Field::BLINKING_RATE;
 
 void Field::takeFocus(string prev)
 {
-	//csn = layeredScreen->getCurrentScreenName();
+	csn = layeredScreen->getCurrentScreenName();
 	focus = true;
 	inverted = true;
 	//if (csn.compare("name") == 0) setOpaque(true);
 	//	//auto lMainFrame = lGui->getMainFrame().lock();
 	//auto lMainFrame = mainFrame;
-	//auto focusEvent = layeredScreen->getFocus();
-	//auto focusField = layeredScreen->lookupField(focusEvent);
-//	if (csn.compare("trim") == 0 || csn.compare("loop") == 0) {
-//		if (focusEvent.compare("st") == 0 || focusEvent.compare("to") == 0) {
-//			layeredScreen->getTwoDots()->setSelected(0, true);
-//		}
-//		else if (focusEvent.compare("end") == 0 || focusEvent.compare("endlengthvalue") == 0) {
-//			layeredScreen->getTwoDots()->setSelected(1, true);
-//		}
-//	}
-//	if (csn.compare("startfine") == 0 || csn.compare("endfine") == 0 || csn.compare("looptofine") == 0 || csn.compare("loopendfine") == 0) {
-//		if (focusEvent.compare("start") == 0) {
-//			layeredScreen->getTwoDots()->setSelected(2, true);
-//		}
-//		else if (focusEvent.compare("end") == 0) {
-//			lLs->getTwoDots()->setSelected(2, true);
-//		}
-//		else if (focusEvent.compare("to") == 0) {
-//			lLs->getTwoDots()->setSelected(2, true);
-//		}
-//		else if (focusEvent.compare("lngth") == 0) {
-//			lLs->getTwoDots()->setSelected(3, true);
-//		}
-//	}
+	auto focusEvent = layeredScreen->getFocus();
+	auto focusField = layeredScreen->lookupField(focusEvent);
+	if (csn.compare("trim") == 0 || csn.compare("loop") == 0) {
+		if (focusEvent.compare("st") == 0 || focusEvent.compare("to") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(0, true);
+		}
+		else if (focusEvent.compare("end") == 0 || focusEvent.compare("endlengthvalue") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(1, true);
+		}
+	}
+	if (csn.compare("startfine") == 0 || csn.compare("endfine") == 0 || csn.compare("looptofine") == 0 || csn.compare("loopendfine") == 0) {
+		if (focusEvent.compare("start") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(2, true);
+		}
+		else if (focusEvent.compare("end") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(2, true);
+		}
+		else if (focusEvent.compare("to") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(2, true);
+		}
+		else if (focusEvent.compare("lngth") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(3, true);
+		}
+	}
 //	if (csn.compare("directory") == 0) {
 //		focusField.lock()->setOpaque(true);
 //	}
@@ -123,32 +123,32 @@ void Field::loseFocus(string next)
 	//if (csn.compare("name") == 0) {
 //		setOpaque(false);
 //	}
-	//auto focusEvent = getName();
+	auto focusEvent = getName();
 	//setSplit(false);
-	//csn = layeredScreen->getCurrentScreenName();
-	//if (csn.compare("trim") == 0 || csn.compare("loop") == 0) {
-	//	if (focusEvent.compare("st") == 0 || focusEvent.compare("to") == 0) {
-	//		lLs->getTwoDots()->setSelected(0, false);
-	//	}
-	//	else if (focusEvent.compare("end") == 0 || focusEvent.compare("endlengthvalue") == 0) {
-	//		lLs->getTwoDots()->setSelected(1, false);
-	//	}
-	//}
-	//else if (csn.compare("startfine") == 0 || csn.compare("endfine") == 0 || csn.compare("looptofine") == 0 || csn.compare("loopendfine") == 0) {
-	//	if (focusEvent.compare("start") == 0) {
-	//		lLs->getTwoDots()->setSelected(2, false);
-	//	}
-	//	else if (focusEvent.compare("end") == 0) {
-	//		lLs->getTwoDots()->setSelected(2, false);
-	//	}
-	//	else if (focusEvent.compare("to") == 0) {
-	//		lLs->getTwoDots()->setSelected(2, false);
-	//	}
-	//	else if (focusEvent.compare("lngth") == 0) {
-	//		lLs->getTwoDots()->setSelected(3, false);
-	//	}
-	//}
-	//
+	csn = layeredScreen->getCurrentScreenName();
+	if (csn.compare("trim") == 0 || csn.compare("loop") == 0) {
+		if (focusEvent.compare("st") == 0 || focusEvent.compare("to") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(0, false);
+		}
+		else if (focusEvent.compare("end") == 0 || focusEvent.compare("endlengthvalue") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(1, false);
+		}
+	}
+	else if (csn.compare("startfine") == 0 || csn.compare("endfine") == 0 || csn.compare("looptofine") == 0 || csn.compare("loopendfine") == 0) {
+		if (focusEvent.compare("start") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(2, false);
+		}
+		else if (focusEvent.compare("end") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(2, false);
+		}
+		else if (focusEvent.compare("to") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(2, false);
+		}
+		else if (focusEvent.compare("lngth") == 0) {
+			layeredScreen->getTwoDots().lock()->setSelected(3, false);
+		}
+	}
+	
 	
 	//if (csn.compare("tempochange") == 0) {
 	//	setOpaque(false);

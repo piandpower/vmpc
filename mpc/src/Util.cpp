@@ -95,6 +95,12 @@ void Util::drawLine(std::vector<std::vector<bool> >* pixels, std::vector<std::ve
 	}
 }
 
+void Util::drawLines(std::vector<std::vector<bool> >* pixels, vector<vector<vector<int>>>* lines, vector<bool> colors) {
+	int colorCounter = 0;
+	for (auto line : *lines) {
+		drawLine(pixels, &line, colors[colorCounter++]);
+	}
+}
 
 /*
 void Util::drawScaled(IGraphics* g, std::vector<std::vector<int>> line, unsigned int scale, IColor* color, vector<int> offsetxy) {
@@ -114,10 +120,4 @@ void Util::drawScaled(IGraphics* g, vector<vector<vector<int>>> lines, unsigned 
 	}
 }
 
-void Util::drawScaled(IGraphics* g, vector<vector<vector<int>>> lines, unsigned int scale, vector<IColor*> colors, vector<int> offsetxy) {
-	int colorCounter = 0;
-	for (auto& line : lines) {
-		drawScaled(g, line, scale, colors[colorCounter++], offsetxy);
-	}
-}
 */

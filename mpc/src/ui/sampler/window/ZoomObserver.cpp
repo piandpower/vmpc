@@ -55,38 +55,38 @@ ZoomObserver::ZoomObserver(mpc::Mpc* mpc)
 	lngthField = ls->lookupField("lngth");
 	
 	if (csn.compare("startfine") == 0) {
-		startField.lock()->setSize(8 * 6 * 2 + 2, 18);
+		startField.lock()->setSize(8 * 6  + 1, 9);
 		displayStart();
 		displayLngthLabel();
 		displaySmplLngth();
 	}
 	else if (csn.compare("endfine") == 0) {
-		endField.lock()->setSize(8 * 6 * 2 + 2, 18);
+		endField.lock()->setSize(8 * 6  + 1, 9);
 		displayEnd();
 		displayLngthLabel();
 		displaySmplLngth();
 	}
 	else if (csn.compare("looptofine") == 0) {
-		toField.lock()->setSize(8 * 6 * 2 + 2, 18);
-		lngthField.lock()->setSize(8 * 6 * 2 + 2, 18);
+		toField.lock()->setSize(8 * 6  + 1, 9);
+		lngthField.lock()->setSize(8 * 6  + 1, 9);
 		displayTo();
 		displayLngthField();
 		displayLoopLngth();
 	}
 	else if (csn.compare("loopendfine") == 0) {
-		endField.lock()->setSize(8 * 6 * 2 + 2, 18);
-		lngthField.lock()->setSize(8 * 6 * 2 + 2, 18);
+		endField.lock()->setSize(8 * 6  + 1, 9);
+		lngthField.lock()->setSize(8 * 6  + 1, 9);
 		displayEnd();
 		displayLngthField();
 		displayLoopLngth();
 	}
 	else if (csn.compare("zonestartfine") == 0) {
-		startField.lock()->setSize(8 * 6 * 2 + 2, 18);
+		startField.lock()->setSize(8 * 6  + 1, 9);
 		displayStart();
 		displayLngthLabel();
 	}
 	else if (csn.compare("zoneendfine") == 0) {
-		endField.lock()->setSize(8 * 6 * 2 + 2, 18);
+		endField.lock()->setSize(8 * 6  + 1, 9);
 		displayEnd();
 		displayLngthLabel();
 	}
