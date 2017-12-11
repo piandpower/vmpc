@@ -50,6 +50,7 @@ namespace mpc {
 				{
 
 				private:
+					mpc::Mpc* mpc;
 					std::vector<std::string> softThruNames{};
 					std::vector<std::string> inNames{};
 					std::vector<std::string> editTypeNames{};

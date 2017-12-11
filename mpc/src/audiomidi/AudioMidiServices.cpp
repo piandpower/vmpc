@@ -556,8 +556,8 @@ void AudioMidiServices::destroyServices()
 	destroyDiskWriter();
 	mpc->getSampler().lock()->setActiveInput(nullptr);
 	mixer->getStrip("66").lock()->setInputProcess(nullptr);
-	//mpcMidiPorts->close();
-	//mpcMidiPorts.reset();
+	mpcMidiPorts->close();
+	mpcMidiPorts.reset();
 	destroySynth();
 	closeIO();
 	inputProcesses.clear();

@@ -6,7 +6,7 @@
 #include <lcdgui/LayeredScreen.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 #include <ui/NameGui.hpp>
-//#include <lcdgui/HorizontalBar.hpp>
+#include <lcdgui/HorizontalBar.hpp>
 #include <lcdgui/Field.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <ui/sequencer/window/MultiRecordingSetupLine.hpp>
@@ -31,6 +31,7 @@ using namespace std;
 
 SequencerWindowObserver::SequencerWindowObserver(mpc::Mpc* mpc)
 {
+	this->mpc = mpc;
 	softThruNames = {"OFF", "AS TRACK", "OMNI-A", "OMNI-B", "OMNI-AB" };
 	editTypeNames = { "ADD VALUE", "SUB VALUE", "MULT VAL%", "SET TO VAL" };
 	typeNames = { "NOTES", "PITCH BEND", "PROG CHANGE", "CH PRESSURE", "POLY PRESS", "EXCLUSIVE", "BANK SEL MSB", "MOD WHEEL", "BREATH CONT", "03", "FOOT CONTROL", "PORTA TIME", "DATA ENTRY", "MAIN VOLUME", "BALANCE", "09", "PAN", "EXPRESSION", "EFFECT 1"	, "EFFECT 2", "14", "15", "GEN.PUR. 1", "GEN.PUR. 2", "GEN.PUR. 3", "GEN.PUR. 4", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "BANK SEL LSB", "MOD WHEL LSB", "BREATH LSB", "35", "FOOT CNT LSB", "PORT TIME LS", "DATA ENT LSB", "MAIN VOL LSB", "BALANCE LSB", "41", "PAN LSB", "EXPRESS LSB", "EFFECT 1 LSB", "EFFECT 2 MSB", "46", "47", "GEN.PUR.1 LS", "GEN.PUR.2 LS", "GEN.PUR.3 LS", "GEN.PUR.4 LS", "52", "53", "54", "55", "56", "57", "58", "59", "60", "61", "62", "63", "SUSTAIN PDL", "PORTA PEDAL", "SOSTENUTO", "SOFT PEDAL", "LEGATO FT SW", "HOLD 2", "SOUND VARI", "TIMBER/HARMO", "RELEASE TIME", "ATTACK TIME", "BRIGHTNESS", "SOUND CONT 6", "SOUND CONT 7", "SOUND CONT 8", "SOUND CONT 9", "SOUND CONT10", "GEN.PUR. 5", "GEN.PUR. 6", "GEN.PUR. 7", "GEN.PUR. 8", "PORTA CNTRL", "85", "86", "87", "88", "89", "90", "EXT EFF DPTH", "TREMOLO DPTH", "CHORUS DEPTH", " DETUNE DEPTH", "PHASER DEPTH", "DATA INCRE", "DATA DECRE", "NRPN LSB", "NRPN MSB", "RPN LSB", "RPN MSB", "102", "103", "104", "105", "106", "107" "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "ALL SND OFF", "RESET CONTRL", "LOCAL ON/OFF", "ALL NOTE OFF", "OMNI OFF", "OMNI ON", "MONO MODE ON", "POLY MODE ON" };
@@ -118,24 +119,24 @@ SequencerWindowObserver::SequencerWindowObserver(mpc::Mpc* mpc)
 	
 	if (csn.compare("tempochange") == 0) {
 		/*
-		a0tcField->setOpaque(false);
-		a1tcField->setOpaque(false);
-		a2tcField->setOpaque(false);
-		b0tcField->setOpaque(false);
-		b1tcField->setOpaque(false);
-		b2tcField->setOpaque(false);
-		c0tcField->setOpaque(false);
-		c1tcField->setOpaque(false);
-		c2tcField->setOpaque(false);
-		d0tcField->setOpaque(false);
-		d1tcField->setOpaque(false);
-		d2tcField->setOpaque(false);
-		e0tcField->setOpaque(false);
-		e1tcField->setOpaque(false);
-		e2tcField->setOpaque(false);
-		f0tcField->setOpaque(false);
-		f1tcField->setOpaque(false);
-		f2tcField->setOpaque(false);
+		a0tcField.lock()->setOpaque(false);
+		a1tcField.lock()->setOpaque(false);
+		a2tcField.lock()->setOpaque(false);
+		b0tcField.lock()->setOpaque(false);
+		b1tcField.lock()->setOpaque(false);
+		b2tcField.lock()->setOpaque(false);
+		c0tcField.lock()->setOpaque(false);
+		c1tcField.lock()->setOpaque(false);
+		c2tcField.lock()->setOpaque(false);
+		d0tcField.lock()->setOpaque(false);
+		d1tcField.lock()->setOpaque(false);
+		d2tcField.lock()->setOpaque(false);
+		e0tcField.lock()->setOpaque(false);
+		e1tcField.lock()->setOpaque(false);
+		e2tcField.lock()->setOpaque(false);
+		f0tcField.lock()->setOpaque(false);
+		f1tcField.lock()->setOpaque(false);
+		f2tcField.lock()->setOpaque(false);
 		*/
 		tempoChangeField = ls->lookupField("tempochange");
 		initialTempoField = ls->lookupField("initialtempo");
@@ -215,7 +216,7 @@ SequencerWindowObserver::SequencerWindowObserver(mpc::Mpc* mpc)
 	timeSig.addObserver(this);
 	
 	for (auto& h : hBars) {
-		//h.lock()->Hide(true);
+		h.lock()->Hide(true);
 	}
 
 	if (csn.compare("sequence") == 0) {
@@ -568,8 +569,8 @@ void SequencerWindowObserver::displayNotes()
 		notes0Field.lock()->setSize(8 * 6 * 2, 18);
 		notes1Label.lock()->Hide(false);
 		notes1Field.lock()->Hide(false);
-		//notes0Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(swGui->getMidiNote0()), " ", 3) + "(" + mpc::ui::Uis::noteNames[swGui->getMidiNote0()] + u8"\u00D4");
-		//notes1Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(swGui->getMidiNote1()), " ", 3) + "(" + mpc::ui::Uis::noteNames[swGui->getMidiNote1()] + u8"\u00D4");
+		notes0Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(swGui->getMidiNote0()), " ", 3) + "(" + mpc::ui::Uis::noteNames[swGui->getMidiNote0()] + u8"\u00D4");
+		notes1Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(swGui->getMidiNote1()), " ", 3) + "(" + mpc::ui::Uis::noteNames[swGui->getMidiNote1()] + u8"\u00D4");
 	}
 	else {
 		notes0Field.lock()->setSize(6 * 6 * 2 + 4, 18);
@@ -644,7 +645,7 @@ void SequencerWindowObserver::displayTempoChangeOn()
 
 void SequencerWindowObserver::displayTempoChange0()
 {
-	//hBars[1].lock()->Hide(false);
+	hBars[1].lock()->Hide(false);
 	auto tce = swGui->getVisibleTempoChanges()[0].lock();
 	a0tcField.lock()->setText(" " + to_string(tce->getStepNumber() + 1));
 	int value = tce->getBar(timeSig.getNumerator(), timeSig.getDenominator()) + 1;
@@ -668,12 +669,11 @@ void SequencerWindowObserver::displayTempoChange0()
 	string tempoStr = moduru::lang::StrUtil::TrimDecimals((tempo * 10) / 10.0, 1);
 	tempoStr[(int)(tempoStr.find('.'))] = L'\u00CB';
 	f0tcField.lock()->setTextPadded(tempoStr, " ");
-	//hBars[1].lock()->setValue((tempo - 15) * (290 / 925.0));
+	hBars[1].lock()->setValue((tempo - 15) * (290 / 925.0));
 }
 
 void SequencerWindowObserver::displayTempoChange1()
 {
-	/*
 	int size = swGui->getVisibleTempoChanges().size();
 	auto tce = swGui->getVisibleTempoChanges()[1].lock();
 	if (!tce) {
@@ -722,12 +722,10 @@ void SequencerWindowObserver::displayTempoChange1()
 	f1tcField.lock()->setTextPadded(tempoStr, " ");
 
 	hBars[2].lock()->setValue(tce->getRatio() * (127 / 4000.0));
-	*/
 }
 
 void SequencerWindowObserver::displayTempoChange2()
 {
-	/*
 	auto tce = swGui->getVisibleTempoChanges()[2].lock();
 	if (!tce) {
 		if (!swGui->getVisibleTempoChanges()[1].lock()) {
@@ -779,7 +777,6 @@ void SequencerWindowObserver::displayTempoChange2()
 	tempoStr[(int)(tempoStr.find('.'))] = L'\u00CB';
 	f2tcField.lock()->setTextPadded(tempoStr, " ");
 	hBars[3].lock()->setValue(tce->getRatio() * (127 / 4000.0));
-	*/
 }
 
 void SequencerWindowObserver::displayDisplayStyle()
@@ -856,17 +853,15 @@ void SequencerWindowObserver::update(moduru::observer::Observable* o, boost::any
 	}
 	else if (s.compare("tempochange") == 0) {
 		initVisibleEvents();
-		/*
-		if (mainFrame->getFocus(1).find("0") != string::npos) {
+		if (mpc->getLayeredScreen().lock()->getFocus().find("0") != string::npos) {
 			displayTempoChange0();
 		}
-		if (mainFrame->getFocus(1).find("1") != string::npos) {
+		if (mpc->getLayeredScreen().lock()->getFocus().find("1") != string::npos) {
 			displayTempoChange1();
 		}
-		if (mainFrame->getFocus(1).find("2") != string::npos) {
+		if (mpc->getLayeredScreen().lock()->getFocus().find("2") != string::npos) {
 			displayTempoChange2();
 		}
-		*/
 	}
 	else if (s.compare("offset") == 0) {
 		initVisibleEvents();
@@ -950,7 +945,7 @@ void SequencerWindowObserver::update(moduru::observer::Observable* o, boost::any
 		displayNewBars();
 	}
 	else if (s.compare("mrsline") == 0) {
-		//yPos = stoi(mainFrame->getFocus(1).substr(1, 2));
+		yPos = stoi(mpc->getLayeredScreen().lock()->getFocus().substr(1, 2));
 		displayMrsLine(yPos);
 	}
 	else if (s.compare("multirecordingsetup") == 0) {
@@ -1047,7 +1042,7 @@ void SequencerWindowObserver::displayTrackNumberNames()
 
 SequencerWindowObserver::~SequencerWindowObserver() {
 	for (auto& h : hBars) {
-		//h.lock()->Hide(true);
+		h.lock()->Hide(true);
 	}
 	track.lock()->deleteObserver(this);
 	sequencer.lock()->deleteObserver(this);
