@@ -89,7 +89,7 @@ namespace mpc {
 			std::shared_ptr<ctootextensions::MpcMixerControls> mixerControls{};
 			std::weak_ptr<ctootextensions::MpcMultiMidiSynth> mms{};
 			std::shared_ptr<ctoot::audio::server::CompoundAudioClient> cac{};
-			//std::shared_ptr<MpcMidiPorts> mpcMidiPorts{};
+			std::shared_ptr<MpcMidiPorts> mpcMidiPorts{};
 			Mpc* mpc{ nullptr };
 			std::vector<std::string> serverNames{};
 			std::vector<std::string> inputNames{};
@@ -145,7 +145,7 @@ namespace mpc {
 
 		public:
 			void connectVoices();
-			//std::weak_ptr<MpcMidiPorts> getMidiPorts();
+			std::weak_ptr<MpcMidiPorts> getMidiPorts();
 			int getServerIndex();
 			int getServerCount();
 			std::string getServerName(int i);

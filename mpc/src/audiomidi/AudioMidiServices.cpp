@@ -4,7 +4,7 @@
 //#include <audiomidi/SetupServer.hpp>
 //#include <audiomidi/DirectToDiskSettings.hpp>
 #include <audiomidi/ExportAudioProcessAdapter.hpp>
-//#include <audiomidi/MpcMidiPorts.hpp>
+#include <audiomidi/MpcMidiPorts.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 //#include <ui/vmpc/AudioObserver.hpp>
 #include <nvram/NvRam.hpp>
@@ -137,13 +137,11 @@ void AudioMidiServices::start(std::string mode) {
 		}
 	}
 	connectVoices();
-	/*
 	mpcMidiPorts = make_shared<MpcMidiPorts>(midiSystem, mpc);
 	mpcMidiPorts->setMidiIn1(-1);
 	mpcMidiPorts->setMidiIn2(-1);
 	mpcMidiPorts->setMidiOutA(-1);
 	mpcMidiPorts->setMidiOutB(-1);
-	*/
 	auto sampler = mpc->getSampler().lock();
 	sampler->setActiveInput(inputProcesses[mpc->getUis().lock()->getSamplerGui()->getInput()]);
 	mixer->getStrip("66").lock()->setInputProcess(sampler->getAudioOutputs()[0]);
@@ -151,7 +149,7 @@ void AudioMidiServices::start(std::string mode) {
 	cac = make_shared<ctoot::audio::server::CompoundAudioClient>();
 	cac->add(frameSeq.get());
 	cac->add(mixer.get());
-	//cac->add(midiSystem.get());
+	cac->add(midiSystem.get());
 	cac->add(sampler.get());
 	offlineServer->setWeakPtr(offlineServer);
 	offlineServer->setClient(cac);
@@ -466,12 +464,10 @@ void AudioMidiServices::connectVoices()
 	mpc->getBasicPlayer()->connectVoice();
 }
 
-/*
 weak_ptr<MpcMidiPorts> AudioMidiServices::getMidiPorts()
 {
 return mpcMidiPorts;
 }
-*/
 
 int AudioMidiServices::getServerIndex()
 {

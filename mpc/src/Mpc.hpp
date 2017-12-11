@@ -75,6 +75,7 @@ namespace mpc {
 		std::shared_ptr<sequencer::Sequencer> sequencer;
 		std::shared_ptr<sampler::Sampler> sampler;
 		std::shared_ptr<audiomidi::AudioMidiServices> audioMidiServices;
+		std::vector<audiomidi::MpcMidiInput*> mpcMidiInputs;
 
 	private:
 		std::unique_ptr<DiskController> diskController{};
@@ -104,6 +105,9 @@ namespace mpc {
 		std::vector<ctootextensions::MpcSoundPlayerChannel*> getDrums();
 		std::weak_ptr<audiomidi::EventHandler> getEventHandler();
 		mpc::ctootextensions::MpcMultiMidiSynth* getMms();
+		std::weak_ptr<mpc::audiomidi::MpcMidiPorts> getMidiPorts();
+		mpc::audiomidi::MpcMidiInput* getMpcMidiInput(int i);
+
 
 	public:
 		void loadSound(bool replace);

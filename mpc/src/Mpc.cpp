@@ -16,6 +16,7 @@
 
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audiomidi/EventHandler.hpp>
+#include <audiomidi/MpcMidiInput.hpp>
 
 #include <sampler/Sampler.hpp>
 #include <sequencer/Sequence.hpp>
@@ -57,7 +58,9 @@ void Mpc::init(std::string mode)
 
 	sampler = make_shared<mpc::sampler::Sampler>(this);
 	MLOG("sampler created.");
-	
+
+	mpcMidiInputs = vector<mpc::audiomidi::MpcMidiInput*>{ new mpc::audiomidi::MpcMidiInput(0, this), new mpc::audiomidi::MpcMidiInput(1, this) };
+
 	/*
 	* AudioMidiServices requires sampler to exist.
 	*/
@@ -239,6 +242,16 @@ void Mpc::runLoadSoundThread(int size) {
 	uis->getDiskGui()->removePopup();
 	layeredScreen->openScreen("loadasound");
 	getDisk().lock()->setBusy(false);
+}
+
+weak_ptr<audiomidi::MpcMidiPorts> Mpc::getMidiPorts()
+{
+	return audioMidiServices->getMidiPorts();
+}
+
+audiomidi::MpcMidiInput* Mpc::getMpcMidiInput(int i)
+{
+	return mpcMidiInputs[i];
 }
 
 Mpc::~Mpc() {
