@@ -27,6 +27,7 @@ namespace mpc {
 		class Underline;
 		class VerticalBar;
 		class MixerFaderBackground;
+		class MixerTopBackground;
 		class Knob;
 		class Popup;
 		class Wave;
@@ -86,6 +87,7 @@ namespace mpc {
 			std::shared_ptr<mpc::lcdgui::Underline> underline{};
 			std::vector<std::shared_ptr<mpc::lcdgui::VerticalBar>> verticalBarsMixer{};
 			std::vector<std::shared_ptr<mpc::lcdgui::MixerFaderBackground>> mixerFaderBackgrounds{};
+			std::vector<std::shared_ptr<mpc::lcdgui::MixerTopBackground>> mixerTopBackgrounds{};
 			std::vector<std::shared_ptr<mpc::lcdgui::Knob>> knobs{};
 			std::shared_ptr<mpc::lcdgui::Wave> fineWave{};
 			std::shared_ptr<mpc::lcdgui::Wave> wave{};
@@ -124,6 +126,7 @@ namespace mpc {
 			FunctionKeys* getFunctionKeys();
 			std::vector<std::weak_ptr<mpc::lcdgui::Knob>> getKnobs();
 			std::vector<std::weak_ptr<mpc::lcdgui::MixerFaderBackground>> getMixerFaderBackgrounds();
+			std::vector<std::weak_ptr<mpc::lcdgui::MixerTopBackground>> getMixerTopBackgrounds();
 			void drawFunctionKeys(std::string screenName);
 			std::weak_ptr<mpc::lcdgui::Underline> getUnderline();
 			std::weak_ptr<mpc::lcdgui::TwoDots> getTwoDots();

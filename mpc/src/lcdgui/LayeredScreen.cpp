@@ -13,6 +13,7 @@
 #include <lcdgui/HorizontalBar.hpp>
 #include <lcdgui/VerticalBar.hpp>
 #include <lcdgui/MixerFaderBackground.hpp>
+#include <lcdgui/MixerTopBackground.hpp>
 #include <lcdgui/Knob.hpp>
 #include <lcdgui/TwoDots.hpp>
 #include <lcdgui/Wave.hpp>
@@ -132,7 +133,9 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 
 	verticalBarsMixer = vector<shared_ptr<VerticalBar>>(16);
 	mixerFaderBackgrounds = vector<shared_ptr<MixerFaderBackground>>(16);
+	mixerTopBackgrounds = vector<shared_ptr<MixerTopBackground>>(16);
 	knobs = vector<shared_ptr<Knob>>(16);
+
 
 	underline = make_shared<mpc::lcdgui::Underline>();
 	envGraph = make_shared<mpc::lcdgui::EnvGraph>(mpc);
@@ -177,6 +180,16 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		mixerFaderBackgrounds[i]->Hide(true);
 		nonTextComps.push_back(mixerFaderBackgrounds[i]);
 
+		w = 13;
+		h = 12;
+		x = 4 + (i * 15);
+		y = 0;
+		rect = MRECT(x, y, x + w, y + h);
+		mixerTopBackgrounds[i] = make_shared<MixerTopBackground>(rect);
+		mixerTopBackgrounds[i]->Hide(true);
+		nonTextComps.push_back(mixerTopBackgrounds[i]);
+
+
 		w = 5;
 		h = 37;
 		x = 12 + (i * 15);
@@ -189,7 +202,6 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		w = 13;
 		h = 13;
 		x = 5 + (i * 15);
-
 		y = 1;
 		rect = MRECT(x, y, x + w, y + h);
 		knobs[i] = make_shared<Knob>(rect);
@@ -542,6 +554,14 @@ vector<weak_ptr<mpc::lcdgui::MixerFaderBackground>> LayeredScreen::getMixerFader
 {
 	auto res = vector<weak_ptr<mpc::lcdgui::MixerFaderBackground>>();
 	for (auto& b : mixerFaderBackgrounds)
+		res.push_back(b);
+	return res;
+}
+
+vector<weak_ptr<mpc::lcdgui::MixerTopBackground>> LayeredScreen::getMixerTopBackgrounds()
+{
+	auto res = vector<weak_ptr<mpc::lcdgui::MixerTopBackground>>();
+	for (auto& b : mixerTopBackgrounds)
 		res.push_back(b);
 	return res;
 }

@@ -8,17 +8,12 @@ MixerFaderBackground::MixerFaderBackground(MRECT rect)
 }
 
 void MixerFaderBackground::Draw(std::vector<std::vector<bool> >* pixels) {
-//{
+	if (IsHidden()) return;
 	for (int i = rect.L; i < rect.R + 1; i++) {
 		for (int j = rect.T; j < rect.B + 1; j++) {
 			(*pixels)[i][j] = true;
 		}
 	}
-//	int lcdx = mpc::maingui::Constants::LCD_RECT()->L;
-//	int lcdy = mpc::maingui::Constants::LCD_RECT()->T;
-//	IRECT tmp(0 + rect.L + lcdx, 0 + rect.T + lcdy, 28 + rect.L + lcdx, 69 + rect.T + lcdy);
-//	g->DrawRect(mpc::maingui::Constants::LCD_ON(), &tmp);
-//	g->FillIRect(mpc::maingui::Constants::LCD_ON(), &tmp);
 	dirty = false;
 }
 

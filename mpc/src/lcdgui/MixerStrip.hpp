@@ -17,7 +17,7 @@ namespace mpc {
 
 		class Field;
 		class VerticalBar;
-		class MixerKnobBackground;
+		class MixerTopBackground;
 		class MixerFaderBackground;
 		class Knob;
 
@@ -44,7 +44,7 @@ namespace mpc {
 			int yPos1fx;
 			std::weak_ptr<VerticalBar> verticalBar;
 			std::weak_ptr<Knob> knob;
-			std::weak_ptr<MixerKnobBackground> mixerKnobBackground;
+			std::weak_ptr<MixerTopBackground> mixerTopBackground;
 			std::weak_ptr<MixerFaderBackground> mixerFaderBackground;
 			int selection;
 			mpc::ui::sampler::MixerGui* mixGui{ nullptr };

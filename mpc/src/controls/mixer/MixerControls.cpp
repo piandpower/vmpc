@@ -58,6 +58,7 @@ void MixerControls::function(int f)
 	case 1:
 	case 2:
 		mixerGui->setTab(f);
+		ls.lock()->getCurrentBackground()->SetDirty();
 		break;
 	case 3:
 		ls.lock()->openScreen("mixersetup");
