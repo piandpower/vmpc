@@ -1,5 +1,11 @@
 #include "Component.hpp"
 
+#include "BlinkLabel.hpp"
+#include <Mpc.hpp>
+
+#include <string>
+
+using namespace std;
 using namespace mpc::lcdgui;
 
 void Component::Hide(bool b) 
@@ -7,8 +13,11 @@ void Component::Hide(bool b)
 	if (hidden != b) { 
 		hidden = b;
 		SetDirty();
-		if (!rect.Empty()) 
-			clearRects.push_back(rect); 
+		if (!rect.Empty()) {
+			auto r = rect;
+			MLOG("Component hide rect: " + to_string(r.L) + " " + to_string(r.T) + " " + to_string(r.W()) + " " + to_string(r.H()));
+			clearRects.push_back(rect);
+		}
 	} 
 }
 
@@ -30,6 +39,9 @@ bool Component::NeedsClearing()
 }
 
 void Component::Clear(std::vector<std::vector<bool> >* pixels) {
+	if (dynamic_cast<lcdgui::BlinkLabel*>(this) != nullptr) {
+		MLOG("Clearing blinklabel");
+	}
 	for (int k = 0; k < clearRects.size(); k++) {
 		auto r = clearRects[k];
 		bool alreadyDone = false;

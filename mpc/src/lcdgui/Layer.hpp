@@ -4,7 +4,7 @@
 #include "Info.hpp"
 #include "Background.hpp"
 #include "FunctionKeys.hpp"
-//#include <lcdgui/BlinkLabel.hpp>
+#include <lcdgui/BlinkLabel.hpp>
 
 #include <rapidjson/document.h>
 
@@ -28,7 +28,7 @@ namespace mpc {
 			std::vector<std::unique_ptr<lcdgui::Info>> infos{};
 			mpc::lcdgui::Background* bg{ nullptr };
 			FunctionKeys* fk{ nullptr };
-			//std::shared_ptr<mpc::lcdgui::BlinkLabel> blinkLabel{};
+			std::shared_ptr<mpc::lcdgui::BlinkLabel> blinkLabel{};
 
 		private:
 			std::weak_ptr<mpc::lcdgui::Field> getUnusedField();

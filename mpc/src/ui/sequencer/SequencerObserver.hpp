@@ -25,6 +25,7 @@ namespace mpc {
 		class LayeredScreen;
 		class Field;
 		class Label;
+		class BlinkLabel;
 	}
 
 	namespace ui {
@@ -66,6 +67,7 @@ namespace mpc {
 				std::weak_ptr<mpc::lcdgui::Label> nextSqLabel{};
 				std::weak_ptr<mpc::lcdgui::Label> tempoLabel{};
 				std::weak_ptr<mpc::lcdgui::Label> deviceNameLabel{};
+				std::weak_ptr<mpc::lcdgui::BlinkLabel> soloLabel{};
 
 			private:
 				void displayTempoSource();

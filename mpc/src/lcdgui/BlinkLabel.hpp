@@ -12,7 +12,7 @@ namespace mpc {
 
 		private:
 			int BLINK_INTERVAL{ 500 };
-			bool blinkingOn{ false };
+			bool blinking{ false };
 			std::thread blinkThread;
 
 		private:
@@ -21,7 +21,11 @@ namespace mpc {
 
 		public:
 			void setBlinking(bool flag);
-			bool getBlinking();
+			bool isBlinking();
+
+		public:
+			void Hide(bool b) override;
+			void initialize(std::string name, std::string text, int x, int y, int columns) override;
 
 		public:
 			BlinkLabel(std::string text);

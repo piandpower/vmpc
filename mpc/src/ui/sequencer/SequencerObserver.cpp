@@ -62,6 +62,8 @@ SequencerObserver::SequencerObserver(mpc::Mpc* mpc)
 	nextSqField.lock()->Hide(true);
 	nextSqLabel.lock()->Hide(true);
 
+	soloLabel = dynamic_pointer_cast<mpc::lcdgui::BlinkLabel>(ls->lookupLabel("soloblink").lock());
+
 	seqNum = lSequencer->getActiveSequenceIndex();
 	seq = lSequencer->getSequence(seqNum);
 
@@ -93,7 +95,7 @@ SequencerObserver::SequencerObserver(mpc::Mpc* mpc)
 	displayVelo();
 	displayBus();
 	displayDeviceNumber();
-	//mainFrame->setBlink("soloblink", 0, lSequencer->isSoloEnabled());
+	//soloLabel.lock()->setBlinking(lSequencer->isSoloEnabled());
 }
 
 vector<string>* SequencerObserver::timingCorrectNames()
@@ -318,7 +320,7 @@ void SequencerObserver::update(moduru::observer::Observable* o, boost::any arg)
 		displayDeviceName();
 	}
 	else if (s.compare("soloenabled") == 0) {
-		//mainFrame->setBlink("soloblink", 0, lSequencer->isSoloEnabled());
+		soloLabel.lock()->setBlinking(lSequencer->isSoloEnabled());
 	}
 }
 

@@ -2,12 +2,11 @@
 #include "Field.hpp"
 #include "Label.hpp"
 
-#include <string>
-
 #include <Logger.hpp>
 
+#include <string>
+
 using namespace rapidjson;
-//using namespace mpc::gui;
 using namespace mpc::lcdgui;
 using namespace std;
 
@@ -21,22 +20,19 @@ Layer::Layer(mpc::lcdgui::LayeredScreen* layeredScreen)
 	for (int i = 0; i < 100; i++) {
 		unusedLabels.push_back(make_shared<mpc::lcdgui::Label>());
 	}
-	//blinkLabel = make_shared<mpc::lcdgui::BlinkLabel>("SOLO");
-	//blinkLabel->initialize("soloblink", "SOLO", 133, 51, 4);
-	//blinkLabel->Hide(true);
+	blinkLabel = make_shared<mpc::lcdgui::BlinkLabel>("SOLO");
+	blinkLabel->initialize("soloblink", "SOLO", 133, 51, 4);
 }
 
 weak_ptr<mpc::lcdgui::Field> Layer::getUnusedField() {
 	auto res = unusedFields[0];
 	unusedFields.erase(unusedFields.begin());
 	usedFields.push_back(res);
-	//res->Hide(false);
 	return res;
 }
 
 void Layer::unuseField(weak_ptr<mpc::lcdgui::Field> field) {
 	auto lField = field.lock();
-	//lField->Hide(true);
 	lField->setFocusable(false);
 	for (int i = 0; i < usedFields.size(); i++) {
 		if (usedFields[i] == lField) {
@@ -51,13 +47,11 @@ weak_ptr<mpc::lcdgui::Label> Layer::getUnusedLabel() {
 	auto res = unusedLabels[0];
 	unusedLabels.erase(unusedLabels.begin());
 	usedLabels.push_back(res);
-	//res->Hide(false);
 	return res;
 }
 
 void Layer::unuseLabel(weak_ptr<mpc::lcdgui::Label> label) {
 	auto lLabel = label.lock();
-	//lLabel->Hide(true);
 	for (int i = 0; i < usedLabels.size(); i++) {
 		if (usedLabels[i] == lLabel) {
 			unusedLabels.push_back(lLabel);
@@ -134,13 +128,7 @@ string Layer::openScreen(Value& screenJson, string screenName) {
 	Value& parameters = screenJson["parameters"];
 	Value& tfsize = screenJson["tfsize"];
 
-	if (screenName.compare("sequencer") == 0) {
-		//blinkLabel->setBlinking(false);
-		//blinkLabel->Hide(false);
-	}
-	else {
-		//if (!blinkLabel->IsHidden()) blinkLabel->Hide(true);
-	}
+	blinkLabel->setBlinking(false);
 
 	string firstField = "";
 	for (int i = 0; i < labels.Size(); i++) {
@@ -201,8 +189,8 @@ vector<weak_ptr<mpc::lcdgui::Component>> Layer::getComponentsThatNeedClearing() 
 			result.push_back(c);
 		}
 	}
-	for (auto& c : usedLabels) {
-		if (c->NeedsClearing()) {
+	for (auto& c : getAllLabels()) {
+		if (c.lock()->NeedsClearing()) {
 			result.push_back(c);
 		}
 	}
@@ -240,7 +228,7 @@ vector<weak_ptr<mpc::lcdgui::Component>> Layer::getAllLabels() {
 	vector<weak_ptr<mpc::lcdgui::Component>> result;
 	for (auto& l : usedLabels)
 		result.push_back(l);
-	//if (blinkLabel) result.push_back(blinkLabel);
+	if (blinkLabel) result.push_back(blinkLabel);
 	return result;
 }
 
