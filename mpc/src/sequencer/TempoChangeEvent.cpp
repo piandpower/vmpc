@@ -102,13 +102,12 @@ void TempoChangeEvent::plusOneClock(TempoChangeEvent* next)
 
 void TempoChangeEvent::minusOneClock(TempoChangeEvent* previous)
 {
-	if (stepNumber == 0) return;
+	if (stepNumber == 0 || tick == 0) return;
 
 	if (previous != nullptr) {
 		if (tick == previous->getTick() + 1) return;
 	}
 	tick--;
-	if (tick < 0) tick = 0;
 
 	setChanged();
 	notifyObservers(string("tempochange"));

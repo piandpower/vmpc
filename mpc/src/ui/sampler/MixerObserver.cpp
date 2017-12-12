@@ -473,12 +473,9 @@ void MixerObserver::displayFunctionKeys()
 }
 
 void MixerObserver::displayMasterLevel() {
-	if (mixerSetupGui->getMasterLevel() != -73) {
-		masterLevelField.lock()->setTextPadded(to_string(mixerSetupGui->getMasterLevel()) + "dB", " ");
-	}
-	else {
-		masterLevelField.lock()->setTextPadded(u8"-\u00D9\u00DAdB", " ");
-	}
+	auto level = mixerSetupGui->getMasterLevelString();
+	if (mixerSetupGui->getMasterLevel() != -13) level = moduru::lang::StrUtil::padLeft(level, " ", 5);
+	masterLevelField.lock()->setText(level);
 }
 
 void MixerObserver::displayFxDrum() {

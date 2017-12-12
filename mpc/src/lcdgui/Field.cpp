@@ -41,6 +41,21 @@ void Field::initialize(std::string name, int x, int y, int columns) {
 	//loseFocus(name);
 }
 
+void Field::Draw(vector<vector<bool> >* pixels) {
+	const int margin = noLeftMargin ? 0 : 1;
+	if (opaque) {
+		for (int j = 0; j < w; j++) {
+			for (int k = 0; k < TEXT_HEIGHT + 2; k++) {
+				int x1 = x + j - margin;
+				int y1 = y + k;
+				if (x1 < 0 || x1 > 247 || y1 < 0 || y1 > 59) continue;
+				(*pixels)[x1][y1] = inverted ? true : false;
+			}
+		}
+	}
+	TextComp::Draw(pixels);
+}
+
 void Field::setSize(int width, int height) {
 	TextComp::setSize(width, height);
 	setText(text);

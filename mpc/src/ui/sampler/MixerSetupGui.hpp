@@ -1,6 +1,9 @@
 #pragma once
 #include <observer/Observable.hpp>
 
+#include <vector>
+#include <string>
+
 namespace mpc {
 	namespace ui {
 		namespace sampler {
@@ -10,6 +13,7 @@ namespace mpc {
 			{
 
 			private:
+				std::vector<std::string> masterLevelNames;
 				int masterLevel{ 0 };
 				int fxDrum{ 0 };
 				bool stereoMixSourceDrum{ false };
@@ -32,11 +36,8 @@ namespace mpc {
 				void setRecordMixChangesEnabled(bool b);
 				std::string getMasterLevelString();
 
-				MixerSetupGui();
-
 			public:
-				static std::vector<std::string> masterLevelNames();
-
+				MixerSetupGui();
 			};
 
 		}

@@ -46,6 +46,7 @@ MixerStrip::MixerStrip(int columnIndex, int bank, mpc::Mpc* mpc)
 	tf1.lock()->setOpaque(false);
 	tf2.lock()->setOpaque(true);
 	jta = { tf0, tf1, tf2, tf3, tf4 };
+	
 	tf2.lock()->setText(abcd[bank]);
 	initFields();
 	setColors();
@@ -70,9 +71,6 @@ void MixerStrip::initFields()
 {
 	if (mixGui->getTab() == 0) {
 		knob.lock()->Hide(false);
-		//tf0.lock()->Hide(false);
-		//tf0.lock()->setText("");
-		//tf0.lock()->setOpaque(false);
 		tf0.lock()->Hide(true);
 		tf1.lock()->Hide(true);
 		tf2.lock()->Hide(false);
@@ -108,9 +106,6 @@ void MixerStrip::setColors()
 		verticalBar.lock()->setColor(true);
 	}
 	else if (selection == 0) {
-		for (auto& tf : jta) {
-			tf.lock()->setInverted(false);
-		}
 		jta[0].lock()->setInverted(true);
 		jta[1].lock()->setInverted(true);
 		jta[2].lock()->setInverted(false);
@@ -123,9 +118,6 @@ void MixerStrip::setColors()
 		verticalBar.lock()->setColor(true);
 	}
     else if(selection == 1) {
-		for (auto& tf : jta) {
-			tf.lock()->setInverted(false);
-		}
         jta[0].lock()->setInverted(false);
         jta[1].lock()->setInverted(false);
         jta[2].lock()->setInverted(true);

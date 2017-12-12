@@ -29,11 +29,13 @@ void TextComp::Hide(bool b) {
 }
 
 void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
-	auto atlas = bmfParser->getAtlas();
-	auto font = bmfParser->getLoadedFont();
 
 	int textx = x;
 	int texty = y;
+
+	auto atlas = bmfParser->getAtlas();
+	auto font = bmfParser->getLoadedFont();
+
 	int atlasx, atlasy;
 
 	char* tempText = new char[text.length() + 1];
@@ -42,29 +44,6 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 
 	int next = utf8_decode_next();
 	int charCounter = 0;
-	if (name.compare("tsig") == 0) columns = 5;
-	const int margin = noLeftMargin ? 0 : 1;
-	if (opaque) {
-		/*
-		for (int j = 0; j < (TEXT_WIDTH * columns) + margin; j++) {
-			for (int k = 0; k < TEXT_HEIGHT + 2; k++) {
-				int x1 = textx + j - margin;
-				int y1 = texty + k;
-				if (x1 < 0 || x1 > 247 || y1 < 0 || y1 > 59) continue;
-				(*pixels)[x1][y1] = inverted ? true : false;
-			}
-		}
-		*/
-		for (int j = 0; j < w; j++) {
-			for (int k = 0; k < TEXT_HEIGHT + 2; k++) {
-				int x1 = textx + j - margin;
-				int y1 = texty + k;
-				if (x1 < 0 || x1 > 247 || y1 < 0 || y1 > 59) continue;
-				(*pixels)[x1][y1] = inverted ? true : false;
-			}
-		}
-	}
-	if (name.compare("tsig") == 0) columns = 7;
 	if (!IsHidden()) {
 		while (next != UTF8_END && next >= 0) {
 			moduru::gui::bmfont_char current_char;

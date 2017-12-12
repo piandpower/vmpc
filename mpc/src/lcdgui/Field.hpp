@@ -38,6 +38,7 @@ namespace mpc {
 		public:
 			void setSize(int x, int y) override;
 			void setText(std::string s) override;
+			void Draw(std::vector<std::vector<bool> >* pixels) override;
 
 		public:
 			bool hasFocus();

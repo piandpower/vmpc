@@ -42,7 +42,7 @@ namespace mpc {
 			std::string name{ "" };
 			std::	string text{ "" };
 			int columns{ 0 }; // characters
-			bool opaque{ true };
+			bool opaque{ false };
 
 		private:
 			void initRECT();

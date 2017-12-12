@@ -5,11 +5,7 @@ using namespace std;
 
 MixerSetupGui::MixerSetupGui() 
 {
-}
-
-vector<string> MixerSetupGui::masterLevelNames()
-{
-    return vector<string>{ "-\u00D9\u00DAdB", "-72dB", "-66dB", "-60dB", "-54dB", "-48dB", "-42dB", "-36dB", "-30dB", "-24dB", "-18dB", "-12dB", "-6dB", "0dB", "6dB", "12dB" };
+	masterLevelNames = vector<string>{ u8"-\u00D9\u00DAdB", "-72dB", "-66dB", "-60dB", "-54dB", "-48dB", "-42dB", "-36dB", "-30dB", "-24dB", "-18dB", "-12dB", "-6dB", "0dB", "6dB", "12dB" };
 }
 
 int MixerSetupGui::getMasterLevel()
@@ -19,10 +15,10 @@ int MixerSetupGui::getMasterLevel()
 
 void MixerSetupGui::setMasterLevel(int i)
 {
-    if(i < -13 || i > 2) return;
-    masterLevel = i;
-    setChanged();
-    notifyObservers(string("masterlevel"));
+	if (i < -13 || i > 2) return;
+	masterLevel = i;
+	setChanged();
+	notifyObservers(string("masterlevel"));
 }
 
 int MixerSetupGui::getFxDrum()
@@ -32,10 +28,10 @@ int MixerSetupGui::getFxDrum()
 
 void MixerSetupGui::setFxDrum(int i)
 {
-    if(i < 0 || i > 3) return;
-    fxDrum = i;
-    setChanged();
-    notifyObservers(string("fxdrum"));
+	if (i < 0 || i > 3) return;
+	fxDrum = i;
+	setChanged();
+	notifyObservers(string("fxdrum"));
 }
 
 bool MixerSetupGui::isStereoMixSourceDrum()
@@ -88,5 +84,5 @@ void MixerSetupGui::setRecordMixChangesEnabled(bool b)
 
 string MixerSetupGui::getMasterLevelString()
 {
-    return masterLevelNames()[masterLevel];
+	return masterLevelNames[masterLevel + 13];
 }
