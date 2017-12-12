@@ -19,6 +19,7 @@ void Assign16LevelsControls::function(int i)
     super::function(i);
 	switch (i) {
     case 4:
+		sequencerGui->setSixteenLevelsEnabled(true);
 		mpc->getHardware().lock()->getLed("sixteenlevels").lock()->light(true);
         ls.lock()->openScreen(ls.lock()->getPreviousScreenName());
         break;

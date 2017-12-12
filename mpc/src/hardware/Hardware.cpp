@@ -31,7 +31,7 @@ Hardware::Hardware(mpc::Mpc* mpc)
 
 	dataWheel = make_shared<DataWheel>(mpc);
 
-	vector<string> ledLabels{ "fullevel", "sixteenlevels", "nextseq", "trackmute", "padbanka", "padbankb", "padbankc", "padbankd", "after", "undoseq", "rec", "overdub", "play" };
+	vector<string> ledLabels{ "fulllevel", "sixteenlevels", "nextseq", "trackmute", "padbanka", "padbankb", "padbankc", "padbankd", "after", "undoseq", "rec", "overdub", "play" };
 
 	for (auto& l : ledLabels)
 		leds.push_back(std::make_shared<Led>(l));

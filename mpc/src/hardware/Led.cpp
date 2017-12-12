@@ -14,10 +14,10 @@ string Led::getLabel() {
 
 void Led::light(bool b) {
 	if (b) {
-		notifyObservers(label + "on");
+		notifyObservers(string(label + "on"));
 	}
 	else {
-		notifyObservers(label + "off");
+		notifyObservers(string(label + "off"));
 	}
 }
 

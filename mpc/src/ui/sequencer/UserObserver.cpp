@@ -31,6 +31,7 @@ UserObserver::UserObserver(mpc::Mpc* mpc)
 	lUd->addObserver(this);
 	auto ls = mpc->getLayeredScreen().lock();
 	tempoField = ls->lookupField("tempo");
+	tempoField.lock()->setSize(28, 9);
 	loopField = ls->lookupField("loop");
 	tsigField = ls->lookupField("tsig");
 	barsField = ls->lookupField("bars");
@@ -54,8 +55,9 @@ UserObserver::UserObserver(mpc::Mpc* mpc)
 void UserObserver::displayTempo()
 {
 	auto tempo = ud.lock()->getTempo().toString();
+	tempo = moduru::lang::StrUtil::padLeft(tempo, " ", 5);
 	tempo = Util::replaceDotWithSmallSpaceDot(tempo);
-	tempoField.lock()->setTextPadded(tempo, " ");
+	tempoField.lock()->setText(tempo);
 }
 
 void UserObserver::displayLoop()

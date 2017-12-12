@@ -1057,7 +1057,9 @@ SequencerWindowObserver::~SequencerWindowObserver() {
 	for (auto& h : hBars) {
 		h.lock()->Hide(true);
 	}
-	track.lock()->deleteObserver(this);
+	if (track.lock()) {
+		track.lock()->deleteObserver(this);
+	}
 	sequencer.lock()->deleteObserver(this);
 	newTimeSignature->deleteObserver(this);
 	swGui->deleteObserver(this);

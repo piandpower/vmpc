@@ -20,9 +20,8 @@ using namespace std;
 
 Assign16LevelsObserver::Assign16LevelsObserver(mpc::Mpc* mpc) 
 {
-	mpc = mpc;
+	this->mpc = mpc;
 	sGui = mpc->getUis().lock()->getSequencerGui();
-	sGui->deleteObservers();
 	sGui->addObserver(this);
 	auto ls = mpc->getLayeredScreen().lock();
 	noteField = ls->lookupField("note");
@@ -99,4 +98,5 @@ void Assign16LevelsObserver::update(moduru::observer::Observable* o, boost::any 
 }
 
 Assign16LevelsObserver::~Assign16LevelsObserver() {
+	sGui->deleteObserver(this);
 }

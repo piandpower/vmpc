@@ -145,7 +145,7 @@ void EditSequenceObserver::setModeValue()
 
 void EditSequenceObserver::setEditFunctionValue()
 {
-    editFunctionField.lock()->setSize(52 * 2 + 8, 18);
+    editFunctionField.lock()->setSize(52 + 4, 9);
     editFunctionField.lock()->setText(functionNames[editSequenceGui->getEditFunctionNumber()]);
     
 	if (editSequenceGui->getEditFunctionNumber() == 0) {
@@ -170,8 +170,8 @@ void EditSequenceObserver::setEditFunctionValue()
         copiesLabel.lock()->setLocation(138, 39);
         copiesField.lock()->setLocation(copiesField.lock()->getX(), 38);
         modeLabel.lock()->setLocation(150, 21);
-        modeField.lock()->setSize(7 * 6 * 2 + 2, 18);
-        copiesField.lock()->setSize(3 * 6 * 2 + 2, 18);
+        modeField.lock()->setSize(7 * 6 + 1, 9);
+        copiesField.lock()->setSize(3 * 6 + 1, 9);
     }
     else if (editSequenceGui->getEditFunctionNumber() == 1 || editSequenceGui->getEditFunctionNumber() == 2) {
         fromSqLabel.lock()->setLocation(131, 3);
@@ -194,12 +194,12 @@ void EditSequenceObserver::setEditFunctionValue()
         copiesLabel.lock()->setText("Value:");
         copiesLabel.lock()->setLocation(138, 35);
         copiesField.lock()->setLocation(copiesField.lock()->getX(), 34);
-        copiesField.lock()->setSize(4 * 6 * 2 + 2, 18);
+        copiesField.lock()->setSize(4 * 6 + 1, 9);
         if(editSequenceGui->getEditFunctionNumber() == 2) {
-            copiesField.lock()->setSize(3 * 6 * 2 + 2, 18);
+            copiesField.lock()->setSize(3 * 6 + 1, 9);
         }
         modeLabel.lock()->setLocation(150, 21);
-        modeField.lock()->setSize(10 * 6 * 2 + 2, 18);
+        modeField.lock()->setSize(10 * 6 + 1, 9);
     }
     else if (editSequenceGui->getEditFunctionNumber() == 3) {
         fromSqLabel.lock()->setLocation(131, 3);
@@ -222,7 +222,7 @@ void EditSequenceObserver::setEditFunctionValue()
         copiesLabel.lock()->setText("(Except drum track)");
         copiesLabel.lock()->setLocation(132, 38);
         modeLabel.lock()->setLocation(138, 21);
-        modeField.lock()->setSize(3 * 6 * 2 + 2, 18);
+        modeField.lock()->setSize(3 * 6 + 1, 9);
     }
 }
 
@@ -289,8 +289,8 @@ void EditSequenceObserver::update(moduru::observer::Observable* o, boost::any ar
 void EditSequenceObserver::setNoteValues()
 {
 	auto lTrk = track.lock();
-	midiNote0Field.lock()->setSize(8 * 6 * 2, 18);
-	midiNote1Field.lock()->setSize(8 * 6 * 2, 18);
+	midiNote0Field.lock()->setSize(8 * 6, 9);
+	midiNote1Field.lock()->setSize(8 * 6, 9);
 	midiNote1Field.lock()->setLocation(62, 39);
 	if (lTrk->getBusNumber() == 0) {
 		drumNoteField.lock()->Hide(true);
