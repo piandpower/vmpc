@@ -14,8 +14,6 @@ void Component::Hide(bool b)
 		hidden = b;
 		SetDirty();
 		if (!rect.Empty()) {
-			auto r = rect;
-			MLOG("Component hide rect: " + to_string(r.L) + " " + to_string(r.T) + " " + to_string(r.W()) + " " + to_string(r.H()));
 			clearRects.push_back(rect);
 		}
 	} 
