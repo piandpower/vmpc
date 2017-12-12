@@ -5,6 +5,7 @@
 #include <StartUp.hpp>
 #include <lcdgui/MixerStrip.hpp>
 #include <lcdgui/Field.hpp>
+#include <lcdgui/Label.hpp>
 #include <ui/sampler/MixerGui.hpp>
 #include <ui/sampler/MixerSetupGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
@@ -18,7 +19,6 @@
 #include <sequencer/Track.hpp>
 #include <sequencer/Sequencer.hpp>
 #include <ctootextensions/MpcSoundPlayerChannel.hpp>
-#include <lcdgui/Field.hpp>
 
 #include <lang/StrUtil.hpp>
 
@@ -57,11 +57,11 @@ MixerObserver::MixerObserver(mpc::Mpc* mpc)
 		lMc->addObserver(this);
 	}
 
-	if (lLs->getCurrentScreenName().compare("mixer") == 0) {
+	if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 		initPadNameLabels();
 		initMixerStrips();
 		for (auto& m : mixerStrips) {
-			m->initFields();
+			m->initLabels();
 			m->setColors();
 		}
 		displayMixerStrips();
@@ -96,28 +96,28 @@ MixerObserver::MixerObserver(mpc::Mpc* mpc)
 
 void MixerObserver::initPadNameLabels()
 {
-	int tfCounter3 = 0;
-	int tfCounter4 = 0;
-	for (auto textField : ls.lock()->getLayer(0)->getAllFields()) {
-		auto tf = dynamic_pointer_cast<mpc::lcdgui::Field>(textField.lock());
-		if (tf) {
-			if (tf->getName().compare("e3") == 0 || tf->getName().compare("e4") == 0) {
-				tf->setSize(6, 9);
+	int lCounter3 = 0;
+	int lCounter4 = 0;
+	for (auto label : ls.lock()->getLayer(0)->getAllLabels()) {
+		auto l = dynamic_pointer_cast<mpc::lcdgui::Label>(label.lock());
+		if (l) {
+			if (l->getName().compare("e3") == 0 || l->getName().compare("e4") == 0) {
+				l->setSize(6, 9);
 			}
-			if (tf->getName().length() == 2) {
-				if (tf->getName()[1] == '3') {
-					tf->setText("0");
-					if (tfCounter3 > 8) {
-						tf->setText("1");
+			if (l->getName().length() == 2) {
+				if (l->getName()[1] == '3') {
+					l->setText("0");
+					if (lCounter3 > 8) {
+						l->setText("1");
 					}
-					tfCounter3++;
+					lCounter3++;
 				}
-				else if (tf->getName()[1] == '4') {
-					tf->setText(to_string(tfCounter4 + 1));
-					tfCounter4++;
-					if (tfCounter4 == 9)
-						tfCounter4 = -1;
-
+				else if (l->getName()[1] == '4') {
+					l->setText(to_string(lCounter4 + 1));
+					lCounter4++;
+					if (lCounter4 == 9) {
+						lCounter4 = -1;
+					}
 				}
 			}
 		}
@@ -249,7 +249,7 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 
 	if (s.compare("tab") == 0) {
 		for (auto& m : mixerStrips) {
-			m->initFields();
+			m->initLabels();
 			m->setColors();
 		}
 		displayMixerStrips();
@@ -269,7 +269,7 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 		}
 	}
 	else if (s.compare("volume") == 0) {
-		if (lLs->getCurrentScreenName().compare("mixer") == 0) {
+		if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
 				mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
 				lMc = mixerChannel.lock();
@@ -294,7 +294,7 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 			lMc = mixerChannel.lock();
 			setPanningField();
 		}
-		else if (lLs->getCurrentScreenName().compare("mixer") == 0) {
+		else if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
 				mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
 				lMc = mixerChannel.lock();
@@ -314,7 +314,7 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 			lMc = mixerChannel.lock();
 			setOutputField();
 		}
-		else if (lLs->getCurrentScreenName().compare("mixer") == 0) {
+		else if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
 				mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
 				lMc = mixerChannel.lock();
@@ -344,7 +344,7 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 			lMc = mixerChannel.lock();
 			individualVolumeField.lock()->setTextPadded(lMc->getVolumeIndividualOut(), " ");
 		}
-		else if (lLs->getCurrentScreenName().compare("mixer") == 0) {
+		else if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
 				mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
 				lMc = mixerChannel.lock();
@@ -364,7 +364,7 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 			lMc = mixerChannel.lock();
 			fxPathField.lock()->setText(fxPathNames[lMc->getFxPath()]);
 		}
-		else if (lLs->getCurrentScreenName().compare("mixer") == 0) {
+		else if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
 				mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
 				lMc = mixerChannel.lock();
@@ -384,7 +384,7 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 			lMc = mixerChannel.lock();
 			fxSendLevelField.lock()->setTextPadded(lMc->getFxSendLevel(), " ");
 		}
-		else if (lLs->getCurrentScreenName().compare("mixer") == 0) {
+		else if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
 				mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
 				lMc = mixerChannel.lock();
@@ -426,7 +426,7 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 		initPadNameLabels();
 		initMixerStrips();
 		for (auto& m : mixerStrips) {
-			m->initFields();
+			m->initLabels();
 			m->setColors();
 		}
 		displayMixerStrips();

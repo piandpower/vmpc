@@ -343,7 +343,7 @@ void LayeredScreen::Draw() {
 	if (!twoDots->IsHidden() && twoDots->IsDirty()) twoDots->Draw(&pixels);
 
 	if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
-	if (currentScreenName.compare("mixer") == 0) {
+	if (currentScreenName.compare("mixerv2") == 0) {
 		for (auto& k : knobs) {
 			if (k->IsDirty()) 
 				k->Draw(&pixels);
@@ -841,7 +841,7 @@ void LayeredScreen::initObserver()
 	else if (csn.compare("step_tc") == 0 || csn.compare("editmultiple") == 0 || csn.compare("insertevent") == 0) {
 		activeObserver = make_unique<StepWindowObserver>(mpc);
 	}
-	else if (csn.compare("mixer") == 0 || csn.compare("channelsettings") == 0 || csn.compare("mixersetup") == 0) {
+	else if (csn.compare("mixerv2") == 0 || csn.compare("channelsettings") == 0 || csn.compare("mixersetup") == 0) {
 		activeObserver = make_unique<MixerObserver>(mpc);
 	}
 	else if (csn.compare("edit") == 0) {

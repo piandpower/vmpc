@@ -15,7 +15,7 @@ namespace mpc {
 
 	namespace lcdgui {
 
-		class Field;
+		class Label;
 		class VerticalBar;
 		class MixerTopBackground;
 		class MixerFaderBackground;
@@ -29,11 +29,11 @@ namespace mpc {
 			std::vector<std::string> letters;
 			std::vector<std::weak_ptr<Component>> mixerStrip;
 			int columnIndex;
-			std::weak_ptr<Field> tf0;
-			std::weak_ptr<Field> tf1;
-			std::weak_ptr<Field> tf2;
-			std::weak_ptr<Field> tf3;
-			std::weak_ptr<Field> tf4;
+			std::weak_ptr<Label> tf0;
+			std::weak_ptr<Label> tf1;
+			std::weak_ptr<Label> tf2;
+			std::weak_ptr<Label> tf3;
+			std::weak_ptr<Label> tf4;
 			std::vector<int> xPos0indiv;
 			std::vector<int> xPos1indiv;
 			int yPos0indiv;
@@ -48,15 +48,13 @@ namespace mpc {
 			std::weak_ptr<MixerFaderBackground> mixerFaderBackground;
 			int selection;
 			mpc::ui::sampler::MixerGui* mixGui{ nullptr };
-
-		public:
-			std::vector<std::weak_ptr<Field>> jta;
+			std::vector<std::weak_ptr<Label> > labels;
 
 		public:
 			std::vector<std::weak_ptr<Component> > getMixerStrip();
 			void setValueA(int i);
 			void setValueB(int i);
-			void initFields();
+			void initLabels();
 			void setColors();
 			void setSelection(int i);
 			void setValueAString(std::string str);

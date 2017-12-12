@@ -275,7 +275,7 @@ Controls::Controls(mpc::Mpc* mpc)
 
 	
 	controls["selectdrum_mixer"] = new mixer::SelectDrumMixerControls(mpc);
-	controls["mixer"] = new mixer::MixerControls(mpc);
+	controls["mixerv2"] = new mixer::MixerControls(mpc);
 	controls["channelsettings"] = new mixer::window::ChannelSettingsControls(mpc);
 	controls["mixersetup"] = new mixer::MixerSetupControls(mpc);
 	
