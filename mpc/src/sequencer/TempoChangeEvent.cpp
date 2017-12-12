@@ -117,7 +117,6 @@ void TempoChangeEvent::minusOneClock(TempoChangeEvent* previous)
 void TempoChangeEvent::setRatio(int i)
 {
 	if (i < 100 || i > 9998) return;
-
 	ratio = i;
 	setChanged();
 	notifyObservers(string("tempochange"));
@@ -132,6 +131,8 @@ void TempoChangeEvent::setStepNumber(int i)
 {
 	if (i < 0) return;
 	stepNumber = i;
+	setChanged();
+	notifyObservers(string("tempochange"));
 }
 
 int TempoChangeEvent::getStepNumber()

@@ -98,25 +98,6 @@ SequencerWindowObserver::SequencerWindowObserver(mpc::Mpc* mpc)
 	sField = ls->lookupField("s");
 	fField = ls->lookupField("f");
 	frameRateField = ls->lookupField("framerate");
-	a0tcField = ls->lookupField("a0");
-	a1tcField = ls->lookupField("a1");
-	a2tcField = ls->lookupField("a2");
-	b0tcField = ls->lookupField("b0");
-	b1tcField = ls->lookupField("b1");
-	b2tcField = ls->lookupField("b2");
-	c0tcField = ls->lookupField("c0");
-	c1tcField = ls->lookupField("c1");
-	c2tcField = ls->lookupField("c2");
-	d0tcField = ls->lookupField("d0");
-	d1tcField = ls->lookupField("d1");
-	d2tcField = ls->lookupField("d2");
-	e0tcField = ls->lookupField("e0");
-	e1tcField = ls->lookupField("e1");
-	e2tcField = ls->lookupField("e2");
-	f0tcField = ls->lookupField("f0");
-	f1tcField = ls->lookupField("f1");
-	f2tcField = ls->lookupField("f2");
-	
 	if (csn.compare("tempochange") == 0) {
 		/*
 		a0tcField.lock()->setOpaque(false);
@@ -138,8 +119,30 @@ SequencerWindowObserver::SequencerWindowObserver(mpc::Mpc* mpc)
 		f1tcField.lock()->setOpaque(false);
 		f2tcField.lock()->setOpaque(false);
 		*/
+		a0tcField = ls->lookupField("a0");
+		a1tcField = ls->lookupField("a1");
+		a2tcField = ls->lookupField("a2");
+		b0tcField = ls->lookupField("b0");
+		b1tcField = ls->lookupField("b1");
+		b2tcField = ls->lookupField("b2");
+		c0tcField = ls->lookupField("c0");
+		c1tcField = ls->lookupField("c1");
+		c2tcField = ls->lookupField("c2");
+		d0tcField = ls->lookupField("d0");
+		d1tcField = ls->lookupField("d1");
+		d2tcField = ls->lookupField("d2");
+		e0tcField = ls->lookupField("e0");
+		e1tcField = ls->lookupField("e1");
+		e2tcField = ls->lookupField("e2");
+		f0tcField = ls->lookupField("f0");
+		f1tcField = ls->lookupField("f1");
+		f2tcField = ls->lookupField("f2");
+		f0tcField.lock()->setSize(28, 9);
+		f1tcField.lock()->setSize(28, 9);
+		f2tcField.lock()->setSize(28, 9);
 		tempoChangeField = ls->lookupField("tempochange");
 		initialTempoField = ls->lookupField("initialtempo");
+		initialTempoField.lock()->setSize(28, 9);
 	}
 
 	b1tcLabel = ls->lookupLabel("b1");
@@ -211,6 +214,7 @@ SequencerWindowObserver::SequencerWindowObserver(mpc::Mpc* mpc)
 	nameGui->addObserver(this);
 	lSequencer->addObserver(this);
 	seq->addObserver(this);
+	seq->getMetaTracks().at(2).lock()->addObserver(this);
 	auto lTrk = track.lock();
 	lTrk->addObserver(this);
 	timeSig.addObserver(this);
@@ -566,14 +570,14 @@ void SequencerWindowObserver::displayNotes()
 	auto lSampler = sampler.lock();
 	auto lTrk = track.lock();
 	if (lTrk->getBusNumber() == 0) {
-		notes0Field.lock()->setSize(8 * 6 * 2, 18);
+		notes0Field.lock()->setSize(8 * 6, 9);
 		notes1Label.lock()->Hide(false);
 		notes1Field.lock()->Hide(false);
 		notes0Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(swGui->getMidiNote0()), " ", 3) + "(" + mpc::ui::Uis::noteNames[swGui->getMidiNote0()] + u8"\u00D4");
 		notes1Field.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(swGui->getMidiNote1()), " ", 3) + "(" + mpc::ui::Uis::noteNames[swGui->getMidiNote1()] + u8"\u00D4");
 	}
 	else {
-		notes0Field.lock()->setSize(6 * 6 * 2 + 4, 18);
+		notes0Field.lock()->setSize(6 * 6 + 2, 9);
 		if (swGui->getDrumNote() != 34) {
 			notes0Field.lock()->setText(to_string(swGui->getDrumNote()) + "/" + lSampler->getPadName(program.lock()->getPadNumberFromNote(swGui->getDrumNote())));
 		}
@@ -634,7 +638,7 @@ void SequencerWindowObserver::displayInitialTempo()
 	if (csn.compare("deletesequence") == 0) return;
 	auto seq = sequence.lock();
 	string tempoStr = seq->getInitialTempo().toString();
-	tempoStr[tempoStr.find(".")] = L'\u00CB';
+	tempoStr = Util::replaceDotWithSmallSpaceDot(tempoStr);
 	initialTempoField.lock()->setText(tempoStr);
 }
 
@@ -656,9 +660,10 @@ void SequencerWindowObserver::displayTempoChange0()
 	d0tcField.lock()->setTextPadded(value, "0");
 	
 	string ratioStr = moduru::lang::StrUtil::TrimDecimals(tce->getRatio() / 10.0, 1);
-	ratioStr[(int)(ratioStr.find("."))] = L'\u00CB';
-	e0tcField.lock()->setTextPadded(ratioStr, " ");
-	
+	ratioStr = moduru::lang::StrUtil::padLeft(ratioStr, " ", 5);
+	ratioStr = Util::replaceDotWithSmallSpaceDot(ratioStr);
+	e0tcField.lock()->setText(ratioStr);
+
 	auto tempo = sequence.lock()->getInitialTempo().toDouble() * (tce->getRatio() / 1000.0);
 	if (tempo < 30) {
 		tempo = 30.0;
@@ -667,8 +672,9 @@ void SequencerWindowObserver::displayTempoChange0()
 		tempo = 300.0;
 	}
 	string tempoStr = moduru::lang::StrUtil::TrimDecimals((tempo * 10) / 10.0, 1);
-	tempoStr[(int)(tempoStr.find('.'))] = L'\u00CB';
-	f0tcField.lock()->setTextPadded(tempoStr, " ");
+	tempoStr = moduru::lang::StrUtil::padLeft(tempoStr, " ", 5);
+	tempoStr = Util::replaceDotWithSmallSpaceDot(tempoStr);
+	f0tcField.lock()->setText(tempoStr);
 	hBars[1].lock()->setValue((tempo - 15) * (290 / 925.0));
 }
 
@@ -708,8 +714,10 @@ void SequencerWindowObserver::displayTempoChange1()
 	d1tcField.lock()->setTextPadded(tce->getClock(timeSig.getNumerator(), timeSig.getDenominator()), "0");
 
 	string ratioStr = moduru::lang::StrUtil::TrimDecimals(tce->getRatio() / 10.0, 1);
-	ratioStr[(int)(ratioStr.find("."))] = L'\u00CB';
-	e1tcField.lock()->setTextPadded(ratioStr, " ");
+	ratioStr = moduru::lang::StrUtil::padLeft(ratioStr, " ", 5);
+	ratioStr = Util::replaceDotWithSmallSpaceDot(ratioStr);
+	e1tcField.lock()->setText(ratioStr);
+
 	auto tempo = sequence.lock()->getInitialTempo().toDouble() * (tce->getRatio() / 1000.0);
 	if (tempo < 30) {
 		tempo = 30.0;
@@ -718,8 +726,9 @@ void SequencerWindowObserver::displayTempoChange1()
 		tempo = 300.0;
 	}
 	string tempoStr = moduru::lang::StrUtil::TrimDecimals((tempo * 10) / 10.0, 1);
-	tempoStr[(int)(tempoStr.find('.'))] = L'\u00CB';
-	f1tcField.lock()->setTextPadded(tempoStr, " ");
+	tempoStr = moduru::lang::StrUtil::padLeft(tempoStr, " ", 5);
+	tempoStr = Util::replaceDotWithSmallSpaceDot(tempoStr);
+	f1tcField.lock()->setText(tempoStr);
 
 	hBars[2].lock()->setValue(tce->getRatio() * (127 / 4000.0));
 }
@@ -762,9 +771,11 @@ void SequencerWindowObserver::displayTempoChange2()
 	b2tcField.lock()->setTextPadded(tce->getBar(timeSig.getNumerator(), timeSig.getDenominator()) + 1, "0");
 	c2tcField.lock()->setTextPadded(tce->getBeat(timeSig.getNumerator(), timeSig.getDenominator()) + 1, "0");
 	d2tcField.lock()->setTextPadded(tce->getClock(timeSig.getNumerator(), timeSig.getDenominator()), "0");
+	
 	string ratioStr = moduru::lang::StrUtil::TrimDecimals(tce->getRatio() / 10.0, 1);
-	ratioStr[(int)(ratioStr.find("."))] = L'\u00CB';
-	e2tcField.lock()->setTextPadded(ratioStr, " ");
+	ratioStr = moduru::lang::StrUtil::padLeft(ratioStr, " ", 5);
+	ratioStr = Util::replaceDotWithSmallSpaceDot(ratioStr);
+	e2tcField.lock()->setText(ratioStr);
 
 	auto tempo = sequence.lock()->getInitialTempo().toDouble() * (tce->getRatio() / 1000.0);
 	if (tempo < 30) {
@@ -774,8 +785,10 @@ void SequencerWindowObserver::displayTempoChange2()
 		tempo = 300.0;
 	}
 	string tempoStr = moduru::lang::StrUtil::TrimDecimals((tempo * 10) / 10.0, 1);
-	tempoStr[(int)(tempoStr.find('.'))] = L'\u00CB';
-	f2tcField.lock()->setTextPadded(tempoStr, " ");
+	tempoStr = moduru::lang::StrUtil::padLeft(tempoStr, " ", 5);
+	tempoStr = Util::replaceDotWithSmallSpaceDot(tempoStr);
+	f2tcField.lock()->setText(tempoStr);
+
 	hBars[3].lock()->setValue(tce->getRatio() * (127 / 4000.0));
 }
 
@@ -856,14 +869,14 @@ void SequencerWindowObserver::update(moduru::observer::Observable* o, boost::any
 		if (mpc->getLayeredScreen().lock()->getFocus().find("0") != string::npos) {
 			displayTempoChange0();
 		}
-		if (mpc->getLayeredScreen().lock()->getFocus().find("1") != string::npos) {
+		else if (mpc->getLayeredScreen().lock()->getFocus().find("1") != string::npos) {
 			displayTempoChange1();
 		}
-		if (mpc->getLayeredScreen().lock()->getFocus().find("2") != string::npos) {
+		else if (mpc->getLayeredScreen().lock()->getFocus().find("2") != string::npos) {
 			displayTempoChange2();
 		}
 	}
-	else if (s.compare("offset") == 0) {
+	else if (s.compare("offset") == 0 || s.compare("tempochangeadded") == 0 || s.compare("tick") == 0) {
 		initVisibleEvents();
 		displayTempoChange0();
 		displayTempoChange1();
@@ -1050,6 +1063,7 @@ SequencerWindowObserver::~SequencerWindowObserver() {
 	swGui->deleteObserver(this);
 	nameGui->deleteObserver(this);
 	sequence.lock()->deleteObserver(this);
+	sequence.lock()->getMetaTracks().at(2).lock()->deleteObserver(this);
 	track.lock()->deleteObserver(this);
 	timeSig.deleteObserver(this);
 }

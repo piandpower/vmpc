@@ -75,7 +75,7 @@ SongObserver::SongObserver(mpc::Mpc* mpc)
 void SongObserver::displayTempo()
 {
 	string tempo = sequencer.lock()->getTempo().toString();
-	tempo[(int)(tempo.find('.'))] = L'\u00CB';
+	tempo = Util::replaceDotWithSmallSpaceDot(tempo);
     tempoField.lock()->setTextPadded(tempo, " ");
 }
 

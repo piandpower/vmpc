@@ -272,6 +272,8 @@ weak_ptr<Event> Track::addEvent(int tick, string type) {
 	sortEvents();
 	setChanged();
 	notifyObservers(string("resetstepeditor"));
+	setChanged();
+	notifyObservers(string(type) + "added");
 	return res;
 }
 

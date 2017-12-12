@@ -192,7 +192,7 @@ void TempoChangeControls::turnWheel(int j)
 			}
 		}
 		else if (param.compare("e" + to_string(i)) == 0) {
-			tce->setRatio(tce->getRatio() + i);
+			tce->setRatio(tce->getRatio() + j);
 		}
 	}
 }

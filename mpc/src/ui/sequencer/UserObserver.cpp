@@ -54,7 +54,7 @@ UserObserver::UserObserver(mpc::Mpc* mpc)
 void UserObserver::displayTempo()
 {
 	auto tempo = ud.lock()->getTempo().toString();
-	tempo[(int)(tempo.find('.'))] = L'\u00CB';
+	tempo = Util::replaceDotWithSmallSpaceDot(tempo);
 	tempoField.lock()->setTextPadded(tempo, " ");
 }
 

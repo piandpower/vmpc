@@ -24,7 +24,9 @@ EditSoundObserver::EditSoundObserver(mpc::Mpc* mpc)
 	auto letters = vector<string>{ "A", "B", "C" };
 	for (auto s : timeStretchPresetNames) {
 		for (int i = 0; i < 3; i++) {
-			//newTimeStretchPresetNames->push_back(mpc::disk::AbstractDisk::padRightSpace(s, 13))->append((*letters)[i]));
+			s = moduru::lang::StrUtil::padRight(s, " ", 13);
+			s += letters.at(i);
+			newTimeStretchPresetNames.push_back(s);
 			totalCounter++;
 		}
 	}

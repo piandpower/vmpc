@@ -106,11 +106,7 @@ void SndParamsObserver::displaySampleAndNewTempo()
 	bpmString = part1 + "." + part2;
 	bpmString = moduru::lang::StrUtil::padLeft(bpmString, " ", 5);
 
-	string tempodot = u8"\u00CB";
-	auto dotindex = (int)(bpmString.find('.'));
-	part1 = bpmString.substr(0, dotindex);
-	part2 = bpmString.substr(dotindex + 1);
-	bpmString = part1 + tempodot + part2;
+	bpmString = Util::replaceDotWithSmallSpaceDot(bpmString);
 
 	sampleTempoLabel.lock()->setText("Sample tempo=" + bpmString);
 
@@ -126,11 +122,8 @@ void SndParamsObserver::displaySampleAndNewTempo()
 	bpmString = part1 + "." + part2;
 	bpmString = moduru::lang::StrUtil::padLeft(bpmString, " ", 5);
 
-	dotindex = (int)(bpmString.find('.'));
-	part1 = bpmString.substr(0, dotindex);
-	part2 = bpmString.substr(dotindex + 1);
-	bpmString = part1 + tempodot + part2;
-
+	bpmString = Util::replaceDotWithSmallSpaceDot(bpmString);
+	
 	newTempoLabel.lock()->setText("New tempo=" + bpmString);
 }
 
@@ -141,7 +134,8 @@ void SndParamsObserver::displaySnd()
         //sndField->grabFocus();
         auto sampleName = lSound->getName();
         if(!lSound->isMono()) {
-            //sampleName = pc::disk::AbstractDisk::padRightSpace(sampleName, 16)  + "(ST)";
+			sampleName = moduru::lang::StrUtil::padRight(sampleName, " ", 16);
+            sampleName += "(ST)";
         }
         sndField.lock()->setText(sampleName);
     } else {

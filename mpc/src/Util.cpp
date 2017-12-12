@@ -6,6 +6,16 @@
 using namespace std;
 using namespace mpc;
 
+std::string Util::replaceDotWithSmallSpaceDot(std::string s) {
+	string res;
+	string tempodot = u8"\u00CB";
+	auto dotindex = (int)(s.find('.'));
+	auto part1 = s.substr(0, dotindex);
+	auto part2 = s.substr(dotindex + 1);
+	res = part1 + tempodot + part2;
+	return res;
+}
+
 vector<char> Util::getPadAndVelo(int x, int y)
 {
 	int velocity;

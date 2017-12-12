@@ -44,6 +44,7 @@ SequencerObserver::SequencerObserver(mpc::Mpc* mpc)
 	recordingModeField = ls->lookupField("recordingmode");
 	barsField = ls->lookupField("bars");
 	tempoField = ls->lookupField("tempo");
+	tempoField.lock()->setSize(28, 9);
 	tempoSourceField = ls->lookupField("temposource");
 	tsigField = ls->lookupField("tsig");
 	pgmField = ls->lookupField("pgm");
@@ -193,11 +194,7 @@ void SequencerObserver::displayTempo()
 {
 	displayTempoLabel();
 	auto tempo = sequencer.lock()->getTempo().toString();
-	string tempodot = u8"\u00CB";
-	auto dotindex = (int)(tempo.find('.'));
-	auto part1 = tempo.substr(0, dotindex);
-	auto part2 = tempo.substr(dotindex + 1);
-	tempo = part1 + tempodot + part2;
+	tempo = Util::replaceDotWithSmallSpaceDot(tempo);
 	tempoField.lock()->setText(tempo);
 }
 

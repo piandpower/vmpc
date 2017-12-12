@@ -45,7 +45,17 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 	if (name.compare("tsig") == 0) columns = 5;
 	const int margin = noLeftMargin ? 0 : 1;
 	if (opaque) {
+		/*
 		for (int j = 0; j < (TEXT_WIDTH * columns) + margin; j++) {
+			for (int k = 0; k < TEXT_HEIGHT + 2; k++) {
+				int x1 = textx + j - margin;
+				int y1 = texty + k;
+				if (x1 < 0 || x1 > 247 || y1 < 0 || y1 > 59) continue;
+				(*pixels)[x1][y1] = inverted ? true : false;
+			}
+		}
+		*/
+		for (int j = 0; j < w; j++) {
 			for (int k = 0; k < TEXT_HEIGHT + 2; k++) {
 				int x1 = textx + j - margin;
 				int y1 = texty + k;

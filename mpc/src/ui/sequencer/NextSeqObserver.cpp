@@ -97,7 +97,7 @@ void NextSeqObserver::displayNow2()
 void NextSeqObserver::displayTempo()
 {
 	auto tempo = sequencer.lock()->getTempo().toString();
-	tempo[(int)(tempo.find('.'))] = L'\u00CB';
+	tempo = Util::replaceDotWithSmallSpaceDot(tempo);
 	tempoField.lock()->setText(tempo);
 	displayTempoLabel();
 }
@@ -115,10 +115,10 @@ void NextSeqObserver::displayTempoLabel()
 		currentRatio = tce->getRatio();
 	}
 	if (currentRatio != 1000) {
-		tempoLabel.lock()->setText("c\u00C0:");
+		tempoLabel.lock()->setText(u8"c\u00C0:");
 	}
 	else {
-		tempoLabel.lock()->setText(" \u00C0:");
+		tempoLabel.lock()->setText(u8" \u00C0:");
 	}
 }
 

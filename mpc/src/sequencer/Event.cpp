@@ -13,6 +13,8 @@ Event::Event()
 void Event::setTick(int relativeTick)
 {
     tick = relativeTick;
+	setChanged();
+	notifyObservers(string("tick"));
 }
 
 int Event::getTick()
