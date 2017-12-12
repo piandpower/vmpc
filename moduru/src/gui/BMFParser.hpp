@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <string>
+
 #include "BMFStructs.hpp"
 
 namespace moduru {
@@ -16,14 +18,14 @@ namespace moduru {
 			char* GetFileData(const char* pPath, size_t* pSize);
 			void OrderCharsByID(std::vector<bmfont_char>* chars);
 			bool GetBMFontData(const char* pBinary, size_t fileSize, bmfont* pBMFont);
-			std::vector<std::vector<bool>> BMPAsBoolArrays();
+			std::vector<std::vector<bool>> BMPAsBoolArrays(std::string filePath);
 
 		public:
 			std::vector<std::vector<bool>> getAtlas();
 			bmfont getLoadedFont();
 
 		public:
-			BMFParser();
+			BMFParser(std::string fontPath);
 			~BMFParser();
 
 		};

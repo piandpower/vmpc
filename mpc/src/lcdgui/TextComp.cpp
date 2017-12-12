@@ -1,9 +1,12 @@
 #include "TextComp.hpp"
-#include <lang/StrUtil.hpp>
-
-#include <lang/utf8_decode.h>
 
 #include <Mpc.hpp>
+#include <StartUp.hpp>
+
+#include <file/FileUtil.hpp>
+#include <lang/StrUtil.hpp>
+#include <lang/utf8_decode.h>
+
 
 using namespace mpc::lcdgui;
 
@@ -13,7 +16,7 @@ using namespace std;
 
 #include <gui/BMFParser.hpp>
 
-moduru::gui::BMFParser* TextComp::bmfParser = new moduru::gui::BMFParser();
+moduru::gui::BMFParser* TextComp::bmfParser = new moduru::gui::BMFParser(mpc::StartUp::resPath + moduru::file::FileUtil::getSeparator() + "font.fnt");
 
 TextComp::TextComp()
 {

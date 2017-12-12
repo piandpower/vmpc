@@ -1,26 +1,31 @@
 #include "BMFParser.hpp"
+
+#include <file/FileUtil.hpp>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
 
-//#include <Logger.hpp>
-
 using namespace moduru::gui;
 using namespace std;
 
-BMFParser::BMFParser() {
-	atlas = BMPAsBoolArrays();
+BMFParser::BMFParser(string fontPath) {
 
 	size_t fileSize = 0;
-	char* data = GetFileData("c:/temp/font.fnt", &fileSize);
+	char* data = GetFileData(fontPath.c_str(), &fileSize);
 	if (GetBMFontData(data, fileSize, &loadedFont))
 	{
-		printf("Loaded BMFont data correctly. mpc2\n");
+		printf("Loaded BMFont data correctly.\n");
 	}
 	if (data != NULL)
 		free(data);
+
+	string bmpFileName = loadedFont.pages[0].name;
+	bmpFileName = bmpFileName.substr(0, loadedFont.pages[0].length);
+	string fontDir = fontPath.substr(0, moduru::file::FileUtil::GetLastSeparator(fontPath));
+	atlas = BMPAsBoolArrays(fontDir + bmpFileName);
 }
 
 void BMFParser::OrderCharsByID(std::vector<bmfont_char>* chars) {
@@ -129,15 +134,14 @@ bool BMFParser::GetBMFontData(const char* pBinary, size_t fileSize, bmfont* pBMF
 	return true;
 }
 
-std::vector<std::vector<bool>> BMFParser::BMPAsBoolArrays() {
+std::vector<std::vector<bool>> BMFParser::BMPAsBoolArrays(std::string filePath) {
 
 	std::vector<std::vector<bool>> result;
 
 	const int infosize = 54;
 
 	FILE* f;
-	fopen_s(&f, "c:/temp/font_0.bmp", "rb");
-    //f = fopen("c:/temp/font_0.bmp", "rb");
+	fopen_s(&f, filePath.c_str(), "rb");
 
     if (f == nullptr) return result;
 
