@@ -10,4 +10,8 @@ https://github.com/izzyreal/vmpc-home-dir
 There's also an Unreal Engine 4 plugin in development here:
 https://github.com/izzyreal/vmpc-unreal-plugin
 
+Some experiments for the 3D version:
+https://www.youtube.com/watch?v=led-x_qqzL8&index=6&list=PL8f3Xp_9Hpr6kAiRlKq_ToWYBkHQw1HL4
+
+Screenshot of 2D version:
 ![alt text](https://i.imgur.com/42mrtk3.jpg)
