@@ -10,11 +10,9 @@ using namespace std;
 
 MidiMonitorObserver::MidiMonitorObserver(mpc::Mpc* mpc) 
 {
+	this->mpc = mpc;
 	auto lEventHandler = mpc->getEventHandler().lock();
-	lEventHandler->deleteObservers();
 	lEventHandler->addObserver(this);
-	//mpc->deleteObservers();
-	//mpc->addObserver(this);
 	auto ls = mpc->getLayeredScreen().lock();
 	a0 = ls->lookupLabel("0");
 	a1 = ls->lookupLabel("1");
@@ -192,4 +190,5 @@ void MidiMonitorObserver::update(moduru::observer::Observable* o, boost::any arg
 }
 
 MidiMonitorObserver::~MidiMonitorObserver() {
+	mpc->getEventHandler().lock()->deleteObserver(this);
 }

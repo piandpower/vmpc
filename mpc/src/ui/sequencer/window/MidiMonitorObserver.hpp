@@ -21,6 +21,7 @@ namespace mpc {
 				{
 
 				private:
+					mpc::Mpc* mpc;
 //					::javax::swing::Timer* blinkTimer{};
 					std::weak_ptr<mpc::lcdgui::Label> a0{};
 					std::weak_ptr<mpc::lcdgui::Label> a1{};

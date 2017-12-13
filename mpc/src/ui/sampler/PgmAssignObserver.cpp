@@ -123,8 +123,6 @@ void PgmAssignObserver::update(moduru::observer::Observable* o, boost::any arg)
 
 	string s = boost::any_cast<string>(arg);
 
-	MLOG("update string: " + s);
-
 	if (s.compare("pgm") == 0 || s.compare("padandnote") == 0 || s.compare("padnotenumber") == 0) {
 		displayPgm();
 		displaySelectedNote();

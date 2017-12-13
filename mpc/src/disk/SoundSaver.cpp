@@ -8,6 +8,8 @@
 
 #include <lang/StrUtil.hpp>
 
+#include <thread>
+
 using namespace mpc::disk;
 using namespace moduru::lang;
 using namespace std;
@@ -20,6 +22,7 @@ SoundSaver::SoundSaver(mpc::Mpc* mpc, vector<weak_ptr<mpc::sampler::Sound> > sou
 	disk.lock()->setBusy(true);
 	this->sounds = sounds;
 	this->wav = wav;
+	run();
 	//(new ::java::lang::Thread(static_cast< ::java::lang::Runnable* >(this)))->start();
 }
 
@@ -48,7 +51,7 @@ void SoundSaver::run()
 			lDisk->writeWav(s);
 		}
 		try {
-			//::java::lang::Thread::sleep(500);
+			this_thread::sleep_for(chrono::milliseconds(500));
 		}
 		catch (exception e) {
 			e.what();

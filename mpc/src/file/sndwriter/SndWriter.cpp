@@ -95,6 +95,12 @@ void SndWriter::setSampleData(vector<float> fa, bool mono)
 	auto ba = vector<char>(2);
 	auto sPos = 0;
 	auto bytePos = SndWriter::HEADER_SIZE;
+	for (int i = 0; i < fa.size(); i++) {
+		ba = moduru::file::ByteUtil::short2bytes(fa[sPos++] * 32768);
+		sndFileArray[bytePos++] = ba[0];
+		sndFileArray[bytePos++] = ba[1];
+	}
+	/*
 	for (int i = 0; i < frames; i++) {
 		ba = moduru::file::ByteUtil::short2bytes(fa[sPos++] * 32768);
 		sndFileArray[bytePos++] = ba[0];
@@ -106,6 +112,7 @@ void SndWriter::setSampleData(vector<float> fa, bool mono)
 			sndFileArray[bytePos++ + (frames * 2)] = ba[1];
 		}
 	}
+	*/
 }
 
 vector<char> SndWriter::getSndFileArray()
