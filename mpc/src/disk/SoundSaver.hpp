@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <thread>
 
 namespace mpc {
 
@@ -34,10 +35,14 @@ namespace mpc {
 			std::vector<std::weak_ptr<mpc::sampler::Sound> > sounds{};
 			bool wav{ false };
 
-		public:
-			void run();// override;
+		private:
+			std::thread saveSoundsThread{};
+			static void static_saveSounds(void* this_p);
+			void saveSounds();
 
+		public:
 			SoundSaver(mpc::Mpc* mpc, std::vector<std::weak_ptr<mpc::sampler::Sound> > sounds, bool wav);
+			~SoundSaver();
 
 		};
 

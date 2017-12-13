@@ -232,7 +232,6 @@ vector<weak_ptr<mpc::lcdgui::Component>> Layer::getAllLabels() {
 	return result;
 }
 
-
 Layer::~Layer() {
 	if (bg != nullptr) delete bg;
 	if (fk != nullptr) delete fk;

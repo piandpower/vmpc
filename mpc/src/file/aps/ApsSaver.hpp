@@ -3,6 +3,8 @@
 #include <memory>
 #include <string>
 
+#include <disk/SoundSaver.hpp>
+
 namespace mpc {
 
 	class Mpc;
@@ -16,6 +18,7 @@ namespace mpc {
 			private:
 				mpc::Mpc* mpc{ nullptr };
 				std::string apsFileName{""};
+				std::unique_ptr<mpc::disk::SoundSaver> soundSaver;
 
 			private:
 				void saveAps();

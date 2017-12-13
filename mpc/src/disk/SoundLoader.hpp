@@ -27,7 +27,6 @@ namespace mpc {
 
 		class SoundLoader
 		{
-
 		private:
 			mpc::Mpc* mpc;
 			static float rateToTuneBase;

@@ -50,9 +50,10 @@ vector<char> ByteUtil::ushort2bytes(unsigned short n) {
 }
 
 vector<char> ByteUtil::short2bytes(short n) {
+	//little endian
 	auto res = vector<char>(2);
-	res[0] = (n >> 8) & 0xFF;
-	res[1] = n & 0xff;
+	res[1] = (n >> 8) & 0xFF;
+	res[0] = n & 0xff;
 	return res;
 }
 

@@ -22,11 +22,16 @@ SoundSaver::SoundSaver(mpc::Mpc* mpc, vector<weak_ptr<mpc::sampler::Sound> > sou
 	disk.lock()->setBusy(true);
 	this->sounds = sounds;
 	this->wav = wav;
-	run();
-	//(new ::java::lang::Thread(static_cast< ::java::lang::Runnable* >(this)))->start();
+	if (saveSoundsThread.joinable()) saveSoundsThread.join();
+	saveSoundsThread = thread(&SoundSaver::static_saveSounds, this);
 }
 
-void SoundSaver::run()
+void SoundSaver::static_saveSounds(void* this_p)
+{
+	static_cast<SoundSaver*>(this_p)->saveSounds();
+}
+
+void SoundSaver::saveSounds()
 {
     string const ext = wav ? ".WAV" : ".SND";
 	auto lDisk = disk.lock();
@@ -58,4 +63,10 @@ void SoundSaver::run()
 		}
 	}
     mpc->getLayeredScreen().lock()->removePopup();
+	mpc->getLayeredScreen().lock()->openScreen("save");
+	lDisk->setBusy(false);
+}
+
+SoundSaver::~SoundSaver() {
+	if (saveSoundsThread.joinable()) saveSoundsThread.join();
 }

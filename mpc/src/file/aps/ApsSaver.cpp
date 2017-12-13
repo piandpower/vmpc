@@ -3,7 +3,6 @@
 #include <Mpc.hpp>
 #include <disk/AbstractDisk.hpp>
 #include <disk/MpcFile.hpp>
-#include <disk/SoundSaver.hpp>
 #include <file/aps/ApsParser.hpp>
 #include <ui/disk/DiskGui.hpp>
 #include <sampler/Sampler.hpp>
@@ -35,9 +34,7 @@ void ApsSaver::saveAps()
     auto bytes = apsParser.getBytes();
     file->setFileData(&bytes);
 	auto const saveWith = mpc->getUis().lock()->getDiskGui()->getPgmSave();
-    if (saveWith != 0)
-		new mpc::disk::SoundSaver(mpc, mpc->getSampler().lock()->getSounds(), saveWith == 1 ? false : true);
-
-	mpc->getLayeredScreen().lock()->openScreen("save");
-    lDisk->setBusy(false);
+	if (saveWith != 0) {
+		soundSaver = std::make_unique<mpc::disk::SoundSaver>(mpc, mpc->getSampler().lock()->getSounds(), saveWith == 1 ? false : true);
+	}
 }
