@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include <Mpc.hpp>
+
 using namespace mpc::lcdgui;
 
 HorizontalBar::HorizontalBar(MRECT rect, int value)
@@ -12,28 +14,27 @@ HorizontalBar::HorizontalBar(MRECT rect, int value)
 
 void HorizontalBar::setValue(int value)
 {
-    this->value = value;
+	this->value = value;
 	SetDirty();
 }
 
 void HorizontalBar::Draw(std::vector<std::vector<bool> >* pixels) {
 	if (IsHidden()) return;
-	//if (value > 2) {
-		int x = rect.L;
-		int y = rect.T;
-		int x2 = x + ((int)(floor((value - 1) / 2.55))) + 1;
-		MRECT r(x, y, x2, y + 6);
-		for (int i = rect.L; i < rect.R; i++) {
-			for (int j = y; j < y + 5; j++) {
-				(*pixels)[i][j] = false;
-			}
+	int x = rect.L;
+	int y = rect.T;
+	int x2 = x + ((int)(floor((value - 1) / 2.55))) + 1;
+	MRECT r(x, y, x2, y + 6);
+	for (int i = rect.L; i < rect.R; i++) {
+		for (int j = y; j < y + 5; j++) {
+			(*pixels)[i][j] = false;
 		}
-		for (int i = x; i < x2; i++) {
-			for (int j = y; j < y + 5; j++) {
-				(*pixels)[i][j] = true;
-			}
+	}
+	for (int i = x; i < x2; i++) {
+		//if (i > rect.R) break;
+		for (int j = y; j < y + 5; j++) {
+			(*pixels)[i][j] = true;
 		}
-	//}
+	}
 	dirty = false;
 }
 

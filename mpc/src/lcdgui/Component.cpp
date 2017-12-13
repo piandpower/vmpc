@@ -1,6 +1,5 @@
 #include "Component.hpp"
 
-#include "BlinkLabel.hpp"
 #include <Mpc.hpp>
 
 #include <string>
@@ -37,9 +36,6 @@ bool Component::NeedsClearing()
 }
 
 void Component::Clear(std::vector<std::vector<bool> >* pixels) {
-	if (dynamic_cast<lcdgui::BlinkLabel*>(this) != nullptr) {
-		MLOG("Clearing blinklabel");
-	}
 	for (int k = 0; k < clearRects.size(); k++) {
 		auto r = clearRects[k];
 		bool alreadyDone = false;
@@ -50,8 +46,8 @@ void Component::Clear(std::vector<std::vector<bool> >* pixels) {
 			}
 		}
 		if (alreadyDone) continue;
-		for (int i = r.L; i < r.R + 1; i++) {
-			for (int j = r.T; j < r.B + 1; j++) {
+		for (int i = r.L; i < r.R; i++) {
+			for (int j = r.T; j < r.B; j++) {
 				if (i < 0 || i > 247 || j < 0 || j > 59) continue;
 				(*pixels)[i][j] = false;
 			}

@@ -710,7 +710,8 @@ void SequencerWindowObserver::displayTempoChange1()
 	tempoStr = Util::replaceDotWithSmallSpaceDot(tempoStr);
 	f1tcField.lock()->setText(tempoStr);
 
-	hBars[2].lock()->setValue(tce->getRatio() * (127 / 4000.0));
+	//hBars[2].lock()->setValue(tce->getRatio() * (127 / 4000.0));
+	hBars[2].lock()->setValue((tempo - 15) * (290 / 925.0));
 }
 
 void SequencerWindowObserver::displayTempoChange2()
@@ -769,7 +770,8 @@ void SequencerWindowObserver::displayTempoChange2()
 	tempoStr = Util::replaceDotWithSmallSpaceDot(tempoStr);
 	f2tcField.lock()->setText(tempoStr);
 
-	hBars[3].lock()->setValue(tce->getRatio() * (127 / 4000.0));
+	//hBars[3].lock()->setValue(tce->getRatio() * (127 / 4000.0));
+	hBars[3].lock()->setValue((tempo - 15) * (290 / 925.0));
 }
 
 void SequencerWindowObserver::displayDisplayStyle()

@@ -42,10 +42,10 @@ void SaveAllFileControls::function(int i)
 			ls.lock()->openScreen("filealreadyexists");
 			return;
 		}
-		//allParser = make_unique<mpc::file::all::AllParser>(gui, mpc, mpc::Util::getFileName(nameGui->getName()));
+		allParser = make_unique<mpc::file::all::AllParser>(mpc, mpc::Util::getFileName(nameGui->getName()));
 		f = lDisk->newFile(allName + ".ALL");
-        //auto bytes = allParser->getBytes();
-		//f->setFileData(&bytes);
+        auto bytes = allParser->getBytes();
+		f->setFileData(&bytes);
 		lDisk->flush();
 		lDisk->initFiles();
 		ls.lock()->openScreen("save");

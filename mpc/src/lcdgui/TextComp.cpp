@@ -25,7 +25,7 @@ TextComp::TextComp()
 void TextComp::Hide(bool b) {
 	const int margin = noLeftMargin ? 0 : 1;
 	if (b) {
-		MRECT clearRect(x, y, x + (TEXT_WIDTH * columns) + margin, y + TEXT_HEIGHT + 2);
+		MRECT clearRect(x, y, x + (TEXT_WIDTH * columns) + margin, y + TEXT_HEIGHT + 1);
 		clearRects.push_back(clearRect);
 	}
 	Component::Hide(b);

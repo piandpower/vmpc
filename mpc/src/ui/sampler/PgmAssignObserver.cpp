@@ -40,6 +40,10 @@ PgmAssignObserver::PgmAssignObserver(mpc::Mpc* mpc)
 	optionalNoteAField = ls->lookupField("optionalnotenumbera");
 	optionalNoteBLabel = ls->lookupLabel("optionalnotenumberb");
 	optionalNoteBField = ls->lookupField("optionalnotenumberb");
+
+	optionalNoteALabel.lock()->enableRigorousClearing();
+	optionalNoteBLabel.lock()->enableRigorousClearing();
+
 	pgmField = ls->lookupField("pgm");
 	selectedPadNumberField = ls->lookupField("pad");
 	padNoteField = ls->lookupField("padnote");
@@ -110,14 +114,16 @@ void PgmAssignObserver::update(moduru::observer::Observable* o, boost::any arg)
 	mpcSoundPlayerChannel = lSampler->getDrum(samplerGui->getSelectedDrum());
 	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
 	lProgram = program.lock();
-	lSampler->getLastNp(lProgram.get())->deleteObservers();
+	lSampler->getLastNp(lProgram.get())->deleteObserver(this);
 	lSampler->getLastNp(lProgram.get())->addObserver(this);
-	lSampler->getLastPad(lProgram.get())->deleteObservers();
+	lSampler->getLastPad(lProgram.get())->deleteObserver(this);
 	lSampler->getLastPad(lProgram.get())->addObserver(this);
 	lProgram->addObserver(this);
 	mpcSoundPlayerChannel->addObserver(this);
 
 	string s = boost::any_cast<string>(arg);
+
+	MLOG("update string: " + s);
 
 	if (s.compare("pgm") == 0 || s.compare("padandnote") == 0 || s.compare("padnotenumber") == 0) {
 		displayPgm();
@@ -176,8 +182,10 @@ void PgmAssignObserver::displaySoundGenerationMode()
 			displayOptionalNoteB();
 		}
 		if (sgm == 2 || sgm == 3) {
-			optionalNoteALabel.lock()->setText("        , use:");
-			optionalNoteBLabel.lock()->setText("        , use:");
+			optionalNoteALabel.lock()->setText("over:   , use:");
+			optionalNoteBLabel.lock()->setText("over:   , use:");
+			optionalNoteALabel.lock()->setOpaque(false);
+			optionalNoteBLabel.lock()->setOpaque(false);
 			velocityRangeLowerLabel.lock()->Hide(false);
 			velocityRangeLowerField.lock()->Hide(false);
 			velocityRangeUpperLabel.lock()->Hide(false);
@@ -210,26 +218,26 @@ void PgmAssignObserver::displayVeloRangeLower()
 	velocityRangeLowerField.lock()->setTextPadded(rangeA, " ");
 }
 
-void PgmAssignObserver::displayOptionalNoteB()
-{
-	auto lSampler = sampler.lock();
-	auto lProgram = program.lock();
-	auto noteIntB = lSampler->getLastNp(lProgram.get())->getOptionalNoteB();
-	auto padIntB = lProgram->getPadNumberFromNote(noteIntB);
-	auto noteB = noteIntB != -1 ? to_string(noteIntB) : "--";
-	auto padB = padIntB != -1 ? lSampler->getPadName(padIntB) : "OFF";
-	optionalNoteBField.lock()->setText(noteB + "/" + padB);
-}
-
 void PgmAssignObserver::displayOptionalNoteA()
 {
 	auto lSampler = sampler.lock();
 	auto lProgram = program.lock();
 	auto noteIntA = lSampler->getLastNp(lProgram.get())->getOptionalNoteA();
 	auto padIntA = lProgram->getPadNumberFromNote(noteIntA);
-	auto noteA = noteIntA != -1 ? to_string(noteIntA) : "--";
+	auto noteA = noteIntA != 34 ? to_string(noteIntA) : "--";
 	auto padA = padIntA != -1 ? lSampler->getPadName(padIntA) : "OFF";
 	optionalNoteAField.lock()->setText(noteA + "/" + padA);
+}
+
+void PgmAssignObserver::displayOptionalNoteB()
+{
+	auto lSampler = sampler.lock();
+	auto lProgram = program.lock();
+	auto noteIntB = lSampler->getLastNp(lProgram.get())->getOptionalNoteB();
+	auto padIntB = lProgram->getPadNumberFromNote(noteIntB);
+	auto noteB = noteIntB != 34 ? to_string(noteIntB) : "--";
+	auto padB = padIntB != -1 ? lSampler->getPadName(padIntB) : "OFF";
+	optionalNoteBField.lock()->setText(noteB + "/" + padB);
 }
 
 void PgmAssignObserver::displaySelectedNote()

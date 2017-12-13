@@ -16,7 +16,7 @@ SaveAllFileObserver::SaveAllFileObserver(mpc::Mpc* mpc)
 	this->mpc = mpc;
 	auto ls = mpc->getLayeredScreen().lock();
 	fileField = ls->lookupField("file");
-	fileLabel = ls->lookupLabel("file");
+	fileLabel = ls->lookupLabel("file1");
 	diskGui = mpc->getUis().lock()->getDiskGui();
 	displayFile();
 }

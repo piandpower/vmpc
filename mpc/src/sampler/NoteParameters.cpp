@@ -16,6 +16,8 @@ NoteParameters::NoteParameters(int number)
 	velocityToLevel = 100;
 	muteAssignA = 34;
 	muteAssignB = 34;
+	optionalNoteA = 34;
+	optionalNoteB = 34;
 }
 
 int NoteParameters::getSndNumber()
@@ -73,13 +75,13 @@ int NoteParameters::getVelocityRangeLower()
 
 void NoteParameters::setOptNoteA(int i)
 {
-    if(optionalNoteA == i)  return;
+	if (optionalNoteA == i)  return;
 
-    if(i < 0 || i > 63) return;
+	if (i < 34 || i > 98) return;
 
-    optionalNoteA = i;
-    setChanged();
-    notifyObservers(string("use1"));
+	optionalNoteA = i;
+	setChanged();
+	notifyObservers(string("use1"));
 }
 
 int NoteParameters::getOptionalNoteA()
@@ -89,15 +91,15 @@ int NoteParameters::getOptionalNoteA()
 
 void NoteParameters::setVeloRangeUpper(int i)
 {
-    if(velocityRangeUpper == i)
-        return;
+	if (velocityRangeUpper == i)
+		return;
 
-    if(i < velocityRangeLower + 1 || i > 127)
-        return;
+	if (i < velocityRangeLower + 1 || i > 127)
+		return;
 
-    velocityRangeUpper = i;
-    setChanged();
-    notifyObservers(string("ifover2"));
+	velocityRangeUpper = i;
+	setChanged();
+	notifyObservers(string("ifover2"));
 }
 
 int NoteParameters::getVelocityRangeUpper()
@@ -107,15 +109,15 @@ int NoteParameters::getVelocityRangeUpper()
 
 void NoteParameters::setOptionalNoteB(int i)
 {
-    if(optionalNoteB == i)
-        return;
+	if (optionalNoteB == i)
+		return;
 
-    if(i < 0 || i > 63)
-        return;
+	if (i < 34 || i > 98)
+		return;
 
-    optionalNoteB = i;
-    setChanged();
-    notifyObservers(string("use2"));
+	optionalNoteB = i;
+	setChanged();
+	notifyObservers(string("use2"));
 }
 
 int NoteParameters::getOptionalNoteB()
