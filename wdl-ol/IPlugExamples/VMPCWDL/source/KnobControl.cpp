@@ -46,7 +46,8 @@ void KnobControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod) {
 
 bool KnobControl::Draw(IGraphics* g) {
 	IChannelBlend tmp = IChannelBlend::kBlendNone;
-	g->DrawBitmap(&knobs, GetRECT(), 0, knobIndex * GetRECT()->H(), &tmp);
+	float height = knobType == 0 ? 73 * SCALE : 75 * SCALE;
+	g->DrawBitmap(&knobs, GetRECT(), 0, knobIndex * height, &tmp);
 	return true;
 }
 

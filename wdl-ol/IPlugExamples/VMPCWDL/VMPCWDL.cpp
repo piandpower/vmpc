@@ -36,7 +36,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 
 	TRACE;
 
-	IGraphics* pGraphics = MakeGraphics(this, GUI_WIDTH, GUI_HEIGHT);
+	IGraphics* pGraphics = MakeGraphics(this, GUI_WIDTH * SCALE, GUI_HEIGHT * SCALE);
 	pGraphics->AttachBackground(BG_ID, BG_FN);
 	mLedPanel = new LedControl(this, pGraphics);
 	for (auto& l : mpc->getHardware().lock()->getLeds()) {
@@ -48,14 +48,17 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	pGraphics->AttachControl(mInputCatcher);
 
 	auto dataWheels = pGraphics->LoadIBitmap(DATAWHEEL_ID, DATAWHEEL_FN);
+	dataWheels = pGraphics->ScaleBitmap(&dataWheels, dataWheels.W * SCALE, dataWheels.H * SCALE);
 	mDataWheel = new DataWheelControl(this, dataWheels, mpc->getHardware().lock()->getDataWheel());
 
 	mpc->getHardware().lock()->getDataWheel().lock()->addObserver(mDataWheel);
 	pGraphics->AttachControl(mDataWheel);
 
 	auto knobs = pGraphics->LoadIBitmap(RECKNOB_ID, RECKNOB_FN);
+	knobs = pGraphics->ScaleBitmap(&knobs, knobs.W * SCALE, knobs.H * SCALE);
 	mRecKnob = new KnobControl(this, 0, knobs, mpc->getHardware().lock()->getRecPot(), mpc->getAudioMidiServices().lock()->getRecordLevel());
 	knobs = pGraphics->LoadIBitmap(VOLKNOB_ID, VOLKNOB_FN);
+	knobs = pGraphics->ScaleBitmap(&knobs, knobs.W * SCALE, knobs.H * SCALE); 
 	mVolKnob = new KnobControl(this, 1, knobs, mpc->getHardware().lock()->getVolPot(), mpc->getAudioMidiServices().lock()->getMasterLevel());
 	pGraphics->AttachControl(mRecKnob);
 	pGraphics->AttachControl(mVolKnob);
@@ -81,6 +84,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	}
 
 	auto sliders = pGraphics->LoadIBitmap(SLIDER_ID, SLIDER_FN);
+	sliders = pGraphics->ScaleBitmap(&sliders, sliders.W * SCALE, sliders.H * SCALE);
 	auto sc = new SliderControl(this, sliders, mpc->getHardware().lock()->getSlider(), 0);
 
 	pGraphics->AttachControl(sc);

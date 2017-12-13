@@ -26,9 +26,9 @@ bool LCDControl::Draw(IGraphics* g) {
 	for (int x = 0; x < 248; x++) {
 		for (int y = 0; y < 60; y++) {
 			if (pixels->at(x).at(y) == true) {
-				IRECT r((x*2) + GetRECT()->L, (y*2) + GetRECT()->T, (x*2) + GetRECT()->L + 1, (y*2) + GetRECT()->T + 1);
+				IRECT r((x*2 * SCALE) + GetRECT()->L, (y*2 * SCALE) + GetRECT()->T, (x*2 * SCALE) + GetRECT()->L + (1* SCALE), (y*2 * SCALE) + GetRECT()->T + (1*SCALE));
 				g->DrawRect(Constants::LCD_HALF_ON(), &r);
-				g->DrawPoint(Constants::LCD_ON(), (x * 2) + GetRECT()->L, (y * 2) + GetRECT()->T);
+				g->DrawPoint(Constants::LCD_ON(), (x * 2 * SCALE) + GetRECT()->L, (y * 2 * SCALE) + GetRECT()->T);
 			}
 		}
 	}

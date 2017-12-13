@@ -236,6 +236,7 @@ void IGraphics::SetFromStringAfterPrompt(IControl* pControl, IParam* pParam, cha
 void IGraphics::AttachBackground(int ID, const char* name)
 {
 	IBitmap bg = LoadIBitmap(ID, name);
+	bg = ScaleBitmap(&bg, mWidth, mHeight);
 	IControl* pBG = new IBitmapControl(mPlug, 0, 0, -1, &bg, IChannelBlend::kBlendClobber);
 	mControls.Insert(0, pBG);
 }

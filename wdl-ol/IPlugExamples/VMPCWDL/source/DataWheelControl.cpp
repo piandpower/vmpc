@@ -30,7 +30,7 @@ void DataWheelControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod
 
 bool DataWheelControl::Draw(IGraphics* g) {
 	IChannelBlend tmp = IChannelBlend::kBlendNone;
-	g->DrawBitmap(&dataWheels, GetRECT(), 0, dataWheelIndex * GetRECT()->H(), &tmp);
+	g->DrawBitmap(&dataWheels, GetRECT(), 0, dataWheelIndex * 171 * SCALE, &tmp);
 	return true;
 }
 

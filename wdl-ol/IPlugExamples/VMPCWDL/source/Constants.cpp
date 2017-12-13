@@ -16,7 +16,7 @@ IRECT* Constants::LCD_RECT()
 {
     return &LCD_RECT_;
 }
-IRECT Constants::LCD_RECT_ = IRECT(116, 102, 116 + 496, 102 + 120);
+IRECT Constants::LCD_RECT_ = IRECT(116 * SCALE, 102 * SCALE, (116 + 496) * SCALE, (102 + 120) * SCALE);
 
 IRECT* Constants::POPUP_RECT()
 {
@@ -40,26 +40,26 @@ IRECT* Constants::DATAWHEEL_RECT()
 {
     return &DATAWHEEL_RECT_;
 }
-IRECT Constants::DATAWHEEL_RECT_ = IRECT(378, 415, 378 + 171, 415 + 171);
+IRECT Constants::DATAWHEEL_RECT_ = IRECT(378 * SCALE, 415 * SCALE, (378 + 171) * SCALE, (415 + 171) * SCALE);
 
 IRECT* Constants::RECKNOB_RECT()
 {
     return &RECKNOB_RECT_;
 }
-IRECT Constants::RECKNOB_RECT_ = IRECT(1014, 183, 1014 + 72, 183 + 73);
+IRECT Constants::RECKNOB_RECT_ = IRECT(1014 * SCALE, 183 * SCALE, (1014 + 72) * SCALE, (183 + 73) * SCALE);
 
 IRECT* Constants::VOLKNOB_RECT()
 {
     return &VOLKNOB_RECT_;
 }
-IRECT Constants::VOLKNOB_RECT_ = IRECT(1137, 181, 1137 + 74, 181 + 75);
+IRECT Constants::VOLKNOB_RECT_ = IRECT(1137 * SCALE, 181 * SCALE, (1137 + 74) * SCALE, (181 + 75) * SCALE);
 
 IRECT* Constants::SLIDER_RECT()
 {
     return &SLIDER_RECT_;
 
 }
-IRECT Constants::SLIDER_RECT_ = IRECT(33, 668, 33 + 128, 668 + 247);
+IRECT Constants::SLIDER_RECT_ = IRECT(33 * SCALE, 668 * SCALE, (33 + 128) * SCALE, (668 + 247) * SCALE);
 
 IColor* Constants::TRANS_BLACK() {
     return &TRANS_BLACK_;

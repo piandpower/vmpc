@@ -36,7 +36,7 @@ void SliderControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod) {
 
 bool SliderControl::Draw(IGraphics* g) {
 	IChannelBlend tmp = IChannelBlend::kBlendNone;
-	g->DrawBitmap(&sliders, GetRECT(), 0, sliderIndex * GetRECT()->H(), &tmp);
+	g->DrawBitmap(&sliders, GetRECT(), 0, sliderIndex * 247 * SCALE, &tmp);
 	return true;
 }
 
