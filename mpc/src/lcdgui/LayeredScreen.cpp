@@ -162,6 +162,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		horizontalBarsTempoChangeEditor[i]->Hide(true);
 		nonTextComps.push_back(horizontalBarsTempoChangeEditor[i]);
 
+		w = 49;
 		x = 198;
 		rect = MRECT(x, y, x + w, y + h);
 		horizontalBarsStepEditor[i] = make_shared<HorizontalBar>(rect, 0);

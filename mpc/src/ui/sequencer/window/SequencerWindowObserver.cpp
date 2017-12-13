@@ -1064,8 +1064,9 @@ SequencerWindowObserver::~SequencerWindowObserver() {
 	newTimeSignature->deleteObserver(this);
 	swGui->deleteObserver(this);
 	nameGui->deleteObserver(this);
-	sequence.lock()->deleteObserver(this);
-	sequence.lock()->getMetaTracks().at(2).lock()->deleteObserver(this);
-	track.lock()->deleteObserver(this);
+	if (sequence.lock()) {
+		sequence.lock()->deleteObserver(this);
+		sequence.lock()->getMetaTracks().at(2).lock()->deleteObserver(this);
+	}
 	timeSig.deleteObserver(this);
 }
