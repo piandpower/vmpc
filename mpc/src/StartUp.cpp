@@ -22,6 +22,7 @@ string StartUp::home = moduru::sys::Home::get();
 string StartUp::resPath = home + FileUtil::getSeparator() + "vMPC" + FileUtil::getSeparator() + "resources" + FileUtil::getSeparator();
 string StartUp::tempPath = home + FileUtil::getSeparator() + "vMPC" + FileUtil::getSeparator() + "temp" + FileUtil::getSeparator();
 string StartUp::storesPath = home + FileUtil::getSeparator() + "vMPC" + FileUtil::getSeparator() + "Stores" + FileUtil::getSeparator();
+string StartUp::logFilePath = home + FileUtil::getSeparator() + "vMPC" + FileUtil::getSeparator() + "vmpc.log";
 
 weak_ptr<mpc::ui::UserDefaults> StartUp::getUserDefaults() {
 	return userDefaults;

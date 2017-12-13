@@ -23,6 +23,7 @@ namespace mpc {
 		static std::string resPath;
 		static std::string tempPath;
 		static std::string storesPath;
+		static std::string logFilePath;
 
 	public:
 		void runStartUpRoutine(mpc::Mpc* mpc);

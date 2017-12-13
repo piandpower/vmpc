@@ -24,6 +24,7 @@ void DeleteFolderControls::deleteFolder()
 	disk.lock()->setBusy(true);
 	ls.lock()->createPopup("Delete:" + directoryGui->getSelectedFile()->getName(), 85);
 	if (disk.lock()->deleteDir(directoryGui->getSelectedFile())) {
+		//MLOG("About to flush.");
 		disk.lock()->flush();
 		disk.lock()->initFiles();
 	}

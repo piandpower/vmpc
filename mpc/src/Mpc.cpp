@@ -44,6 +44,7 @@ using namespace std;
 
 Mpc::Mpc()
 {
+	moduru::Logger::l.setPath(mpc::StartUp::logFilePath);
 	MLOG("Mpc constructor");
 }
 

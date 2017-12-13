@@ -14,13 +14,14 @@ namespace moduru {
 		std::string path = "";
 
 	public:
-
 		static Logger l;
 
+	public:
 		void log(std::string s);
-	
+		void setPath(std::string s);
+
+	public:
 		Logger();
-		Logger(std::string logFile);
 
 	};
 }
