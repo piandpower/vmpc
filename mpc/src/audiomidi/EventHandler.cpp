@@ -2,7 +2,7 @@
 
 #include <Mpc.hpp>
 #include <audiomidi/AudioMidiServices.hpp>
-//#include <audiomidi/MpcMidiPorts.hpp>
+#include <audiomidi/MpcMidiPorts.hpp>
 
 #include <sequencer/Event.hpp>
 #include <sequencer/FrameSeq.hpp>
@@ -16,9 +16,9 @@
 #include <ui/Uis.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <ui/midisync/MidiSyncGui.hpp>
-//#include <ui/misc/TransGui.hpp>
-//#include <ui/vmpc/DirectToDiskRecorderGui.hpp>
-//#include <ui/vmpc/MidiGui.hpp>
+#include <ui/misc/TransGui.hpp>
+#include <ui/vmpc/DirectToDiskRecorderGui.hpp>
+#include <ui/vmpc/MidiGui.hpp>
 #include <sampler/Program.hpp>
 #include <sampler/Sampler.hpp>
 #include <sampler/MixerChannel.hpp>
@@ -90,19 +90,19 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 		return;
 	}
 	else if (mce) {
-		//auto mpcMidiPorts = mpc->getMidiPorts().lock();
+		auto mpcMidiPorts = mpc->getMidiPorts().lock();
 		auto clockMsg = dynamic_cast<ctoot::midi::core::ShortMessage*>(mce->getShortMessage());
 		clockMsg->setMessage(mce->getStatus());
 		switch (msGui->getOut()) {
 		case 0:
-			//mpcMidiPorts->transmitA(clockMsg);
+			mpcMidiPorts->transmitA(clockMsg);
 			break;
 		case 1:
-			//mpcMidiPorts->transmitB(clockMsg);
+			mpcMidiPorts->transmitB(clockMsg);
 			break;
 		case 2:
-			//mpcMidiPorts->transmitA(clockMsg);
-			//mpcMidiPorts->transmitB(clockMsg);
+			mpcMidiPorts->transmitA(clockMsg);
+			mpcMidiPorts->transmitB(clockMsg);
 			break;
 		}
 	}
@@ -136,12 +136,12 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 
 void EventHandler::midiOut(weak_ptr<mpc::sequencer::Event> e, mpc::sequencer::Track* track)
 {
-	/*
-		auto event = e.lock();
+	auto event = e.lock();
 	auto ne = dynamic_pointer_cast<mpc::sequencer::NoteEvent>(event);
 	if (ne) {
-		if (lGui->getTransGui()->getTr() == -1 || lGui->getTransGui()->getTr() == ne->getTrack()) {
-			ne->setNote(ne->getNote() + lGui->getTransGui()->getAmount());
+		auto transGui = mpc->getUis().lock()->getTransGui();
+		if (transGui->getTr() == -1 || transGui->getTr() == ne->getTrack()) {
+			ne->setNote(ne->getNote() + transGui->getAmount());
 		}
 		auto msg = event->getShortMessage();
 		auto deviceNumber = track->getDevice() - 1;
@@ -161,14 +161,13 @@ void EventHandler::midiOut(weak_ptr<mpc::sequencer::Event> e, mpc::sequencer::Tr
 			r = midiGui->getOutBReceiverIndex() == -1 ? nullptr : mpcMidiPorts->getReceivers()[midiGui->getOutBReceiverIndex()];
 			notifyLetter = "b";
 		}
-		if (!(mpc->getAudioMidiServices().lock()->isBouncing() && lGui->getD2DRecorderGui()->isOffline()) && r != nullptr && track->getDevice() != 0 && msg != nullptr) {
+		if (!(mpc->getAudioMidiServices().lock()->isBouncing() && mpc->getUis().lock()->getD2DRecorderGui()->isOffline()) && r != nullptr && track->getDevice() != 0 && msg != nullptr) {
 			r->transport(msg, -1);
 		}
 
-		if (lGui->getMainFrame().lock()->getLayeredScreen().lock()->getCurrentScreenName().compare("midioutputmonitor") == 0) {
-		setChanged();
-		notifyObservers(string(notifyLetter + to_string(deviceNumber)));
+		if (mpc->getLayeredScreen().lock()->getCurrentScreenName().compare("midioutputmonitor") == 0) {
+			setChanged();
+			notifyObservers(string(notifyLetter + to_string(deviceNumber)));
 		}
 	}
-	*/
 }

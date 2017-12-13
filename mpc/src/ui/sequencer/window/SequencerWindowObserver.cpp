@@ -99,26 +99,6 @@ SequencerWindowObserver::SequencerWindowObserver(mpc::Mpc* mpc)
 	fField = ls->lookupField("f");
 	frameRateField = ls->lookupField("framerate");
 	if (csn.compare("tempochange") == 0) {
-		/*
-		a0tcField.lock()->setOpaque(false);
-		a1tcField.lock()->setOpaque(false);
-		a2tcField.lock()->setOpaque(false);
-		b0tcField.lock()->setOpaque(false);
-		b1tcField.lock()->setOpaque(false);
-		b2tcField.lock()->setOpaque(false);
-		c0tcField.lock()->setOpaque(false);
-		c1tcField.lock()->setOpaque(false);
-		c2tcField.lock()->setOpaque(false);
-		d0tcField.lock()->setOpaque(false);
-		d1tcField.lock()->setOpaque(false);
-		d2tcField.lock()->setOpaque(false);
-		e0tcField.lock()->setOpaque(false);
-		e1tcField.lock()->setOpaque(false);
-		e2tcField.lock()->setOpaque(false);
-		f0tcField.lock()->setOpaque(false);
-		f1tcField.lock()->setOpaque(false);
-		f2tcField.lock()->setOpaque(false);
-		*/
 		a0tcField = ls->lookupField("a0");
 		a1tcField = ls->lookupField("a1");
 		a2tcField = ls->lookupField("a2");
@@ -877,10 +857,12 @@ void SequencerWindowObserver::update(moduru::observer::Observable* o, boost::any
 		}
 	}
 	else if (s.compare("offset") == 0 || s.compare("tempochangeadded") == 0 || s.compare("tick") == 0) {
-		initVisibleEvents();
-		displayTempoChange0();
-		displayTempoChange1();
-		displayTempoChange2();
+		if (csn.compare("tempochange") == 0) {
+			initVisibleEvents();
+			displayTempoChange0();
+			displayTempoChange1();
+			displayTempoChange2();
+		}
 	}
 	else if (s.compare("tempochangeon") == 0) {
 		displayTempoChangeOn();

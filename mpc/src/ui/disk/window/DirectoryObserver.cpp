@@ -38,6 +38,7 @@ DirectoryObserver::DirectoryObserver(weak_ptr<mpc::disk::AbstractDisk> disk, mpc
 	right = { b0Field, b1Field, b2Field, b3Field, b4Field };
 	topLeftLabel = ls->lookupLabel("topleft");
 	topLeftLabel.lock()->setNoLeftMargin(true);
+	topLeftLabel.lock()->enableRigorousClearing();
 	a0Label = ls->lookupLabel("a0i");
 	a1Label = ls->lookupLabel("a1i");
 	a2Label = ls->lookupLabel("a2i");
@@ -53,6 +54,24 @@ DirectoryObserver::DirectoryObserver(weak_ptr<mpc::disk::AbstractDisk> disk, mpc
 	c2Label = ls->lookupLabel("c2i");
 	c3Label = ls->lookupLabel("c3i");
 	c4Label = ls->lookupLabel("c4i");
+
+	a0Label.lock()->enableRigorousClearing();
+	a1Label.lock()->enableRigorousClearing();
+	a2Label.lock()->enableRigorousClearing();
+	a3Label.lock()->enableRigorousClearing();
+	a4Label.lock()->enableRigorousClearing();
+	b0Label.lock()->enableRigorousClearing();
+	b1Label.lock()->enableRigorousClearing();
+	b2Label.lock()->enableRigorousClearing();
+	b3Label.lock()->enableRigorousClearing();
+	b4Label.lock()->enableRigorousClearing();
+	c0Label.lock()->enableRigorousClearing();
+	c1Label.lock()->enableRigorousClearing();
+	c2Label.lock()->enableRigorousClearing();
+	c3Label.lock()->enableRigorousClearing();
+	c4Label.lock()->enableRigorousClearing();
+
+
 	updateLeft();
 	updateRight();
 	drawGraphicsLeft();
