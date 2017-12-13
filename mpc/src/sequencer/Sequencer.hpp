@@ -62,7 +62,8 @@ namespace mpc {
 			int playStartTick{ 0 };
 			BCMath previousTempo{};
 			int recordStartTick{ 0 };
-			std::thread stopBounceThread{};
+			std::thread stopBounceThread;
+			std::thread stopSongThread;
 
 			std::string defaultSongName{ "" };
 			std::string defaultSequenceName{ "" };
@@ -107,8 +108,11 @@ namespace mpc {
 			void copyTrackParameters(std::weak_ptr<Track> source, std::weak_ptr<Track> dest);
 			void copyTrack(std::weak_ptr<Track> src, std::weak_ptr<Track> dest);
 
+		private:
 			void runStopBounceThread();
 			static void static_stopBounce(void * args);
+			void runStopSongThread();
+			static void static_stopSong(void * args);
 
 		public:
 			void notifyTimeDisplay();

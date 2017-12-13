@@ -13,8 +13,8 @@
 
 #include <sequencer/SeqUtil.hpp>
 
-//#include <ui/sequencer/SongGui.hpp>
-//#include <ui/sequencer/window/SequencerWindowGui.hpp>
+#include <ui/sequencer/SongGui.hpp>
+#include <ui/sequencer/window/SequencerWindowGui.hpp>
 //#include <controls/AbstractControls.hpp>
 
 using namespace mpc::sequencer;
@@ -24,9 +24,6 @@ FrameSeq::FrameSeq(mpc::Mpc* mpc) {
 	this->mpc = mpc;
 	sequencer = mpc->getSequencer();
 }
-
-//void FrameSeq::setGui(mpc::Mpc* mpc) {
-//}
 
 void FrameSeq::start() {
 	if (running) {
@@ -49,6 +46,9 @@ void FrameSeq::work(int nFrames) {
 	if (!running) {
 		return;
 	}
+	auto controls = mpc->getControls().lock();
+	auto swGui = mpc->getUis().lock()->getSequencerWindowGui();
+	auto songGui = mpc->getUis().lock()->getSongGui();
 	auto lSequencer = sequencer.lock();
 	if (!lSequencer->isCountingIn()) lSequencer->notifyTimeDisplay();
 
@@ -64,26 +64,24 @@ void FrameSeq::work(int nFrames) {
 		if (clock.proc()) {
 			tickFrameOffset = i;
 
-			/*
-			if (kbmc->tapIsPressed()) {
-			int tcValue = lSequencer->getTickValues().at(lSequencer->getTcIndex());
-			int swingPercentage = lGui->getSequencerWindowGui()->getSwing();
-			if (tcValue == 24 || tcValue == 48) {
-			int swingOffset = (int)((swingPercentage - 50) * (4.0 / 100.0) * (tcValue / 2.0));
-			if (getTickPosition() % (tcValue * 2) == swingOffset + tcValue) {
-			repeatPad(getTickPosition());
+			if (controls && controls->isTapPressed()) {
+				int tcValue = lSequencer->getTickValues().at(swGui->getNoteValue());
+				int swingPercentage = swGui->getSwing();
+				if (tcValue == 24 || tcValue == 48) {
+					int swingOffset = (int)((swingPercentage - 50) * (4.0 / 100.0) * (tcValue / 2.0));
+					if (getTickPosition() % (tcValue * 2) == swingOffset + tcValue) {
+						repeatPad(getTickPosition());
+					}
+					else if (getTickPosition() % (tcValue * 2) == 0) {
+						repeatPad(getTickPosition());
+					}
+				}
+				else {
+					if (getTickPosition() % tcValue == 0) {
+						repeatPad(getTickPosition());
+					}
+				}
 			}
-			else if (getTickPosition() % (tcValue * 2) == 0) {
-			repeatPad(getTickPosition());
-			}
-			}
-			else {
-			if (getTickPosition() % tcValue == 0) {
-			repeatPad(getTickPosition());
-			}
-			}
-			}
-			*/
 
 			if (!metronome) {
 				if (lSequencer->isCountingIn()) {
@@ -101,21 +99,19 @@ void FrameSeq::work(int nFrames) {
 				}
 
 				if (getTickPosition() >= seq->getLastTick() - 1 && !lSequencer->isSongModeEnabled() && lSequencer->getNextSq() != -1) {
-					//lSequencer->playToTick(getTickPosition());
+					lSequencer->playToTick(getTickPosition());
 					checkNextSq();
-					//move(0);
+					move(0);
 					seq = lSequencer->getCurrentlyPlayingSequence().lock();
 					seq->initLoop();
 					move(0);
-					//continue;
+					continue;
 				}
-				/*
 				else if (lSequencer->isSongModeEnabled()) {
-					auto songGui = lGui->getSongGui();
 					if (getTickPosition() >= seq->getLastTick() - 1) {
 						Sequencer::repeats++;
 						auto song = lSequencer->getSong(songGui->getSelectedSongIndex()).lock();
-						auto step = lGui->getSongGui()->getOffset() + 1;
+						auto step = songGui->getOffset() + 1;
 						if (step == song->getStepAmount() - 1 && Sequencer::repeats == song->getStep(step)->getRepeats()) {
 							if (!songGui->isLoopEnabled()) {
 								lSequencer->playToTick(seq->getLastTick() - 1);
@@ -140,7 +136,6 @@ void FrameSeq::work(int nFrames) {
 						}
 					}
 				}
-				*/
 				else if (seq->isLoopEnabled()) {
 					if (getTickPosition() >= seq->getLoopEnd() - 1) {
 						move(seq->getLoopStart());
@@ -199,7 +194,7 @@ void FrameSeq::move(int newTickPos) {
 
 void FrameSeq::repeatPad(int tick) {
 	auto controls = mpc->getControls().lock();
-	if (controls == nullptr) return;
+	if (!controls) return;
 	auto pp = controls->getPressedPads();
 	for (auto& i : *pp)
 		mpc->getActiveControls()->pad(i, (*controls->getPressedPadVelos())[i], true, tick);

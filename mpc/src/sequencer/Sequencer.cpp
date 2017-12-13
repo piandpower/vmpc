@@ -5,6 +5,7 @@
 #include <hardware/Led.hpp>
 #include <ui/Uis.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
+#include <ui/sequencer/SongGui.hpp>
 #include <StartUp.hpp>
 #include <ui/UserDefaults.hpp>
 #include <lcdgui/LayeredScreen.hpp>
@@ -75,8 +76,6 @@ void Sequencer::init()
 	currentlyPlayingSequenceIndex = 0;
 	songMode = false;
 
-
-	//mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->setGui(gui);
 	purgeAllSequences();
 	for (int i = 0; i < 20; i++) {
 		songs[i] = make_shared<Song>(this);
@@ -334,54 +333,51 @@ bool Sequencer::isPlaying()
 
 void Sequencer::play(bool fromStart)
 {
-    if(isPlaying()) return;
-	//    endOfSong = false;
+    if (isPlaying()) return;
+    endOfSong = false;
     repeats = 0;
-	//auto currentSong = songs[lGui->getSongGui()->getSelectedSongIndex()];
+	auto songGui = mpc->getUis().lock()->getSongGui();
+	auto currentSong = songs[songGui->getSelectedSongIndex()];
     Step* currentStep = nullptr;
-	/*
 	if (songMode) {
 		if (!currentSong->isUsed()) return;
 
-		if (fromStart)
-			lGui->getSongGui()->setOffset(-1);
-
-		if (lGui->getSongGui()->getOffset() + 1 > currentSong->getStepAmount() - 1)
+		if (fromStart) {
+			songGui->setOffset(-1);
+		}
+		if (songGui->getOffset() + 1 > currentSong->getStepAmount() - 1) {
 			return;
-
-		int step = lGui->getSongGui()->getOffset() + 1;
-		if (step > currentSong->getStepAmount())
+		}
+		int step = songGui->getOffset() + 1;
+		if (step > currentSong->getStepAmount()) {
 			step = currentSong->getStepAmount() - 1;
-
+		}
 		currentStep = currentSong->getStep(step);
 	}
-	*/
-    move(position);
+	move(position);
     currentlyPlayingSequenceIndex = activeSequenceIndex;
 
-	//auto swGui = lGui->getSequencerWindowGui();
+	auto swGui = mpc->getUis().lock()->getSequencerWindowGui();
 
 
-    //if(!countEnabled || swGui->getCountInMode() == 0 || (swGui->getCountInMode() == 1 && recording == false)) {
-        if(fromStart)
-            move(0);
-
-    //}
-	auto s = getActiveSequence().lock();
-	/*
-	if (countEnabled && !songMode) {
-        if(swGui->getCountInMode() == 2 || (swGui->getCountInMode() == 1 && recording == true)) {
-            move(s->getLoopStart());
-            startCountingIn();
-        }
+    if (!countEnabled || swGui->getCountInMode() == 0 || (swGui->getCountInMode() == 1 && recording == false)) {
+		if (fromStart) {
+			move(0);
+		}
     }
-	*/
+	auto s = getActiveSequence().lock();
+	if (countEnabled && !songMode) {
+		if (swGui->getCountInMode() == 2 || (swGui->getCountInMode() == 1 && recording == true)) {
+			move(s->getLoopStart());
+			startCountingIn();
+		}
+	}
 
 	auto hw = mpc->getHardware().lock();
 	if (!songMode) {
-		if (!s->isUsed())
+		if (!s->isUsed()) {
 			return;
-
+		}
 		s->initLoop();
 		if (recording || overdubbing) {
 			undoPlaceHolder = copySequence(s);
@@ -515,8 +511,10 @@ void Sequencer::stop(int tick)
         notifyObservers(string("nextsqoff"));
     }
     notifyTimeDisplay();
-    if(endOfSong) {
-        //invokeLater(Sequencer_stop_1(this));
+	auto songGui = mpc->getUis().lock()->getSongGui();
+    if (endOfSong) {
+		if (stopSongThread.joinable()) stopSongThread.join();
+		stopSongThread = thread(&Sequencer::static_stopSong, this);
     }
 	if (lAms->isBouncing()) {
 		if (stopBounceThread.joinable()) stopBounceThread.join();
@@ -537,9 +535,20 @@ void Sequencer::static_stopBounce(void * args)
 
 void Sequencer::runStopBounceThread() {
 	this_thread::sleep_for(chrono::milliseconds(100));
-	auto lAms = mpc->getAudioMidiServices().lock();
-	//lAms->stopBouncing();
-	//lAms->getOfflineServer()->setRealTime(true);
+	auto ams = mpc->getAudioMidiServices().lock();
+	ams->stopBouncing();
+	ams->getOfflineServer()->setRealTime(true);
+}
+
+void Sequencer::static_stopSong(void * args)
+{
+	static_cast<Sequencer*>(args)->runStopSongThread();
+}
+
+void Sequencer::runStopSongThread() {
+	this_thread::sleep_for(chrono::milliseconds(10));
+	auto songGui = mpc->getUis().lock()->getSongGui();
+	songGui->setOffset(songGui->getOffset() + 1);
 }
 
 bool Sequencer::isCountingIn()
@@ -624,12 +633,11 @@ void Sequencer::copySequenceParameters(weak_ptr<Sequence> src, weak_ptr<Sequence
 {
 	auto source = src.lock();
 	auto dest = dst.lock();
-    dest->setName(source->getName());
-    //dest->setTempoChangeEvents(source->getTempoChangeEvents());
+	dest->setName(source->getName());
 	copyTempoChangeEvents(src, dst);
-    dest->setLoopEnabled(source->isLoopEnabled());
-    dest->setUsed(source->isUsed());
-    dest->setDeviceNames(source->getDeviceNames());
+	dest->setLoopEnabled(source->isLoopEnabled());
+	dest->setUsed(source->isUsed());
+	dest->setDeviceNames(source->getDeviceNames());
 }
 
 void Sequencer::copyTempoChangeEvents(weak_ptr<Sequence> src, weak_ptr<Sequence> dst) {
@@ -689,17 +697,17 @@ void Sequencer::setDefaultTrackName(string s, int i)
 
 int Sequencer::getCurrentBarNumber()
 {
-    auto s = isPlaying() ? getCurrentlyPlayingSequence().lock() : getActiveSequence().lock();
-    auto pos = getTickPosition();
-	if(pos == s->getLastTick()) return s->getLastBar() + 1;
+	auto s = isPlaying() ? getCurrentlyPlayingSequence().lock() : getActiveSequence().lock();
+	auto pos = getTickPosition();
+	if (pos == s->getLastTick()) return s->getLastBar() + 1;
 	auto index = pos;
-	if(isPlaying() && !countingIn) index = getTickPosition();
-    if(index == 0) return 0;
+	if (isPlaying() && !countingIn) index = getTickPosition();
+	if (index == 0) return 0;
 
-    auto barLengths = s->getBarLengths();
-    auto barCounter = 0;
+	auto barLengths = s->getBarLengths();
+	auto barCounter = 0;
 
-    int tickCounter = 0;
+	int tickCounter = 0;
 	for (int i = 0; i < 999; i++) {
 		if (i > s->getLastBar()) i = 0;
 		tickCounter += (*barLengths)[i];
@@ -708,30 +716,30 @@ int Sequencer::getCurrentBarNumber()
 			break;
 		}
 	}
-    return barCounter;
+	return barCounter;
 }
 
 int Sequencer::getCurrentBeatNumber()
 {
-    auto s = isPlaying() ? getCurrentlyPlayingSequence().lock() : getActiveSequence().lock();
-    auto pos = getTickPosition();
-    if(pos == s->getLastTick()) return 0;
-    auto index = pos;
+	auto s = isPlaying() ? getCurrentlyPlayingSequence().lock() : getActiveSequence().lock();
+	auto pos = getTickPosition();
+	if (pos == s->getLastTick()) return 0;
+	auto index = pos;
 	if (isPlaying() && !countingIn) {
 		index = getTickPosition();
 		if (index > s->getLastTick()) {
 			index %= s->getLastTick();
 		}
 	}
-    
+
 	auto ts = s->getTimeSignature();
 	auto den = ts.getDenominator();
 	auto denTicks = 96 * (4.0 / den);
-    
-	if(index == 0) return 0;
 
-    int barStartPos = 0;
-    auto barCounter = 0;
+	if (index == 0) return 0;
+
+	int barStartPos = 0;
+	auto barCounter = 0;
 	for (auto l : *s->getBarLengths()) {
 		if (barCounter == getCurrentBarNumber()) break;
 		barStartPos += l;
@@ -874,8 +882,10 @@ int Sequencer::getLoopEnd()
 
 weak_ptr<Sequence> Sequencer::getActiveSequence()
 {
-//	//	if (songMode && songs[lGui->getSongGui()->getSelectedSongIndex()]->getStepAmount() != 0)
-//		return sequences[getSongSequenceIndex() >= 0 ? getSongSequenceIndex() : activeSequenceIndex];
+	auto songGui = mpc->getUis().lock()->getSongGui();
+	if (songMode && songs[songGui->getSelectedSongIndex()]->getStepAmount() != 0) {
+		return sequences[getSongSequenceIndex() >= 0 ? getSongSequenceIndex() : activeSequenceIndex];
+	}
 	return sequences[activeSequenceIndex];
 }
 
@@ -1049,17 +1059,16 @@ void Sequencer::tap()
 	auto nanoLong = moduru::System::nanoTime();
 
 	if (nanoLong - lastTap > (2000 * 1000000)) {
-		//taps = make_unique<moduru::io::CircularIntBuffer>(4, true, true);
+		taps = make_unique<moduru::io::CircularIntBuffer>(4, true, true);
 	}
 
-
 	lastTap = nanoLong;
-	//taps->write(vector<int>{ (int)nanoLong });
+	taps->write(vector<int>{ (int)nanoLong });
 	int accum = 0;
 	vector<long> tapsLong;
-	//while (taps->availableRead() > 0)
-	//	tapsLong.push_back(taps->read());
-
+	while (taps->availableRead() > 0) {
+		tapsLong.push_back(taps->read());
+	}
 	for (int i = 0; i < (int)(tapsLong.size()) - 1; i++) {
 		int l0 = tapsLong[i];
 		int l1 = tapsLong[i + 1];
@@ -1133,9 +1142,9 @@ void Sequencer::setSelectedTrackIndex(int i)
 
 int Sequencer::getCurrentlyPlayingSequenceIndex()
 {
-	//	//auto songseq = songMode ? songs[lGui->getSongGui()->getSelectedSongIndex()]->getStep(lGui->getSongGui()->getOffset() + 1)->getSequence() : -1;
-	//return songMode ? songseq : currentlyPlayingSequenceIndex;
-	return getActiveSequenceIndex();
+	auto songGui = mpc->getUis().lock()->getSongGui();
+	auto songSeqIndex = songMode ? songs[songGui->getSelectedSongIndex()]->getStep(songGui->getOffset() + 1)->getSequence() : -1;
+	return songMode ? songSeqIndex : currentlyPlayingSequenceIndex;
 }
 
 void Sequencer::setCurrentlyPlayingSequenceIndex(int i) {
@@ -1234,13 +1243,13 @@ void Sequencer::setSongModeEnabled(bool b)
 
 int Sequencer::getSongSequenceIndex()
 {
-	//	//auto song = songs[lGui->getSongGui()->getSelectedSongIndex()];
-	//auto step = lGui->getSongGui()->getOffset() + 1;
-	//if (step > song->getStepAmount() - 1)
-	//	step = song->getStepAmount() - 1;
-
-	//return song->getStep(step)->getSequence();
-	return 0;
+	auto songGui = mpc->getUis().lock()->getSongGui();
+	auto song = songs[songGui->getSelectedSongIndex()];
+	auto step = songGui->getOffset() + 1;
+	if (step > song->getStepAmount() - 1) {
+		step = song->getStepAmount() - 1;
+	}
+	return song->getStep(step)->getSequence();
 }
 
 bool Sequencer::isSecondSequenceEnabled()
@@ -1317,14 +1326,14 @@ void Sequencer::playMetronomeTrack()
 	metronomeSeq->setTimeSignature(0, 3, s->getNumerator(getCurrentBarNumber()), s->getDenominator(getCurrentBarNumber()));
 	metronomeSeq->setInitialTempo(getTempo());
 	metronomeSeq->removeFirstMetronomeClick();
-	//mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->startMetronome();
+	mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->startMetronome();
 }
 
 void Sequencer::stopMetronomeTrack()
 {
 	if (!metronomeOnly) return;
 	metronomeOnly = false;
-//	mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->stop();
+	mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->stop();
 }
 
 weak_ptr<Sequence> Sequencer::createSeqInPlaceHolder() {

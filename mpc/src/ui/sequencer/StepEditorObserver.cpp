@@ -3,6 +3,8 @@
 #include <Mpc.hpp>
 #include <Util.hpp>
 
+#include <controls/Controls.hpp>
+
 #include <lcdgui/Field.hpp>
 #include <lcdgui/Label.hpp>
 #include <ui/sequencer/StepEditorGui.hpp>
@@ -92,45 +94,49 @@ void StepEditorObserver::update(moduru::observer::Observable* o, boost::any arg)
 		setViewModeNotesText();
 	}
 	else if (s.compare("stepeditor") == 0) {
-		if (ls->getCurrentScreenName().compare("sequencer_step") == 0) {
-			auto focus = ls->getFocus();
-			int eventNumber;
-			try {
-				eventNumber = stoi(focus.substr(1, 2));
+		if (mpc->getControls().lock()->getPressedPads()->size() != 0) {
+			// a note is currently being recorded by the user pressing a pad
+			initVisibleEvents();
+			refreshEventRows();
+			return;
+		}
+		auto focus = ls->getFocus();
+		int eventNumber;
+		try {
+			eventNumber = stoi(focus.substr(1, 2));
+		}
+		catch (const std::invalid_argument& ia) {
+			return;
+		}
+		if (dynamic_pointer_cast<NoteEvent>(visibleEvents[eventNumber].lock())) {
+			if (track.lock()->getBusNumber() != 0) {
+				eventRows[eventNumber]->setDrumNoteEventValues();
 			}
-			catch (const std::invalid_argument& ia) {
-				return;
+			else {
+				eventRows[eventNumber]->setMidiNoteEventValues();
 			}
-			if (dynamic_pointer_cast<NoteEvent>(visibleEvents[eventNumber].lock())) {
-				if (track.lock()->getBusNumber() != 0) {
-					eventRows[eventNumber]->setDrumNoteEventValues();
-				}
-				else {
-					eventRows[eventNumber]->setMidiNoteEventValues();
-				}
-			}
-			else if (dynamic_pointer_cast<MixerEvent>(visibleEvents[eventNumber].lock())) {
-				eventRows[eventNumber]->setMixerEventValues();
-			}
-			else if (dynamic_pointer_cast<PitchBendEvent>(visibleEvents[eventNumber].lock())
-				|| dynamic_pointer_cast<ProgramChangeEvent>(visibleEvents[eventNumber].lock())) {
-				eventRows[eventNumber]->setMiscEventValues();
-			}
-			else if (dynamic_pointer_cast<ControlChangeEvent>(visibleEvents[eventNumber].lock())) {
-				eventRows[eventNumber]->setControlChangeEventValues();
-			}
-			else if (dynamic_pointer_cast<ChannelPressureEvent>(visibleEvents[eventNumber].lock())) {
-				eventRows[eventNumber]->setChannelPressureEventValues();
-			}
-			else if (dynamic_pointer_cast<PolyPressureEvent>(visibleEvents[eventNumber].lock())) {
-				eventRows[eventNumber]->setPolyPressureEventValues();
-			}
-			else if (dynamic_pointer_cast<SystemExclusiveEvent>(visibleEvents[eventNumber].lock())) {
-				eventRows[eventNumber]->setSystemExclusiveEventValues();
-			}
-			else if (dynamic_pointer_cast<EmptyEvent>(visibleEvents[eventNumber].lock())) {
-				eventRows[eventNumber]->setEmptyEventValues();
-			}
+		}
+		else if (dynamic_pointer_cast<MixerEvent>(visibleEvents[eventNumber].lock())) {
+			eventRows[eventNumber]->setMixerEventValues();
+		}
+		else if (dynamic_pointer_cast<PitchBendEvent>(visibleEvents[eventNumber].lock())
+			|| dynamic_pointer_cast<ProgramChangeEvent>(visibleEvents[eventNumber].lock())) {
+			eventRows[eventNumber]->setMiscEventValues();
+		}
+		else if (dynamic_pointer_cast<ControlChangeEvent>(visibleEvents[eventNumber].lock())) {
+			eventRows[eventNumber]->setControlChangeEventValues();
+		}
+		else if (dynamic_pointer_cast<ChannelPressureEvent>(visibleEvents[eventNumber].lock())) {
+			eventRows[eventNumber]->setChannelPressureEventValues();
+		}
+		else if (dynamic_pointer_cast<PolyPressureEvent>(visibleEvents[eventNumber].lock())) {
+			eventRows[eventNumber]->setPolyPressureEventValues();
+		}
+		else if (dynamic_pointer_cast<SystemExclusiveEvent>(visibleEvents[eventNumber].lock())) {
+			eventRows[eventNumber]->setSystemExclusiveEventValues();
+		}
+		else if (dynamic_pointer_cast<EmptyEvent>(visibleEvents[eventNumber].lock())) {
+			eventRows[eventNumber]->setEmptyEventValues();
 		}
 	}
 	else if (s.compare("resetstepeditor") == 0) {
@@ -139,14 +145,23 @@ void StepEditorObserver::update(moduru::observer::Observable* o, boost::any arg)
 		refreshSelection();
 	}
 	else if (s.compare("bar") == 0) {
+		if (sequencer.lock()->isPlaying()) {
+			return;
+		}
 		now0Field.lock()->setTextPadded(sequencer.lock()->getCurrentBarNumber() + 1, "0");
 		stepEditorGui->setyOffset(0);
 	}
 	else if (s.compare("beat") == 0) {
+		if (sequencer.lock()->isPlaying()) {
+			return;
+		}
 		now1Field.lock()->setTextPadded(sequencer.lock()->getCurrentBeatNumber() + 1, "0");
 		stepEditorGui->setyOffset(0);
 	}
 	else if (s.compare("clock") == 0) {
+		if (sequencer.lock()->isPlaying()) {
+			return;
+		}
 		now2Field.lock()->setTextPadded(sequencer.lock()->getCurrentClockNumber(), "0");
 		stepEditorGui->setyOffset(0);
 	}
