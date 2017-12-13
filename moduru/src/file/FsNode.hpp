@@ -13,9 +13,6 @@ namespace moduru {
 			Directory* const parent;
 
 		public:
-			static char formatPath();
-
-		public:
 			const std::string getPath();
 			const std::string getName();
 			Directory* const getParent();
@@ -27,10 +24,12 @@ namespace moduru {
 			virtual bool isFile() = 0;
 			virtual bool isDirectory() = 0;
 			virtual bool create() = 0;
+			
+		public:
+			virtual bool del();
 
 		public:
 			bool renameTo(std::string newName);
-			bool del();
 			bool exists();
 
 		public:

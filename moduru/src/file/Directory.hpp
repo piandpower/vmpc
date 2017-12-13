@@ -19,6 +19,7 @@ namespace moduru {
 			bool isFile() override;
 			bool isDirectory() override;
 			bool create() override;
+			bool del() override;
 
 		public:
 			Directory(std::string const path, Directory* const parent);

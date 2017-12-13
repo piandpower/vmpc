@@ -3,6 +3,8 @@
 #include <file/Directory.hpp>
 #include <file/FileUtil.hpp>
 
+#include <Logger.hpp>
+
 using namespace moduru::file;
 using namespace std;
 

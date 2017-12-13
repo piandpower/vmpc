@@ -87,6 +87,14 @@ bool Directory::isDirectory() {
 	return true;
 }
 
+bool Directory::del() {
+#ifdef _WIN32
+	return RemoveDirectory(getPath().c_str()) != 0;
+#else
+	return FsNode::del();
+#endif
+}
+
 Directory::~Directory() {
 
 }
