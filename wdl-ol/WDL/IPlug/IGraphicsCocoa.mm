@@ -407,8 +407,9 @@ inline int GetMouseOver(IGraphicsMac* pGraphics)
     unichar c = [s characterAtIndex:0];
 
     bool handle = true;
-    int key;
-
+    
+      int key = k;
+/*
     if (k == 49) key = KEY_SPACE;
     else if (k == 126) key = KEY_UPARROW;
     else if (k == 125) key = KEY_DOWNARROW;
@@ -418,7 +419,7 @@ inline int GetMouseOver(IGraphicsMac* pGraphics)
     else if (c >= 'A' && c <= 'Z') key = KEY_ALPHA_A+c-'A';
     else if (c >= 'a' && c <= 'z') key = KEY_ALPHA_A+c-'a';
     else handle = false;
-
+*/
     if (handle)
     {
       // can't use getMouseXY because its a key event

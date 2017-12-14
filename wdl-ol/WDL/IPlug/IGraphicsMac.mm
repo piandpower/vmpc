@@ -156,6 +156,11 @@ IGraphicsMac::IGraphicsMac(IPlugBase* pPlug, int w, int h, int refreshFPS)
     mGraphicsCocoa(0),
     mColorSpace(NULL)
 {
+#ifndef IPLUG_NO_CARBON_SUPPORT
+    printf("Carbon GUI\n");
+#else
+    printf("Cocoa GUI\n");
+#endif
   NSApplicationLoad();
 }
 
