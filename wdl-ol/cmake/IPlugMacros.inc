@@ -157,7 +157,7 @@ MACRO(set_plug_props a_project compile_defs)
 	endif(APPLE)
 	target_link_libraries(${ARGV0} wdl lice iplug jnet eel plush png zlib mpc moduru ctoot rtam ${IPLUG_LIBS} ${OSX_FMWKS} )
 	if(WIN32)
-		target_link_libraries(comctl32 dsound)
+		target_link_libraries(${ARGV0} comctl32 dsound)
 	endif(WIN32)
 
 endMACRO()

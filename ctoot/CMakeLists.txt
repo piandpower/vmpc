@@ -28,7 +28,7 @@ file(
 
 add_library(ctoot ${_source_list})
 if(MSVC)
-  target_compile_options(toot PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
+  target_compile_options(ctoot PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
 	#configure_msvc_runtime()
 endif(MSVC)
 
