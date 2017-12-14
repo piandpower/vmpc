@@ -26,6 +26,11 @@ file(
     "${_src_root_path}/*.hpp*"
 )
 
+if(APPLE)
+  set(CMAKE_OSX_ARCHITECTURES "x86_64;i386")
+  set(CMAKE_CXX_STANDARD 14)
+endif(APPLE)
+
 add_library(ctoot ${_source_list})
 if(MSVC)
   target_compile_options(ctoot PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
