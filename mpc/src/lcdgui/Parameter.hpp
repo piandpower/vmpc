@@ -12,8 +12,8 @@ namespace mpc {
 		class Parameter {
 
 		private:
-			std::weak_ptr<Field> tf{};
-			std::weak_ptr<Label> label{};
+			std::weak_ptr<Field> tf;
+			std::weak_ptr<Label> label;
 
 		public:
 			std::weak_ptr<Field> getTf();

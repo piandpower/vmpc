@@ -13,21 +13,21 @@ namespace ctoot {
 			{
 
 			private:
-				std::vector<std::vector<float>> channels{};
-				int sampleCount{ 0 };
-				float sampleRate{ 0 };
-				int originalFormatType{ 0 };
-				static const bool LAZY_DEFAULT{ true };
-				int channelCount{ 0 };
+				std::vector<std::vector<float> > channels;
+				int sampleCount = { 0 };
+				float sampleRate = { 0 };
+				int originalFormatType = { 0 };
+				static const bool LAZY_DEFAULT = { true };
+				int channelCount = { 0 };
 
 			public:
-				static const int DITHER_MODE_AUTOMATIC{ 0 };
-				static const int DITHER_MODE_ON{ 1 };
-				static const int DITHER_MODE_OFF{ 2 };
+				static const int DITHER_MODE_AUTOMATIC = { 0 };
+				static const int DITHER_MODE_ON = { 1 };
+				static const int DITHER_MODE_OFF = { 2 };
 
 			private:
-				float ditherBits{ DEFAULT_DITHER_BITS };
-				int ditherMode{ DITHER_MODE_AUTOMATIC };
+				float ditherBits = { DEFAULT_DITHER_BITS };
+				int ditherMode = { DITHER_MODE_AUTOMATIC };
 
 
 			protected:
@@ -73,7 +73,7 @@ namespace ctoot {
 
 				void setSampleRate(float sampleRate);
 				float getSampleRate();
-				std::vector<std::vector<float>>* getAllChannels();
+                std::vector<std::vector<float> >* getAllChannels();
 
 				float getDitherBits();
 				int getDitherMode();

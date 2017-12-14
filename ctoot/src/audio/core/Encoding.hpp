@@ -14,7 +14,7 @@ namespace ctoot {
 				static Encoding* PCM_SIGNED_;
 				static Encoding* PCM_UNSIGNED_;
 				static Encoding* ULAW_;
-				std::string name{ "" };
+				std::string name = "" ;
 
 
 			public:

@@ -94,7 +94,8 @@ bool BMFParser::GetBMFontData(const char* pBinary, size_t fileSize, bmfont* pBMF
 				uint8_t len = 0;
 				while (pageName[len] != 0)
 				{
-					pBMFont->pages[index].name[len] = pageName[len++];
+					pBMFont->pages[index].name[len] = pageName[len];
+                    len++;
 				}
 				pBMFont->pages[index].length = len;
 				stream.offsetBy(len + 1);
@@ -140,8 +141,7 @@ std::vector<std::vector<bool>> BMFParser::BMPAsBoolArrays(std::string filePath) 
 
 	const int infosize = 54;
 
-	FILE* f;
-	fopen_s(&f, filePath.c_str(), "rb");
+	FILE* f = fopen(filePath.c_str(), "rb");
 
     if (f == nullptr) return result;
 

@@ -66,7 +66,7 @@ MACRO(create_example name)
 	endif(HAVE_AU)
 
 	PROJECT ( ${PLUGNAME} )
-
+	set(CMAKE_CXX_STANDARD 14)
 	set(BINARY_NAME "${PLUGNAME}" )
 
 	find_package(Boost 1.36.0)
@@ -76,7 +76,7 @@ MACRO(create_example name)
 	
 	# Source code to build
 	set(${PN_SRC} ${${PN_SRC}}   ${PLUGNAME}.cpp )
-	#set(${PN_SRC} ${${PN_SRC}}   ${CMAKE_CURRENT_SOURCE_DIR}/source/DataWheelControl.cpp )
+	
 	
 	file(GLOB _source_list ${CMAKE_CURRENT_SOURCE_DIR}/source/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/source/*.hpp)
 	set(${PN_SRC} ${${PN_SRC}}   ${_source_list} )

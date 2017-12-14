@@ -1,9 +1,11 @@
 set(VMPCWDL_IMG
-	resources/img/about.png
+	resources/img/led_green.png
 	resources/img/bg.png
-	resources/img/bk.png
-	resources/img/knob.png
-	resources/img/wk.png
+	resources/img/led_red.png
+	resources/img/datawheels.png
+	resources/img/sliders.png
+	resources/img/recknobs.png
+	resources/img/volknobs.png
 )
 
 create_example(VMPCWDL)

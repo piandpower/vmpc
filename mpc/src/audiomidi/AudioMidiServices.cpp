@@ -247,8 +247,8 @@ void AudioMidiServices::setupServer(int index)
 #ifdef __APPLE__
 	if (standalone) {
 		server = make_shared<ctoot::audio::server::CoreAudioServer>(index, index);
-		server->setRequestedBufferSize(requestedBufferSize == -1 ? 128 : requestedBufferSize);
-		server->resizeBuffers(server->getRequestedBufferSize());
+		//server->setRequestedBufferSize(requestedBufferSize == -1 ? 128 : requestedBufferSize);
+		//server->resizeBuffers(server->getRequestedBufferSize());
 	}
 #else
 	if (index == 0 && standalone) {

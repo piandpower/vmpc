@@ -12,10 +12,10 @@ namespace mpc {
 		protected:
 			MRECT rect;
 			std::vector<MRECT> clearRects;
-			bool hidden{ false };
+			bool hidden = false;
 
 		protected:
-			bool dirty{ false };
+			bool dirty = false;
 
 		public:
 			virtual void Hide(bool b);

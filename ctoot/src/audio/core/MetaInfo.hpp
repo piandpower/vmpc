@@ -9,8 +9,8 @@ namespace ctoot {
 			{
 
 			private:
-				std::string sourceLabel{ "" };
-				std::string sourceLocation{ "" };
+				std::string sourceLabel = { "" };
+				std::string sourceLocation = { "" };
 
 			public:
 				std::string getSourceLabel();

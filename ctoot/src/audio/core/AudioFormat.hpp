@@ -10,19 +10,19 @@ namespace ctoot {
 			{
 
 			protected:
-				bool bigEndian{ false };
-				int channels{ 0 };
-				Encoding* encoding{ nullptr };
-				float frameRate{ 0 };
-				int frameSize{ 0 };
+				bool bigEndian = { false };
+				int channels = { 0 };
+				Encoding* encoding = { nullptr };
+				float frameRate = { 0 };
+				int frameSize = { 0 };
 
 			private:
 				//    ::java::util::HashMap* properties_ {  };
 				const int NOT_SPECIFIED = -1;
 
 			public:
-				float sampleRate{ 0 };
-				int sampleSizeInBits{ 0 };
+				float sampleRate = { 0 };
+				int sampleSizeInBits = { 0 };
 
 			public:
 				virtual int getChannels();

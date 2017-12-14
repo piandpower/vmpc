@@ -5,8 +5,7 @@
 // after #defining either VST_API or AU_API.
 #include <stdio.h>
 #include "IPlugOSDetect.h"
-#include "resource.h" // This is your plugin's resource.h
-
+#include "../../IPlugExamples/VMPCWDL/resource.h"
 #ifdef VST_API
   #include "IPlugVST.h"
   typedef IPlugVST IPlug;

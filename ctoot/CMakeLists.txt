@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 include (../wdl-ol/cmake/IPlugMacros.inc)
 project(ctoot)
 
+set(CMAKE_CXX_STANDARD 14)
 set(_src_root_path "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 get_filename_component(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
@@ -26,9 +27,8 @@ file(
 )
 
 add_library(ctoot ${_source_list})
-
 if(MSVC)
-  target_compile_options(mpc PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
+  target_compile_options(toot PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
 	#configure_msvc_runtime()
 endif(MSVC)
 
