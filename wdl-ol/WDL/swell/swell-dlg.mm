@@ -1695,6 +1695,7 @@ static HWND last_key_window;
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent {	return m_enabled?YES:NO; } \
 - (void)setFrame:(NSRect)frameRect display:(BOOL)displayFlag \
 { \
+printf("\n\n Is this stuff actually called??\n\n");\
   [super setFrame:frameRect display:displayFlag]; \
   if((int)frameRect.size.width != (int)lastFrameSize.width || (int)frameRect.size.height != (int)lastFrameSize.height) { \
     SWELL_hwndChild *hc = (SWELL_hwndChild*)[self contentView]; \
@@ -1775,6 +1776,7 @@ static HWND last_key_window;
   return NO; \
 } \
 - (BOOL)canBecomeKeyWindow {   return !!m_enabled && !g_swell_terminating; } \
+- (BOOL)canBecomeMainWindow {   return !!m_enabled && !g_swell_terminating; } \
 - (void **)swellGetOwnerWindowHead { return (void **)&m_ownedwnds; } \
 - (void)swellAddOwnedWindow:(NSWindow*)wnd \
 { \

@@ -146,6 +146,7 @@ static void SWELL_fastDoubleUpImage(unsigned int *op, const unsigned int *ip, in
 
 @implementation CUSTOM_COCOA_WINDOW
 - (BOOL)canBecomeKeyWindow {return YES;}
+- (BOOL)canBecomeMainWindow {return YES;}
 @end
 
 IGraphicsMac::IGraphicsMac(IPlugBase* pPlug, int w, int h, int refreshFPS)
@@ -399,7 +400,7 @@ void IGraphicsMac::AttachSubWindow(void* hostWindowRef)
   [childWindow setCanHide: YES];
   [childWindow setHasShadow: NO];
   [childWindow setReleasedWhenClosed: YES];
-
+    
   NSView* childContent = [childWindow contentView];
 
   OpenWindow(childContent);
@@ -407,9 +408,10 @@ void IGraphicsMac::AttachSubWindow(void* hostWindowRef)
   [hostWindow addChildWindow: childWindow ordered: NSWindowAbove];
   [hostWindow orderFront: nil];
   [hostWindow display];
-  [childWindow performSelector:@selector(orderFront:) withObject :(id) nil afterDelay :0.05];
+    [childWindow performSelector:@selector(orderFront:) withObject :(id) nil afterDelay :0.05];
 
   mHostNSWindow = (void*) hostWindow;
+
 }
 
 void IGraphicsMac::RemoveSubWindow()

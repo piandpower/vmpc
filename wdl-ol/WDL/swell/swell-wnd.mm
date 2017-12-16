@@ -371,6 +371,7 @@ STANDARD_CONTROL_NEEDSDISPLAY_IMPL
 
 -(void)mouseDown:(NSEvent *)theEvent
 {
+
   if (([theEvent modifierFlags] & NSControlKeyMask) && IsRightClickEmulateEnabled())
   {
     m_fakerightmouse=1;  
@@ -1625,7 +1626,7 @@ void SetFocus(HWND hwnd) // these take NSWindow/NSView, and return NSView *
   SWELL_BEGIN_TRY
   if ([r isKindOfClass:[NSWindow class]])
   {
-    [(NSWindow *)r makeFirstResponder:[(NSWindow *)r contentView]]; 
+    [(NSWindow *)r makeFirstResponder:[(NSWindow *)r contentView]];
     if ([(NSWindow *)r isVisible]) [(NSWindow *)r makeKeyAndOrderFront:nil];
   }
   else if ([r isKindOfClass:[NSView class]])
@@ -1634,6 +1635,7 @@ void SetFocus(HWND hwnd) // these take NSWindow/NSView, and return NSView *
     if (wnd)
     {
       [wnd makeFirstResponder:r];
+
       if ([wnd isVisible])
       {
         [wnd makeKeyAndOrderFront:nil];
@@ -1894,7 +1896,9 @@ void SetWindowPos(HWND hwnd, HWND hwndAfter, int x, int y, int cx, int cy, int f
             [par addSubview:v positioned:omode relativeTo:viewafter];
             [v release];
           
-            if (oldfoc) [[v window] makeFirstResponder:oldfoc];
+              if (oldfoc) {
+                  [[v window] makeFirstResponder:oldfoc];
+              }
           }
         }
       }
@@ -5840,6 +5844,7 @@ STANDARD_CONTROL_NEEDSDISPLAY_IMPL
 
 bool SWELL_HandleMouseEvent(NSEvent *evt)
 {
+    printf("\n\nSwell handle mouse event\n\n");
   int etype = [evt type];
   if (GetCapture()) return false;
   if (etype >= NSLeftMouseDown && etype <= NSRightMouseDragged)

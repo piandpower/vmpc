@@ -959,7 +959,14 @@ INT_PTR SWELLAppMain(int msg, INT_PTR parm1, INT_PTR parm2)
       Cleanup();
       break;
     case SWELLAPP_PROCESSMESSAGE: // can hook keyboard input here
-      // parm1 = (MSG*), should we want it -- look in swell.h to see what the return values refer to
+          auto msg = (MSG*) parm1;
+          auto wParam = msg->wParam;
+          auto message = msg->message;
+
+          if (wParam == 27 && message == 256) {  // esc-key down
+              auto graphics = gPluginInstance->GetGUI();
+              graphics->OnKeyDown(0, 0, 0x35);
+          }
       break;
   }
   return 0;
