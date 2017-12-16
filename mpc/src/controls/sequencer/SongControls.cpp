@@ -38,6 +38,33 @@ void SongControls::up()
 	}
 }
 
+void SongControls::left() {
+	init();
+	if (param.compare("sequence1") == 0) {
+		ls.lock()->setFocus("step1");
+	}
+	else if (param.compare("reps1") == 0) {
+		ls.lock()->setFocus("sequence1");
+	}
+	else {
+		super::left();
+	}
+}
+
+
+void SongControls::right() {
+	init();
+	if (param.compare("sequence1") == 0) {
+		ls.lock()->setFocus("reps1");
+	}
+	else if (param.compare("step1") == 0) {
+		ls.lock()->setFocus("sequence1");
+	}
+	else {
+		super::right();
+	}
+}
+
 void SongControls::openWindow()
 {
 	init();

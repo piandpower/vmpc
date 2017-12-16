@@ -53,7 +53,9 @@ namespace mpc {
 				void displayLoop();
 				void displaySteps();
 				void displayTempoSource();
-				void displayNow();
+				void displayNow0();
+				void displayNow1();
+				void displayNow2();
 				void displaySongName();
 
 			public:

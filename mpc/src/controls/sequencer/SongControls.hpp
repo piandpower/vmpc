@@ -28,8 +28,10 @@ namespace mpc {
 
 			public:
 				void up() override;
-				void openWindow() override;
 				void down() override;
+				void left() override;
+				void right() override;
+				void openWindow() override;
 				void turnWheel(int i) override;
 				void function(int i) override;
 

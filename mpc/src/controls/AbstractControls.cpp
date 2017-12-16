@@ -453,8 +453,11 @@ void AbstractControls::play()
 				ls.lock()->openScreen("directtodiskrecorder");
 			}
 			else {
-				if (csn.compare("sequencer") != 0) {
+				if (csn.compare("song") != 0 && csn.compare("sequencer") != 0) {
 					ls.lock()->openScreen("sequencer");
+				}
+				if (csn.compare("song") == 0) {
+					lSequencer->setSongModeEnabled(true);
 				}
 				lSequencer->play();
 			}
@@ -488,8 +491,11 @@ void AbstractControls::playStart()
 			ls.lock()->openScreen("directtodiskrecorder");
 		}
 		else {
-			if (csn.compare("sequencer") != 0) {
+			if (csn.compare("song") != 0 && csn.compare("sequencer") != 0) {
 				ls.lock()->openScreen("sequencer");
+			}
+			if (csn.compare("song") == 0) {
+				lSequencer->setSongModeEnabled(true);
 			}
 			lSequencer->playFromStart();
 		}

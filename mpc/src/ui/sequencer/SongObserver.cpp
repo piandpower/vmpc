@@ -52,20 +52,22 @@ SongObserver::SongObserver(mpc::Mpc* mpc)
 	reps2Field = ls->lookupField("reps2");
 
 	step0Field.lock()->setFocusable(false);
-	step0Field.lock()->setOpaque(false);
+	//step0Field.lock()->setOpaque(false);
 	sequence0Field.lock()->setFocusable(false);
-	sequence0Field.lock()->setOpaque(false);
+	//sequence0Field.lock()->setOpaque(false);
 	reps0Field.lock()->setFocusable(false);
-	reps0Field.lock()->setOpaque(false);
+	//reps0Field.lock()->setOpaque(false);
 	step2Field.lock()->setFocusable(false);
-	step2Field.lock()->setOpaque(false);
+	//step2Field.lock()->setOpaque(false);
 	sequence2Field.lock()->setFocusable(false);
-	sequence2Field.lock()->setOpaque(false);
+	//sequence2Field.lock()->setOpaque(false);
 	reps2Field.lock()->setFocusable(false);
-	reps2Field.lock()->setOpaque(false);
+	//reps2Field.lock()->setOpaque(false);
 
 	displaySongName();
-	displayNow();
+	displayNow0();
+	displayNow1();
+	displayNow2();
 	displayTempoSource();
 	displayTempo();
 	displayLoop();
@@ -75,8 +77,9 @@ SongObserver::SongObserver(mpc::Mpc* mpc)
 void SongObserver::displayTempo()
 {
 	string tempo = sequencer.lock()->getTempo().toString();
+	tempo = moduru::lang::StrUtil::padLeft(tempo, " ", 5);
 	tempo = Util::replaceDotWithSmallSpaceDot(tempo);
-    tempoField.lock()->setTextPadded(tempo, " ");
+    tempoField.lock()->setText(tempo);
 }
 
 void SongObserver::displayLoop()
@@ -114,12 +117,19 @@ void SongObserver::displayTempoSource()
     tempoSourceField.lock()->setText(sequencer.lock()->isTempoSourceSequence() ? "SEQ" : "MAS");
 }
 
-void SongObserver::displayNow()
+void SongObserver::displayNow0()
 {
-	auto lSequencer = sequencer.lock();
-	now0Field.lock()->setTextPadded(lSequencer->getCurrentBarNumber() + 1, "0");
-	now1Field.lock()->setTextPadded(lSequencer->getCurrentBeatNumber() + 1, "0");
-	now2Field.lock()->setTextPadded(lSequencer->getCurrentClockNumber(), "0");
+	now0Field.lock()->setTextPadded(sequencer.lock()->getCurrentBarNumber() + 1, "0");
+}
+
+void SongObserver::displayNow1()
+{
+	now1Field.lock()->setTextPadded(sequencer.lock()->getCurrentBeatNumber() + 1, "0");
+}
+
+void SongObserver::displayNow2()
+{
+	now2Field.lock()->setTextPadded(sequencer.lock()->getCurrentClockNumber(), "0");
 }
 
 void SongObserver::displaySongName()
@@ -160,8 +170,14 @@ void SongObserver::update(moduru::observer::Observable* o, boost::any arg)
 	else if (s.compare("step") == 0) {
 		displaySteps();
 	}
-	else if (s.compare("now") == 0) {
-		displayNow();
+	else if (s.compare("bar") == 0) {
+		displayNow0();
+	}
+	else if (s.compare("beat") == 0) {
+		displayNow1();
+	}
+	else if (s.compare("clock") == 0) {
+		displayNow2();
 	}
 	else if (s.compare("play") == 0) {
 		sequence1Field.lock()->startBlinking();

@@ -108,12 +108,15 @@ void FrameSeq::work(int nFrames) {
 					continue;
 				}
 				else if (lSequencer->isSongModeEnabled()) {
+					MLOG("songmode enabled");
 					if (getTickPosition() >= seq->getLastTick() - 1) {
 						Sequencer::repeats++;
 						auto song = lSequencer->getSong(songGui->getSelectedSongIndex()).lock();
 						auto step = songGui->getOffset() + 1;
 						if (step == song->getStepAmount() - 1 && Sequencer::repeats == song->getStep(step)->getRepeats()) {
+							MLOG("Gotta do something about this song stuff");
 							if (!songGui->isLoopEnabled()) {
+								MLOG("song loop not enabled");
 								lSequencer->playToTick(seq->getLastTick() - 1);
 								Sequencer::endOfSong = true;
 								lSequencer->stop();
@@ -121,6 +124,7 @@ void FrameSeq::work(int nFrames) {
 								continue;
 							}
 							else {
+								MLOG("song loop enabled");
 								lSequencer->playToTick(seq->getLastTick() - 1);
 								songGui->setOffset(-1);
 								move(0);
