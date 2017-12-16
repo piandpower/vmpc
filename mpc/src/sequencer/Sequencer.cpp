@@ -1355,11 +1355,10 @@ weak_ptr<Sequence> Sequencer::getPlaceHolder() {
 }
 
 Sequencer::~Sequencer() {
-	try {
-		if (stopBounceThread.joinable())
-			stopBounceThread.join();
+	if (stopBounceThread.joinable()) {
+		stopBounceThread.join();
 	}
-	catch (exception e) {
-		// discard any exceptions
+	if (stopSongThread.joinable()) {
+		stopSongThread.join();
 	}
 }
