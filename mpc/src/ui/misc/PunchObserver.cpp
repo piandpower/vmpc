@@ -4,6 +4,7 @@
 #include <Util.hpp>
 #include <lcdgui/Background.hpp>
 #include <lcdgui/Field.hpp>
+#include <lcdgui/Label.hpp>
 #include <ui/misc/PunchGui.hpp>
 #include <ui/sequencer/EditSequenceGui.hpp>
 #include <sequencer/Sequence.hpp>
@@ -27,18 +28,18 @@ PunchObserver::PunchObserver(mpc::Mpc* mpc)
 	time4Field = ls->lookupField("time4");
 	time5Field = ls->lookupField("time5");
 	sequence = mpc->getSequencer().lock()->getActiveSequence().lock().get();
+	displayBackground();
 	displayAutoPunch();
 	displayTime();
-	displayBackground();
 }
 
 void PunchObserver::update(moduru::observer::Observable* o, boost::any a)
 {
 	string param = boost::any_cast<string>(a);
 	if (param.compare("autopunch") == 0) {
+		displayBackground();
 		displayAutoPunch();
 		displayTime();
-		displayBackground();
 	}
 	else if (param.compare("time") == 0) {
 		displayTime();
@@ -71,12 +72,15 @@ void PunchObserver::displayTime()
 void PunchObserver::displayBackground()
 {
     string bgName = "punch";
-    if(punchGui->getAutoPunch() == 1) {
-        bgName = "punchout";
-    } else if(punchGui->getAutoPunch() == 2) {
-        bgName = "punchinout";
-    }
+	if (punchGui->getAutoPunch() == 1) {
+		bgName = "punchout";
+	}
+	else if (punchGui->getAutoPunch() == 2) {
+		bgName = "punchinout";
+	}
 	mpc->getLayeredScreen().lock()->getCurrentBackground()->setName(bgName);
+	mpc->getLayeredScreen().lock()->lookupLabel("autopunch").lock()->SetDirty();
+	mpc->getLayeredScreen().lock()->getFunctionKeys()->SetDirty();
 }
 
 PunchObserver::~PunchObserver() {

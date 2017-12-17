@@ -1,14 +1,10 @@
 #include "Background.hpp"
-//#include <maingui/Constants.hpp>
 #include <StartUp.hpp>
-//////#include <iostream>
-//#include <IGraphics.h>
 
 using namespace mpc::lcdgui;
 using namespace std;
 
 Background::Background() 
-//	: IPanelControl(pPlug, *Constants::LCD_RECT(), Constants::LCD_OFF())
 {
 }
 
