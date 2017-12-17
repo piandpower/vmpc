@@ -332,10 +332,11 @@ void StepEditorObserver::refreshViewModeNotes()
 	else if (stepEditorGui->getViewModeNumber() == 1 && lTrk->getBusNumber() == 0) {
 		fromNoteLabel.lock()->Hide(false);
 		fromNoteField.lock()->Hide(false);
-		fromNoteField.lock()->setLocation(90, 0);
+		fromNoteField.lock()->setLocation(62, 0);
 		fromNoteField.lock()->setSize(8 * 6, 9);
 		toNoteField.lock()->setSize(8 * 6, 9);
 		toNoteLabel.lock()->Hide(false);
+		toNoteLabel.lock()->setText("-");
 		toNoteField.lock()->Hide(false);
 		controlNumberField.lock()->Hide(true);
 	}
