@@ -1,6 +1,6 @@
 # vmpc
 
-Using cmake-gui to create a Visual Studio project, the whole thing should compile without problems and produce a standalone EXE, a VST2 and a VST3 plugin. At the moment Windows only. The Debug build gives crap performance, so make sure to set it to Release for actual use.
+Using cmake-gui to create a Visual Studio or Xcode project, the whole thing should compile without problems and produce a standalone EXE, a VST2 and a VST3 plugin on Windows, and an .app on OSX. The Debug build gives crap performance, so make sure to set it to Release for actual use.
 
 Logfile is located in /Users/JohnDoe/vMPC/.
 
