@@ -4,7 +4,6 @@
 #include <audiomidi/AudioMidiServices.hpp>
 #include <disk/SoundLoader.hpp>
 #include <StartUp.hpp>
-//#include <hardware/ControlPanel.hpp>
 #include <ui/Uis.hpp>
 #include <ui/UserDefaults.hpp>
 #include <lcdgui/Background.hpp>
@@ -98,7 +97,6 @@ void Sampler::work(int nFrames)
 		input = inputSwap;
 		inputSwap = nullptr;
 	}
-	//if (recordBuffer->getSampleCount() != nFrames) recordBuffer->changeSampleCount(nFrames, false);
 	input->processAudio(recordBuffer.get(), nFrames);
 	auto leftPairs = recordBuffer->getChannelFormat()->getLeft();
 	auto rightPairs = recordBuffer->getChannelFormat()->getRight();
@@ -807,7 +805,7 @@ void Sampler::record()
 
 void Sampler::stopRecordingEarlier()
 {
-	auto stopFrameIndex = recordFrame;
+	auto stopFrameIndex = recordFrame + preRecBufferL.size();
 	stopRecordingBasic();
 	auto s = getPreviewSound().lock();
 	int newSize = s->isMono() ? stopFrameIndex : stopFrameIndex * 2;
