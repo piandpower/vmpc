@@ -821,6 +821,7 @@ void Sampler::stopRecordingEarlier()
 	int newSize = s->isMono() ? stopFrameIndex : stopFrameIndex * 2;
 	auto sampleData = s->getSampleData();
 	sampleData->resize(newSize);
+	s->setEnd(stopFrameIndex);
 	mpc->getLayeredScreen().lock()->openScreen("keeporretry");
 }
 
