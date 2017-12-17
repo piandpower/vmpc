@@ -106,7 +106,6 @@ namespace mpc {
 			std::vector<std::weak_ptr<Sound>> getSounds();
 			std::weak_ptr<Sound> addSound();
 			std::weak_ptr<Sound> addSound(int sampleRate);
-			//std::weak_ptr<Sound> newPreviewSound(int sampleRate);
 			int getSoundCount();
 			std::string getSoundName(int i);
 			std::string getPadName(int i);
@@ -114,20 +113,12 @@ namespace mpc {
 			std::vector<float>* getClickSample();
 			std::weak_ptr<Sound> getSound(int sampleNumber);
 			void deleteSound(std::weak_ptr<Sound> sound);
-			//void setPreviewSound(Sound* sound);
 			std::weak_ptr<Sound> getPreviewSound();
 			std::weak_ptr<Sound> getPlayXSound();
 			void setLoopEnabled(int sampleIndex, bool b);
 			void trimSample(int sampleNumber, int start, int end);
 			void deleteSection(const unsigned int sampleNumber, const unsigned int start, const unsigned int end);
 			void sort();
-			int getSampleIndexName(int index);
-			int getSampleIndexSize(int index);
-
-		private:
-			std::vector<std::weak_ptr<Sound>> sortSamplesByMemoryIndex(std::vector<std::weak_ptr<Sound>> list);
-			std::vector<std::weak_ptr<Sound>> sortSamplesByName();
-			std::vector<std::weak_ptr<Sound>> sortSamplesBySize();
 
 		private:
 			static bool memIndexCmp(std::weak_ptr<Sound> a, std::weak_ptr<Sound> b);
@@ -136,7 +127,6 @@ namespace mpc {
 
 		public:
 			void deleteSample(int sampleIndex);
-			int getSoundSortingType();
 			void deleteAllSamples();
 			void process12Bit(std::vector<float>* fa);
 			std::vector<float>* process8Bit(std::vector<float>* fa);

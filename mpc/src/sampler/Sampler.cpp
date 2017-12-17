@@ -410,55 +410,6 @@ void Sampler::sort()
 	}
 }
 
-int Sampler::getSampleIndexName(int index)
-{
-	auto newIndex = 0;
-	for (int i = 0; i < sounds.size(); i++) {
-		if (sortSamplesByName()[i].lock()->getMemoryIndex() == index) {
-			newIndex = i;
-			break;
-		}
-	}
-	return newIndex;
-}
-
-int Sampler::getSampleIndexSize(int index)
-{
-	auto newIndex = -1;
-	for (int i = 0; i < sounds.size(); i++) {
-		if (sortSamplesBySize()[i].lock()->getMemoryIndex() == index) {
-			newIndex = i;
-			break;
-		}
-	}
-	return newIndex;
-}
-
-vector<weak_ptr<Sound>> Sampler::sortSamplesByMemoryIndex(vector<weak_ptr<Sound>> list)
-{
-	//Collections::sort(list, new Sampler_sortSamplesByMemoryIndex_2(this));
-	return list;
-}
-
-vector<weak_ptr<Sound>> Sampler::sortSamplesByName()
-{
-
-	vector<weak_ptr<Sound>> res;
-	//::java::util::List* tempSamples = new ::java::util::ArrayList();
-	//npc(tempSamples)->addAll(static_cast< ::java::util::Collection* >(sounds));
-	//::java::util::Collections::sort(tempSamples, new Sampler_sortSamplesByName_3(this));
-	return res;
-}
-
-vector<weak_ptr<Sound>> Sampler::sortSamplesBySize()
-{
-	vector<weak_ptr<Sound>> res;
-	//	::java::util::List* tempSamples = new ::java::util::ArrayList();
-	//	npc(tempSamples)->addAll(static_cast< ::java::util::Collection* >(sounds));
-	//	::java::util::Collections::sort(tempSamples, new Sampler_sortSamplesBySize_4(this));
-	return res;
-}
-
 void Sampler::deleteSample(int sampleIndex)
 {
 	sounds.erase(sounds.begin() + sampleIndex);
@@ -477,11 +428,6 @@ void Sampler::deleteSample(int sampleIndex)
 			}
 		}
 	}
-}
-
-int Sampler::getSoundSortingType()
-{
-	return soundSortingType;
 }
 
 void Sampler::deleteAllSamples()
@@ -760,6 +706,24 @@ void Sampler::deleteSound(weak_ptr<Sound> sound) {
 			break;
 		}
 	}
+
+	stable_sort(sounds.begin(), sounds.end(), memIndexCmp);
+	
+	for (int i = 0; i < sounds.size(); i++) {
+		sounds[i]->setMemoryIndex(i);
+	}
+
+	switch (soundSortingType) {
+	case 0:
+		stable_sort(sounds.begin(), sounds.end(), memIndexCmp);
+		break;
+	case 1:
+		stable_sort(sounds.begin(), sounds.end(), nameCmp);
+		break;
+	case 2:
+		stable_sort(sounds.begin(), sounds.end(), sizeCmp);
+		break;
+	}
 }
 
 vector<float> Sampler::mergeToStereo(vector<float> fa0, vector<float> fa1)
@@ -991,33 +955,8 @@ int Sampler::checkExists(string soundName)
 int Sampler::getNextSoundIndex(int j, bool up)
 {
 	auto inc = up ? 1 : -1;
-	if (getSoundSortingType() == 0) {
-		if (j + inc < -1 || j + inc > getSoundCount() - 1) return j;
-		return j + inc;
-	}
-	else if (getSoundSortingType() == 1) {
-		auto nextIndex = getSampleIndexName(j) + inc;
-		if (nextIndex > getSoundCount() - 1) {
-			return j;
-		}
-		for (int i = 0; i < getSoundCount(); i++) {
-			if (getSampleIndexName(i) == nextIndex) {
-				return i;
-			}
-		}
-	}
-	else if (getSoundSortingType() == 2) {
-		auto nextIndex = getSampleIndexSize(j) + inc;
-		if (nextIndex > getSoundCount() - 1) {
-			return j;
-		}
-		for (int i = 0; i < getSoundCount(); i++) {
-			if (getSampleIndexSize(i) == nextIndex) {
-				return i;
-			}
-		}
-	}
-	return j;
+	if (j + inc < -1 || j + inc > getSoundCount() - 1) return j;
+	return j + inc;
 }
 
 void Sampler::setSoundGuiPrevSound()

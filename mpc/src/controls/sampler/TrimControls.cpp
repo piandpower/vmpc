@@ -40,7 +40,7 @@ void TrimControls::openWindow()
 void TrimControls::function(int f)
 {
 	init();
-		string newSampleName;
+	string newSampleName;
 	vector<int> zone;
 	auto lSampler = sampler.lock();
 	auto lLs = ls.lock();
