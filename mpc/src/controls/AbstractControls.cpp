@@ -166,9 +166,15 @@ void AbstractControls::pad(int i, int velo, bool repeat, int tick)
 	init();
 	auto lTrk = track.lock();
 	auto controls = mpc->getControls().lock();
-	if (controls->getPressedPads()->find(i) != controls->getPressedPads()->end()) return;
-	controls->getPressedPads()->emplace(i);
-	controls->getPressedPadVelos()->at(i) = velo;
+	if (controls->getPressedPads()->find(i) == controls->getPressedPads()->end()) {
+		controls->getPressedPads()->emplace(i);
+		controls->getPressedPadVelos()->at(i) = velo;
+	}
+	else {
+		if (!(controls->isTapPressed() && sequencer.lock()->isPlaying())) {
+			return;
+		}
+	}
 	auto note = lTrk->getBusNumber() > 0 ? program.lock()->getPad(i + (bank_ * 16))->getNote() : i + (bank_ * 16) + 35;
 	auto velocity = velo;
 	auto pad = i + (bank_ * 16);
@@ -207,6 +213,7 @@ void AbstractControls::pad(int i, int velo, bool repeat, int tick)
 void AbstractControls::generateNoteOn(int nn, int padVelo, int tick)
 {
 	init();
+	MLOG("generateNoteOn with nn " + to_string(nn) + ", velo " + to_string(padVelo) + ", tick " + to_string(tick));
 	auto lTrk = track.lock();
 	auto lProgram = program.lock();
 	bool slider = lProgram && nn == lProgram->getSlider()->getNote();

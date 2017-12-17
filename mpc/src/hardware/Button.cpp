@@ -190,6 +190,9 @@ void Button::release() {
 	else if (label.compare("overdub") == 0) {
 		c->overDub();
 	}
+	else if (label.compare("tap") == 0) {
+		c->tap();
+	}
 }
 
 Button::~Button() {

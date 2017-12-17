@@ -251,21 +251,31 @@ bool InputCatcherControl::OnKeyUp(int x, int y, int c) {
 	}
 	else if (c == KbMapping::f1()) {
 		hw->getButton("f1").lock()->release();
+		return true;
 	}
 	else if (c == KbMapping::f3()) {
 		hw->getButton("f3").lock()->release();
+		return true;
 	}
 	else if (c == KbMapping::f5()) {
 		hw->getButton("f5").lock()->release();
+		return true;
 	}
 	else if (c == KbMapping::f6()) {
 		hw->getButton("f6").lock()->release();
+		return true;
 	}
 	else if (c == KbMapping::rec()) {
 		hw->getButton("rec").lock()->release();
+		return true;
 	}
 	else if (c == KbMapping::overdub()) {
 		hw->getButton("overdub").lock()->release();
+		return true;
+	}
+	else if (c == KbMapping::tap()) {
+		hw->getButton("tap").lock()->release();
+		return true;
 	}
 	return false;
 }

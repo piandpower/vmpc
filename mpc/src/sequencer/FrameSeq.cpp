@@ -200,8 +200,11 @@ void FrameSeq::repeatPad(int tick) {
 	auto controls = mpc->getControls().lock();
 	if (!controls) return;
 	auto pp = controls->getPressedPads();
-	for (auto& i : *pp)
+	for (auto& i : *pp) {
+		MLOG("trying to repeatPad number " + to_string(i));
+		MLOG("with velo " + to_string((*controls->getPressedPadVelos())[i]));
 		mpc->getActiveControls()->pad(i, (*controls->getPressedPadVelos())[i], true, tick);
+	}
 }
 
 void FrameSeq::checkNextSq() {
