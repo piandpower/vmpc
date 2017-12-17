@@ -142,7 +142,7 @@ DiskObserver::DiskObserver(mpc::Mpc* mpc)
 	else if (csn.compare("saveasequence") == 0) {
 		saveAsField = ls->lookupField("saveas");
 		fileField = ls->lookupField("file");
-		fileLabel = ls->lookupLabel("file");
+		fileLabel = ls->lookupLabel("file1");
 		displaySaveAs();
 		displayFile();
 	}
