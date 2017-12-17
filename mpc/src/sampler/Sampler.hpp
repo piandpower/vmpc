@@ -147,6 +147,7 @@ namespace mpc {
 			int getUnusedSampleAmount();
 			void purge();
 			static std::vector<float> mergeToStereo(std::vector<float> fa0, std::vector<float> fa1);
+			void mergeToStereo(std::vector<float>* sourceLeft, std::vector<float>* sourceRight, std::vector<float>* dest);
 			void setDrumBusProgramNumber(int busNumber, int programNumber);
 			int getDrumBusProgramNumber(int busNumber);
 			mpc::ctootextensions::MpcSoundPlayerChannel* getDrum(int i);

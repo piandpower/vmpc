@@ -758,6 +758,24 @@ vector<float> Sampler::mergeToStereo(vector<float> fa0, vector<float> fa1)
 	return newSampleData;
 }
 
+void Sampler::mergeToStereo(vector<float>* sourceLeft, vector<float>* sourceRight, vector<float>* dest) {
+	dest->clear();
+	for (auto& f : *sourceLeft)
+		dest->push_back(f);
+	if (sourceLeft->size() < sourceRight->size()) {
+		auto diff = sourceRight->size() - sourceLeft->size();
+		for (int i = 0; i < diff; i++)
+			dest->push_back(0);
+	}
+	for (auto& f : *sourceRight)
+		dest->push_back(f);
+	if (sourceRight->size() < sourceLeft->size()) {
+		auto diff = sourceLeft->size() - sourceRight->size();
+		for (int i = 0; i < diff; i++)
+			dest->push_back(0);
+	}
+}
+
 void Sampler::setDrumBusProgramNumber(int busNumber, int programNumber)
 {
 	mpc->getDrums()[busNumber - 1]->setProgram(programNumber);

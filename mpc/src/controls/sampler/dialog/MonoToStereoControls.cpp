@@ -43,20 +43,18 @@ void MonoToStereoControls::function(int j)
 			vector<float> newSampleDataRight;
 			if (right->getSampleRate() > left->getSampleRate()) {
 				newSampleDataRight = vector<float>(left->getSampleData()->size());
-				for (int i = int(0); i < newSampleDataRight.size(); i++) {
+				for (int i = 0; i < newSampleDataRight.size(); i++) {
 					newSampleDataRight[i] = (*right->getSampleData())[i];
 				}
 			}
 			else {
 				newSampleDataRight = *right->getSampleData();
+
 			}
-			auto newSample = lSampler->addSound(left->getSampleRate()).lock();
-			newSample->setName(soundGui->getNewStName());
-			auto newSampleData = mpc::sampler::Sampler::mergeToStereo(*left->getSampleData(), newSampleDataRight);
-			
-			auto data = newSample->getSampleData();
-			data->swap(newSampleData);
-			newSample->setMono(false);
+			auto newSound = lSampler->addSound(left->getSampleRate()).lock();
+			newSound->setName(soundGui->getNewStName());
+			newSound->setMono(false);
+			lSampler->mergeToStereo(left->getSampleData(), &newSampleDataRight, newSound->getSampleData());
 			lLs->openScreen("sound");
 		}
 		else {
