@@ -61,11 +61,11 @@ void SaveControls::function(int i)
 			ls.lock()->openScreen("saveaprogram");
 			break;
 		case 4:
+			if (lSampler->getSoundCount() == 0) break;
 			nameGui->setName(lSampler->getSoundName(soundGui->getSoundIndex()));
 			ls.lock()->openScreen("saveasound");
 			break;
 		}
-		break;
 	}
 }
 
