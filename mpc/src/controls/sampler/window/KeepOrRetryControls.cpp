@@ -14,14 +14,19 @@ KeepOrRetryControls::KeepOrRetryControls(mpc::Mpc* mpc)
 {
 }
 
+void KeepOrRetryControls::mainScreen() {
+	auto lSampler = sampler.lock();
+	lSampler->deleteSound(lSampler->getPreviewSound());
+	super::mainScreen();
+}
+
 void KeepOrRetryControls::function(int i)
 {
-	init();
 	auto lSampler = sampler.lock();
 	auto lLs = ls.lock();
 	switch (i) {
 	case 1:
-		//delete sample?
+		lSampler->deleteSound(lSampler->getPreviewSound());
 		lLs->openScreen("sample");
 		break;
 	case 3 :

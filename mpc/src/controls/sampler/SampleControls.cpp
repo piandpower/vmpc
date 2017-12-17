@@ -13,6 +13,26 @@ SampleControls::SampleControls(mpc::Mpc* mpc)
 {
 }
 
+void SampleControls::left() {
+	if (sampler.lock()->isArmed() || sampler.lock()->isRecording()) return;
+	super::left();
+}
+
+void SampleControls::right() {
+	if (sampler.lock()->isArmed() || sampler.lock()->isRecording()) return;
+	super::right();
+}
+
+void SampleControls::up() {
+	if (sampler.lock()->isArmed() || sampler.lock()->isRecording()) return;
+	super::up();
+}
+
+void SampleControls::down() {
+	if (sampler.lock()->isArmed() || sampler.lock()->isRecording()) return;
+	super::down();
+}
+
 void SampleControls::function(int i)
 {
 	init();

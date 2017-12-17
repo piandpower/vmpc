@@ -19,6 +19,7 @@ namespace mpc {
 		{
 
 		private:
+			mpc::lcdgui::LayeredScreen* ls;
 			std::string focus{ "" };
 			std::vector<std::shared_ptr<mpc::lcdgui::Field>> unusedFields{};
 			std::vector<std::shared_ptr<mpc::lcdgui::Field>> usedFields{};
@@ -53,7 +54,7 @@ namespace mpc {
 			std::string getFocus();
 			
 		public:
-			Layer(mpc::lcdgui::LayeredScreen* layeredScreen);
+			Layer(mpc::lcdgui::LayeredScreen* ls);
 			~Layer();
 
 		private:

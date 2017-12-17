@@ -11,10 +11,11 @@ namespace mpc {
 				{
 
 				public:
-					typedef mpc::controls::sampler::AbstractSamplerControls super;
 					void function(int i) override;
 					void turnWheel(int i) override;
+					void mainScreen() override;
 
+				public:
 					KeepOrRetryControls(mpc::Mpc* mpc);
 
 				};

@@ -788,6 +788,11 @@ void Sampler::arm()
 		return;
 	}
 	mpc->getLayeredScreen().lock()->getCurrentBackground()->setName("waitingforinputsignal");
+	auto components = mpc->getLayeredScreen().lock()->getLayer(0)->getAllLabelsAndFields();
+	for (auto& c : components) {
+		c.lock()->SetDirty();
+	}
+	mpc->getLayeredScreen().lock()->getFunctionKeys()->SetDirty();
 	armed = true;
 }
 
@@ -797,6 +802,11 @@ void Sampler::record()
 	auto samplerGui = mpc->getUis().lock()->getSamplerGui();
 	recSize = samplerGui->getTime() * 4410;
 	mpc->getLayeredScreen().lock()->getCurrentBackground()->setName("recording");
+	auto components = mpc->getLayeredScreen().lock()->getLayer(0)->getAllLabelsAndFields();
+	for (auto& c : components) {
+		c.lock()->SetDirty();
+	}
+	mpc->getLayeredScreen().lock()->getFunctionKeys()->SetDirty();
 	recordBufferL = vector<float>(recSize);
 	recordBufferR = vector<float>(recSize);
 	recordFrame = 0;
@@ -947,6 +957,11 @@ void Sampler::cancelRecording()
 void Sampler::setSampleBackground()
 {
 	mpc->getLayeredScreen().lock()->getCurrentBackground()->setName("sample");
+	auto components = mpc->getLayeredScreen().lock()->getLayer(0)->getAllLabelsAndFields();
+	for (auto& c : components) {
+		c.lock()->SetDirty();
+	}
+	mpc->getLayeredScreen().lock()->getFunctionKeys()->SetDirty();
 }
 
 int Sampler::checkExists(string soundName)

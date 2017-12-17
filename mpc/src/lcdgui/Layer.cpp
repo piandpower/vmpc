@@ -2,7 +2,7 @@
 #include "Field.hpp"
 #include "Label.hpp"
 
-#include <Logger.hpp>
+#include "LayeredScreen.hpp"
 
 #include <string>
 
@@ -10,12 +10,13 @@ using namespace rapidjson;
 using namespace mpc::lcdgui;
 using namespace std;
 
-Layer::Layer(mpc::lcdgui::LayeredScreen* layeredScreen)
+Layer::Layer(mpc::lcdgui::LayeredScreen* ls)
 {
+	this->ls = ls;
 	bg = new Background();
 	fk = new FunctionKeys();
 	for (int i = 0; i < 100; i++) {
-		unusedFields.push_back(make_shared<mpc::lcdgui::Field>(layeredScreen));
+		unusedFields.push_back(make_shared<mpc::lcdgui::Field>(ls));
 	}
 	for (int i = 0; i < 100; i++) {
 		unusedLabels.push_back(make_shared<mpc::lcdgui::Label>());
@@ -118,7 +119,6 @@ string Layer::getFocus() {
 }
 
 string Layer::openScreen(Value& screenJson, string screenName) {
-	MLOG("Opening screen " + screenName);
 	focus = "";
 	bg->Hide(false);
 	bg->setName(screenName);
@@ -228,7 +228,7 @@ vector<weak_ptr<mpc::lcdgui::Component>> Layer::getAllLabels() {
 	vector<weak_ptr<mpc::lcdgui::Component>> result;
 	for (auto& l : usedLabels)
 		result.push_back(l);
-	if (blinkLabel) result.push_back(blinkLabel);
+	if (blinkLabel && ls->getCurrentScreenName().compare("sequencer") == 0) result.push_back(blinkLabel);
 	return result;
 }
 
