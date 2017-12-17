@@ -13,7 +13,7 @@ BlinkLabel::BlinkLabel(string text)
 
 void BlinkLabel::initialize(std::string name, std::string text, int x, int y, int columns) {
 	Label::initialize(name, text, x, y, columns);
-	this->rect = MRECT(133, 52, 158, 58);
+	this->rect = MRECT(133, 52, 158, 59);
 }
 
 void BlinkLabel::static_blink(void * args)
