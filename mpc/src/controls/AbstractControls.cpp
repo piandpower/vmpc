@@ -166,12 +166,13 @@ void AbstractControls::pad(int i, int velo, bool repeat, int tick)
 	init();
 	auto lTrk = track.lock();
 	auto controls = mpc->getControls().lock();
+	auto lSequencer = sequencer.lock();
 	if (controls->getPressedPads()->find(i) == controls->getPressedPads()->end()) {
 		controls->getPressedPads()->emplace(i);
 		controls->getPressedPadVelos()->at(i) = velo;
 	}
 	else {
-		if (!(controls->isTapPressed() && sequencer.lock()->isPlaying())) {
+		if (!(controls->isTapPressed() && lSequencer->isPlaying())) {
 			return;
 		}
 	}
@@ -181,7 +182,7 @@ void AbstractControls::pad(int i, int velo, bool repeat, int tick)
 	if (mpc->getUis().lock()->getSequencerGui()->isSixteenLevelsEnabled()) {
 		if (mpc->getUis().lock()->getSequencerGui()->getParameter() == 0) {
 			note = mpc->getUis().lock()->getSequencerGui()->getNote();
-			velocity = static_cast<int>((i * (127.0 / 16.0)));
+			velocity = (int)(i * (127.0 / 16.0));
 			if (velocity == 0) {
 				velocity = 1;
 			}
@@ -197,13 +198,14 @@ void AbstractControls::pad(int i, int velo, bool repeat, int tick)
 			samplerGui->setPadAndNote(pad, note);
 		}
 	}
-	if (csn.compare("assign16levels") == 0 && note != 34)
+	if (csn.compare("assign16levels") == 0 && note != 34) {
 		mpc->getUis().lock()->getSequencerGui()->setNote(note);
-	auto lSequencer = sequencer.lock();
+	}
 
 	if (controls->isTapPressed() && lSequencer->isPlaying()) {
-		if (repeat)
+		if (repeat) {
 			generateNoteOn(note, velocity, tick);
+		}
 	}
 	else {
 		generateNoteOn(note, velocity, -1);
