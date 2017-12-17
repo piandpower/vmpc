@@ -32,9 +32,9 @@ EditSoundObserver::EditSoundObserver(mpc::Mpc* mpc)
 	}
 	timeStretchPresetNames = newTimeStretchPresetNames;
 	//timeStretchPresetNames->set(int (52), " SLOW ORCH.  B");
-	editSoundGui = editSoundGui;
-	editSoundGui->addObserver(this);
 	auto uis = mpc->getUis().lock();
+	editSoundGui = uis->getEditSoundGui();
+	editSoundGui->addObserver(this);
 	sequencerWindowGui = uis->getSequencerWindowGui();
 	sequencerWindowGui->addObserver(this);
 	auto ls = mpc->getLayeredScreen().lock();
@@ -58,9 +58,11 @@ void EditSoundObserver::displayEdit()
 {
     editField.lock()->setText(editNames[editSoundGui->getEdit()]);
     auto b = mpc->getLayeredScreen().lock()->getCurrentBackground();
-    if (editSoundGui->getEdit() == 0) {
+	auto fk = mpc->getLayeredScreen().lock()->getFunctionKeys();
+	if (editSoundGui->getEdit() == 0) {
         b->setName("editsound");
-        variable0Field.lock()->Hide(true);
+		fk->SetDirty();
+		variable0Field.lock()->Hide(true);
         variable0Label.lock()->Hide(true);
         ratioField.lock()->Hide(true);
         ratioLabel.lock()->Hide(true);
@@ -75,7 +77,8 @@ void EditSoundObserver::displayEdit()
     }
     else if (editSoundGui->getEdit() == 1) {
         b->setName("editloopfromsttoend");
-        variable0Field.lock()->Hide(true);
+		fk->SetDirty();
+		variable0Field.lock()->Hide(true);
         variable0Label.lock()->Hide(true);
         ratioField.lock()->Hide(true);
         ratioLabel.lock()->Hide(true);
@@ -90,7 +93,8 @@ void EditSoundObserver::displayEdit()
     }
     else if (editSoundGui->getEdit() == 2) {
         b->setName("editempty");
-        variable0Field.lock()->Hide(false);
+		fk->SetDirty();
+		variable0Field.lock()->Hide(false);
         variable0Label.lock()->Hide(false);
         ratioField.lock()->Hide(true);
         ratioLabel.lock()->Hide(true);
@@ -106,7 +110,8 @@ void EditSoundObserver::displayEdit()
     }
     else if (editSoundGui->getEdit() == 3) {
         b->setName("editempty");
-        variable0Field.lock()->Hide(false);
+		fk->SetDirty();
+		variable0Field.lock()->Hide(false);
         variable0Label.lock()->Hide(false);
         ratioField.lock()->Hide(true);
         ratioLabel.lock()->Hide(true);
@@ -122,7 +127,8 @@ void EditSoundObserver::displayEdit()
     }
     else if (editSoundGui->getEdit() == 4) {
         b->setName("editexecute");
-        variable0Field.lock()->Hide(true);
+		fk->SetDirty();
+		variable0Field.lock()->Hide(true);
         variable0Label.lock()->Hide(true);
         ratioField.lock()->Hide(true);
         ratioLabel.lock()->Hide(true);
@@ -137,7 +143,8 @@ void EditSoundObserver::displayEdit()
     }
     else if (editSoundGui->getEdit() == 5) {
         b->setName("editexecute");
-        variable0Field.lock()->Hide(true);
+		fk->SetDirty();
+		variable0Field.lock()->Hide(true);
         variable0Label.lock()->Hide(true);
         ratioField.lock()->Hide(true);
         ratioLabel.lock()->Hide(true);
@@ -152,7 +159,8 @@ void EditSoundObserver::displayEdit()
     }
     else if (editSoundGui->getEdit() == 6) {
         b->setName("editexecute");
-        variable0Field.lock()->Hide(true);
+		fk->SetDirty();
+		variable0Field.lock()->Hide(true);
         variable0Label.lock()->Hide(true);
         ratioField.lock()->Hide(true);
         ratioLabel.lock()->Hide(true);
@@ -167,7 +175,8 @@ void EditSoundObserver::displayEdit()
     }
     else if(editSoundGui->getEdit() == 7) {
         b->setName("editempty");
-        variable0Field.lock()->Hide(false);
+		fk->SetDirty();
+		variable0Field.lock()->Hide(false);
         variable0Label.lock()->Hide(false);
         ratioField.lock()->Hide(false);
         ratioLabel.lock()->Hide(false);
@@ -183,7 +192,8 @@ void EditSoundObserver::displayEdit()
     }
     else if(editSoundGui->getEdit() == 8) {
         b->setName("editempty");
-        variable0Field.lock()->Hide(true);
+		fk->SetDirty();
+		variable0Field.lock()->Hide(true);
         variable0Label.lock()->Hide(true);
         ratioField.lock()->Hide(true);
         ratioLabel.lock()->Hide(true);

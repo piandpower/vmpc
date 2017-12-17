@@ -371,9 +371,13 @@ void Sampler::trimSample(int sampleNumber, int start, int end)
 		int endRight = end + lf;
 		data->erase(data->begin() + endRight, data->end());
 		data->erase(data->begin() + lf, data->begin() + startRight);
+		data->erase(data->begin() + end, data->begin() + lf);
+		data->erase(data->begin(), data->begin() + start);
 	}
-	data->erase(data->begin() + end, data->end());
-	data->erase(data->begin(), data->begin() + start);
+	else {
+		data->erase(data->begin() + end, data->end());
+		data->erase(data->begin(), data->begin() + start);
+	}
 }
 
 void Sampler::deleteSection(const unsigned int sampleNumber, const unsigned int start, const unsigned int end) {
