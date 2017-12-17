@@ -24,11 +24,15 @@ void DeleteSoundControls::function(int i)
         break;
     case 4:
         lSampler->deleteSample(soundGui->getSoundIndex());
-        if(lSampler->getSoundCount() > 0) {
-            lLs->openScreen("sound");
-        } else {
-            lLs->openScreen(soundGui->getPreviousScreenName());
-        }
+		if (!soundGui->getSoundIndex() < lSampler->getSoundCount()) {
+			soundGui->setSoundIndex(lSampler->getSoundCount() - 1, lSampler->getSoundCount());
+		}
+		if (lSampler->getSoundCount() > 0) {
+			lLs->openScreen("sound");
+		}
+		else {
+			lLs->openScreen(soundGui->getPreviousScreenName());
+		}
         break;
     }
 }
