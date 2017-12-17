@@ -31,7 +31,7 @@
 using namespace mpc::ui::sequencer;
 using namespace std;
 
-EventRow::EventRow(mpc::Mpc* mpc, int drum, weak_ptr<mpc::sequencer::Event> e, int rowNumber)
+EventRow::EventRow(mpc::Mpc* mpc, int bus, weak_ptr<mpc::sequencer::Event> e, int rowNumber)
 {
 	this->mpc = mpc;
 	letters = vector<string>{ "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m" };
@@ -68,8 +68,10 @@ EventRow::EventRow(mpc::Mpc* mpc, int drum, weak_ptr<mpc::sequencer::Event> e, i
 	samplerGui = mpc->getUis().lock()->getSamplerGui();
 	sampler = mpc->getSampler();
 	auto lSampler = sampler.lock();
-	mpcSoundPlayerChannel = lSampler->getDrum(drum);
-	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
+	if (bus != 0) {
+		mpcSoundPlayerChannel = lSampler->getDrum(bus - 1);
+		program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
+	}
 	midi = false;
 	event = e;
 	this->rowNumber = rowNumber;

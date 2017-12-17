@@ -30,46 +30,46 @@ ApsMixer::ApsMixer(vector<weak_ptr<mpc::sampler::MixerChannel>> mixer)
 	}
 }
 
-mpc::sampler::MixerChannel* ApsMixer::getMixVariables(int pad)
+mpc::sampler::MixerChannel* ApsMixer::getMixVariables(int noteNumber)
 {
 	auto params = new mpc::sampler::MixerChannel();
-	params->setFxPath(getFxPath(pad));
-	params->setLevel(getLevel(pad));
-	params->setPanning(getPanning(pad));
-	params->setVolumeIndividualOut(getIndividualLevel(pad));
-	params->setOutput(getIndividualOutput(pad));
-	params->setFxSendLevel(getSendLevel(pad));
+	params->setFxPath(getFxPath(noteNumber));
+	params->setLevel(getLevel(noteNumber));
+	params->setPanning(getPanning(noteNumber));
+	params->setVolumeIndividualOut(getIndividualLevel(noteNumber));
+	params->setOutput(getIndividualOutput(noteNumber));
+	params->setFxSendLevel(getSendLevel(noteNumber));
 	return params;
 }
 
-int ApsMixer::getFxPath(int pad)
+int ApsMixer::getFxPath(int note)
 {
-    return fxPaths[pad - 35];
+    return fxPaths[note - 35];
 }
 
-int ApsMixer::getLevel(int pad)
+int ApsMixer::getLevel(int note)
 {
-	return levels[pad - 35];
+	return levels[note - 35];
 }
 
-int ApsMixer::getPanning(int pad)
+int ApsMixer::getPanning(int note)
 {
-    return pannings[pad - 35];
+    return pannings[note - 35];
 }
 
-int ApsMixer::getIndividualLevel(int pad)
+int ApsMixer::getIndividualLevel(int note)
 {
-    return iLevels[pad - 35];
+    return iLevels[note - 35];
 }
 
-int ApsMixer::getIndividualOutput(int pad)
+int ApsMixer::getIndividualOutput(int note)
 {
-    return iOutputs[pad - 35];
+    return iOutputs[note - 35];
 }
 
-int ApsMixer::getSendLevel(int pad)
+int ApsMixer::getSendLevel(int note)
 {
-    return sendLevels[pad - 35];
+    return sendLevels[note - 35];
 }
 
 vector<char> ApsMixer::getBytes()

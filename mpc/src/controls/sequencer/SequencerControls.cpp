@@ -141,17 +141,21 @@ void SequencerControls::turnWheel(int i)
 			}
 		}
 		lastFocus = ls.lock()->getLastFocus("edit");
-		string midinote = "midinote";
 
-		if (std::mismatch(midinote.begin(), midinote.end(), lastFocus.begin()).first == midinote.end()) {
-			if (lTrk->getBusNumber() != 0)
-				ls.lock()->setLastFocus("edit", "drumnote");
-		}
+		string midinote = "midinote";
 		string drumnote = "drumnote";
 
-		if (std::mismatch(drumnote.begin(), drumnote.end(), lastFocus.begin()).first == drumnote.end()) {
-			if (lTrk->getBusNumber() == 0)
-				ls.lock()->setLastFocus("edit", "midinote0");
+		if (lastFocus.compare("") != 0) {
+			if (std::mismatch(midinote.begin(), midinote.end(), lastFocus.begin()).first == midinote.end()) {
+				if (lTrk->getBusNumber() != 0) {
+					ls.lock()->setLastFocus("edit", "drumnote");
+				}
+			}
+			else if (std::mismatch(drumnote.begin(), drumnote.end(), lastFocus.begin()).first == drumnote.end()) {
+				if (lTrk->getBusNumber() == 0) {
+					ls.lock()->setLastFocus("edit", "midinote0");
+				}
+			}
 		}
 	}
 	else if (param.compare("pgm") == 0) {

@@ -115,7 +115,7 @@ namespace mpc {
 				bool isSelected();
 
 			public:
-				EventRow(mpc::Mpc* mpc, int drum, std::weak_ptr<mpc::sequencer::Event> e, int rowNumber);
+				EventRow(mpc::Mpc* mpc, int bus, std::weak_ptr<mpc::sequencer::Event> e, int rowNumber);
 				~EventRow();
 
 			};

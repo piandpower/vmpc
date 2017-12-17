@@ -51,6 +51,12 @@ StepEditorObserver::StepEditorObserver(mpc::Mpc* mpc)
 	fromNoteLabel = ls->lookupLabel("fromnote");
 	toNoteLabel = ls->lookupLabel("tonote");
 	controlNumberLabel.lock()->Hide(true);
+
+	if (lTrk->getBusNumber() != 0) {
+		int pgm = sampler.lock()->getDrumBusProgramNumber(lTrk->getBusNumber());
+		program = sampler.lock()->getProgram(pgm);
+	}
+
 	refreshViewModeNotes();
 	setViewModeNotesText();
 
@@ -62,7 +68,7 @@ StepEditorObserver::StepEditorObserver(mpc::Mpc* mpc)
 	initVisibleEvents();
 	eventRows.clear();
 	for (int i = 0; i < 4; i++) {
-		auto eventRow = make_unique<EventRow>(mpc, lTrk->getBusNumber() -1, visibleEvents[i], i);
+		auto eventRow = make_unique<EventRow>(mpc, lTrk->getBusNumber(), visibleEvents[i], i);
 		auto event = visibleEvents[i].lock();
 		if (event) {
 			event->addObserver(this);
@@ -354,7 +360,7 @@ void StepEditorObserver::setViewModeNotesText()
 	auto lTrk = track.lock();
 	if (stepEditorGui->getViewModeNumber() == 1 && lTrk->getBusNumber() != 0) {
 		if (stepEditorGui->getFromNotePad() != 34) {
-			fromNoteField.lock()->setText(to_string(stepEditorGui->getFromNotePad()) + "/" + sampler.lock()->getPadName(program.lock()->getPadNumberFromNote(stepEditorGui->getFromNotePad() - 35)));
+			fromNoteField.lock()->setText(to_string(stepEditorGui->getFromNotePad()) + "/" + sampler.lock()->getPadName(program.lock()->getPadNumberFromNote(stepEditorGui->getFromNotePad())));
 		}
 		else {
 			fromNoteField.lock()->setText("ALL");

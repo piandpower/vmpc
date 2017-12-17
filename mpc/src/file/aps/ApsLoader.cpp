@@ -151,9 +151,9 @@ void ApsLoader::load()
 	for (int i = 0; i < 4; i++) {
 		auto m = apsParser->getDrumMixers()[i];
 		auto drum = mpc->getDrum(i);
-		for (int j = 0; j < 64; j++) {
-			mpc::sampler::MixerChannel* apsmp = m->getMixVariables(j + 35);
-			auto drummp = drum->getMixerChannels()[j].lock();
+		for (int note = 35; note <= 98; note++) {
+			mpc::sampler::MixerChannel* apsmp = m->getMixVariables(note);
+			auto drummp = drum->getMixerChannels()[note - 35].lock();
 			drummp->setFxPath(apsmp->getFxPath());
 			drummp->setLevel(apsmp->getLevel());
 			drummp->setPanning(apsmp->getPanning());

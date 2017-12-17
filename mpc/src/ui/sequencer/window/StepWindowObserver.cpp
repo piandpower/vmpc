@@ -50,8 +50,10 @@ StepWindowObserver::StepWindowObserver(mpc::Mpc* mpc)
 	auto trackNum = lSequencer->getActiveTrackIndex();
 	track = lSequencer->getSequence(seqNum).lock()->getTrack(trackNum);
 	auto lSampler = sampler.lock();
-	mpcSoundPlayerChannel = lSampler->getDrum(track.lock()->getBusNumber() -1);
-	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
+	if (track.lock()->getBusNumber() != 0) {
+		mpcSoundPlayerChannel = lSampler->getDrum(track.lock()->getBusNumber() - 1);
+		program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
+	}
 	lSequencer->addObserver(this);
 	auto ls = mpc->getLayeredScreen().lock();
 	auto csn = ls->getCurrentScreenName();
