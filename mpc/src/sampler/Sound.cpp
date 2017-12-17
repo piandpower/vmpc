@@ -9,12 +9,14 @@ using namespace std;
 
 Sound::Sound(int rate, int index) 
 {
-	msoc = new ctootextensions::MpcSoundOscillatorControls(memoryIndex, name, 0);
+	this->memoryIndex = index;
+	msoc = new ctootextensions::MpcSoundOscillatorControls(memoryIndex, 0);
 }
 
 Sound::Sound() 
 {
-	msoc = new ctootextensions::MpcSoundOscillatorControls(-1, "click", 0);
+	msoc = new ctootextensions::MpcSoundOscillatorControls(-1, 0);
+	msoc->setName("click");
 }
 
 void Sound::setName(string s)

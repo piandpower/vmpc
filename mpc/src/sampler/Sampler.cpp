@@ -256,7 +256,7 @@ vector<weak_ptr<Sound>> Sampler::getSounds()
 }
 
 weak_ptr<Sound> Sampler::addSound() {
-	auto res = make_shared<Sound>();
+	auto res = make_shared<Sound>(44100, sounds.size());
 	sounds.push_back(res);
 	return res;
 }
@@ -395,6 +395,9 @@ void Sampler::deleteSection(const unsigned int sampleNumber, const unsigned int 
 
 void Sampler::sort()
 {
+	auto soundGui = mpc->getUis().lock()->getSoundGui();
+	auto currentSound = soundGui->getSoundIndex();
+	auto currentSoundMemIndex = sounds[currentSound]->getMemoryIndex();
 	soundSortingType++;
 	if (soundSortingType > 2) soundSortingType = 0;
 	switch (soundSortingType) {
@@ -407,6 +410,12 @@ void Sampler::sort()
 	case 2:
 		stable_sort(sounds.begin(), sounds.end(), sizeCmp);
 		break;
+	}
+	for (int i = 0; i < sounds.size(); i++) {
+		if (sounds[i]->getMemoryIndex() == currentSoundMemIndex) {
+			soundGui->setSoundIndex(i, sounds.size());
+			break;
+		}
 	}
 }
 

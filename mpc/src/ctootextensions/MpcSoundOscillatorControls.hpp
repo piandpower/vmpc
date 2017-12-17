@@ -38,7 +38,7 @@ namespace mpc {
 			void insertFrame(std::vector<float> frame, unsigned int index);
 
 		public:
-			MpcSoundOscillatorControls(int id, std::string name, int instanceIndex);
+			MpcSoundOscillatorControls(int id, int instanceIndex);
 			~MpcSoundOscillatorControls();
 
 		public:
