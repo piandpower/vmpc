@@ -84,8 +84,9 @@ void Wave::setSelection(unsigned int start, unsigned int end) {
 	selectionStart = start;
 	selectionEnd = end;
 	if (!mono && view == 1) {
-		selectionStart += frames;
-		selectionEnd += frames;
+		// keep this commented, or else selection doesn't look good on stereo files when viewing the right channel
+		//selectionStart += frames;
+		//selectionEnd += frames;
 	}
 	SetDirty();
 }
