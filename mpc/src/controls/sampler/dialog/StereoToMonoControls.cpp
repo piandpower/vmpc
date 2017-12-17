@@ -57,12 +57,16 @@ void StereoToMonoControls::function(int i)
 		auto lRight = right.lock();
 		lLeft->setName(soundGui->getNewLName());
 		lRight->setName(soundGui->getNewRName());
-		//lLeft->setSampleData(*lSound->getSampleDataLeft());
-		//lRight->setSampleData(*lSound->getSampleDataRight());
 		lLeft->setMono(true);
 		lRight->setMono(true);
-		//lSampler->getSounds()->push_back(left);
-		//lSampler->getSounds()->push_back(right);
+		auto leftData = lLeft->getSampleData();
+		auto rightData = lRight->getSampleData();
+		for (int i = 0; i <= lSound->getLastFrameIndex(); i++) {
+			leftData->push_back((*lSound->getSampleData())[i]);
+			rightData->push_back((*lSound->getSampleData())[i + lSound->getLastFrameIndex() + 1]);
+		}
+		lLeft->setEnd(lLeft->getSampleData()->size());
+		lRight->setEnd(lRight->getSampleData()->size());
 		lLs->openScreen("sound");
 		break;
 	}

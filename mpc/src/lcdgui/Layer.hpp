@@ -42,6 +42,7 @@ namespace mpc {
 
 		public:
 			void clear();
+			void setDirty();
 			mpc::lcdgui::Background* getBackground();
 			mpc::lcdgui::FunctionKeys* getFunctionKeys();
 			std::vector<mpc::lcdgui::Parameter*> getParameters();

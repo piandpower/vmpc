@@ -301,12 +301,12 @@ int LayeredScreen::openScreen(string screenName) {
 					layers[j]->clear();
 				}
 			}
-			layers[i]->clear();
-			firstField = layers[i]->openScreen(layerJsons[i][screenName.c_str()], screenName);
+			layers[currentLayer]->clear();
+			firstField = layers[currentLayer]->openScreen(layerJsons[i][screenName.c_str()], screenName);
 			break;
 		}
 	}
-
+	if (oldLayer == 0 && oldLayer == currentLayer) wave->Hide(true);
 	returnToLastFocus(firstField);
 
 	initObserver();
@@ -318,65 +318,66 @@ std::vector<std::vector<bool> >* LayeredScreen::getPixels() {
 }
 
 void LayeredScreen::Draw() {
-	auto i = currentLayer;
+	for (int i = 0; i <= currentLayer; i++) {
 
-	auto components = layers[i]->getComponentsThatNeedClearing();
-	for (auto& c : components) {
-		c.lock()->Clear(&pixels);
-	}
+		auto components = layers[i]->getComponentsThatNeedClearing();
+		for (auto& c : components) {
+			c.lock()->Clear(&pixels);
+		}
 
-	for (auto& c : nonTextComps) {
-		if (c.lock()->NeedsClearing()) c.lock()->Clear(&pixels);
-	}
+		for (auto& c : nonTextComps) {
+			if (c.lock()->NeedsClearing()) c.lock()->Clear(&pixels);
+		}
 
-	if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
+		if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
 
-	for (auto& c : nonTextComps) {
-		if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
-	}
+		for (auto& c : nonTextComps) {
+			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
+		}
 
-	components = layers[i]->getAllLabelsAndFields();
-	for (auto& c : components) {
-		if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
-	}
-	
-	if (!underline->IsHidden() && underline->IsDirty()) underline->Draw(&pixels);
-	if (!twoDots->IsHidden() && twoDots->IsDirty()) twoDots->Draw(&pixels);
+		components = layers[i]->getAllLabelsAndFields();
+		for (auto& c : components) {
+			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
+		}
 
-	if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
-	if (currentScreenName.compare("mixerv2") == 0) {
-		for (auto& k : knobs) {
-			if (k->IsDirty()) 
-				k->Draw(&pixels);
+		if (!underline->IsHidden() && underline->IsDirty()) underline->Draw(&pixels);
+		if (!twoDots->IsHidden() && twoDots->IsDirty()) twoDots->Draw(&pixels);
+
+		if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
+		if (currentScreenName.compare("mixerv2") == 0) {
+			for (auto& k : knobs) {
+				if (k->IsDirty())
+					k->Draw(&pixels);
+			}
 		}
 	}
 }
 
 bool LayeredScreen::IsDirty() {
-	auto i = currentLayer;
-	if (layers[i]->getBackground()->IsDirty() || layers[i]->getFunctionKeys()->IsDirty()) return true;
+	for (int i = 0; i <= currentLayer; i++) {
+		if (layers[i]->getBackground()->IsDirty() || layers[i]->getFunctionKeys()->IsDirty()) return true;
 
-	auto components = layers[i]->getAllLabels();
-	for (auto& c : components) {
-		if (c.lock()->IsDirty()) return true;
+		auto components = layers[i]->getAllLabels();
+		for (auto& c : components) {
+			if (c.lock()->IsDirty()) return true;
+		}
+
+		components = layers[i]->getAllFields();
+		for (auto& c : components) {
+			if (c.lock()->IsDirty()) return true;
+		}
+		if (layers[i]->getFunctionKeys()->IsDirty()) return true;
+		for (auto& c : nonTextComps) {
+			if (c.lock()->IsDirty()) return true;
+		}
+
+		if (underline->IsDirty()) return true;
+		if (twoDots->IsDirty()) return true;
+
+		for (auto& k : knobs) {
+			if (k->IsDirty()) return true;
+		}
 	}
-
-	components = layers[i]->getAllFields();
-	for (auto& c : components) {
-		if (c.lock()->IsDirty()) return true;
-	}
-	if (layers[i]->getFunctionKeys()->IsDirty()) return true;
-	for (auto& c : nonTextComps) {
-		if (c.lock()->IsDirty()) return true;
-	}
-
-	if (underline->IsDirty()) return true;
-	if (twoDots->IsDirty()) return true;
-
-	for (auto& k : knobs) {
-		if (k->IsDirty()) return true;
-	}
-
 	return false;
 }
 

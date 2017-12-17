@@ -182,6 +182,18 @@ void Layer::clear() {
 	fk->Hide(true);
 }
 
+void Layer::setDirty() {
+	bg->SetDirty();
+	fk->SetDirty();
+	for (auto& i : infos) {
+		i->getLabel().lock()->SetDirty();
+	}
+	for (auto& p : params) {
+		p->getTf().lock()->SetDirty();
+		p->getLabel().lock()->SetDirty();
+	}
+}
+
 vector<weak_ptr<mpc::lcdgui::Component>> Layer::getComponentsThatNeedClearing() {
 	vector<weak_ptr<mpc::lcdgui::Component>> result;
 	for (auto& c : usedFields) {

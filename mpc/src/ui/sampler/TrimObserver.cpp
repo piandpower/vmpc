@@ -173,8 +173,8 @@ void TrimObserver::waveformLoadData()
 
 TrimObserver::~TrimObserver() {
 	if (wave.lock()) {
-		wave.lock()->Hide(true);
-		wave.lock()->setSampleData(nullptr, false, 0);
+		//wave.lock()->Hide(true);
+		//wave.lock()->setSampleData(nullptr, false, 0);
 	}
 	if (twoDots.lock()) {
 		twoDots.lock()->Hide(true);
