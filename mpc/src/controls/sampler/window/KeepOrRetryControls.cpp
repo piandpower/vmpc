@@ -22,6 +22,7 @@ void KeepOrRetryControls::mainScreen() {
 
 void KeepOrRetryControls::function(int i)
 {
+	init();
 	auto lSampler = sampler.lock();
 	auto lLs = ls.lock();
 	switch (i) {
