@@ -51,9 +51,9 @@ void LoadASoundControls::function(int i)
 			loopTo = s->getLoopTo();
 			overlapMode = 2;
 		}
-		if (!s->isMono())
+		if (!s->isMono()) {
 			end /= 2;
-
+		}
 		lSampler->playPreviewSample(start, end, loopTo, overlapMode);
 		break;
 	case 3:
