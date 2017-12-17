@@ -69,10 +69,24 @@ int SoundLoader::loadSound(MpcFile* f)
 		auto file = soundFile->getFile().lock();
 		mpc::file::wav::WavFile wavFile;
 		wavFile.openWavFile(file);
-		wavFile.readFrames(fa, wavFile.getNumFrames());
+
+		int numChannels = wavFile.getNumChannels();
+		if (numChannels == 1) {
+			wavFile.readFrames(fa, wavFile.getNumFrames());
+		}
+		else {
+			fa->clear();
+			vector<float> interleaved;
+			wavFile.readFrames(&interleaved, wavFile.getNumFrames());
+			for (int i = 0; i < interleaved.size(); i += 2) {
+				fa->push_back(interleaved[i]);
+			}
+			for (int i = 1; i < interleaved.size(); i += 2) {
+				fa->push_back(interleaved[i]);
+			}
+		}
 		size = fa->size();
 		end = size;
-		int numChannels = wavFile.getNumChannels();
 		if (numChannels == 1) {
 			mono = true;
 		}

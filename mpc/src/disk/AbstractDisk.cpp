@@ -185,7 +185,17 @@ void AbstractDisk::writeWav(mpc::sampler::Sound* s, MpcFile* f)
 	auto data = s->getSampleData();
 	mpc::file::wav::WavFile wavFile;
 	wavFile.newWavFile(s->isMono() ? 1 : 2, data->size() / (s->isMono() ? 1 : 2), 16, s->getSampleRate());
-	wavFile.writeFrames(data, data->size() / (s->isMono() ? 1 : 2));
+	if (!s->isMono()) {
+		vector<float> interleaved;
+		for (int i = 0; i < data->size() / 2; i++) {
+			interleaved.push_back((*data)[i]);
+			interleaved.push_back((*data)[i + data->size() / 2]);
+		}
+		wavFile.writeFrames(&interleaved, data->size() / (s->isMono() ? 1 : 2));
+	}
+	else {
+		wavFile.writeFrames(data, data->size() / (s->isMono() ? 1 : 2));
+	}
 	wavFile.close();
 	auto wavBytes = wavFile.getResult();
 	f->setFileData(&wavBytes);
