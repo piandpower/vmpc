@@ -40,9 +40,6 @@ private:
 	mpc::Mpc* mpc = nullptr;
 
 private:
-
-	void NoteOnOffPoly(IMidiMsg* pMsg);
-
 	DataWheelControl* mDataWheel;
 	KnobControl* mRecKnob;
 	KnobControl* mVolKnob;
