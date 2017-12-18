@@ -1,7 +1,7 @@
 #pragma once
 #include <synth/SynthChannel.hpp>
 
-#include <thirdp/concurrentqueue.h>
+//#include <thirdp/concurrentqueue.h>
 
 namespace ctoot {
 
@@ -47,8 +47,11 @@ namespace mpc {
 		{
 
 		private:
-			static moodycamel::ConcurrentQueue<std::weak_ptr<mpc::ctootextensions::Voice>> unusedVoices;
-			static moodycamel::ConcurrentQueue<std::weak_ptr<mpc::ctootextensions::Voice>> voices;
+			//static moodycamel::ConcurrentQueue<std::weak_ptr<mpc::ctootextensions::Voice>> unusedVoices;
+			//static moodycamel::ConcurrentQueue<std::weak_ptr<mpc::ctootextensions::Voice>> voices;
+
+			static std::vector<std::weak_ptr<Voice> > unusedVoices;
+			static std::vector<std::weak_ptr<Voice> > voices;
 
 			std::weak_ptr<MpcSoundPlayerControls> controls{};
 			std::weak_ptr<mpc::sampler::Sampler> sampler{};
@@ -64,7 +67,7 @@ namespace mpc {
 			int padNumber{ 0 };
 			mpc::sampler::NoteParameters* np{ nullptr };
 			int soundNumber{ 0 };
-			std::weak_ptr<mpc::ctootextensions::Voice> voice{};
+			//std::weak_ptr<mpc::ctootextensions::Voice> voice{};
 			std::weak_ptr<mpc::sampler::Sound> vars{};
 			std::weak_ptr<mpc::sampler::MixerChannel> pgmMixerChannel{};
 			MpcFaderControl* faderControl{ nullptr };

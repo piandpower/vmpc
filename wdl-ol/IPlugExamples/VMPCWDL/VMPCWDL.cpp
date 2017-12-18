@@ -16,6 +16,8 @@
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/Sequence.hpp>
 
+#include <midi/core/ShortMessage.hpp>
+#include <audiomidi/MpcMidiInput.hpp>
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audio/server/RtAudioServer.hpp>
 #include <hardware/Hardware.hpp>
@@ -165,12 +167,22 @@ void VMPCWDL::ProcessMidiMsg(IMidiMsg* pMsg)
       // filter only note messages
       if (status == IMidiMsg::kNoteOn && velocity)
       {
+		  //MLOG("WDL Note on, velo " + std::to_string(velocity));
+		  auto tootMsg = ctoot::midi::core::ShortMessage();
+		  auto data = std::vector<char>{ (char)ctoot::midi::core::ShortMessage::NOTE_ON, (char)(pMsg->mData1), (char)(velocity) };
+		  tootMsg.setMessage(data, 3);
+		  mpc->getMpcMidiInput(0)->transport(&tootMsg, 0);
         //mKeyStatus[pMsg->NoteNumber()] = true;
         //mNumHeldKeys += 1;
       }
       else
       {
-        //mKeyStatus[pMsg->NoteNumber()] = false;
+		  //MLOG("WDL Note off");
+		  auto tootMsg = ctoot::midi::core::ShortMessage();
+		  auto data = std::vector<char>{ (char)ctoot::midi::core::ShortMessage::NOTE_OFF, (char)(pMsg->mData1), (char)(velocity) };
+		  tootMsg.setMessage(data, 3);
+		  mpc->getMpcMidiInput(0)->transport(&tootMsg, 0);
+		  //mKeyStatus[pMsg->NoteNumber()] = false;
         //mNumHeldKeys -= 1;
       }
       break;

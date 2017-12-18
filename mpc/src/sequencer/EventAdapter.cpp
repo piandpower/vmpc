@@ -43,7 +43,6 @@ weak_ptr<Event> EventAdapter::convert(ctoot::midi::core::ShortMessage* msg)
 	if (msg->getStatus() == ctoot::midi::core::ShortMessage::NOTE_ON || msg->getStatus() == ctoot::midi::core::ShortMessage::NOTE_OFF) {
 
 		noteEvent->setNote(msg->getData1());
-
 		if (msg->getStatus() == ctoot::midi::core::ShortMessage::NOTE_ON) {
 			noteEvent->setVelocity(msg->getData2());
 		}
