@@ -469,19 +469,26 @@ void Sampler::process12Bit(vector<float>* fa)
 	}
 }
 
-vector<float>* Sampler::process8Bit(vector<float>* fa)
+void Sampler::process8Bit(vector<float>* fa)
 {
-	auto newSampleData = vector<float>(fa->size());
-	for (auto j = 0; j < newSampleData.size(); j++) {
+	for (auto j = 0; j < fa->size(); j++) {
 		if ((*fa)[j] != 0.0f) {
-			auto fByte = static_cast< int8_t >(((*fa)[j] * 128.0));
-			newSampleData[j] = static_cast< float >((fByte / 128.0));
-		}
-		else {
-			newSampleData[j] = 0;
+			float f = (*fa)[j];
+			if (f < -1) f = -1;
+			if (f > 1) f = 1;
+			bool log = false;
+			if (f == -1 || f == 1) {
+				log = true;
+				MLOG("input float: " + to_string(f));
+			}
+			unsigned short ushort = (signed short)((f + 1)  * 32767.5);
+			unsigned char eightBit = ushort >> 8;
+			signed sshort = (eightBit - 128) << 8;
+			f = (float)(sshort / 32767.5);
+			if (log) MLOG("output float: " + to_string(f) + "\n");
+			(*fa)[j] = f;
 		}
 	}
-	return &newSampleData;
 }
 
 Sound* Sampler::createZone(Sound* source, int start, int end, int endMargin)

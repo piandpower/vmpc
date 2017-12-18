@@ -8,7 +8,8 @@
 #include <sampler/Sampler.hpp>
 #include <sampler/Sound.hpp>
 
-//#include <libsamplerate/src/samplerate.h>
+#include <Logger.hpp>
+#include <thirdp/libsamplerate/samplerate.h>
 
 using namespace mpc::controls::sampler::dialog;
 using namespace std;
@@ -41,11 +42,8 @@ void ResampleControls::turnWheel(int i)
 void ResampleControls::function(int i)
 {
 	init();
-	//mpc::disk::SoundLoader* sl;
 	auto lSampler = sampler.lock();
 	auto lLs = ls.lock();
-	vector<float> newSampleData;
-	mpc::sampler::Sound* sound;
 	switch (i) {
 	case 3:
 		lLs->openScreen("sound");
@@ -55,17 +53,17 @@ void ResampleControls::function(int i)
 		auto destSnd = lSampler->addSound().lock();
 		destSnd->setName(soundGui->getNewName());
 
-		vector<float>* source = snd->getSampleData();
+		auto source = snd->getSampleData();
 
 		float* srcArray = &(*source)[0];
-		/*
+		
 		SRC_DATA srcData;
 		srcData.data_in = srcArray;
 		srcData.input_frames = source->size();
 		srcData.src_ratio = (double)(soundGui->getNewFs()) / (double)(snd->getSampleRate());
 		srcData.output_frames = (floor)(source->size() * srcData.src_ratio);
 
-		vector<float>* dest = destSnd->getSampleData();
+		auto dest = destSnd->getSampleData();
 		dest->resize(srcData.output_frames);
 
 		float* destArray = &(*dest)[0];
@@ -75,23 +73,20 @@ void ResampleControls::function(int i)
 		if (error != 0) {
 			const char* errormsg = src_strerror(error);
 			string errorStr(errormsg);
+			MLOG("libsamplerate error: " + errorStr);
 		}
+
 		destSnd->setSampleRate(soundGui->getNewFs());
 		destSnd->setMono(snd->isMono());
+		destSnd->setName(soundGui->getNewName());
 
 		if (soundGui->getNewBit() == 1) {
 			lSampler->process12Bit(destSnd->getSampleData());
 		}
-		*/
-		//if (soundGui->getNewBit() == 2)
-		//	newSampleData = *lSampler->process8Bit(&newSampleData);
-
-		//sound = mpc::sampler::Sound(soundGui->getNewFs(), lSampler->getSoundCount());
-		//sound->setSampleData(newSampleData);
-		//sound->setName(*soundGui->getNewName());
-		//sound->setMono(lSampler->getSound(soundGui->getSoundIndex())->isMono());
-		//lSampler->getSounds()->push_back(sound);
-		//soundGui->setSoundIndex(lSampler->getSoundCount() - 1);
+		else if (soundGui->getNewBit() == 2) {
+			lSampler->process8Bit(destSnd->getSampleData());
+		}
+		soundGui->setSoundIndex(lSampler->getSoundCount() - 1, lSampler->getSoundCount());
 		lLs->openScreen("sound");
 		break;
 	}

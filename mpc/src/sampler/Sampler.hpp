@@ -129,7 +129,7 @@ namespace mpc {
 			void deleteSample(int sampleIndex);
 			void deleteAllSamples();
 			void process12Bit(std::vector<float>* fa);
-			std::vector<float>* process8Bit(std::vector<float>* fa);
+			void process8Bit(std::vector<float>* fa);
 			Sound* createZone(Sound* source, int start, int end, int endMargin);
 			void stopAllVoices();
 			void stopAllVoices(int frameOffset);
