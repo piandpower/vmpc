@@ -453,15 +453,16 @@ void Sampler::process12Bit(vector<float>* fa)
 	for (auto j = 0; j < fa->size(); j++) {
 
 		if (fa->at(j) != 0.0f) {
-			auto fShort = static_cast< int16_t >(fa->at(j) * 32768.0);
+			auto fShort = static_cast< int16_t >(fa->at(j) * 32767.4999999);
 
 			if (fa->at(j) > 0.9999999f)
 				fShort = 32767;
-			int16_t newShort = fShort &= ~(1 << 12);
-			newShort &= ~(1 << 13);
-			newShort &= ~(1 << 14);
-			newShort &= ~(1 << 15);
-			fa->at(j) = static_cast< float >(newShort / 32768.0);
+			int16_t newShort = fShort;
+			newShort &= ~(1 << 0);
+			newShort &= ~(1 << 1);
+			newShort &= ~(1 << 2);
+			newShort &= ~(1 << 3);
+			fa->at(j) = static_cast< float >(newShort / 32767.4999999);
 		}
 		else {
 			fa->at(j) = 0;
@@ -474,18 +475,22 @@ void Sampler::process8Bit(vector<float>* fa)
 	for (auto j = 0; j < fa->size(); j++) {
 		if ((*fa)[j] != 0.0f) {
 			float f = (*fa)[j];
-			if (f < -1) f = -1;
-			if (f > 1) f = 1;
-			bool log = false;
-			if (f == -1 || f == 1) {
-				log = true;
-				MLOG("input float: " + to_string(f));
+			if (f < -1) {
+				f = -1;
 			}
-			unsigned short ushort = (signed short)((f + 1)  * 32767.5);
+			else if (f > 1) {
+				f = 1;
+			}
+			unsigned short ushort = (signed short)((f + 1)  * 32767.4999999);
 			unsigned char eightBit = ushort >> 8;
 			signed sshort = (eightBit - 128) << 8;
-			f = (float)(sshort / 32767.5);
-			if (log) MLOG("output float: " + to_string(f) + "\n");
+			f = (float)(sshort / 32767.49999999);
+			if (f < -1) {
+				f = -1;
+			}
+			else if (f > 1) {
+				f = 1;
+			}
 			(*fa)[j] = f;
 		}
 	}

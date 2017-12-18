@@ -55,25 +55,38 @@ void ResampleControls::function(int i)
 
 		auto source = snd->getSampleData();
 
-		float* srcArray = &(*source)[0];
-		
-		SRC_DATA srcData;
-		srcData.data_in = srcArray;
-		srcData.input_frames = source->size();
-		srcData.src_ratio = (double)(soundGui->getNewFs()) / (double)(snd->getSampleRate());
-		srcData.output_frames = (floor)(source->size() * srcData.src_ratio);
+		if (soundGui->getNewFs() != snd->getSampleRate()) {
+			float* srcArray = &(*source)[0];
 
-		auto dest = destSnd->getSampleData();
-		dest->resize(srcData.output_frames);
+			SRC_DATA srcData;
+			srcData.data_in = srcArray;
+			srcData.input_frames = source->size();
+			srcData.src_ratio = (double)(soundGui->getNewFs()) / (double)(snd->getSampleRate());
+			srcData.output_frames = (floor)(source->size() * srcData.src_ratio);
 
-		float* destArray = &(*dest)[0];
-		srcData.data_out = destArray;
+			auto dest = destSnd->getSampleData();
+			dest->resize(srcData.output_frames);
 
-		auto error = src_simple(&srcData, 0, 1);
-		if (error != 0) {
-			const char* errormsg = src_strerror(error);
-			string errorStr(errormsg);
-			MLOG("libsamplerate error: " + errorStr);
+			float* destArray = &(*dest)[0];
+			srcData.data_out = destArray;
+
+			auto error = src_simple(&srcData, 0, 1);
+			if (error != 0) {
+				const char* errormsg = src_strerror(error);
+				string errorStr(errormsg);
+				MLOG("libsamplerate error: " + errorStr);
+			}
+		}
+		else {
+			*destSnd->getSampleData() = *source;
+		}
+		for (auto& f : *destSnd->getSampleData()) {
+			if (f > 1) {
+				f = 1;
+			}
+			else if (f < -1) {
+				f = -1;
+			}
 		}
 
 		destSnd->setSampleRate(soundGui->getNewFs());

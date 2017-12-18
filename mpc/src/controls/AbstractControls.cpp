@@ -215,7 +215,6 @@ void AbstractControls::pad(int i, int velo, bool repeat, int tick)
 void AbstractControls::generateNoteOn(int nn, int padVelo, int tick)
 {
 	init();
-	MLOG("generateNoteOn with nn " + to_string(nn) + ", velo " + to_string(padVelo) + ", tick " + to_string(tick));
 	auto lTrk = track.lock();
 	auto lProgram = program.lock();
 	bool slider = lProgram && nn == lProgram->getSlider()->getNote();

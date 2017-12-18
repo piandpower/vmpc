@@ -4,6 +4,8 @@
 #include <file/sndreader/SndHeaderReader.hpp>
 #include <sampler/Sampler.hpp>
 
+#include <Logger.hpp>
+
 using namespace mpc::file::sndreader;
 using namespace std;
 
@@ -84,7 +86,13 @@ void SndReader::getSampleData(vector<float>* dest)
 	for (int i = 0; i < length; ++i) {
 		short value = shorts[i];
 		auto f = static_cast<float>(value / 32768.0);
-			dest->at(i) = f;
+		if (f < -1) {
+			f = -1.0f;
+		}
+		if (f > 1) {
+			f = 1.0f;
+		}
+		dest->at(i) = f;
 	}
 }
 
