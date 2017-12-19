@@ -86,7 +86,14 @@ MACRO(create_example name)
 	else(WIN32)
 	  set(${PN_SRC} 
 	  ${${PN_SRC}}  
-	  ../../WDL/IPlug/IPlugCocoa.mm 
+	  ../../WDL/IPlug/IPlugCocoa.mm
+	
+	  ../../VST3_SDK/public.sdk/source/vst/vstbus.cpp
+	  ../../VST3_SDK/public.sdk/source/vst/vstcomponentbase.cpp
+	  ../../VST3_SDK/public.sdk/source/vst/vstsinglecomponenteffect.cpp
+	  ../../VST3_SDK/public.sdk/source/vst/vstparameters.cpp
+	  ../../VST3_SDK/base/source/fstring.cpp
+	  ../../VST3_SDK/pluginterfaces/base/ustring.cpp
 	  )
 	  ADD_DEFINITIONS(
     	-D__MACOSX_CORE__ 
@@ -204,7 +211,9 @@ MACRO(create_example name)
 		add_library(${PLUGNAMEVST}  MODULE ${${PN_SRC}} ${${PN_HDR}} ${IPC_VST} )
         set_bundle(${PLUGNAMEVST} "${PLIST_PATHVST}" "vst" )
 		set_plug_props(${PLUGNAMEVST} "VST_API=1 VST_FORCE_DEPRECATED")
+		if (WIN32)
 		target_compile_options(${PLUGNAMEVST} PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+		endif (WIN32)
 	endif()
 
 	#-------------------------------------------------------------------------------------
