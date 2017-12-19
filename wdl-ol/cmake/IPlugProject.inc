@@ -88,12 +88,12 @@ MACRO(create_example name)
 	  ${${PN_SRC}}  
 	  ../../WDL/IPlug/IPlugCocoa.mm
 	
-	  ../../VST3_SDK/public.sdk/source/vst/vstbus.cpp
-	  ../../VST3_SDK/public.sdk/source/vst/vstcomponentbase.cpp
-	  ../../VST3_SDK/public.sdk/source/vst/vstsinglecomponenteffect.cpp
-	  ../../VST3_SDK/public.sdk/source/vst/vstparameters.cpp
-	  ../../VST3_SDK/base/source/fstring.cpp
-	  ../../VST3_SDK/pluginterfaces/base/ustring.cpp
+	  #../../VST3_SDK/public.sdk/source/vst/vstbus.cpp
+	  #../../VST3_SDK/public.sdk/source/vst/vstcomponentbase.cpp
+	  #../../VST3_SDK/public.sdk/source/vst/vstsinglecomponenteffect.cpp
+	  #../../VST3_SDK/public.sdk/source/vst/vstparameters.cpp
+	  #../../VST3_SDK/base/source/fstring.cpp
+	  #../../VST3_SDK/pluginterfaces/base/ustring.cpp
 	  )
 	  ADD_DEFINITIONS(
     	-D__MACOSX_CORE__ 
@@ -220,7 +220,16 @@ MACRO(create_example name)
 	# Add  VST3 Plugin 
 	#-------------------------------------------------------------------------------------
 	if( DEFINED PLUGNAMEVST3 )
-		add_library(${PLUGNAMEVST3} MODULE ${${PN_SRC}} ${${PN_HDR}} ${IPC_VST3} )
+
+		set(VST3_ADDITIONAL_SRC "../../VST3_SDK/public.sdk/source/vst/vstbus.cpp"
+	  "../../VST3_SDK/public.sdk/source/vst/vstcomponentbase.cpp"
+	  "../../VST3_SDK/public.sdk/source/vst/vstsinglecomponenteffect.cpp"
+	  "../../VST3_SDK/public.sdk/source/vst/vstparameters.cpp"
+	  "../../VST3_SDK/base/source/fstring.cpp"
+	  "../../VST3_SDK/pluginterfaces/base/ustring.cpp")
+
+		set(FINAL_VST3_SRC ${${PN_SRC}}   ${VST3_ADDITIONAL_SRC} )
+		add_library(${PLUGNAMEVST3} MODULE ${FINAL_VST3_SRC} ${${PN_HDR}} ${IPC_VST3} )
   		set_bundle(${PLUGNAMEVST3} "${PLIST_PATHVST3}" "vst3" )
 		set_plug_props(${PLUGNAMEVST3} "VST3_API=1")
 		target_link_libraries(${PLUGNAMEVST3} vst3)
