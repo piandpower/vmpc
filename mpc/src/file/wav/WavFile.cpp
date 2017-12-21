@@ -1,5 +1,5 @@
-#include <file/wav/WavFile.hpp>
-#include <Logger.hpp>
+#include "WavFile.hpp"
+
 using namespace mpc::file::wav;
 using namespace std;
 
@@ -190,9 +190,6 @@ void WavFile::openWavFile(weak_ptr<moduru::file::File> file)
         floatOffset = -1;
         floatScale = 0.5 * ((1 << validBits) - 1);
     }
-	MLOG("validBits " + to_string(validBits));
-	MLOG("floatOffset " + to_string(floatOffset));
-	MLOG("floatScale " + to_string(floatScale));
 
     bufferPointer = 0;
     bytesRead = 0;
@@ -446,9 +443,6 @@ int WavFile::readFrames(vector<float>* sampleBuffer, int numFramesToRead)
 
 int WavFile::readFrames(vector<float>* sampleBuffer, int offset, int numFramesToRead)
 {
-	MLOG("floatOffset " + to_string(floatOffset));
-	MLOG("floatScale " + to_string(floatScale));
-
 	//if(ioState != WavFile_IOState::READING)
 		//throw new moduru::io::IOException("Cannot read from WavFile instance");
 	if (sampleBuffer->size() != numFramesToRead * numChannels) {
