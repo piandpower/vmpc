@@ -248,6 +248,7 @@ inline int GetMouseOver(IGraphicsMac* pGraphics)
     return YES;
 }
 
+/*
 - (BOOL) canBecomeMainWindow
 {
     return YES;
@@ -257,12 +258,14 @@ inline int GetMouseOver(IGraphicsMac* pGraphics)
 {
     return YES;
 }
+*/
 
 - (BOOL) acceptsFirstMouse: (NSEvent*) pEvent
 {
     return YES;
 }
 
+/*
 - (void) viewDidMoveToWindow
 {
     NSWindow* pWindow = [self window];
@@ -282,6 +285,17 @@ inline int GetMouseOver(IGraphicsMac* pGraphics)
             printf("\npWindow is now mainWindow\n");
         }
 
+        [pWindow setAcceptsMouseMovedEvents: YES];
+    }
+}
+*/
+
+- (void) viewDidMoveToWindow
+{
+    NSWindow* pWindow = [self window];
+    if (pWindow)
+    {
+        [pWindow makeFirstResponder: self];
         [pWindow setAcceptsMouseMovedEvents: YES];
     }
 }
@@ -452,11 +466,6 @@ inline int GetMouseOver(IGraphicsMac* pGraphics)
     }
 }
 
-- (void)cancelOperation:(NSEvent*)pEvent
-{
-    printf("Escape key pressed\n");
-}
-
 - (void)keyUp:(NSEvent *)pEvent
 {
     unsigned short k = [pEvent keyCode];
@@ -465,7 +474,6 @@ inline int GetMouseOver(IGraphicsMac* pGraphics)
 
 - (void)keyDown: (NSEvent *)pEvent
 {
-    printf("Key down\n");
     NSString *s = [pEvent charactersIgnoringModifiers];
     
     if ([s length] == 1)

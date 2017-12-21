@@ -70,8 +70,8 @@ weak_ptr<BusControls> MixerControls::getBusControls(string name)
 {
 	auto mbc = mainBusControls;
 	
-	std::cout << "bus controls name: " << name << std::endl;
-	std::cout << "mbc getName: " << mbc->getName() << std::endl;
+	//std::cout << "bus controls name: " << name << std::endl;
+	//std::cout << "mbc getName: " << mbc->getName() << std::endl;
 
 	auto mbcName = mbc->getName();
 

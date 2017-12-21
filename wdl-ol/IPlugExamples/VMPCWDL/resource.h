@@ -7,6 +7,7 @@
 #define BUNDLE_NAME "VMPCWDL"
 
 #define PLUG_ENTRY VMPCWDL_Entry
+#define PLUG_FACTORY VMPCWDL_Factory
 #define PLUG_VIEW_ENTRY VMPCWDL_ViewEntry
 
 #define PLUG_ENTRY_STR "VMPCWDL_Entry"
@@ -19,7 +20,9 @@
 #define PLUG_VER 0x00010000
 #define VST3_VER_STR "1.0.0"
 
-#define PLUG_UNIQUE_ID 'Ipps'
+#define PLUG_COPYRIGHT  "Copyright 2017 Acme Inc"
+
+#define PLUG_UNIQUE_ID 'Vmpc'
 // make sure this is not the same as BUNDLE_MFR
 #define PLUG_MFR_ID 'Acme'
 
@@ -49,18 +52,16 @@
 #define PLUG_DOES_STATE_CHUNKS 0
 
 // Unique IDs for each image resource.
-#define BG_ID         	102
-#define GRID_ID			106
-#define LED_GREEN_ID	107
-#define LED_RED_ID		108
-#define DATAWHEEL_ID	109
-#define SLIDER_ID		110
-#define RECKNOB_ID		111
-#define VOLKNOB_ID		112
+#define BG_ID         	101
+#define LED_GREEN_ID	102
+#define LED_RED_ID		103
+#define DATAWHEEL_ID	104
+#define SLIDER_ID		105
+#define RECKNOB_ID		106
+#define VOLKNOB_ID		107
 
 // Image resource locations for this plug.
 #define BG_FN			"resources/img/bg.png"
-#define GRID_FN			"resources/img/pixelgrid.png"
 #define LED_GREEN_FN	"resources/img/led_green.png"
 #define LED_RED_FN		"resources/img/led_red.png"
 #define DATAWHEEL_FN	"resources/img/datawheels.png"

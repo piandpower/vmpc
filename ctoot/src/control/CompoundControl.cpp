@@ -38,12 +38,12 @@ CompoundControlPersistence* CompoundControl::persistence_;
 void CompoundControl::checkInstanceIndex(int index)
 {
 	if (index < 0) {
-		string desc = getName() + " instance " + to_string(index) + " < 0";
-		printf("%s", desc.c_str());
+		string desc = getName() + " instance " + to_string(index) + " < 0\n";
+		//printf("%s", desc.c_str());
 	}
 	if (index > getMaxInstance()) {
-		string desc = getName() + " instance " + to_string(index) + " > " + to_string(getMaxInstance());
-		printf("%s", desc.c_str());
+		string desc = getName() + " instance " + to_string(index) + " > " + to_string(getMaxInstance()) + "\n";
+		//printf("%s", desc.c_str());
 	}
 }
 

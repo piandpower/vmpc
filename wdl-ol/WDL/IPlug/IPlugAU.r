@@ -39,6 +39,13 @@
   #define TARGET_REZ_MAC_X86_64     0
 #endif
 
+/*
+#define TARGET_REZ_MAC_PPC        0
+#define TARGET_REZ_MAC_PPC64      0
+#define TARGET_REZ_MAC_X86        0
+#define TARGET_REZ_MAC_X86_64     1
+*/
+
 #if TARGET_OS_MAC
   #if TARGET_REZ_MAC_PPC && TARGET_REZ_MAC_X86 && TARGET_REZ_MAC_X86_64 && TARGET_REZ_MAC_PPC64
     #define TARGET_REZ_FAT_COMPONENTS_4 1

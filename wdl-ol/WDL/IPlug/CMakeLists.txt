@@ -57,11 +57,14 @@ elseif(APPLE)
 SET (IPLUG_SRC
 	${IPLUG_SRC}
 	IGraphicsCarbon.cpp
+	IPlugAU.r
 #	IPlugCocoa.mm
 )
+set_source_files_properties(IPlugAU.r PROPERTIES XCODE_EXPLICIT_FILE_TYPE "Rez Sources")
 endif(WIN32)
 
 add_library(iplug ${IPLUG_SRC} ${IPLUG_HEADERS} ${IPLUG_DOC_HEADERS} )
+
 
 	set_target_properties(iplug PROPERTIES COMPILE_FLAGS_RELEASE "/MD")
 	set_target_properties(iplug PROPERTIES COMPILE_FLAGS_DEBUG "/MDd")

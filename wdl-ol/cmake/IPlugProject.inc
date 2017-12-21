@@ -186,11 +186,11 @@ MACRO(create_example name)
 	    	endforeach()
  	    
 	    	set (ORC_PATH "${CMAKE_CURRENT_BINARY_DIR}/${PLUGNAMEAU}.rsrc" )
-# 	   		get_directory_property(INC_DIRS INCLUDE_DIRECTORIES ) 
-#     		message("Generating ${ORC_PATH} for ${INC_DIRS}" )
+ 	   		get_directory_property(INC_DIRS INCLUDE_DIRECTORIES ) 
+     		message("Generating ${ORC_PATH} for ${INC_DIRS}" )
 
-#  			add_custom_command( TARGET ${PLUGNAMEAU} POST_BUILD
-#  			COMMAND /Developer/Tools/Rez  ARGS 
+ # 			add_custom_command( TARGET ${PLUGNAMEAU} POST_BUILD
+ # 			COMMAND /usr/bin/rez ARGS 
 # 	   		  -d SystemSevenOrLater=1 -useDF -script Roman 
 #     	      -useDF ${ARCHS}
 #     	      -o ${ORC_PATH}
@@ -201,6 +201,16 @@ MACRO(create_example name)
 # 	   		  -isysroot /Developer/SDKs/MacOSX${BUILD_SDK_VER}.sdk
 # 	   		  ${RCFILES} 
 # 			)
+
+# GET_TARGET_PROPERTY(MyExecutable_PATH ${PLUGNAMEAU} LOCATION)
+
+# IF(APPLE)
+#   FIND_PROGRAM(APPLE_RESOURCE Rez /Developer/Tools)
+#   IF(APPLE_RESOURCE)
+#     ADD_CUSTOM_COMMAND(TARGET ${PLUGNAMEAU} POST_BUILD
+#                        COMMAND ${APPLE_RESOURCE} ${RCFILES} -o ${MyExecutable_PATH} -i ${CMAKE_CURRENT_SOURCE_DIR} -I $CA_SDK/AudioUnits/AUPublic/AUBase)
+#   ENDIF(APPLE_RESOURCE)
+# ENDIF(APPLE)
 		endif()
 	endif()
 

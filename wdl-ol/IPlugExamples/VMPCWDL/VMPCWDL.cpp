@@ -28,12 +28,12 @@
 #include <hardware/HwSlider.hpp>
 
 const int kNumPrograms = 8;
-const int kNumParams = 0;
+const int kNumParams = 1;
 
 VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	: IPLUG_CTOR(kNumParams, kNumPrograms, instanceInfo),
 	mSampleRate(44100.)
-{
+{   
 	mpc = new mpc::Mpc();
 	mpc->init("rtaudio");
 
@@ -104,7 +104,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	//MakePreset("preset 1", ... );
 	MakeDefaultPreset((char *) "-", kNumPrograms);
 
-	mpc->powerOn();	
+	mpc->powerOn();
 }
 
 VMPCWDL::~VMPCWDL()
@@ -181,7 +181,7 @@ void VMPCWDL::ProcessMidiMsg(IMidiMsg* pMsg)
 		  auto tootMsg = ctoot::midi::core::ShortMessage();
 		  auto data = std::vector<char>{ (char)ctoot::midi::core::ShortMessage::NOTE_OFF, (char)(pMsg->mData1), (char)(velocity) };
 		  tootMsg.setMessage(data, 3);
-		  mpc->getMpcMidiInput(0)->transport(&tootMsg, 0);
+		 mpc->getMpcMidiInput(0)->transport(&tootMsg, 0);
 		  //mKeyStatus[pMsg->NoteNumber()] = false;
         //mNumHeldKeys -= 1;
       }
