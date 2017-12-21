@@ -208,6 +208,10 @@ MpcFile* StdDisk::newFile(string newFileName)
 {
 	moduru::file::File* f = nullptr;
 	try {
+		auto split = FileUtil::splitName(newFileName);
+		split[0] = moduru::lang::StrUtil::trim(split[0]);
+		newFileName = split[0] + "." + split[1];
+
 		string newFilePath = getDir().lock()->getPath() + FileUtil::getSeparator() + StrUtil::toUpper(StrUtil::replaceAll(newFileName, ' ', "_"));
 		f = new moduru::file::File(newFilePath, getDir().lock().get());
 		auto success = f->create();

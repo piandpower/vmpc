@@ -37,4 +37,8 @@ void ApsSaver::saveAps()
 	if (saveWith != 0) {
 		soundSaver = std::make_unique<mpc::disk::SoundSaver>(mpc, mpc->getSampler().lock()->getSounds(), saveWith == 1 ? false : true);
 	}
+	else {
+		lDisk->setBusy(false);
+		mpc->getLayeredScreen().lock()->openScreen("save");
+	}
 }
