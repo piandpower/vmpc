@@ -1,8 +1,6 @@
 #pragma once
 #include <synth/SynthChannel.hpp>
 
-//#include <thirdp/concurrentqueue.h>
-
 namespace ctoot {
 
 	namespace control {
@@ -47,12 +45,6 @@ namespace mpc {
 		{
 
 		private:
-			//static moodycamel::ConcurrentQueue<std::weak_ptr<mpc::ctootextensions::Voice>> unusedVoices;
-			//static moodycamel::ConcurrentQueue<std::weak_ptr<mpc::ctootextensions::Voice>> voices;
-
-			//static std::vector<std::weak_ptr<Voice> > unusedVoices;
-			//static std::vector<std::weak_ptr<Voice> > voices;
-
 			std::weak_ptr<MpcSoundPlayerControls> controls{};
 			std::weak_ptr<mpc::sampler::Sampler> sampler{};
 			std::weak_ptr<ctoot::audio::mixer::AudioMixer> mixer{};
@@ -67,7 +59,6 @@ namespace mpc {
 			int padNumber{ 0 };
 			mpc::sampler::NoteParameters* np{ nullptr };
 			int soundNumber{ 0 };
-			//std::weak_ptr<mpc::ctootextensions::Voice> voice{};
 			std::weak_ptr<mpc::sampler::Sound> vars{};
 			std::weak_ptr<mpc::sampler::MixerChannel> pgmMixerChannel{};
 			MpcFaderControl* faderControl{ nullptr };
@@ -96,7 +87,6 @@ namespace mpc {
 			void allSoundOff() override;
 			void allSoundOff(int frameOffset);
 			void connectVoices();
-			//void kill(std::weak_ptr<mpc::ctootextensions::Voice> mpcVoice);
 			std::weak_ptr<ctoot::audio::core::MetaInfo> getInfo();
 			std::vector<std::weak_ptr<mpc::sampler::MixerChannel>> getMixerChannels();
 			int getDrumNumber();

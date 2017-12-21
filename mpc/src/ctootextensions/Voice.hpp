@@ -83,7 +83,6 @@ namespace mpc {
 			mpc::ctootextensions::MpcEnvelopeControls* filterEnvControls{ nullptr };
 			ctoot::synth::modules::filter::StateVariableFilterControls* svfControls{ nullptr };
 			bool finished{ true };
-			bool processing{ false };
 			bool readyToPlay{ false };
 			int stripNumber{ -1 };
 
@@ -136,9 +135,7 @@ namespace mpc {
 			std::vector<float> frame;
 
 		public:
-			bool isProcessing();
 			bool isFinished();
-			void take();
 			void init(int track, int velocity, int padNumber, std::weak_ptr<mpc::sampler::Sound> oscVars, mpc::sampler::NoteParameters* np, int varType, int varValue, int muteNote, int muteDrum, int frameOffset, bool enableEnvs);
 			std::vector<float> getFrame();
 

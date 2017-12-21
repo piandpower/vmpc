@@ -264,7 +264,6 @@ int Voice::processAudio(ctoot::audio::core::AudioBuffer* buffer, int nFrames)
 		return AUDIO_OK;
 		// maybe should be AUDIO_SILENCE
 	}
-	processing = true;
 	left = buffer->getChannel(0);
 	right = buffer->getChannel(1);
 	count = nFrames;
@@ -280,24 +279,12 @@ int Voice::processAudio(ctoot::audio::core::AudioBuffer* buffer, int nFrames)
 	}
 	if (finished) {
 		padNumber = -1;
-		//if (parent != nullptr) {
-		//	parent->kill(this);
-		//}
 	}
-	processing = false;
 	return AUDIO_OK;
-}
-
-bool Voice::isProcessing() {
-	return processing;
 }
 
 bool Voice::isFinished() {
 	return finished;
-}
-
-void Voice::take() {
-	finished = false;
 }
 
 void Voice::close()
