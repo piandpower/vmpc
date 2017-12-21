@@ -12,7 +12,7 @@ namespace ctoot {
 	namespace audio {
 
 		namespace server {
-			struct AudioServer;
+			class AudioServer;
 		}
 
 		namespace core {

@@ -154,10 +154,8 @@ void AudioMidiServices::start(std::string mode) {
 	offlineServer->setWeakPtr(offlineServer);
 	offlineServer->setClient(cac);
 	offlineServer->resizeBuffers(4096);
-	offlineServer->start(); // <---- niet cool
+	offlineServer->start();
 	disabled = false;
-	//this_thread::sleep_for(chrono::milliseconds(6000));
-	//offlineServer->stop();
 }
 
 void AudioMidiServices::initServerNames()

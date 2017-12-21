@@ -257,8 +257,8 @@ Mpc::~Mpc() {
 	MLOG("Mpc destructor.");
 	mpc::nvram::NvRam::saveUserDefaults();
 	mpc::nvram::NvRam::saveKnobPositions(this);
-	layeredScreen.reset();
-	audioMidiServices->destroyServices();
+    if (layeredScreen) layeredScreen.reset();
+	if (audioMidiServices) audioMidiServices->destroyServices();
 	MLOG("audio midi services destroyed.");
 	if (loadSoundThread.joinable()) loadSoundThread.join();
 }

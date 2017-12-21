@@ -41,6 +41,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 
 	IGraphics* pGraphics = MakeGraphics(this, GUI_WIDTH * SCALE, GUI_HEIGHT * SCALE);
 	pGraphics->AttachBackground(BG_ID, BG_FN);
+    /*
 	mLedPanel = new LedControl(this, pGraphics);
 	for (auto& l : mpc->getHardware().lock()->getLeds()) {
 		l->addObserver(mLedPanel);
@@ -98,13 +99,13 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 		auto bc = new ButtonControl(this, *ButtonControl::rects[l], mpc->getHardware().lock()->getButton(l));
 		pGraphics->AttachControl(bc);
 	}
-
+*/
 	AttachGraphics(pGraphics);
 
 	//MakePreset("preset 1", ... );
 	MakeDefaultPreset((char *) "-", kNumPrograms);
 
-	mpc->powerOn();
+	//mpc->powerOn();
 }
 
 VMPCWDL::~VMPCWDL()
@@ -131,8 +132,8 @@ void VMPCWDL::NoteOnOff(IMidiMsg* pMsg)
 
 void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames)
 {
-	auto server = mpc->getAudioMidiServices().lock()->getRtAudioServer();
-	server->work(inputs, outputs, nFrames);
+	//auto server = mpc->getAudioMidiServices().lock()->getRtAudioServer();
+	//server->work(inputs, outputs, nFrames);
 }
 
 void VMPCWDL::Reset()
@@ -168,20 +169,20 @@ void VMPCWDL::ProcessMidiMsg(IMidiMsg* pMsg)
       if (status == IMidiMsg::kNoteOn && velocity)
       {
 		  //MLOG("WDL Note on, velo " + std::to_string(velocity));
-		  auto tootMsg = ctoot::midi::core::ShortMessage();
-		  auto data = std::vector<char>{ (char)ctoot::midi::core::ShortMessage::NOTE_ON, (char)(pMsg->mData1), (char)(velocity) };
-		  tootMsg.setMessage(data, 3);
-		  mpc->getMpcMidiInput(0)->transport(&tootMsg, 0);
+		  //auto tootMsg = ctoot::midi::core::ShortMessage();
+		  //auto data = std::vector<char>{ (char)ctoot::midi::core::ShortMessage::NOTE_ON, (char)(pMsg->mData1), (char)(velocity) };
+		  //tootMsg.setMessage(data, 3);
+		 // mpc->getMpcMidiInput(0)->transport(&tootMsg, 0);
         //mKeyStatus[pMsg->NoteNumber()] = true;
         //mNumHeldKeys += 1;
       }
       else
       {
 		  //MLOG("WDL Note off");
-		  auto tootMsg = ctoot::midi::core::ShortMessage();
-		  auto data = std::vector<char>{ (char)ctoot::midi::core::ShortMessage::NOTE_OFF, (char)(pMsg->mData1), (char)(velocity) };
-		  tootMsg.setMessage(data, 3);
-		 mpc->getMpcMidiInput(0)->transport(&tootMsg, 0);
+		  //auto tootMsg = ctoot::midi::core::ShortMessage();
+		 // auto data = std::vector<char>{ (char)ctoot::midi::core::ShortMessage::NOTE_OFF, (char)(pMsg->mData1), (char)(velocity) };
+		 // tootMsg.setMessage(data, 3);
+		 //mpc->getMpcMidiInput(0)->transport(&tootMsg, 0);
 		  //mKeyStatus[pMsg->NoteNumber()] = false;
         //mNumHeldKeys -= 1;
       }

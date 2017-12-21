@@ -70,17 +70,23 @@ void NvRam::saveUserDefaults()
 
 void NvRam::saveKnobPositions(mpc::Mpc* mpc)
 {
-	auto file = new moduru::file::File(mpc::StartUp::resPath + "knobpositions.vmp", nullptr);
-	if (!file->exists())
-		file->create();
+    auto ams = mpc->getAudioMidiServices().lock();
+    auto hw = mpc->getHardware().lock();
+    std::shared_ptr<mpc::hardware::Slider> slider;
+    if (hw) slider = hw->getSlider().lock();
+    if (ams && hw && slider) {
+        auto file = new moduru::file::File(mpc::StartUp::resPath + "knobpositions.vmp", nullptr);
+        if (!file->exists())
+            file->create();
 
-	auto fos = new moduru::io::FileOutputStream(file);
-	char recordb = mpc->getAudioMidiServices().lock()->getRecordLevel();
-	char volumeb = mpc->getAudioMidiServices().lock()->getMasterLevel();
-	char sliderb = static_cast< int8_t >(mpc->getHardware().lock()->getSlider().lock()->getValue());
-	auto bytes = vector<char>{ recordb, volumeb, sliderb };
-	fos->write(bytes);
-	fos->close();
+        auto fos = new moduru::io::FileOutputStream(file);
+        char recordb = ams->getRecordLevel();
+        char volumeb = ams->getMasterLevel();
+        char sliderb = static_cast< int8_t >(slider->getValue());
+        auto bytes = vector<char>{ recordb, volumeb, sliderb };
+        fos->write(bytes);
+        fos->close();
+    }
 }
 
 int NvRam::getMasterLevel()
