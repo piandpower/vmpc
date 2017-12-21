@@ -15,7 +15,7 @@ MpcMultiMidiSynth::MpcMultiMidiSynth(shared_ptr<ctoot::synth::synths::multi::Mul
 	: MultiMidiSynth(controls)
 {
 	for (int i = 0; i < 32; i++) {
-		voices.push_back(new mpc::ctootextensions::Voice(i, false));
+		voices.push_back(new mpc::ctootextensions::Voice(i + 1, false));
 	}
 }
 
