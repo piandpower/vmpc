@@ -1,5 +1,7 @@
 #include <lcdgui/Underline.hpp>
 
+#include <Logger.hpp>
+
 using namespace mpc::lcdgui;
 using namespace std;
 

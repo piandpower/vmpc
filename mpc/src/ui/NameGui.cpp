@@ -29,7 +29,6 @@ int NameGui::getNameLimit()
 
 void NameGui::setName(string str, int i)
 {
-	//name = name.substr(0, i).append(str).append(name).substr(i + 1, name.length());
 	name[i] = str[0];
 }
 

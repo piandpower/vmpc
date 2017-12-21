@@ -340,7 +340,7 @@ void LayeredScreen::Draw() {
 			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
 		}
 
-		if (!underline->IsHidden() && underline->IsDirty()) underline->Draw(&pixels);
+		if (!underline->IsHidden() && i == 2) underline->Draw(&pixels);
 		if (!twoDots->IsHidden() && twoDots->IsDirty()) twoDots->Draw(&pixels);
 
 		if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
@@ -371,7 +371,7 @@ bool LayeredScreen::IsDirty() {
 			if (c.lock()->IsDirty()) return true;
 		}
 
-		if (underline->IsDirty()) return true;
+		if (underline->IsDirty() && i == 2) return true;
 		if (twoDots->IsDirty()) return true;
 
 		for (auto& k : knobs) {

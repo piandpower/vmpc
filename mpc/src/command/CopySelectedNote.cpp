@@ -21,7 +21,7 @@ CopySelectedNote::CopySelectedNote(string focus, mpc::ui::sequencer::StepEditorG
 
 void CopySelectedNote::execute()
 {
-    auto eventNumber = stoi(focus.substr(1, 2));
+    auto eventNumber = stoi(focus.substr(1, 1));
 	vector<weak_ptr<mpc::sequencer::Event>> tempList{ seGui->getVisibleEvents()[eventNumber] };
     seGui->setPlaceHolder(tempList);
 }

@@ -89,7 +89,7 @@ void NameObserver::update(moduru::observer::Observable* o, boost::any arg)
 	if (s.compare("name") == 0) {
 		str = ls->getFocus();
 		tf = ls->lookupField(str).lock();
-		tf->setText(nameGui->getName().substr(stoi(str), stoi(str) + 1));
+		tf->setText(nameGui->getName().substr(stoi(str), 1));
 	}
 }
 

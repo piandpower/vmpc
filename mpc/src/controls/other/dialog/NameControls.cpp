@@ -320,41 +320,8 @@ void NameControls::saveName() {
 	}
 }
 
-/*
-void NameControls::keyEvent(unsigned char e)
-{
-	init();
-		if (!(e == KbMapping::left() || e == KbMapping::right() || e == KbMapping::dataWheelBack())) {
-		for (int i = 0; i < akaiAsciiChar.size(); i++) {
-			if (e == akaiAsciiChar[i]) {
-				auto offset = 1;
-				if (!nameGui->isNameBeingEdited()) offset = 0;
-
-				if (lGui->getPreviousKeyStroke() == KbMapping::left() || lGui->getPreviousKeyStroke() == KbMapping::right()) offset = 0;
-
-				auto position = stoi(param) + offset;
-				if (position > nameGui->getNameLimit() - 1) position = nameGui->getNameLimit() - 1;
-
-				nameGui->setName(string{ akaiAsciiChar[i] }, position);
-				if (!nameGui->isNameBeingEdited()) nameGui->setNameBeingEdited(true);
-
-				initEditColors();
-				auto lLs = ls.lock();
-				lLs->lookupField(to_string(position)).lock()->setText(string{ akaiAsciiChar[i] });
-				lMainFrame->setFocus(to_string(position), 2);
-			}
-		}
-	}
-	if (e != KbMapping::numPadShift()) lGui->setPreviousKeyStroke(e);
-	auto lLs = ls.lock();
-	auto lLs = ls.lock();
-	drawUnderline();
-}
-*/
-
 void NameControls::drawUnderline()
 {
-	MLOG("Draw underline.");
 	if (nameGui->isNameBeingEdited()) {
 		string focus = ls.lock()->getFocus();
 		if (focus.length() != 1 && focus.length() != 2) return;
@@ -378,7 +345,6 @@ void NameControls::initEditColors()
 		field->setInverted(false);
     }
 	auto focus = ls.lock()->getFocus();
-	//ls.lock()->lookupField(focus).lock()->setForeground(true);
 	ls.lock()->lookupField(focus).lock()->setInverted(false);
 	ls.lock()->lookupField(focus).lock()->setOpaque(true);
 }
