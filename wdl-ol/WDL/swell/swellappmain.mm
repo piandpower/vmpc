@@ -132,13 +132,13 @@ static bool IsMultiLineEditControl(NSView *cv, id fs)
         // get default button command id, if any, if enabled
         if (!IsMultiLineEditControl(cv,dest_view))
         {            
-            cmdid = SWELL_GetDefaultButtonID((HWND)cv,true); 
+            //cmdid = SWELL_GetDefaultButtonID((HWND)cv,true);
             
-            if (!cmdid) // no action, set focus to parent
-            {
-              SetFocus((HWND)cv);
-              return;
-            }
+            //if (!cmdid) // no action, set focus to parent
+            //{
+            //  SetFocus((HWND)cv);
+           //   return;
+           // }
         }
       }
       
