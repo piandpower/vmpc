@@ -7,18 +7,17 @@
 using namespace mpc::ctootextensions;
 using namespace std;
 
-MpcSoundPlayerControls::MpcSoundPlayerControls(
+MpcSoundPlayerControls::MpcSoundPlayerControls(weak_ptr<MpcMultiMidiSynth> mms,
 	weak_ptr<mpc::sampler::Sampler> sampler
 	, int drumNumber
 	, weak_ptr<ctoot::audio::mixer::AudioMixer> mixer
-	, vector<weak_ptr<mpc::ctootextensions::Voice>> voices
 	, weak_ptr<ctoot::audio::server::AudioServer> server)
 	: ctoot::synth::SynthChannelControls(MPC_SOUND_PLAYER_CHANNEL_ID, NAME_)
 {
+	this->mms = mms;
 	this->sampler = sampler;
 	this->drumNumber = drumNumber;
 	this->mixer = mixer;
-	this->voices = voices;
 	this->server = server;
 }
 
@@ -29,6 +28,10 @@ string MpcSoundPlayerControls::NAME()
     return NAME_;
 }
 string MpcSoundPlayerControls::NAME_ = "MpcSoundPlayer";
+
+weak_ptr<MpcMultiMidiSynth> MpcSoundPlayerControls::getMms() {
+	return mms;
+}
 
 weak_ptr<mpc::sampler::Sampler> MpcSoundPlayerControls::getSampler()
 {
@@ -43,11 +46,6 @@ int MpcSoundPlayerControls::getDrumNumber()
 weak_ptr<ctoot::audio::mixer::AudioMixer> MpcSoundPlayerControls::getMixer()
 {
     return mixer;
-}
-
-vector<weak_ptr<mpc::ctootextensions::Voice>> MpcSoundPlayerControls::getVoices()
-{
-    return voices;
 }
 
 ctoot::audio::server::AudioServer* MpcSoundPlayerControls::getServer()

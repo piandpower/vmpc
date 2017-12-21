@@ -439,14 +439,8 @@ void AudioMidiServices::createSynth()
 	msc = make_shared<ctootextensions::MpcMultiSynthControls>();
 	synthRackControls->setSynthControls(0, msc);
 	mms = dynamic_pointer_cast<mpc::ctootextensions::MpcMultiMidiSynth>(synthRack->getMidiSynth(0).lock());
-	vector<weak_ptr<mpc::ctootextensions::Voice>> weakVoices;
-	for (int i = 1; i <= 32; i++) {
-		voices.push_back(std::move(make_shared<mpc::ctootextensions::Voice>(i, false)));
-		weakVoices.push_back(voices.back());
-		voices.back()->setWeakThis(voices.back());
-	}
 	for (int i = 0; i < 4; i++) {
-		auto m = make_shared<ctootextensions::MpcSoundPlayerControls>(mpc->getSampler(), i, mixer, weakVoices, server);
+		auto m = make_shared<ctootextensions::MpcSoundPlayerControls>(mms, mpc->getSampler(), i, mixer, server);
 		msc->setChannelControls(i, m);
 		synthChannelControls.push_back(m);
 	}

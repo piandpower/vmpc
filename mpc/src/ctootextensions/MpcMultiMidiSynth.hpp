@@ -2,12 +2,22 @@
 #include <synth/synths/multi/MultiMidiSynth.hpp>
 #include <synth/synths/multi/MultiSynthControls.hpp>
 
+#include <vector>
+
 namespace mpc {
 	namespace ctootextensions {
+
+		class Voice;
 
 		class MpcMultiMidiSynth
 			: public ctoot::synth::synths::multi::MultiMidiSynth
 		{
+
+		private:
+			std::vector<Voice*> voices;
+
+		public:
+			std::vector<Voice*>* getVoices();
 
 		public:
 			typedef ctoot::synth::synths::multi::MultiMidiSynth super;

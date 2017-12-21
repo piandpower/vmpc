@@ -1,5 +1,6 @@
 #include <ctootextensions/MpcMultiMidiSynth.hpp>
 
+#include "Voice.hpp"
 #include <ctootextensions/MpcSoundPlayerChannel.hpp>
 #include <midi/message/ChannelMsg.hpp>
 #include <midi/message/NoteMsg.hpp>
@@ -13,6 +14,13 @@ using namespace std;
 MpcMultiMidiSynth::MpcMultiMidiSynth(shared_ptr<ctoot::synth::synths::multi::MultiSynthControls> controls)
 	: MultiMidiSynth(controls)
 {
+	for (int i = 0; i < 32; i++) {
+		voices.push_back(new mpc::ctootextensions::Voice(i, false));
+	}
+}
+
+std::vector<Voice*>* MpcMultiMidiSynth::getVoices() {
+	return &voices;
 }
 
 void MpcMultiMidiSynth::mpcTransportChannel(int track, ctoot::midi::core::MidiMessage* msg, int chan, int varType, int varValue, int l)
@@ -83,4 +91,7 @@ weak_ptr<ctoot::synth::SynthChannel> MpcMultiMidiSynth::mapChannel(int chan)
 }
 
 MpcMultiMidiSynth::~MpcMultiMidiSynth() {
+	for (auto v : voices) {
+		if (v != nullptr) delete v;
+	}
 }

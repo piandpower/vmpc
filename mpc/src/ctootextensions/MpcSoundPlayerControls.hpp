@@ -14,10 +14,14 @@ namespace mpc {
 	namespace ctootextensions {
 		
 		class Voice;
+		class MpcMultiMidiSynth;
 
 		class MpcSoundPlayerControls
 			: public ctoot::synth::SynthChannelControls
 		{
+
+		private:
+			std::weak_ptr<MpcMultiMidiSynth> mms;
 
 		public:
 			typedef ctoot::synth::SynthChannelControls super;
@@ -30,17 +34,17 @@ namespace mpc {
 			std::weak_ptr<mpc::sampler::Sampler> sampler{};
 			std::weak_ptr<ctoot::audio::mixer::AudioMixer> mixer{};
 			int drumNumber{ 0 };
-			std::vector<std::weak_ptr<mpc::ctootextensions::Voice>> voices{};
 			std::weak_ptr<ctoot::audio::server::AudioServer> server{ };
 			
 		public:
+			std::weak_ptr<MpcMultiMidiSynth> getMms();
 			std::weak_ptr<mpc::sampler::Sampler> getSampler();
 			int getDrumNumber();
 			std::weak_ptr<ctoot::audio::mixer::AudioMixer> getMixer();
-			std::vector<std::weak_ptr<mpc::ctootextensions::Voice>> getVoices();
 			ctoot::audio::server::AudioServer* getServer();
 
-			MpcSoundPlayerControls(std::weak_ptr<mpc::sampler::Sampler> sampler, int drumNumber, std::weak_ptr<ctoot::audio::mixer::AudioMixer> mixer, std::vector<std::weak_ptr<mpc::ctootextensions::Voice>> voices, std::weak_ptr<ctoot::audio::server::AudioServer> server);
+		public:
+			MpcSoundPlayerControls(std::weak_ptr<MpcMultiMidiSynth> mms, std::weak_ptr<mpc::sampler::Sampler> sampler, int drumNumber, std::weak_ptr<ctoot::audio::mixer::AudioMixer> mixer, std::weak_ptr<ctoot::audio::server::AudioServer> server);
 			~MpcSoundPlayerControls();
 
 		public:

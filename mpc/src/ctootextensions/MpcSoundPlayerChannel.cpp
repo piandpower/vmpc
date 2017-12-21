@@ -20,6 +20,7 @@
 #include <control/CompoundControl.hpp>
 #include <control/Control.hpp>
 #include <ctootextensions/MpcSoundPlayerControls.hpp>
+#include <ctootextensions/MpcMultiMidiSynth.hpp>
 
 using namespace mpc::ctootextensions;
 using namespace std;
@@ -34,13 +35,6 @@ MpcSoundPlayerChannel::MpcSoundPlayerChannel(weak_ptr<MpcSoundPlayerControls> co
 	sampler = lControls->getSampler();
 	mixer = lControls->getMixer();
 	server = lControls->getServer();
-	auto tmpVoices = lControls->getVoices();
-	if (index == 0) {
-		for (auto& v : tmpVoices) {
-			//unusedVoices.try_enqueue(v);
-			unusedVoices.push_back(v);
-		}
-	}
 	for (int i = 0; i < 64; i++) {
 		mixerChannels.push_back(make_shared<mpc::sampler::MixerChannel>());
 	}
@@ -48,8 +42,8 @@ MpcSoundPlayerChannel::MpcSoundPlayerChannel(weak_ptr<MpcSoundPlayerControls> co
 
 //moodycamel::ConcurrentQueue<weak_ptr<mpc::ctootextensions::Voice>> MpcSoundPlayerChannel::unusedVoices;
 //moodycamel::ConcurrentQueue<weak_ptr<mpc::ctootextensions::Voice>> MpcSoundPlayerChannel::voices;
-vector<weak_ptr<Voice> > MpcSoundPlayerChannel::unusedVoices;
-vector<weak_ptr<Voice> > MpcSoundPlayerChannel::voices;
+//vector<weak_ptr<Voice> > MpcSoundPlayerChannel::unusedVoices;
+//vector<weak_ptr<Voice> > MpcSoundPlayerChannel::voices;
 
 void MpcSoundPlayerChannel::setProgram(int i)
 {
@@ -111,44 +105,55 @@ void MpcSoundPlayerChannel::mpcNoteOn(int track, int note, int velo, int varType
 	np = lProgram->getNoteParameters(note);
 	checkForMutes(np);
 	soundNumber = np->getSndNumber();
-	//if (soundNumber == -1 || unusedVoices.size_approx() == 0 || !unusedVoices.try_dequeue(voice)) {
-	if (soundNumber == -1 || unusedVoices.size() == 0) {
-		return;
+
+	Voice* voice = nullptr;
+	auto lControls = controls.lock();
+	for (auto& v : *lControls->getMms().lock()->getVoices()) {
+		if (v->isFinished() && !v->isProcessing()) {
+			voice = v;
+			break;
+		}
 	}
 
+	//if (soundNumber == -1 || unusedVoices.size_approx() == 0 || !unusedVoices.try_dequeue(voice)) {
+	//if (soundNumber == -1 || unusedVoices.size() == 0) {
+	if (soundNumber == -1 || voice == nullptr) {
+		return;
+	}
+	voice->take();
 	//voices.try_enqueue(voice);
 	//auto lVoice = voice.lock();
 
-	auto voice = unusedVoices.at(0);
-	unusedVoices.erase(unusedVoices.begin() + 0);
-	voices.push_back(voice);
-	auto lVoice = voice.lock();
+	//auto voice = unusedVoices.at(0);
+	//unusedVoices.erase(unusedVoices.begin() + 0);
+	//voices.push_back(voice);
+	//auto lVoice = voice.lock();
 
 	vars = lSampler->getSound(soundNumber);
 	pgmMixerChannel = lProgram->getMixerChannel(padNumber);
 	auto lPmc = pgmMixerChannel.lock();
 	shared_ptr<ctoot::audio::mixer::AudioMixer> lMixer = mixer.lock();
-	auto audioControlsChain = lMixer->getMixerControls()->getStripControls(to_string(lVoice->getStripNumber()));
+	auto audioControlsChain = lMixer->getMixerControls()->getStripControls(to_string(voice->getStripNumber()));
 	auto mainMixControls = dynamic_pointer_cast<ctoot::audio::mixer::MainMixControls>(audioControlsChain->getControls()[4]).get();
 	dynamic_pointer_cast<ctoot::audio::mixer::PanControl>(mainMixControls->getControls()[0])->setValue((lPmc->getPanning()) / 100.0);
 	dynamic_pointer_cast<ctoot::audio::fader::FaderControl>(mainMixControls->getControls()[2])->setValue(lPmc->getLevel());
-	audioControlsChain = lMixer->getMixerControls()->getStripControls(to_string(lVoice->getStripNumber() + 32));
+	audioControlsChain = lMixer->getMixerControls()->getStripControls(to_string(voice->getStripNumber() + 32));
 	mainMixControls = dynamic_pointer_cast<ctoot::audio::mixer::MainMixControls>(audioControlsChain->getControls()[4]).get();
 	if (lPmc->getOutput() > 0) {
 		if (vars.lock()->isMono()) {
 			if (lPmc->getOutput() % 2 == 1) {
 
-				mixerConnections[lVoice->getStripNumber() - 1]->setLeftEnabled(true);
-				mixerConnections[lVoice->getStripNumber() - 1]->setRightEnabled(false);
+				mixerConnections[voice->getStripNumber() - 1]->setLeftEnabled(true);
+				mixerConnections[voice->getStripNumber() - 1]->setRightEnabled(false);
 			}
 			else {
-				mixerConnections[lVoice->getStripNumber() - 1]->setLeftEnabled(false);
-				mixerConnections[lVoice->getStripNumber() - 1]->setRightEnabled(true);
+				mixerConnections[voice->getStripNumber() - 1]->setLeftEnabled(false);
+				mixerConnections[voice->getStripNumber() - 1]->setRightEnabled(true);
 			}
 		}
 		else {
-			mixerConnections[lVoice->getStripNumber() - 1]->setLeftEnabled(true);
-			mixerConnections[lVoice->getStripNumber() - 1]->setRightEnabled(true);
+			mixerConnections[voice->getStripNumber() - 1]->setLeftEnabled(true);
+			mixerConnections[voice->getStripNumber() - 1]->setRightEnabled(true);
 		}
 	}
 
@@ -167,7 +172,7 @@ void MpcSoundPlayerChannel::mpcNoteOn(int track, int note, int velo, int varType
 		}
 	}
 	stopPad(padNumber, 1);
-	lVoice->init(track, velo, padNumber, vars, np, varType, varValue, note, index, frameOffset, true);
+	voice->init(track, velo, padNumber, vars, np, varType, varValue, note, index, frameOffset, true);
 }
 
 void MpcSoundPlayerChannel::checkForMutes(mpc::sampler::NoteParameters* np)
@@ -181,8 +186,8 @@ void MpcSoundPlayerChannel::checkForMutes(mpc::sampler::NoteParameters* np)
 	//}
 	if (np->getMuteAssignA() != 34 || np->getMuteAssignB() != 34) {
 		//for (auto& voice : voicesVec) {
-		for (auto& voice : voices) {
-			auto v = voice.lock();
+		for (auto& v : *controls.lock()->getMms().lock()->getVoices()) {
+			if (v->isFinished() && !v->isProcessing()) continue;
 			if (v->getMuteInfo() == nullptr) {
 				continue;
 			}
@@ -206,8 +211,8 @@ void MpcSoundPlayerChannel::stopPad(int p, int o)
 	//voicesVec.push_back(v);
 	//}
 	//for (auto& voice : voicesVec) {
-	for (auto& voice : voices) {
-		auto v = voice.lock();
+	for (auto& v : *controls.lock()->getMms().lock()->getVoices()) {
+		//auto v = voice.lock();
 		if (v->getPadNumber() == p
 			&& v->getVoiceOverlap() == o
 			&& !v->isDecaying()
@@ -241,8 +246,9 @@ void MpcSoundPlayerChannel::allSoundOff()
 	//voicesVec.push_back(v);
 	//}
 	//for (auto& voice : voicesVec) {
-	for (auto& voice : voices) {
-		voice.lock()->startDecay();
+	for (auto& voice : *controls.lock()->getMms().lock()->getVoices()) {
+		if (voice->isFinished() && !voice->isProcessing()) continue;
+		voice->startDecay();
 	}
 	//for (auto& v : voicesVec)
 	//		voices.try_enqueue(v);
@@ -257,8 +263,9 @@ void MpcSoundPlayerChannel::allSoundOff(int frameOffset)
 	//voicesVec.push_back(v);
 	//}
 	//for (auto& v : voicesVec) {
-	for (auto& v : voices) {
-		v.lock()->startDecay(frameOffset);
+	for (auto& voice : *controls.lock()->getMms().lock()->getVoices()) {
+		if (voice->isFinished() && !voice->isProcessing()) continue;
+		voice->startDecay(frameOffset);
 	}
 	//for (auto& v : voicesVec)
 	//		voices.try_enqueue(v);
@@ -278,22 +285,23 @@ void MpcSoundPlayerChannel::connectVoices()
 	for (auto j = 0; j < 32; j++) {
 		auto ams1 = lMixer->getStrip(to_string(j + 1)).lock();
 		//auto voice = voiceArray[j].lock();
-		auto voice = unusedVoices[j].lock();
-		ams1->setInputProcess(voice.get());
+		//auto voice = unusedVoices[j].lock();
+		auto voice = controls.lock()->getMms().lock()->getVoices()->at(j);
+		ams1->setInputProcess(voice);
 		auto mi = new MpcMixerInterconnection("con" + to_string(j), server);
 		ams1->setDirectOutputProcess(mi->getInputProcess());
 		auto ams2 = lMixer->getStrip(to_string(j + 1 + 32)).lock();
 		ams2->setInputProcess(mi->getOutputProcess());
 		mixerConnections.push_back(mi);
-		voice->setParent(this);
+		//voice->setParent(this);
 	}
 	//for (auto& v : voiceArray) {
 	//		unusedVoices.try_enqueue(v);
 	//	}
 }
 
-void MpcSoundPlayerChannel::kill(weak_ptr<Voice> mpcVoice)
-{
+//void MpcSoundPlayerChannel::kill(weak_ptr<Voice> mpcVoice)
+//{
 	/*
 	unusedVoices.try_enqueue(mpcVoice);
 	vector<weak_ptr<Voice>> newvoices;
@@ -305,13 +313,13 @@ void MpcSoundPlayerChannel::kill(weak_ptr<Voice> mpcVoice)
 	if (v.lock() != mpcVoice.lock()) voices.try_enqueue(v);
 	}
 	*/
-	for (int i = 0; i < voices.size(); i++) {
-		if (voices.at(i).lock() == mpcVoice.lock()) {
-			voices.erase(voices.begin() + i);
-			unusedVoices.push_back(mpcVoice);
-		}
-	}
-}
+	//for (int i = 0; i < voices.size(); i++) {
+	//	if (voices.at(i).lock() == mpcVoice.lock()) {
+			//voices.erase(voices.begin() + i);
+//			unusedVoices.push_back(mpcVoice);
+	//	}
+//	}
+//}
 
 weak_ptr<ctoot::audio::core::MetaInfo> MpcSoundPlayerChannel::getInfo()
 {
@@ -348,8 +356,8 @@ void MpcSoundPlayerChannel::stopPad(int pad, int overlap, int offset)
 	//voicesVec.push_back(v);
 	//}
 	//for (auto& voice : voicesVec) {
-	for (auto& voice : voices) {
-		auto v = voice.lock();
+	for (auto& v : *controls.lock()->getMms().lock()->getVoices()) {
+		//auto v = voice.lock();
 		if (v->getPadNumber() == pad
 			&& v->getVoiceOverlap() == overlap
 			&& !v->isDecaying()

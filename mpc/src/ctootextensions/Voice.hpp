@@ -50,8 +50,6 @@ namespace mpc {
 			static const int MIX_INDEX{ 2 };
 			static const int BANDPASS_INDEX{ 3 };
 
-			std::weak_ptr<Voice> weakThis{};
-
 			std::weak_ptr<mpc::sampler::Sound> oscVars{};
 			int tune{ 0 };
 			float increment{ 0 };
@@ -85,6 +83,7 @@ namespace mpc {
 			mpc::ctootextensions::MpcEnvelopeControls* filterEnvControls{ nullptr };
 			ctoot::synth::modules::filter::StateVariableFilterControls* svfControls{ nullptr };
 			bool finished{ true };
+			bool processing{ false };
 			bool readyToPlay{ false };
 			int stripNumber{ -1 };
 
@@ -92,7 +91,6 @@ namespace mpc {
 			float inverseNyquist{ 2.f / 44100.f };
 
 		private:
-			//float getSample(std::vector<float>* fa, bool advance);
 			void readFrame();
 
 		private:
@@ -138,8 +136,9 @@ namespace mpc {
 			std::vector<float> frame;
 
 		public:
-			void setWeakThis(std::weak_ptr<Voice> weakThis);
-
+			bool isProcessing();
+			bool isFinished();
+			void take();
 			void init(int track, int velocity, int padNumber, std::weak_ptr<mpc::sampler::Sound> oscVars, mpc::sampler::NoteParameters* np, int varType, int varValue, int muteNote, int muteDrum, int frameOffset, bool enableEnvs);
 			std::vector<float> getFrame();
 
@@ -152,10 +151,10 @@ namespace mpc {
 			int getStripNumber();
 			bool isDecaying();
 			mpc::ctootextensions::MuteInfo* getMuteInfo();
-			void setParent(mpc::ctootextensions::MpcSoundPlayerChannel* parent);
 			void startDecay(int offset);
 			void finish();
 
+		public:
 			Voice(int stripNumber, bool basic);
 			~Voice();
 		};

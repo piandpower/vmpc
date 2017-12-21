@@ -72,10 +72,6 @@ const int Voice::BANDPASS_INDEX;
 const int Voice::SVF_OFFSET;
 const int Voice::AMPENV_OFFSET;
 
-void Voice::setWeakThis(weak_ptr<Voice> weakThis) {
-	this->weakThis = weakThis;
-}
-
 void Voice::init(
 	int track,
 	int velocity,
@@ -188,9 +184,9 @@ void Voice::init(
 
 vector<float> Voice::getFrame()
 {
-    if(!readyToPlay || finished) return EMPTY_FRAME;
+    if (!readyToPlay || finished) return EMPTY_FRAME;
 
-    if(frameOffset > 0) {
+    if (frameOffset > 0) {
         frameOffset--;
         return EMPTY_FRAME;
     }
@@ -231,8 +227,8 @@ void Voice::readFrame() {
 		position = start;
 
 	if (position > end - 1 || (staticEnv != nullptr && staticEnv->isComplete()) || (ampEnv != nullptr && ampEnv->isComplete())) {
-		finished = true;
 		tempFrame = EMPTY_FRAME;
+		finished = true;
 		return;
 	}
 	k = (int)(ceil(position));
@@ -268,6 +264,7 @@ int Voice::processAudio(ctoot::audio::core::AudioBuffer* buffer, int nFrames)
 		return AUDIO_OK;
 		// maybe should be AUDIO_SILENCE
 	}
+	processing = true;
 	left = buffer->getChannel(0);
 	right = buffer->getChannel(1);
 	count = nFrames;
@@ -283,11 +280,24 @@ int Voice::processAudio(ctoot::audio::core::AudioBuffer* buffer, int nFrames)
 	}
 	if (finished) {
 		padNumber = -1;
-		if (parent != nullptr) {
-			parent->kill(weakThis);
-		}
+		//if (parent != nullptr) {
+		//	parent->kill(this);
+		//}
 	}
+	processing = false;
 	return AUDIO_OK;
+}
+
+bool Voice::isProcessing() {
+	return processing;
+}
+
+bool Voice::isFinished() {
+	return finished;
+}
+
+void Voice::take() {
+	finished = false;
 }
 
 void Voice::close()
@@ -321,11 +331,6 @@ bool Voice::isDecaying()
 mpc::ctootextensions::MuteInfo* Voice::getMuteInfo()
 {
     return muteInfo;
-}
-
-void Voice::setParent(mpc::ctootextensions::MpcSoundPlayerChannel* parent)
-{
-    this->parent = parent;
 }
 
 void Voice::startDecay(int offset)

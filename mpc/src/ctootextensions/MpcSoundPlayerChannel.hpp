@@ -50,8 +50,8 @@ namespace mpc {
 			//static moodycamel::ConcurrentQueue<std::weak_ptr<mpc::ctootextensions::Voice>> unusedVoices;
 			//static moodycamel::ConcurrentQueue<std::weak_ptr<mpc::ctootextensions::Voice>> voices;
 
-			static std::vector<std::weak_ptr<Voice> > unusedVoices;
-			static std::vector<std::weak_ptr<Voice> > voices;
+			//static std::vector<std::weak_ptr<Voice> > unusedVoices;
+			//static std::vector<std::weak_ptr<Voice> > voices;
 
 			std::weak_ptr<MpcSoundPlayerControls> controls{};
 			std::weak_ptr<mpc::sampler::Sampler> sampler{};
@@ -96,7 +96,7 @@ namespace mpc {
 			void allSoundOff() override;
 			void allSoundOff(int frameOffset);
 			void connectVoices();
-			void kill(std::weak_ptr<mpc::ctootextensions::Voice> mpcVoice);
+			//void kill(std::weak_ptr<mpc::ctootextensions::Voice> mpcVoice);
 			std::weak_ptr<ctoot::audio::core::MetaInfo> getInfo();
 			std::vector<std::weak_ptr<mpc::sampler::MixerChannel>> getMixerChannels();
 			int getDrumNumber();
