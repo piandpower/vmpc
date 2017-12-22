@@ -20,4 +20,5 @@ ipch/*
 gui/*
 
 Icon?
-.DS_Stor* .vs
+.DS_Stor*
+.vs/*
