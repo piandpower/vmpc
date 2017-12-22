@@ -153,9 +153,9 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		selectedEventBarsStepEditor[i]->Hide(true);
 		nonTextComps.push_back(selectedEventBarsStepEditor[i]);
 
-		w = 37;
+		w = 33;
 		h = 5;
-		x = 190;
+		x = 191;
 		y = 13 + (i * 9);
 		rect = MRECT(x, y, x + w, y + h);
 		horizontalBarsTempoChangeEditor[i] = make_shared<HorizontalBar>(rect, 0);
@@ -327,6 +327,12 @@ void LayeredScreen::Draw() {
 
 		for (auto& c : nonTextComps) {
 			if (c.lock()->NeedsClearing()) c.lock()->Clear(&pixels);
+		}
+
+		if (i == 1) {
+			for (auto& hbar : horizontalBarsTempoChangeEditor) {
+				if (hbar->NeedsClearing()) hbar->Clear(&pixels);
+			}
 		}
 
 		if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);

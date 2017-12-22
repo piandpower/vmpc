@@ -655,7 +655,7 @@ void SequencerWindowObserver::displayTempoChange0()
 	tempoStr = moduru::lang::StrUtil::padLeft(tempoStr, " ", 5);
 	tempoStr = Util::replaceDotWithSmallSpaceDot(tempoStr);
 	f0tcField.lock()->setText(tempoStr);
-	hBars[1].lock()->setValue((tempo - 15) * (290 / 925.0));
+	hBars[1].lock()->setValue((tempo - 15) * (290 / 975.0));
 }
 
 void SequencerWindowObserver::displayTempoChange1()
@@ -710,8 +710,7 @@ void SequencerWindowObserver::displayTempoChange1()
 	tempoStr = Util::replaceDotWithSmallSpaceDot(tempoStr);
 	f1tcField.lock()->setText(tempoStr);
 
-	//hBars[2].lock()->setValue(tce->getRatio() * (127 / 4000.0));
-	hBars[2].lock()->setValue((tempo - 15) * (290 / 925.0));
+	hBars[2].lock()->setValue((tempo - 15) * (290 / 975.0));
 }
 
 void SequencerWindowObserver::displayTempoChange2()
@@ -771,8 +770,7 @@ void SequencerWindowObserver::displayTempoChange2()
 	tempoStr = Util::replaceDotWithSmallSpaceDot(tempoStr);
 	f2tcField.lock()->setText(tempoStr);
 
-	//hBars[3].lock()->setValue(tce->getRatio() * (127 / 4000.0));
-	hBars[3].lock()->setValue((tempo - 15) * (290 / 925.0));
+	hBars[3].lock()->setValue((tempo - 15) * (290 / 975.0));
 }
 
 void SequencerWindowObserver::displayDisplayStyle()
