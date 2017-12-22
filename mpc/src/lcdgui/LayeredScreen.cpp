@@ -160,7 +160,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		rect = MRECT(x, y, x + w, y + h);
 		horizontalBarsTempoChangeEditor[i] = make_shared<HorizontalBar>(rect, 0);
 		horizontalBarsTempoChangeEditor[i]->Hide(true);
-		nonTextComps.push_back(horizontalBarsTempoChangeEditor[i]);
+		//nonTextComps.push_back(horizontalBarsTempoChangeEditor[i]);
 
 		w = 50;
 		x = 198;
@@ -333,6 +333,12 @@ void LayeredScreen::Draw() {
 
 		for (auto& c : nonTextComps) {
 			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
+		}
+
+		if (i == 1) {
+			for (auto& hbar : horizontalBarsTempoChangeEditor) {
+				if (hbar->IsDirty() && !hbar->IsHidden()) hbar->Draw(&pixels);
+			}
 		}
 
 		components = layers[i]->getAllLabelsAndFields();

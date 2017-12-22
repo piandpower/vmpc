@@ -722,6 +722,7 @@ void SequencerWindowObserver::displayTempoChange2()
 			a2tcField.lock()->Hide(true);
 		}
 		else {
+			a2tcField.lock()->Hide(false);
 			a2tcField.lock()->setText("END");
 		}
 		b2tcField.lock()->Hide(true);
@@ -848,15 +849,15 @@ void SequencerWindowObserver::update(moduru::observer::Observable* o, boost::any
 	}
 	else if (s.compare("tempochange") == 0) {
 		initVisibleEvents();
-		if (mpc->getLayeredScreen().lock()->getFocus().find("0") != string::npos) {
+		//if (mpc->getLayeredScreen().lock()->getFocus().find("0") != string::npos) {
 			displayTempoChange0();
-		}
-		else if (mpc->getLayeredScreen().lock()->getFocus().find("1") != string::npos) {
+		//}
+		//else if (mpc->getLayeredScreen().lock()->getFocus().find("1") != string::npos) {
 			displayTempoChange1();
-		}
-		else if (mpc->getLayeredScreen().lock()->getFocus().find("2") != string::npos) {
+		//}
+		//else if (mpc->getLayeredScreen().lock()->getFocus().find("2") != string::npos) {
 			displayTempoChange2();
-		}
+		//}
 	}
 	else if (s.compare("offset") == 0 || s.compare("tempochangeadded") == 0 || s.compare("tick") == 0) {
 		if (csn.compare("tempochange") == 0) {
@@ -1038,6 +1039,9 @@ void SequencerWindowObserver::displayTrackNumberNames()
 }
 
 SequencerWindowObserver::~SequencerWindowObserver() {
+	for (auto& t : visibleTempoChangeEvents) {
+		if (t.lock()) t.lock()->deleteObservers();
+	}
 	for (auto& h : hBars) {
 		h.lock()->Hide(true);
 	}
