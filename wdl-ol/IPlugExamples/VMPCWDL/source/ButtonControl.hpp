@@ -69,6 +69,7 @@ private:
 public:
 	bool Draw(IGraphics* pGraphics) override;
 	void OnMouseDown(int x, int y, IMouseMod* pMod) override;
+	void OnMouseUp(int x, int y, IMouseMod* pMod) override;
 
 public:
 	ButtonControl(IPlugBase* pPlug, IRECT rect, std::weak_ptr<mpc::hardware::Button> button);

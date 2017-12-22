@@ -30,7 +30,10 @@ void DataWheelControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod
 
 bool DataWheelControl::Draw(IGraphics* g) {
 	IChannelBlend tmp = IChannelBlend::kBlendNone;
-	g->DrawBitmap(&dataWheels, GetRECT(), 0, dataWheelIndex * 171 * SCALE, &tmp);
+	IRECT cropRect(0, dataWheelIndex * 171, 171, (dataWheelIndex * 171) + 171);
+	auto bm = g->CropBitmap(&dataWheels, &cropRect);
+	bm = g->ScaleBitmap(&bm, floor(171 * gui_scale), floor(171 * gui_scale));
+	g->DrawBitmap(&bm, GetRECT(), 0, 0, &tmp);
 	return true;
 }
 

@@ -6,60 +6,42 @@
 //const float Constants::TFACTOR = .25f;
 const float Constants::TFACTOR = .05f;
 
-IRECT* Constants::UNDERLINE_RECT()
-{
-	return &UNDERLINE_RECT_;
-}
-IRECT Constants::UNDERLINE_RECT_ = IRECT(212, 54, 212 + 194, 54 + 2);
-
 IRECT* Constants::LCD_RECT()
 {
     return &LCD_RECT_;
 }
-IRECT Constants::LCD_RECT_ = IRECT(116 * SCALE, 102 * SCALE, (116 + 496) * SCALE, (102 + 120) * SCALE);
-
-IRECT* Constants::POPUP_RECT()
-{
-    return &POPUP_RECT_;
-}
-IRECT Constants::POPUP_RECT_ = IRECT(182, 136, 182 + (184*2), 136 + 36);
+IRECT Constants::LCD_RECT_ = IRECT(116 * gui_scale, 102 * gui_scale, (116 + 496) * gui_scale, (102 + 120) * gui_scale);
 
 IRECT* Constants::PLUG_RECT()
 {
     return &PLUG_RECT_;
 }
-IRECT Constants::PLUG_RECT_ = IRECT(0, 0, GUI_WIDTH, GUI_HEIGHT);
-
-IRECT* Constants::FB_RECT()
-{
-    return &FB_RECT_;
-}
-IRECT Constants::FB_RECT_ = IRECT(120, 204, 608, 222);
+IRECT Constants::PLUG_RECT_ = IRECT(0, 0, GUI_WIDTH * gui_scale, GUI_HEIGHT * gui_scale);
 
 IRECT* Constants::DATAWHEEL_RECT()
 {
     return &DATAWHEEL_RECT_;
 }
-IRECT Constants::DATAWHEEL_RECT_ = IRECT(378 * SCALE, 415 * SCALE, (378 + 171) * SCALE, (415 + 171) * SCALE);
+IRECT Constants::DATAWHEEL_RECT_ = IRECT(378 * gui_scale, 415 * gui_scale, (378 + 171) * gui_scale, (415 + 171) * gui_scale);
 
 IRECT* Constants::RECKNOB_RECT()
 {
     return &RECKNOB_RECT_;
 }
-IRECT Constants::RECKNOB_RECT_ = IRECT(1014 * SCALE, 183 * SCALE, (1014 + 72) * SCALE, (183 + 73) * SCALE);
+IRECT Constants::RECKNOB_RECT_ = IRECT(1014 * gui_scale, 183 * gui_scale, (1014 + 72) * gui_scale, (183 + 73) * gui_scale);
 
 IRECT* Constants::VOLKNOB_RECT()
 {
     return &VOLKNOB_RECT_;
 }
-IRECT Constants::VOLKNOB_RECT_ = IRECT(1137 * SCALE, 181 * SCALE, (1137 + 74) * SCALE, (181 + 75) * SCALE);
+IRECT Constants::VOLKNOB_RECT_ = IRECT(1137 * gui_scale, 181 * gui_scale, (1137 + 74) * gui_scale, (181 + 75) * gui_scale);
 
 IRECT* Constants::SLIDER_RECT()
 {
     return &SLIDER_RECT_;
 
 }
-IRECT Constants::SLIDER_RECT_ = IRECT(33 * SCALE, 668 * SCALE, (33 + 128) * SCALE, (668 + 247) * SCALE);
+IRECT Constants::SLIDER_RECT_ = IRECT(33 * gui_scale, 668 * gui_scale, (33 + 128) * gui_scale, (668 + 247) * gui_scale);
 
 IColor* Constants::TRANS_BLACK() {
     return &TRANS_BLACK_;
@@ -83,25 +65,3 @@ IColor* Constants::LCD_OFF()
 	return &LCD_OFF_;
 }
 IColor Constants::LCD_OFF_ = IColor(255, 170, 248, 218);
-
-IText* Constants::FONT_ON()
-{
-	return &FONT_ON_;
-}
-IText Constants::FONT_ON_ = IText(FONTSIZE, LCD_ON()
-                                  , (char*)("mpc2000xl")
-                                  , IText::kStyleNormal
-                                  , IText::kAlignNear, 0
-                                  , IText::kQualityNonAntiAliased
-                                  , TRANS_BLACK(), LCD_ON());
-
-IText* Constants::FONT_OFF()
-{
-	return &FONT_OFF_;
-}
-IText Constants::FONT_OFF_ = IText(FONTSIZE, LCD_OFF()
-                                   , (char*)("mpc2000xl")
-                                   , IText::kStyleNormal
-                                   , IText::kAlignNear, 0
-                                   , IText::kQualityNonAntiAliased
-                                   , TRANS_BLACK(), LCD_OFF());
