@@ -242,7 +242,7 @@ void SequencerControls::openWindow()
 		ls.lock()->openScreen("countmetronome");
 	}
 	else if (param.compare("loop") == 0) {
-		ls.lock()->openScreen("LoopBarsControls");
+		ls.lock()->openScreen("loopbarswindow");
 	}
 	else if (param.compare("tr") == 0) {
 		ls.lock()->openScreen("track");

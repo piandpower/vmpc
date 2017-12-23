@@ -164,7 +164,7 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["timedisplay"] = new sequencer::window::TimeDisplayControls(mpc);
 	controls["tempochange"] = new sequencer::window::TempoChangeControls(mpc);
 	controls["timingcorrect"] = new sequencer::window::TimingCorrectControls(mpc);
-	controls["LoopBarsControls"] = new sequencer::window::LoopBarsControls(mpc);
+	controls["loopbarswindow"] = new sequencer::window::LoopBarsControls(mpc);
 	controls["editvelocity"] = new sequencer::window::EditVelocityControls(mpc);
 	controls["midioutput"] = new sequencer::window::MidiOutputControls(mpc);
 	controls["midiinput"] = new sequencer::window::MidiInputControls(mpc);
