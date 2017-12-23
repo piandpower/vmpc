@@ -520,7 +520,9 @@ void SequencerWindowObserver::displayNewTsig()
 	if (csn.compare("deletesequence") == 0) {
 		return;
 	}
-	newTsigField.lock()->setText(to_string(newTimeSignature->getNumerator())  + "/" + to_string(newTimeSignature->getDenominator()));
+	auto result = to_string(newTimeSignature->getNumerator()) + "/" + to_string(newTimeSignature->getDenominator());
+	newTsigField.lock()->setText(mpc::Util::distributeTimeSig(result));
+	//newTsigField.lock()->setText(result);
 }
 
 void SequencerWindowObserver::displayNoteValue()
