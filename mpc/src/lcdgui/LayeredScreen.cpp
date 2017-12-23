@@ -139,7 +139,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 
 	underline = make_shared<mpc::lcdgui::Underline>();
 	envGraph = make_shared<mpc::lcdgui::EnvGraph>(mpc);
-	nonTextComps.push_back(envGraph);
+	//nonTextComps.push_back(envGraph);
 
 	int x, y, w, h;
 	MRECT rect;
@@ -318,6 +318,7 @@ std::vector<std::vector<bool> >* LayeredScreen::getPixels() {
 }
 
 void LayeredScreen::Draw() {
+
 	for (int i = 0; i <= currentLayer; i++) {
 
 		auto components = layers[i]->getComponentsThatNeedClearing();
@@ -325,9 +326,12 @@ void LayeredScreen::Draw() {
 			c.lock()->Clear(&pixels);
 		}
 
+		if (envGraph->NeedsClearing()) envGraph->Clear(&pixels);
+
 		for (auto& c : nonTextComps) {
 			if (c.lock()->NeedsClearing()) c.lock()->Clear(&pixels);
 		}
+
 
 		if (i == 1) {
 			for (auto& hbar : horizontalBarsTempoChangeEditor) {
@@ -337,9 +341,12 @@ void LayeredScreen::Draw() {
 
 		if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
 
+		if (i == currentLayer && envGraph->IsDirty() && !envGraph->IsHidden()) envGraph->Draw(&pixels);
+
 		for (auto& c : nonTextComps) {
 			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
 		}
+
 
 		if (i == 1) {
 			for (auto& hbar : horizontalBarsTempoChangeEditor) {

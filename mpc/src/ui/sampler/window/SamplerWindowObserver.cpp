@@ -2,6 +2,7 @@
 
 #include <Mpc.hpp>
 #include <lcdgui/Field.hpp>
+#include <lcdgui/EnvGraph.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <ui/sampler/window/SamplerWindowGui.hpp>
 #include <sampler/MixerChannel.hpp>
@@ -130,6 +131,7 @@ SamplerWindowObserver::SamplerWindowObserver(mpc::Mpc* mpc)
 		displayVelo();
 	}
 	else if (csn.compare("veloenvfilter") == 0) {
+		ls->getEnvGraph().lock()->Hide(false);
 		noteField = ls->lookupField("note");
 		attackField = ls->lookupField("attack");
 		decayField = ls->lookupField("decay");
@@ -577,6 +579,7 @@ void SamplerWindowObserver::displayMidiProgramChange()
 }
 
 SamplerWindowObserver::~SamplerWindowObserver() {
+	mpc->getLayeredScreen().lock()->getEnvGraph().lock()->Hide(true);
 	samplerGui->deleteObserver(this);
 	swGui->deleteObserver(this);
 	sampler.lock()->getLastNp(program.lock().get())->deleteObserver(this);
