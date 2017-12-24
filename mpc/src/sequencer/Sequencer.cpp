@@ -117,8 +117,8 @@ void Sequencer::setTempo(BCMath i)
 {
 	if (i.toDouble() < 30.0 || i.toDouble() > 300.0) return;
 	auto s = getActiveSequence().lock();
-	auto tce = getCurrentTempoChangeEvent().lock();
-	if (tempoSourceSequence) {
+	if (s && s->isUsed() && tempoSourceSequence) {
+		auto tce = getCurrentTempoChangeEvent().lock();
 		if (tce->getTick() == 0) {
 			s->setInitialTempo(i);
 		}

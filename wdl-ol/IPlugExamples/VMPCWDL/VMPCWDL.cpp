@@ -40,7 +40,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 {   
 	mpc = new mpc::Mpc();
 	mpc->init("rtaudio");
-
+	MLOG("mpc initialized");
 	TRACE;
 
 	IGraphics* pGraphics = MakeGraphics(this, GUI_WIDTH * gui_scale, GUI_HEIGHT * gui_scale);
@@ -165,8 +165,6 @@ void VMPCWDL::Reset()
 
   mSampleRate = GetSampleRate();
   mMidiQueue.Resize(GetBlockSize());
-  const double tempo = GetTempo();
-  //mpc->getSequencer().lock()->setTempo(BCMath(tempo));
 }
 
 void VMPCWDL::OnParamChange(int paramIdx)
