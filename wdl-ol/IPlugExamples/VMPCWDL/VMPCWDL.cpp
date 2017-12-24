@@ -180,8 +180,9 @@ void VMPCWDL::ProcessMidiMsg(IMidiMsg* pMsg)
         //mNumHeldKeys -= 1;
       }
       break;
-    default:
-      return; // if !note message, nothing gets added to the queue
+	default:
+		MLOG("Midi msg status: " + std::to_string(status));
+		return; // if !note message, nothing gets added to the queue
   }
   
 
