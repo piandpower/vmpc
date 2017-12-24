@@ -21,4 +21,7 @@ gui/*
 
 Icon?
 .DS_Stor*
-.vs/* *.APS
+
+.vs/*
+
+*.APS
