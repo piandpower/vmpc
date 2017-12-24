@@ -115,6 +115,7 @@ bool Sequencer::endOfSong = false;
 
 void Sequencer::setTempo(BCMath i)
 {
+	MLOG("Trying to set tempo to " + i.toString());
 	if (i.toDouble() < 30.0 || i.toDouble() > 300.0) return;
 	auto s = getActiveSequence().lock();
 	if (s && s->isUsed() && tempoSourceSequence) {
@@ -129,7 +130,9 @@ void Sequencer::setTempo(BCMath i)
 		}
 	}
 	else {
-		tempo = i;
+		auto tempoStr = to_string(i.toDouble());
+		auto length = (int)(tempoStr.find(".")) + 2;
+		tempo = BCMath(tempoStr.substr(0, length));
 	}
 	setChanged();
 	notifyObservers(string("tempo"));

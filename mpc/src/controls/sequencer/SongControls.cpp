@@ -46,6 +46,9 @@ void SongControls::left() {
 	else if (param.compare("reps1") == 0) {
 		ls.lock()->setFocus("sequence1");
 	}
+	else if (param.compare("step1") == 0) {
+		ls.lock()->setFocus("loop");
+	}
 	else {
 		super::left();
 	}
@@ -59,6 +62,9 @@ void SongControls::right() {
 	}
 	else if (param.compare("step1") == 0) {
 		ls.lock()->setFocus("sequence1");
+	}
+	else if (param.compare("loop") == 0) {
+		ls.lock()->setFocus("step1");
 	}
 	else {
 		super::right();
