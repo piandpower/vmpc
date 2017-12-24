@@ -142,6 +142,7 @@ void FrameSeq::work(int nFrames) {
 				}
 				else if (seq->isLoopEnabled()) {
 					if (getTickPosition() >= seq->getLoopEnd() - 1) {
+						lSequencer->playToTick(getTickPosition());
 						move(seq->getLoopStart());
 						if (lSequencer->isRecordingOrOverdubbing()) {
 							if (lSequencer->isRecording()) {
@@ -156,6 +157,7 @@ void FrameSeq::work(int nFrames) {
 								seq->getTrack(lSequencer->getActiveTrackIndex()).lock()->removeDoubles();
 							}
 						}
+						continue;
 					}
 				}
 				else {

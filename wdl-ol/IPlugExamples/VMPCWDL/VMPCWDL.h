@@ -47,8 +47,10 @@ private:
 	LCDControl* mLCDControl;
 	InputCatcherControl* mInputCatcher;
 
+	bool m_WasPlaying = false;
 	IMidiQueue mMidiQueue;
 	double mSampleRate;
+	double m_Tempo = 120.0;
 };
 
 #endif //__VMPCWDL__

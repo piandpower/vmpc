@@ -13,19 +13,23 @@
 #include "source/SliderControl.hpp"
 #include "source/ButtonControl.hpp"
 
+// mpc
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/Sequence.hpp>
 
-#include <midi/core/ShortMessage.hpp>
+#include <ui/midisync/MidiSyncGui.hpp>
+
 #include <audiomidi/MpcMidiInput.hpp>
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audio/server/RtAudioServer.hpp>
 #include <hardware/Hardware.hpp>
 #include <hardware/DataWheel.hpp>
-#include <lcdgui/LayeredScreen.hpp>
 #include <hardware/Led.hpp>
 #include <hardware/Pot.hpp>
 #include <hardware/HwSlider.hpp>
+
+// ctoot
+#include <midi/core/ShortMessage.hpp>
 
 const int kNumPrograms = 8;
 const int kNumParams = 1;
@@ -125,6 +129,31 @@ void VMPCWDL::NoteOnOff(IMidiMsg* pMsg)
 
 void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames)
 {
+	auto msGui = mpc->getUis().lock()->getMidiSyncGui();
+	bool syncEnabled = msGui->getModeIn() == 1;
+	
+	if (syncEnabled) {
+		const double tempo = GetTempo();
+		if (tempo != m_Tempo) {
+			mpc->getSequencer().lock()->setTempo(BCMath(tempo));
+			m_Tempo = tempo;
+		}
+
+		ITimeInfo ti;
+		GetTime(&ti);
+
+		bool isPlaying = ti.mTransportIsRunning;
+
+		if (!m_WasPlaying && isPlaying)
+		{
+			mpc->getSequencer().lock()->playFromStart();
+		}
+		if (m_WasPlaying && !isPlaying) {
+			mpc->getSequencer().lock()->stop();
+		}
+		m_WasPlaying = isPlaying;
+	}
+
 	auto server = mpc->getAudioMidiServices().lock()->getRtAudioServer();
 	server->work(inputs, outputs, nFrames);
 }
@@ -136,6 +165,8 @@ void VMPCWDL::Reset()
 
   mSampleRate = GetSampleRate();
   mMidiQueue.Resize(GetBlockSize());
+  const double tempo = GetTempo();
+  //mpc->getSequencer().lock()->setTempo(BCMath(tempo));
 }
 
 void VMPCWDL::OnParamChange(int paramIdx)
@@ -181,7 +212,6 @@ void VMPCWDL::ProcessMidiMsg(IMidiMsg* pMsg)
       }
       break;
 	default:
-		MLOG("Midi msg status: " + std::to_string(status));
 		return; // if !note message, nothing gets added to the queue
   }
   
