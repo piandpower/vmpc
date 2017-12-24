@@ -142,7 +142,7 @@ void FrameSeq::work(int nFrames) {
 				else if (seq->isLoopEnabled()) {
 					if (getTickPosition() >= seq->getLoopEnd() - 1) {
 						lSequencer->playToTick(getTickPosition());
-						move(seq->getLoopStart());
+						move(seq->getLoopStart());	
 						if (lSequencer->isRecordingOrOverdubbing()) {
 							if (lSequencer->isRecording()) {
 								lSequencer->switchRecordToOverDub();
@@ -193,8 +193,8 @@ int FrameSeq::getTickPosition() {
 }
 
 void FrameSeq::move(int newTickPos) {
-	clock.setTick(newTickPos);
 	sequencer.lock()->move(newTickPos);
+	clock.setTick(newTickPos);
 }
 
 void FrameSeq::repeatPad(int tick) {
@@ -202,8 +202,6 @@ void FrameSeq::repeatPad(int tick) {
 	if (!controls) return;
 	auto pp = controls->getPressedPads();
 	for (auto& i : *pp) {
-		MLOG("trying to repeatPad number " + to_string(i));
-		MLOG("with velo " + to_string((*controls->getPressedPadVelos())[i]));
 		mpc->getActiveControls()->pad(i, (*controls->getPressedPadVelos())[i], true, tick);
 	}
 }
