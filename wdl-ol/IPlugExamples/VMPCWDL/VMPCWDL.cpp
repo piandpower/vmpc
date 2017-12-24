@@ -134,7 +134,7 @@ void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFra
 	
 	if (syncEnabled) {
 		const double tempo = GetTempo();
-		if (tempo != m_Tempo) {
+		if (tempo != m_Tempo || mpc->getSequencer().lock()->getTempo().toDouble() != tempo) {
 			mpc->getSequencer().lock()->setTempo(BCMath(tempo));
 			m_Tempo = tempo;
 		}
