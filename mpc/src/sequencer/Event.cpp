@@ -38,7 +38,7 @@ void Event::CopyValuesTo(weak_ptr<Event> dest) {
 	lDest->setTrack(getTrack());
 }
 
-ctoot::midi::core::MidiMessage* Event::getShortMessage()
+ctoot::midi::core::ShortMessage* Event::getShortMessage()
 {
 	return shortMessage;
 }

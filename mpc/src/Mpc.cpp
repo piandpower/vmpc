@@ -26,8 +26,6 @@
 #include <ctootextensions/MpcMultiMidiSynth.hpp>
 #include <ctootextensions/MpcSoundPlayerChannel.hpp>
 
-#include <midi/core/MidiInput.hpp>
-#include <midi/core/MidiPort.hpp>
 #include <midi/core/MidiTransport.hpp>
 #include <synth/SynthChannel.hpp>
 

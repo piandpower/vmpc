@@ -19,6 +19,7 @@
 
 #include <ui/midisync/MidiSyncGui.hpp>
 
+#include <audiomidi/MpcMidiPorts.hpp>
 #include <audiomidi/MpcMidiInput.hpp>
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audio/server/RtAudioServer.hpp>
@@ -88,7 +89,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	}
 
 	auto sliders = pGraphics->LoadIBitmap(SLIDER_ID, SLIDER_FN);
-	auto sc = new SliderControl(this, sliders, mpc->getHardware().lock()->getSlider(), 0);
+	auto sc = new SliderControl(this, sliders, mpc->getHardware().lock()->getSlider(), 0, mInputCatcher);
 	pGraphics->AttachControl(sc);
 
 	ButtonControl::initRects();
@@ -110,25 +111,30 @@ VMPCWDL::~VMPCWDL()
 	delete mpc;
 }
 
-void VMPCWDL::NoteOnOff(IMidiMsg* pMsg)
-{
-  int v;
-
-  int status = pMsg->StatusMsg();
-  int velocity = pMsg->Velocity();
-  int note = pMsg->NoteNumber();
-
-  if (status == IMidiMsg::kNoteOn && velocity) // Note on
-  {
-
-  }
-  else  // Note off
-  {
-  }
-}
-
 void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames)
 {
+	auto midiOutMsgQueues = mpc->getMidiPorts().lock()->getReceivers();
+
+	for (auto& queue : *midiOutMsgQueues) {
+		for (auto msg : queue) {
+			auto velo = msg.getData2();
+			if (velo == 0) continue;
+			IMidiMsg imsg;
+			imsg.MakeNoteOnMsg(msg.getData1(), velo, 0, msg.getChannel());
+			imsg.mStatus = msg.getStatus();
+			SendMidiMsg(&imsg);
+		}
+		for (auto msg : queue) {
+			auto velo = msg.getData2();
+			if (velo != 0) continue;
+			IMidiMsg imsg;
+			imsg.MakeNoteOffMsg(msg.getData1(), 0, msg.getChannel());
+			imsg.mStatus = msg.getStatus();
+			SendMidiMsg(&imsg);
+		}
+		queue.clear();
+	}
+
 	auto msGui = mpc->getUis().lock()->getMidiSyncGui();
 	bool syncEnabled = msGui->getModeIn() == 1;
 	
@@ -164,7 +170,6 @@ void VMPCWDL::Reset()
   IMutexLock lock(this);
 
   mSampleRate = GetSampleRate();
-  mMidiQueue.Resize(GetBlockSize());
 }
 
 void VMPCWDL::OnParamChange(int paramIdx)
@@ -187,35 +192,24 @@ void VMPCWDL::ProcessMidiMsg(IMidiMsg* pMsg)
   {
     case IMidiMsg::kNoteOn:
     case IMidiMsg::kNoteOff:
-      // filter only note messages
       if (status == IMidiMsg::kNoteOn && velocity)
       {
-		  //MLOG("WDL Note on, velo " + std::to_string(velocity));
 		  auto tootMsg = ctoot::midi::core::ShortMessage();
 		  auto data = std::vector<char>{ (char)ctoot::midi::core::ShortMessage::NOTE_ON, (char)(pMsg->mData1), (char)(velocity) };
 		  tootMsg.setMessage(data, 3);
 		 mpc->getMpcMidiInput(0)->transport(&tootMsg, 0);
-        //mKeyStatus[pMsg->NoteNumber()] = true;
-        //mNumHeldKeys += 1;
       }
       else
       {
-		  //MLOG("WDL Note off");
 		  auto tootMsg = ctoot::midi::core::ShortMessage();
 		  auto data = std::vector<char>{ (char)ctoot::midi::core::ShortMessage::NOTE_OFF, (char)(pMsg->mData1), (char)(velocity) };
 		  tootMsg.setMessage(data, 3);
 		 mpc->getMpcMidiInput(0)->transport(&tootMsg, 0);
-		  //mKeyStatus[pMsg->NoteNumber()] = false;
-        //mNumHeldKeys -= 1;
       }
       break;
 	default:
-		return; // if !note message, nothing gets added to the queue
+		return;
   }
-  
-
-  //mKeyboard->SetDirty();
-  mMidiQueue.Add(pMsg);
 }
 
 //Called by the standalone wrapper if someone clicks about

@@ -2,8 +2,9 @@
 
 #include <sequencer/Event.hpp>
 #include <sequencer/NoteEvent.hpp>
-//#include <midi/core/InvalidMidiDataException.hpp>
 #include <midi/core/ShortMessage.hpp>
+
+#include <Mpc.hpp>
 
 using namespace mpc::sequencer;
 using namespace std;
@@ -30,7 +31,7 @@ void MidiAdapter::convert(NoteEvent* event, int channel, int newVelo)
 	message->setMessage(messageType, channel, event->getNote(), newVelo == -1 ? event->getVelocity() : newVelo);
 }
 
-std::weak_ptr<ctoot::midi::core::MidiMessage> MidiAdapter::get()
+std::weak_ptr<ctoot::midi::core::ShortMessage> MidiAdapter::get()
 {
 	return message;
 }

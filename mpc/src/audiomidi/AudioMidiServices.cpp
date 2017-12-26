@@ -137,7 +137,7 @@ void AudioMidiServices::start(std::string mode) {
 		}
 	}
 	connectVoices();
-	mpcMidiPorts = make_shared<MpcMidiPorts>(midiSystem, mpc);
+	mpcMidiPorts = make_shared<MpcMidiPorts>(mpc);
 	mpcMidiPorts->setMidiIn1(-1);
 	mpcMidiPorts->setMidiIn2(-1);
 	mpcMidiPorts->setMidiOutA(-1);

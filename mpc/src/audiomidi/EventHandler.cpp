@@ -113,6 +113,7 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 			if (ne->getDuration() != -1) {
 				if (!(lSequencer->isSoloEnabled() && track->getTrackIndex() != lSequencer->getActiveTrackIndex())) {
 					auto newVelo = static_cast<int>(ne->getVelocity() * (track->getVelocityRatio() / 100.0));
+					mpc::sequencer::MidiAdapter midiAdapter;
 					midiAdapter.process(ne, drum, newVelo);
 					auto eventFrame = mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->getEventFrameOffset(event->getTick());
 					mpc->getMms()->mpcTransport(track->getTrackIndex(), midiAdapter.get().lock().get(), 0, ne->getVariationTypeNumber(), ne->getVariationValue(), eventFrame);
@@ -143,26 +144,30 @@ void EventHandler::midiOut(weak_ptr<mpc::sequencer::Event> e, mpc::sequencer::Tr
 		if (transGui->getTr() == -1 || transGui->getTr() == ne->getTrack()) {
 			ne->setNote(ne->getNote() + transGui->getAmount());
 		}
-		auto msg = event->getShortMessage();
+				
 		auto deviceNumber = track->getDevice() - 1;
-		if (deviceNumber != -1 && deviceNumber < 32) {
-			auto channel = deviceNumber;
-			if (channel > 15) channel -= 16;
-
-			midiAdapter.process(event, channel, -1);
-			msg = midiAdapter.get().lock().get();
-		}
+		if (deviceNumber < 0) return;
+		auto channel = deviceNumber;
+		if (channel > 15) channel -= 16;
+		mpc::sequencer::MidiAdapter midiAdapter;
+		midiAdapter.process(event, channel, -1);
+		ctoot::midi::core::ShortMessage msg = *midiAdapter.get().lock().get();
+		
 		auto mpcMidiPorts = mpc->getMidiPorts().lock();
-		ctoot::midi::core::MidiInput* r = nullptr;
-		r = (midiGui->getOutAReceiverIndex() == -1 || mpcMidiPorts->getReceivers().size() == 0) ? nullptr : mpcMidiPorts->getReceivers()[midiGui->getOutAReceiverIndex()];
+		vector<ctoot::midi::core::ShortMessage>* r;
+		//r = (midiGui->getOutAReceiverIndex() == -1 || mpcMidiPorts->getReceivers()->size() == 0) ? nullptr : &mpcMidiPorts->getReceivers()->at(midiGui->getOutAReceiverIndex());
+		r = &mpcMidiPorts->getReceivers()->at(0);
 		auto notifyLetter = "a";
 		if (deviceNumber > 15) {
 			deviceNumber -= 16;
-			r = midiGui->getOutBReceiverIndex() == -1 ? nullptr : mpcMidiPorts->getReceivers()[midiGui->getOutBReceiverIndex()];
+			r = midiGui->getOutBReceiverIndex() == -1 ? nullptr : &mpcMidiPorts->getReceivers()->at(midiGui->getOutBReceiverIndex());
 			notifyLetter = "b";
 		}
-		if (!(mpc->getAudioMidiServices().lock()->isBouncing() && mpc->getUis().lock()->getD2DRecorderGui()->isOffline()) && r != nullptr && track->getDevice() != 0 && msg != nullptr) {
-			r->transport(msg, -1);
+		if (!(mpc->getAudioMidiServices().lock()->isBouncing() && mpc->getUis().lock()->getD2DRecorderGui()->isOffline()) && r != nullptr && track->getDevice() != 0) {
+			//r->transport(msg, -1);
+			if (r != nullptr) {
+				r->push_back(msg);
+			}
 		}
 
 		if (mpc->getLayeredScreen().lock()->getCurrentScreenName().compare("midioutputmonitor") == 0) {

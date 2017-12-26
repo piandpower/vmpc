@@ -6,9 +6,6 @@
 namespace ctoot {
 	namespace midi {
 		namespace core {
-			struct ConnectedMidiSystem;
-			struct MidiInput;
-			struct MidiOutput;
 			class ShortMessage;
 		}
 	}
@@ -21,18 +18,20 @@ namespace mpc {
 		{
 
 		private:
-			std::vector<ctoot::midi::core::MidiInput*> midiInputs{};
-			std::vector<ctoot::midi::core::MidiOutput*> midiOutputs{};
-			ctoot::midi::core::MidiOutput* midiIn1{ nullptr };
-			ctoot::midi::core::MidiOutput* midiIn2{ nullptr };
-			ctoot::midi::core::MidiInput* midiOutA{ nullptr };
-			ctoot::midi::core::MidiInput* midiOutB{ nullptr };
-			ctoot::midi::core::MidiInput* mmsInput{ nullptr };
+			std::vector<std::vector<ctoot::midi::core::ShortMessage>> receivers;
+			//std::vector<ctoot::midi::core::MidiInput*> midiInputs{};
+			//std::vector<ctoot::midi::core::MidiOutput*> midiOutputs{};
+			//ctoot::midi::core::MidiOutput* midiIn1{ nullptr };
+			//ctoot::midi::core::MidiOutput* midiIn2{ nullptr };
+			//ctoot::midi::core::MidiInput* midiOutA{ nullptr };
+			//ctoot::midi::core::MidiInput* midiOutB{ nullptr };
+			//ctoot::midi::core::MidiInput* mmsInput{ nullptr };
 			Mpc* mpc{ nullptr };
 
 		public:
-			std::vector<ctoot::midi::core::MidiOutput*> getTransmitters();
-			std::vector<ctoot::midi::core::MidiInput*> getReceivers();
+			//std::vector<ctoot::midi::core::MidiOutput*> getTransmitters();
+			//std::vector<ctoot::midi::core::MidiInput*> getReceivers();
+			std::vector<std::vector<ctoot::midi::core::ShortMessage>>* getReceivers();
 			void setMidiIn1(int i);
 			void setMidiIn2(int i);
 			void setMidiOutA(int i);
@@ -49,7 +48,8 @@ namespace mpc {
 			void transmitA(ctoot::midi::core::ShortMessage* msg);
 			void transmitB(ctoot::midi::core::ShortMessage* msg);
 
-			MpcMidiPorts(std::shared_ptr<ctoot::midi::core::ConnectedMidiSystem> cms, Mpc* mpc);
+		public:
+			MpcMidiPorts(Mpc* mpc);
 			~MpcMidiPorts();
 		};
 

@@ -1,6 +1,8 @@
 #pragma once
 #include <IControl.h>
 
+#include "InputCatcherControl.hpp"
+
 #include <memory>
 
 namespace mpc {
@@ -15,6 +17,7 @@ class SliderControl
 	{
 
 private:
+	InputCatcherControl* ipc;
 	IBitmap sliders{};
 	std::weak_ptr<mpc::hardware::Slider> slider;
 	int sliderIndex{ 0 };
@@ -22,15 +25,11 @@ private:
 public:
 	bool Draw(IGraphics* pGraphics) override;
 	void OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod) override;
-
-	/*
-	* Implement Observer
-	*/
-	public:
-		//void update(moduru::observer::Observable* o, boost::any arg) override;
+	bool OnKeyDown(int x, int y, int key) override;
+	bool OnKeyUp(int x, int y, int key) override;
 
 public:
-	SliderControl(IPlugBase* pPlug, IBitmap sliders, std::weak_ptr<mpc::hardware::Slider> slider, int startIndex);
+	SliderControl(IPlugBase* pPlug, IBitmap sliders, std::weak_ptr<mpc::hardware::Slider> slider, int startIndex, InputCatcherControl* ipc);
 	~SliderControl();
 
 };

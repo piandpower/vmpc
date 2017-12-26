@@ -30,7 +30,7 @@ namespace mpc {
 			void convert(NoteEvent* event, int channel, int newVelo);
 
 		public:
-			std::weak_ptr<ctoot::midi::core::MidiMessage> get();
+			std::weak_ptr<ctoot::midi::core::ShortMessage> get();
 
 			MidiAdapter();
 			~MidiAdapter();

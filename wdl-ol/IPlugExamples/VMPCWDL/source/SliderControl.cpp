@@ -16,14 +16,24 @@ static inline void clampIndex(int& sliderIndex) {
 	}
 }
 
-SliderControl::SliderControl(IPlugBase* pPlug, IBitmap sliders, std::weak_ptr<mpc::hardware::Slider> slider, int startIndex)
+SliderControl::SliderControl(IPlugBase* pPlug, IBitmap sliders, std::weak_ptr<mpc::hardware::Slider> slider, int startIndex, InputCatcherControl* ipc)
 	: IPanelControl(pPlug, *Constants::SLIDER_RECT(), Constants::LCD_OFF())
 {
-	sliderIndex = startIndex;
 	this->sliders = sliders;
 	this->slider = slider;
+	this->ipc = ipc;
+	sliderIndex = startIndex;
 	sliderIndex = slider.lock()->getValue() / 1.27;
 	clampIndex(sliderIndex);
+}
+
+bool SliderControl::OnKeyDown(int x, int y, int c) {
+	return ipc->OnKeyDown(x, y, c);
+}
+
+
+bool SliderControl::OnKeyUp(int x, int y, int c) {
+	return ipc->OnKeyUp(x, y, c);
 }
 
 void SliderControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod) {

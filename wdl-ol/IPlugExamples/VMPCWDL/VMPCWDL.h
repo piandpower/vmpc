@@ -2,7 +2,6 @@
 #define __VMPCWDL__
 
 #include "IPlug_include_in_plug_hdr.h"
-#include "IMidiQueue.h"
 #include "VMPCWDLDSP.h"
 
 #include <Mpc.hpp>
@@ -34,7 +33,6 @@ public:
 	bool HostRequestingAboutBox();
 
 	void ProcessMidiMsg(IMidiMsg* pMsg);
-	void NoteOnOff(IMidiMsg* pMsg);
 
 private:
 	mpc::Mpc* mpc = nullptr;
@@ -48,7 +46,6 @@ private:
 	InputCatcherControl* mInputCatcher;
 
 	bool m_WasPlaying = false;
-	IMidiQueue mMidiQueue;
 	double mSampleRate;
 	double m_Tempo = 120.0;
 };

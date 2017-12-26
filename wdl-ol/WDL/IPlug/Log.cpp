@@ -7,7 +7,7 @@
 #define TRACETOSTDOUT
 
 #ifdef OS_WIN
-#define LOGFILE "C:\\IPlugLog.txt" // TODO: what if no write permissions?
+#define LOGFILE "C:\\temp\IPlugLog.txt" // TODO: what if no write permissions?
 
 void DBGMSG(const char *format, ...)
 {

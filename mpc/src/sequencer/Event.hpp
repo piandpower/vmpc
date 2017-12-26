@@ -4,7 +4,7 @@
 namespace ctoot {
 	namespace midi {
 		namespace core {
-			class MidiMessage;
+			class ShortMessage;
 		}
 	}
 }
@@ -22,14 +22,14 @@ namespace mpc {
 			int track{ 0 };
 
 		private:
-			ctoot::midi::core::MidiMessage* shortMessage{ nullptr };
+			ctoot::midi::core::ShortMessage* shortMessage{ nullptr };
 
 		public:
 			void setTick(int relativeTick);
 			int getTick();
 			int getTrack();
 			void setTrack(int i);
-			virtual ctoot::midi::core::MidiMessage* getShortMessage();
+			virtual ctoot::midi::core::ShortMessage* getShortMessage();
 
 			virtual void CopyValuesTo(std::weak_ptr<Event> dest);
 

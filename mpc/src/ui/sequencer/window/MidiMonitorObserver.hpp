@@ -22,7 +22,6 @@ namespace mpc {
 
 				private:
 					mpc::Mpc* mpc;
-//					::javax::swing::Timer* blinkTimer{};
 					std::weak_ptr<mpc::lcdgui::Label> a0{};
 					std::weak_ptr<mpc::lcdgui::Label> a1{};
 					std::weak_ptr<mpc::lcdgui::Label> a2{};
@@ -56,10 +55,14 @@ namespace mpc {
 					std::weak_ptr<mpc::lcdgui::Label> b14{};
 					std::weak_ptr<mpc::lcdgui::Label> b15{};
 
+					void runBlinkThread(std::weak_ptr<mpc::lcdgui::Label> label);
+					static void static_blink(void * args, std::weak_ptr<mpc::lcdgui::Label> label);
+
 				public:
 					void initTimer(std::weak_ptr<mpc::lcdgui::Label> label);
 					void update(moduru::observer::Observable* o, boost::any arg) override;
 
+				public:
 					MidiMonitorObserver(mpc::Mpc* mpc);
 					~MidiMonitorObserver();
 

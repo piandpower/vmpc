@@ -10,10 +10,6 @@
 
 namespace mpc {
 
-	namespace sequencer {
-		class MidiAdapter;
-	}
-
 	namespace ui {
 		namespace sequencer {
 			namespace window {
@@ -42,7 +38,7 @@ namespace mpc {
 			mpc::ui::midisync::MidiSyncGui* msGui{ nullptr };
 			ui::vmpc::MidiGui* midiGui{ nullptr };
 			Mpc* mpc{ nullptr };
-			mpc::sequencer::MidiAdapter midiAdapter;
+			//mpc::sequencer::MidiAdapter midiAdapter;
 
 		public:
 			void handle(std::weak_ptr<mpc::sequencer::Event> event, mpc::sequencer::Track* track);
