@@ -50,6 +50,12 @@ void GlobalReleaseControls::function(int i) {
 		if (!sequencer.lock()->isPlaying() && csn.compare("sequencer") != 0) {
 			sampler.lock()->finishBasicVoice();
 		}
+		if (csn.compare("trackmute") == 0) {
+			if (!sequencer.lock()->isSoloEnabled()) {
+				ls.lock()->setCurrentBackground("trackmute");
+			}
+			sequencer.lock()->setSoloEnabled(sequencer.lock()->isSoloEnabled());
+		}
 		break;
 	}
 }

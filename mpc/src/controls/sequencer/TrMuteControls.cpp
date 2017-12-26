@@ -1,7 +1,7 @@
 #include <controls/sequencer/TrMuteControls.hpp>
 
 #include <lcdgui/LayeredScreen.hpp>
-////#include <sequencer/Sequence.hpp>
+#include <controls/Controls.hpp>
 #include <sequencer/Track.hpp>
 #include <sequencer/Sequencer.hpp>
 
@@ -22,8 +22,8 @@ void TrMuteControls::pad(int i, int velo, bool repeat, int tick)
 	init();
 	auto lSequencer = sequencer.lock();
 	auto lLs = ls.lock();
-	/*
-	if (kbmc.lock()->isF6Pressed() || lSequencer->isSoloEnabled()) {
+	auto controls = mpc->getControls().lock();
+	if (controls->isF6Pressed() || lSequencer->isSoloEnabled()) {
 		if (!lSequencer->isSoloEnabled())
 			lSequencer->setSoloEnabled(true);
 
@@ -36,7 +36,6 @@ void TrMuteControls::pad(int i, int velo, bool repeat, int tick)
 		auto t = s->getTrack(i + (bank_ * 16)).lock();
 		t->setOn(!t->isOn());
 	}
-	*/
 }
 
 void TrMuteControls::turnWheel(int i)
@@ -49,19 +48,18 @@ void TrMuteControls::turnWheel(int i)
 void TrMuteControls::function(int i)
 {
 	init();
+	super::function(i);
 	auto lSequencer = sequencer.lock();
 	auto lLs = ls.lock();
 	switch (i) {
 	case 5:
-		//mpc::controls::KbMouseController::f6IsPressed() = true;
 		if (lSequencer->isSoloEnabled()) {
-			lLs->removeCurrentBackground();
 			lLs->setCurrentBackground("trackmute");
 			lSequencer->setSoloEnabled(false);
 		}
 		else {
-			lLs->removeCurrentBackground();
 			lLs->setCurrentBackground("trackmutesolo1");
+			lSequencer->setSoloEnabled(lSequencer->isSoloEnabled());
 		}
 		break;
 	}

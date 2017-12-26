@@ -149,6 +149,8 @@ void AbstractControls::function(int i)
 			}
 			lsLocked->openScreen(lsLocked->getPreviousScreenName());
 		}
+	case 5:
+		mpc->getControls().lock()->setF6Pressed(true);
 		break;
 	}
 }
@@ -461,7 +463,7 @@ void AbstractControls::play()
 				ls.lock()->openScreen("directtodiskrecorder");
 			}
 			else {
-				if (csn.compare("song") != 0 && csn.compare("sequencer") != 0) {
+				if (csn.compare("song") != 0 && csn.compare("sequencer") != 0 && csn.compare("trackmute") != 0) {
 					ls.lock()->openScreen("sequencer");
 				}
 				if (csn.compare("song") == 0) {
@@ -499,7 +501,7 @@ void AbstractControls::playStart()
 			ls.lock()->openScreen("directtodiskrecorder");
 		}
 		else {
-			if (csn.compare("song") != 0 && csn.compare("sequencer") != 0) {
+			if (csn.compare("song") != 0 && csn.compare("sequencer") != 0 && csn.compare("trackmute") != 0) {
 				ls.lock()->openScreen("sequencer");
 			}
 			if (csn.compare("song") == 0) {
@@ -567,6 +569,7 @@ void AbstractControls::trackMute()
 	}
 	sequencer.lock()->setSoloEnabled(false);
 	ls.lock()->openScreen("trackmute");
+	mpc->getHardware().lock()->getLed("trackmute").lock()->light(true);
 }
 
 void AbstractControls::bank(int i)

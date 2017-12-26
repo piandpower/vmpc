@@ -27,6 +27,7 @@ namespace mpc {
 			{
 
 			private:
+				mpc::Mpc* mpc;
 				std::weak_ptr<mpc::sequencer::Sequencer> sequencer{};
 				mpc::ui::sampler::SamplerGui* samplerGui{};
 				std::weak_ptr<mpc::lcdgui::Field> sqField{};

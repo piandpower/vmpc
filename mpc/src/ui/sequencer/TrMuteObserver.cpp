@@ -1,7 +1,8 @@
 #include <ui/sequencer/TrMuteObserver.hpp>
 #include <Mpc.hpp>
+#include <hardware/Hardware.hpp>
+#include <hardware/Led.hpp>
 #include <ui/Uis.hpp>
-#include <lcdgui/LayeredScreen.hpp>
 #include <lcdgui/Field.hpp>
 #include <lcdgui/Label.hpp>
 #include <ui/sampler/SamplerGui.hpp>
@@ -16,13 +17,12 @@ using namespace std;
 
 TrMuteObserver::TrMuteObserver(mpc::Mpc* mpc)
 {
+	this->mpc = mpc;
 	tracks = vector<weak_ptr<mpc::lcdgui::Label>>(16);
-	this->sequencer = sequencer;
+	sequencer = mpc->getSequencer();
 	auto lSequencer = sequencer.lock();
-	lSequencer->deleteObservers();
 	lSequencer->addObserver(this);
 	samplerGui = mpc->getUis().lock()->getSamplerGui();
-	samplerGui->deleteObservers();
 	samplerGui->addObserver(this);
 	auto ls = mpc->getLayeredScreen().lock();
 	sqField = ls->lookupField("sq");
@@ -142,7 +142,16 @@ void TrMuteObserver::setTrackColor(int i)
 void TrMuteObserver::update(moduru::observer::Observable* o, boost::any arg)
 {
 	string s = boost::any_cast<string>(arg);
-	if (s.compare("soloenabled") == 0 || s.compare("selectedtrackindex") == 0) {
+	if (s.compare("soloenabled") == 0 ) {
+		for (auto& l : mpc->getLayeredScreen().lock()->getLayer(0)->getAllLabelsAndFields()) {
+			l.lock()->SetDirty();
+		}
+		refreshTracks();
+	}
+	else if (s.compare("selectedtrackindex") == 0) {
+		for (auto& l : mpc->getLayeredScreen().lock()->getLayer(0)->getAllLabelsAndFields()) {
+			l.lock()->SetDirty();
+		}
 		refreshTracks();
 	}
 	else if (s.compare("bank") == 0) {
@@ -202,4 +211,5 @@ TrMuteObserver::~TrMuteObserver() {
 	}
 	lSeq->deleteObserver(this);
 	samplerGui->deleteObserver(this);
+	mpc->getHardware().lock()->getLed("trackmute").lock()->light(false);
 }
