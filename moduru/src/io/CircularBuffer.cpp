@@ -4,6 +4,8 @@
 
 #include <VecUtil.hpp>
 
+#include <Logger.hpp>
+
 using namespace moduru::io;
 using namespace moduru::math;
 using namespace std;
@@ -93,9 +95,9 @@ int CircularBuffer::read(vector<char>* abData, int nOffset, int nLength)
 					std::unique_lock<std::mutex> lck(Mutex);
 					cv.wait(lck);
 				}
-				catch (exception* e)
+				catch (const std::exception& e)
 				{
-					auto what = e->what();
+					auto what = e.what();
 					//string msg = what;
 				}
 			}
@@ -141,9 +143,10 @@ int CircularBuffer::write(vector<char> abData, int nOffset, int nLength)
 					std::unique_lock<std::mutex> lck(Mutex);
 					cv.wait(lck);
 				}
-				catch (exception* e)
+				catch (const std::exception& e)
 				{
-					//string msg = e->what();
+					string msg = e.what();
+					MLOG(msg);
 				}
 			}
 			int	nAvailable = Math::min(availableWrite(), nRemainingBytes);

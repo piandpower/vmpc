@@ -38,7 +38,7 @@ void BufferSizeControls::turnWheel(int i) {
 					candidate = 8192;
 				}
 				if (candidate != lAms->getBufferSize()) {
-					lAms->setBufferSize(candidate);
+					//lAms->setBufferSize(candidate);
 				}
 			}
 			else if (lAms->isAsio()) {
@@ -59,7 +59,7 @@ void BufferSizeControls::turnWheel(int i) {
 					index--;
 				}
 				if (index < 0 || index > 8) return;
-				lAms->setBufferSize(sizes[index]);
+				//lAms->setBufferSize(sizes[index]);
 			}
 			else if (lAms->isCoreAudio()) {
 				auto candidate = lAms->getBufferSize() + i;
@@ -70,7 +70,7 @@ void BufferSizeControls::turnWheel(int i) {
 					candidate = 2048;
 				}
 				if (candidate != lAms->getBufferSize()) {
-					lAms->setBufferSize(candidate);
+					//lAms->setBufferSize(candidate);
 				}
 			}
 		}

@@ -1,8 +1,8 @@
 #include <audiomidi/AudioMidiServices.hpp>
-//#include <StartUp.hpp>
+#include <StartUp.hpp>
 #include <Mpc.hpp>
 //#include <audiomidi/SetupServer.hpp>
-//#include <audiomidi/DirectToDiskSettings.hpp>
+#include <audiomidi/DirectToDiskSettings.hpp>
 #include <audiomidi/ExportAudioProcessAdapter.hpp>
 #include <audiomidi/MpcMidiPorts.hpp>
 #include <ui/sampler/SamplerGui.hpp>
@@ -663,8 +663,8 @@ void AudioMidiServices::prepareBouncing(DirectToDiskSettings* settings)
 	string sep = moduru::file::FileUtil::getSeparator();
 	for (int i = 0; i < 5; i++) {
 		auto eapa = exportProcesses[i];
-		//auto file = new moduru::file::File(mpc::StartUp::home + sep + "vMPC" + sep + "recordings" + sep + indivFileNames[i], nullptr);
-		//eapa->prepare(file, settings->lengthInFrames);
+		auto file = new moduru::file::File(mpc::StartUp::home + sep + "vMPC" + sep + "recordings" + sep + indivFileNames[i], nullptr);
+		eapa->prepare(file, settings->lengthInFrames);
 	}
 	bouncePrepared = true;
 }
@@ -675,7 +675,7 @@ void AudioMidiServices::startBouncing()
 		return;
 
 	for (auto& eapa : exportProcesses) {
-		//	eapa->start();
+		eapa->start();
 	}
 	bouncePrepared = false;
 	bouncing = true;
@@ -686,14 +686,14 @@ void AudioMidiServices::stopBouncing()
 	if (!bouncing) return;
 
 	for (auto& eapa : exportProcesses) {
-		//eapa->stop();
+		eapa->stop();
 	}
 	for (auto& eapa : exportProcesses) {
-		//eapa->writeWav();
+		eapa->writeWav();
 	}
 	//exportProcesses.clear();
 	mpc->getSequencer().lock()->stop();
-	//gui.lock()->getMainFrame().lock()->openScreen("recordingfinished");
+	mpc->getLayeredScreen().lock()->openScreen("recordingfinished");
 	bouncing = false;
 }
 
@@ -745,35 +745,6 @@ bool AudioMidiServices::isDisabled()
 ctoot::audio::server::IOAudioProcess* AudioMidiServices::getAudioInput(int input)
 {
 	return inputProcesses[input];
-}
-
-void AudioMidiServices::setBufferSize(int size)
-{
-	if (size < 32) return;
-	if (size > 16384) return;
-	//server->setRequestedBufferSize(size);
-	//if (server->getRequestedBufferSize() != server->getBufferSize()) {
-	//if (isDirectSound()) {
-	//	dynamic_pointer_cast<ctoot::audio::server::DirectSoundServer>(server)->getRtAudio()->stopStream();
-	//	server->resizeBuffers(server->getRequestedBufferSize());
-	//	dynamic_pointer_cast<ctoot::audio::server::DirectSoundServer>(server)->startStream();
-	//}
-	//else if (isAsio()) {
-	//	dynamic_pointer_cast<ctoot::audio::server::AsioServer>(server)->getRtAudio()->stopStream();
-	//	server->resizeBuffers(server->getRequestedBufferSize());
-	//	dynamic_pointer_cast<ctoot::audio::server::AsioServer>(server)->startStream();
-	//}
-	//else if (isCoreAudio()) {
-	//	dynamic_pointer_cast<ctoot::audio::server::CoreAudioServer>(server)->getRtAudio()->stopStream();
-	//	server->resizeBuffers(server->getRequestedBufferSize());
-	//	dynamic_pointer_cast<ctoot::audio::server::CoreAudioServer>(server)->startStream();
-	//}
-	//else { // assume plugin and do nothing
-	//}
-	//}
-
-	setChanged();
-	notifyObservers(string("buffersize"));
 }
 
 int AudioMidiServices::getBufferSize()

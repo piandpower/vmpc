@@ -4,9 +4,9 @@
 #include <sequencer/Sequence.hpp>
 #include <sequencer/Track.hpp>
 #include <sequencer/Sequencer.hpp>
-//#include <sequencer/Step.hpp>
-//#include <sequencer/Song.hpp>
-//#include <sequencer/TempoChangeEvent.hpp>
+#include <sequencer/Step.hpp>
+#include <sequencer/Song.hpp>
+#include <sequencer/TempoChangeEvent.hpp>
 #include <sequencer/TimeSignature.hpp>
 
 #include <cmath>
@@ -145,7 +145,6 @@ double SeqUtil::framesToTicks(double d, BCMath tempo)
 
 double SeqUtil::sequenceFrameLength(Sequence* seq, int firstTick, int lastTick)
 {
-	/*
 	double result = 0;
 	auto lastTceTick = firstTick;
 	auto tceSize = seq->getTempoChangeEvents().size();
@@ -182,7 +181,6 @@ double SeqUtil::sequenceFrameLength(Sequence* seq, int firstTick, int lastTick)
 
 	result += ticksToFrames(lastTick - lLastTce->getTick(), lLastTce->getTempo());
 	return (int)(ceil(result));
-	*/
 	return 0;
 }
 
@@ -194,7 +192,6 @@ int SeqUtil::loopFrameLength(Sequence* seq)
 int SeqUtil::songFrameLength(Song* song, mpc::sequencer::Sequencer* sequencer)
 {
 	double result = 0;
-	/*
 	auto steps = song->getStepAmount();
 	for (int i = 0; i < steps; i++) {
 		for (int j = 0; j < song->getStep(i)->getRepeats(); j++) {
@@ -202,7 +199,6 @@ int SeqUtil::songFrameLength(Song* song, mpc::sequencer::Sequencer* sequencer)
 			result += sequenceFrameLength(seq, 0, seq->getLastTick());
 		}
 	}
-	*/
 	return static_cast<int>(result);
 }
 void SeqUtil::setTimeSignature(Sequence* sequence, int firstBar, int tsLastBar, int num, int den)
@@ -268,7 +264,6 @@ void SeqUtil::setTimeSignature(Sequence* sequence, int bar, int num, int den)
 			}
 
 			for (int i = bar; i < 999; i++) {
-				//if (e->getTick() >= oldBarStartPos[i] && e->getTick() < (oldBarStartPos[i] + newBarLengths[i])) {
 				if (e->getTick() >= oldBarStartPos[i] && e->getTick() < (oldBarStartPos[i] + (*sequence->getBarLengths())[i])) {
 					e->setTick(e->getTick() - (oldBarStartPos[i] - newBarStartPos[i]));
 					keep = true;

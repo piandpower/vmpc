@@ -7,6 +7,8 @@
 
 #include <io/CircularBuffer.hpp>
 
+#include <boost/circular_buffer.hpp>
+
 namespace moduru {
 	namespace io {
 		class FileOutputStream;
@@ -29,7 +31,8 @@ namespace mpc {
 
 		public:
 			std::string name{ "" };
-			std::unique_ptr<moduru::io::CircularBuffer> circularBuffer{};
+			//std::unique_ptr<moduru::io::CircularBuffer> circularBuffer{};
+			boost::circular_buffer<char> circularBuffer;
 			std::weak_ptr<ctoot::audio::core::AudioFormat> format{ };
 			bool reading{ false };
 			bool writing{ false };

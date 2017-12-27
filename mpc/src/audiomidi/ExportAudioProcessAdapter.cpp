@@ -2,8 +2,8 @@
 
 //#include <Util.hpp>
 //#include <disk/MpcFile.hpp>
-//#include <file/wav/WavFile.hpp>
-//#include <StartUp.hpp>
+#include <file/wav/WavFile.hpp>
+#include <StartUp.hpp>
 #include <audio/core/AudioFormat.hpp>
 #include <audio/core/AudioBuffer.hpp>
 
@@ -11,6 +11,8 @@
 #include <file/FileUtil.hpp>
 #include <io/FileOutputStream.hpp>
 #include <file/ByteUtil.hpp>
+
+#include <Logger.hpp>
 
 #include <chrono>
 #include <thread>
@@ -38,8 +40,9 @@ void ExportAudioProcessAdapter::prepare(moduru::file::File* file, int lengthInFr
 	if (reading || writing) {
 		throw std::invalid_argument("Can't setFile() when already exporting");
 	}
-	circularBuffer.reset();
-	circularBuffer = make_unique<CircularBuffer>(100000, true, true);
+	MLOG("lengthInFrames " + to_string(lengthInFrames));
+	circularBuffer.clear();
+	circularBuffer.set_capacity(100000);
 	lengthInBytes = lengthInFrames * 2 * 2;
 
 	if (lengthInBytes % 2 != 0) {
@@ -92,7 +95,8 @@ int ExportAudioProcessAdapter::processAudio(ctoot::audio::core::AudioBuffer* buf
 		auto lFormat = format.lock();
 		vector<char> ba(buf->getByteArrayBufferSize(lFormat.get(), nFrames));
 		buf->convertToByteArray_(0, nFrames, &ba, 0, lFormat.get());
-		circularBuffer->write(ba, 0, ba.size());
+		for (auto& b : ba)
+			circularBuffer.push_back(b);
 	}
 	return ret;
 }
@@ -108,10 +112,9 @@ void ExportAudioProcessAdapter::run()
     int written = 0;
     writing = true;
 	// how to set thread priority to low?
-	while ((reading || circularBuffer->availableRead() > 0) && writing) {
-
+	while ((reading || circularBuffer.size() > 0) && writing) {
 		auto close = false;
-		vector<char> ba = vector<char>(circularBuffer->availableRead());
+		vector<char> ba = vector<char>(circularBuffer.size());
 		if (ba.size() + written > lengthInBytes) {
 			ba.clear();
 			ba.resize(lengthInBytes - written);
@@ -121,7 +124,10 @@ void ExportAudioProcessAdapter::run()
 			this_thread::sleep_for(chrono::milliseconds(1));
 			continue;
 		}
-		circularBuffer->read(&ba);
+		for (int i = 0; i < ba.size(); i++) {
+			ba[i] = circularBuffer.front();
+			circularBuffer.pop_front();
+		}
 		raf.seekp(written);
 		raf.write(&ba[0], ba.size());
 		raf.flush();
@@ -161,7 +167,8 @@ void ExportAudioProcessAdapter::writeWav()
 	raf.seekg(read);
 	raf.read(&remainder[0], remain);
 	raf.close();
-	//file->del();
+	fos1->close();
+	file->del();
 	for (int i = 0; i < remain; i += 2) {
 		auto ba = vector<char>{ remainder[i], remainder[i + 1] };
 		auto value = moduru::file::ByteUtil::bytes2short(ba);
@@ -173,7 +180,6 @@ void ExportAudioProcessAdapter::writeWav()
 	}
 
 	if (nonZeroDetected) {
-		/*
 		string sep = FileUtil::getSeparator();
 		string wavFileName = StartUp::home + sep + "vMPC" + sep + "recordings" + sep  + file->getName() + ".WAV";
 		auto newFile = new moduru::file::File(wavFileName, nullptr);
@@ -189,7 +195,6 @@ void ExportAudioProcessAdapter::writeWav()
 		fos2->close();
 		newFile->close();
 		delete newFile;
-		*/
 	}
 }
 

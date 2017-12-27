@@ -22,7 +22,8 @@ bool FsNode::exists() {
 }
 
 bool FsNode::del() {
-	if (path.find("Users") == string::npos || path.find("vMPC") == string::npos || path.find("Stores") == string::npos || path.find("MPC2000XL") == string::npos) return false;
+	//if (path.find("Users") == string::npos || path.find("vMPC") == string::npos || path.find("Stores") == string::npos || path.find("MPC2000XL") == string::npos) return false;
+	if (path.find("Users") == string::npos || path.find("vMPC") == string::npos) return false;
 	return remove(path.c_str()) == 0;
 }
 

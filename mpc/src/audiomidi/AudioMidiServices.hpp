@@ -166,7 +166,6 @@ namespace mpc {
 			bool isBouncing();
 			bool isDisabled();
 			ctoot::audio::server::IOAudioProcess* getAudioInput(int input);
-			void setBufferSize(int size);
 			int getBufferSize();
 
 		public:
