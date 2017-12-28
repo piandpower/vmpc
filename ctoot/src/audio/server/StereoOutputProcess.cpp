@@ -4,7 +4,6 @@
 #include <audio/core/AudioBuffer.hpp>
 #include <audio/core/MetaInfo.hpp>
 
-#include <Logger.hpp>
 
 using namespace ctoot::audio::server;
 using namespace std;
