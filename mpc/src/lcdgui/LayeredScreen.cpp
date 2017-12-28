@@ -213,7 +213,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	fineWave = make_shared <mpc::lcdgui::Wave>();
 	fineWave->setFine(true);
 	fineWave->Hide(true);
-	nonTextComps.push_back(fineWave);
+	//nonTextComps.push_back(fineWave);
 
 	wave = make_shared<mpc::lcdgui::Wave>();
 	wave->Hide(true);
@@ -361,7 +361,7 @@ void LayeredScreen::Draw() {
 
 		if (!underline->IsHidden() && i == 2) underline->Draw(&pixels);
 		if (!twoDots->IsHidden() && twoDots->IsDirty()) twoDots->Draw(&pixels);
-
+		if (i == 1 && fineWave->IsDirty()) fineWave->Draw(&pixels);
 		if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
 		if (currentScreenName.compare("mixerv2") == 0) {
 			for (auto& k : knobs) {
@@ -396,6 +396,7 @@ bool LayeredScreen::IsDirty() {
 		for (auto& k : knobs) {
 			if (k->IsDirty()) return true;
 		}
+		if (i == 1 && fineWave->IsDirty()) return true;
 	}
 	return false;
 }

@@ -20,9 +20,9 @@ void mpc::controls::vmpc::AudioControls::openWindow()
 {
     init();
 	auto lAms = ams.lock();
-	if (lAms->isStandalone()) {
+	//if (lAms->isStandalone()) {
 		ls.lock()->openScreen("buffersize");
-	}
+	//}
 }
 
 void mpc::controls::vmpc::AudioControls::turnWheel(int i)
@@ -30,7 +30,7 @@ void mpc::controls::vmpc::AudioControls::turnWheel(int i)
 	init();
 
 	if (param.compare("server") == 0) {
-		if (!ams.lock()->isStandalone()) return;
+		//if (!ams.lock()->isStandalone()) return;
 		audioGui->setServer(audioGui->getServer() + i);
 	}
 	else if (param.compare("in") == 0) {
@@ -40,11 +40,11 @@ void mpc::controls::vmpc::AudioControls::turnWheel(int i)
 		audioGui->setOut(audioGui->getOut() + i);
 	}
 	else if (param.compare("dev0") == 0) {
-		if (ams.lock()->getServerIndex() != audioGui->getServer()) return;
+		//if (ams.lock()->getServerIndex() != audioGui->getServer()) return;
 		audioGui->setDev0(audioGui->getDev0() + i);
 	}
 	else if (param.compare("dev1") == 0) {
-		if (ams.lock()->getServerIndex() != audioGui->getServer()) return;
+		//if (ams.lock()->getServerIndex() != audioGui->getServer()) return;
 		audioGui->setDev1(audioGui->getDev1() + i);
 	}
 }
@@ -67,6 +67,7 @@ void mpc::controls::vmpc::AudioControls::function(int i)
 		ls.lock()->openScreen("disk");
 		break;
 	case 5:
+		/*
 		int oldServer = lAms->getServerIndex();
 		int newServer = audioGui->getServer();
 		
@@ -112,6 +113,7 @@ void mpc::controls::vmpc::AudioControls::function(int i)
 				//lMainFrame->removePopup();
 			}
 		}
+		*/
 		break;
 	}
 }

@@ -29,6 +29,7 @@ void BufferSizeControls::turnWheel(int i) {
 		init();
 		auto lAms = ams.lock();
 		if (param.compare("frames") == 0) {
+			/*
 			if (lAms->isDirectSound()) {
 				auto candidate = lAms->getBufferSize() + i;
 				if (candidate < 512) {
@@ -73,6 +74,7 @@ void BufferSizeControls::turnWheel(int i) {
 					//lAms->setBufferSize(candidate);
 				}
 			}
+			*/
 		}
 	}
 }

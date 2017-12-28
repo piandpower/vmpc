@@ -23,7 +23,7 @@ void VerticalBar::setColor(bool on)
 
 void VerticalBar::Draw(std::vector<std::vector<bool> >* pixels)
 {
-	if (value > 2) {
+	//if (value > 2) {
 		int valuePixels = (int)((value - 2) / 3);
 		for (int i = rect.L; i < rect.L + 4; i++) {
 			for (int j = rect.T; j < rect.T + 32 - valuePixels; j++) {
@@ -36,7 +36,7 @@ void VerticalBar::Draw(std::vector<std::vector<bool> >* pixels)
 				(*pixels)[i][j] = color;
 			}
 		}
-	}
+	//}
 	dirty = false;
 }
 

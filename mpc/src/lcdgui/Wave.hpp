@@ -25,7 +25,6 @@ namespace mpc {
 
 		private:
 			void makeLine(std::vector<std::vector<std::vector<int>>>* lines, std::vector<bool>* colors, unsigned int samplePos);
-			void initRect();
 			void initSamplesPerPixel();
 
 		public:

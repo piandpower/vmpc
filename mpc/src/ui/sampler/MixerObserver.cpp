@@ -248,6 +248,8 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 	string s = boost::any_cast<string>(arg);
 
 	if (s.compare("tab") == 0) {
+		initPadNameLabels();
+		initMixerStrips();
 		for (auto& m : mixerStrips) {
 			m->initLabels();
 			m->setColors();

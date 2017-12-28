@@ -14,7 +14,6 @@ using namespace std;
 
 Wave::Wave()
 {
-	initRect();
 }
 
 void Wave::setFine(bool fine) {
@@ -25,7 +24,6 @@ void Wave::setFine(bool fine) {
 	else {
 		width = 245;
 	}
-	initRect();
 }
 
 void Wave::zoomPlus() {
@@ -57,17 +55,6 @@ void Wave::initSamplesPerPixel() {
 void Wave::setCenterSamplePos(unsigned int centerSamplePos) {
 	this->centerSamplePos = centerSamplePos;
 	SetDirty();
-}
-
-void Wave::initRect() {
-	//int xoff = Constants::LCD_RECT()->L;
-	//int yoff = Constants::LCD_RECT()->T;
-	if (fine) {
-		//mRECT = IRECT(xoff + 46, yoff + 32, xoff + 46 + 218, yoff + 32 + 74);
-	}
-	else {
-		//mRECT = IRECT(xoff + 2, yoff + 42, xoff + 2 + 490, yoff + 42 + 54);
-	}
 }
 
 void Wave::setSampleData(vector<float>* sampleData, bool mono, unsigned int view) {
@@ -182,7 +169,12 @@ void Wave::Draw(std::vector<std::vector<bool> >* pixels) {
 	vector<bool> colors;
 	vector<int> offsetxy{ fine ? 22 : 1 , fine ? 16 : 21 };
 	for (int i = 0; i < width; i++) {
-		if (i == 55 && fine) continue;
+		if (i == 56 && fine) {
+			for (int j = 0; j < 27; j++) {
+				(*pixels)[i + offsetxy[0]][j + offsetxy[1]] = true;
+			}
+			continue;
+		}
 		makeLine(&lines, &colors, i);
 		int counter = 0;
 		for (auto& l : lines) {

@@ -48,13 +48,19 @@ void RtAudioServer::work(double** InAudio, double** OutAudio, int nFrames) {
 	}
 
 	client->work(nFrames);
-	if (activeOutputs.size() != 0) {
+	for (int output = 0; output < activeOutputs.size(); output++) {
 		int counter = 0;
 		for (int i = 0; i < nFrames; i++) {
-			auto sampleL = activeOutputs[0]->localBuffer[counter++];
-			auto sampleR = activeOutputs[0]->localBuffer[counter++];
-			OutAudio[0][i] = sampleL;
-			OutAudio[1][i] = sampleR;
+			auto sampleL = activeOutputs[output]->localBuffer[counter++];
+			auto sampleR = activeOutputs[output]->localBuffer[counter++];
+			if (output == 0) {
+				OutAudio[0][i] = sampleL;
+				OutAudio[1][i] = sampleR;
+			}
+			else {
+				OutAudio[0][i] += sampleL;
+				OutAudio[1][i] += sampleR;
+			}
 		}
 	}
 }
@@ -65,12 +71,12 @@ void RtAudioServer::setClient(weak_ptr<AudioClient> client) {
 }
 
 vector<string> RtAudioServer::getAvailableOutputNames() {
-	vector<string> res{ "Rt Stereo Out 1" };
+	vector<string> res{ "STEREO OUT", "ASSIGNABLE MIX OUT 1/2", "ASSIGNABLE MIX OUT 3/4", "ASSIGNABLE MIX OUT 5/6", "ASSIGNABLE MIX OUT 7/8" };
 	return res;
 }
 
 vector<string> RtAudioServer::getAvailableInputNames() {
-	vector<string> res{ "Rt Stereo In 1" };
+	vector<string> res{ "RECORD IN" };
 	return res;
 }
 

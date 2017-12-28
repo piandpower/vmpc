@@ -36,8 +36,8 @@ vector<string> AudioObserver::outNames{ "STEREO OUT", "ASSIGNABLE MIX OUT 1/2", 
 
 void AudioObserver::displayServer()
 {
-	auto candidate = ams.lock()->getServerName(audioGui->getServer());
-	driverField.lock()->setText(candidate);
+	//auto candidate = ams.lock()->getServerName(audioGui->getServer());
+	//driverField.lock()->setText(candidate);
 }
 
 
@@ -49,6 +49,7 @@ void AudioObserver::displayIn()
 void AudioObserver::displayDev0()
 {
 	auto lAms = ams.lock();
+	/*
 	if (lAms->getServerIndex() != audioGui->getServer()) {
 		dev0Field.lock()->setText(" <press F6 to activate server>");
 	}
@@ -60,6 +61,7 @@ void AudioObserver::displayDev0()
 			}
 			dev0Field.lock()->setText(candidate);
 	}
+	*/
 	//dev0Field->enableScrolling(vector<mpc::lcdgui::Field*>{ dev0Field, inField });
 }
 
@@ -71,6 +73,7 @@ void AudioObserver::displayOut()
 void AudioObserver::displayDev1()
 {
 	auto lAms = ams.lock();
+	/*
 	if (lAms->getServerIndex() != audioGui->getServer()) {
 		dev1Field.lock()->setText(" <press F6 to activate server>");
 	}
@@ -82,6 +85,7 @@ void AudioObserver::displayDev1()
 		}
 		dev1Field.lock()->setText(candidate);
 	}
+	*/
 	//dev0Field->enableScrolling(vector<mpc::lcdgui::Field*>{ dev0Field, inField });
 }
 
@@ -116,12 +120,14 @@ void AudioObserver::update(moduru::observer::Observable* o, boost::any a)
 
 void AudioObserver::displayFunctionKeys()
 {
+	/*
 	if (ams.lock()->getServerIndex() == audioGui->getServer()) {
 		//mainFrame->getLayeredScreen().lock()->drawFunctionKeys("audio_no_start");
 	}
 	else {
 		//mainFrame->getLayeredScreen().lock()->drawFunctionKeys("audio");
 	}
+	*/
 }
 
 AudioObserver::~AudioObserver() {

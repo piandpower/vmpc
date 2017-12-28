@@ -54,12 +54,12 @@ void UnrealAudioServer::setClient(weak_ptr<AudioClient> client) {
 }
 
 vector<string> UnrealAudioServer::getAvailableOutputNames() {
-	vector<string> res{ "Unreal Stereo Out 1" };
+	vector<string> res{ "STEREO OUT", "ASSIGNABLE MIX OUT 1/2", "ASSIGNABLE MIX OUT 3/4", "ASSIGNABLE MIX OUT 5/6", "ASSIGNABLE MIX OUT 7/8" };
 	return res;
 }
 
 vector<string> UnrealAudioServer::getAvailableInputNames() {
-	vector<string> res{ "Unreal Stereo In 1" };
+	vector<string> res{ "RECORD IN" };
 	return res;
 }
 

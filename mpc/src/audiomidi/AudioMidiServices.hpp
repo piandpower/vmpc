@@ -20,7 +20,6 @@ namespace ctoot {
 		namespace server {
 			class NonRealTimeAudioServer;
 			class CompoundAudioClient;
-			class PluginAudioServer;
 			class RtAudioServer;
 			class UnrealAudioServer;
 		}
@@ -50,7 +49,6 @@ namespace mpc {
 		class MpcMultiMidiSynth;
 		class MpcMultiSynthControls;
 		class Voice;
-		class DummyAudioProcess;
 	}
 
 	namespace audiomidi {
@@ -67,17 +65,11 @@ namespace mpc {
 			bool disabled{ true };
 			bool bouncePrepared{ false };
 			bool bouncing{ false };
-			std::vector<std::string> directSoundOutDevNames;
-			std::vector<std::string> directSoundInDevNames;
-			std::vector<std::string> asioDeviceNames;
-			std::vector<std::string> coreAudioOutDeviceNames;
-			std::vector<std::string> coreAudioInDeviceNames;
 
 			std::shared_ptr<ctoot::audio::core::AudioFormat> format{};
 			std::vector<std::shared_ptr<mpc::ctootextensions::Voice>> voices{};
 			std::shared_ptr<mpc::ctootextensions::Voice> basicVoice{};
 			std::vector<std::shared_ptr<ctoot::synth::SynthChannelControls>> synthChannelControls{};
-			int serverIndex{ -1 };
 			std::shared_ptr<ctoot::audio::server::AudioServer> server{};
 			std::shared_ptr<ctoot::audio::server::NonRealTimeAudioServer> offlineServer{};
 			std::shared_ptr<ctoot::audio::system::DefaultAudioSystem> audioSystem{};
@@ -91,47 +83,27 @@ namespace mpc {
 			std::shared_ptr<ctoot::audio::server::CompoundAudioClient> cac{};
 			std::shared_ptr<MpcMidiPorts> mpcMidiPorts{};
 			Mpc* mpc{ nullptr };
-			std::vector<std::string> serverNames{};
-			std::vector<std::string> inputNames{};
-			std::vector<std::string> outputNames{};
-			std::vector<int> selectedInputs{};
-			std::vector<int> selectedOutputs{};
 			std::vector<ExportAudioProcessAdapter*> exportProcesses;
-			std::shared_ptr<mpc::ctootextensions::DummyAudioProcess> dummyProcess{};
 			std::vector<ctoot::audio::server::IOAudioProcess*> inputProcesses{};
 			std::vector<ctoot::audio::server::IOAudioProcess*> outputProcesses{};
 			std::shared_ptr<mpc::sequencer::FrameSeq> frameSeq{};
 			std::vector<int> oldPrograms{};
-			int requestedBufferSize{ -1 };
 
 		public:
-			void init();
 			ctoot::audio::server::UnrealAudioServer* getUnrealAudioServer();
 			ctoot::audio::server::RtAudioServer* getRtAudioServer();
 
 		private:
-
-			void initServerNames();
-
 			void destroySynth();
 			void destroyDiskWriter();
-			void setupServer(int index);
 			void setupMidi();
 			void setupMixer();
 			void setGroupLevel(int i);
-			void openIO(int serverIndex);
 			void createSynth();
-			void loadIOConfig();
 
 		public:
-			void saveConfig();
-			std::vector<int> getSelectedInputs();
-			std::vector<int> getSelectedOutputs();
-			void setSelectedInput(int virtualInput, int hardwareInput);
-			void setSelectedOutput(int virtualOutput, int hardwareOutput);
 			std::weak_ptr<ctoot::audio::server::AudioServer> getAudioServer();
 			ctoot::audio::server::NonRealTimeAudioServer* getOfflineServer();
-			std::weak_ptr<ctoot::audio::server::PluginAudioServer> getPluginAudioServer();
 			void setMasterLevel(int i);
 			int getMasterLevel();
 			void setRecordLevel(int i);
@@ -146,18 +118,7 @@ namespace mpc {
 		public:
 			void connectVoices();
 			std::weak_ptr<MpcMidiPorts> getMidiPorts();
-			int getServerIndex();
-			int getServerCount();
-			std::string getServerName(int i);
-			std::string getCurrentServerName();
-			void create(int serverIndex, int bufferSize);
-			bool isAsio();
-			void openAsioControlPanel();
-			bool isCoreAudio();
-			bool isDirectSound();
-			bool isStandalone();
 			void destroyServices();
-			void setDriver(int i);
 			void prepareBouncing(DirectToDiskSettings* settings);
 			void startBouncing();
 			void stopBouncing();
@@ -167,10 +128,6 @@ namespace mpc {
 			bool isDisabled();
 			ctoot::audio::server::IOAudioProcess* getAudioInput(int input);
 			int getBufferSize();
-
-		public:
-			int getDirectSoundInputDevCount();
-			int getDirectSoundOutputDevCount();
 
 		public:
 			void start(std::string mode);

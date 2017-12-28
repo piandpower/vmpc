@@ -23,6 +23,7 @@ void AudioGui::setDev0(int i) {
 	int max = -1;
 	int increment = inputDevs[in] > i ? -1 : 1;
 	auto lAms = ams.lock();
+/*
 	if (lAms->getCurrentServerName().compare("DirectSound") == 0) {
 		max = lAms->getDirectSoundInputDevCount();
 	}
@@ -39,6 +40,7 @@ void AudioGui::setDev0(int i) {
 
 	if (i < -1 || i >= max) return;
 	inputDevs[in] = i;
+	*/
 	setChanged();
 	notifyObservers(string("dev0"));
 }
@@ -47,6 +49,7 @@ void AudioGui::setDev1(int i) {
 	int max = -1;
 	int increment = outputDevs[out] > i ? -1 : 1;
 	auto lAms = ams.lock();
+	/*
 	if (lAms->getCurrentServerName().compare("DirectSound") == 0) {
 		max = lAms->getDirectSoundOutputDevCount();
 	}
@@ -68,6 +71,7 @@ void AudioGui::setDev1(int i) {
 
 	if (i < -1 || i >= max) return;
 	outputDevs[out] = i;
+	*/
 	setChanged();
 	notifyObservers(string("dev1"));
 }
@@ -116,7 +120,7 @@ int AudioGui::getOut()
 
 
 void AudioGui::setServer(int i) {
-	if (i < -1 || i >= ams.lock()->getServerCount()) return;
+	//if (i < -1 || i >= ams.lock()->getServerCount()) return;
 	server = i;
 	setChanged();
 	notifyObservers(string("server"));
