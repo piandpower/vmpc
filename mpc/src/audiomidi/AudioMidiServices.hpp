@@ -96,7 +96,7 @@ namespace mpc {
 			std::vector<std::string> outputNames{};
 			std::vector<int> selectedInputs{};
 			std::vector<int> selectedOutputs{};
-			std::vector<std::shared_ptr<ExportAudioProcessAdapter>> exportProcesses{};
+			std::vector<ExportAudioProcessAdapter*> exportProcesses;
 			std::shared_ptr<mpc::ctootextensions::DummyAudioProcess> dummyProcess{};
 			std::vector<ctoot::audio::server::IOAudioProcess*> inputProcesses{};
 			std::vector<ctoot::audio::server::IOAudioProcess*> outputProcesses{};

@@ -23,6 +23,7 @@
 #include <audiomidi/MpcMidiInput.hpp>
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audio/server/RtAudioServer.hpp>
+#include <audio/server/NonRealTimeAudioServer.hpp>
 #include <hardware/Hardware.hpp>
 #include <hardware/DataWheel.hpp>
 #include <hardware/Led.hpp>
@@ -113,6 +114,8 @@ VMPCWDL::~VMPCWDL()
 
 void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames)
 {
+	auto offlineServer = mpc->getAudioMidiServices().lock()->getOfflineServer();
+	if (!offlineServer->isRealTime()) return;
 	auto midiOutMsgQueues = mpc->getMidiPorts().lock()->getReceivers();
 
 	for (auto& queue : *midiOutMsgQueues) {
@@ -159,7 +162,6 @@ void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFra
 		}
 		m_WasPlaying = isPlaying;
 	}
-
 	auto server = mpc->getAudioMidiServices().lock()->getRtAudioServer();
 	server->work(inputs, outputs, nFrames);
 }

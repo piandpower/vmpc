@@ -19,6 +19,8 @@
 #include <chrono>
 #include <thread>
 
+#include <Logger.hpp>
+
 using namespace std;
 using namespace ctoot::audio::server;
 using namespace ctoot::audio::mixer;

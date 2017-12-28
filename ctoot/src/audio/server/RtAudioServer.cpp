@@ -65,12 +65,12 @@ void RtAudioServer::setClient(weak_ptr<AudioClient> client) {
 }
 
 vector<string> RtAudioServer::getAvailableOutputNames() {
-	vector<string> res{ "Unreal Stereo Out 1" };
+	vector<string> res{ "Rt Stereo Out 1" };
 	return res;
 }
 
 vector<string> RtAudioServer::getAvailableInputNames() {
-	vector<string> res{ "Unreal Stereo In 1" };
+	vector<string> res{ "Rt Stereo In 1" };
 	return res;
 }
 

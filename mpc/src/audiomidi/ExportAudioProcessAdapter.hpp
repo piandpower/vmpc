@@ -5,9 +5,11 @@
 #include <fstream>
 #include <thread>
 
-#include <io/CircularBuffer.hpp>
+//#include <io/CircularBuffer.hpp>
 
-#include <boost/circular_buffer.hpp>
+//#include <boost/circular_buffer.hpp>
+
+#include <io/TSCircularBuffer.hpp>
 
 namespace moduru {
 	namespace io {
@@ -26,35 +28,36 @@ namespace mpc {
 
 		{
 
-		public:
+		private:
 			typedef ctoot::audio::core::AudioProcessAdapter super;
 
-		public:
+		private:
 			std::string name{ "" };
 			//std::unique_ptr<moduru::io::CircularBuffer> circularBuffer{};
-			boost::circular_buffer<char> circularBuffer;
+			circular_buffer<char>* circularBuffer = new circular_buffer<char>(100000);
 			std::weak_ptr<ctoot::audio::core::AudioFormat> format{ };
 			bool reading{ false };
 			bool writing{ false };
 			moduru::file::File* file{ nullptr };
 
 		private:
-			moduru::io::FileOutputStream* fos1{ nullptr };
-			moduru::io::FileOutputStream* fos2{ nullptr };
-			std::thread* writeThread{ nullptr };
-			std::fstream raf{};
+			//moduru::io::FileOutputStream* tempFileFos{ nullptr };
+			std::fstream tempFileRaf{};
+			std::thread writeThread;
 			int lengthInBytes{};
 
-			static void static_eapa(void * args);
+		private:
+			static void static_startWriting(void * args);
+			void startWriting();
 
 		public:
 			void prepare(moduru::file::File* file, int lengthInFrames);
 			void start();
 			int processAudio(ctoot::audio::core::AudioBuffer* buf, int nFrames) override;
 			virtual void stop();
-			void run();
 			void writeWav();
 
+		public:
 			ExportAudioProcessAdapter(ctoot::audio::core::AudioProcess* process, std::weak_ptr<ctoot::audio::core::AudioFormat> format, std::string name);
 			~ExportAudioProcessAdapter();
 

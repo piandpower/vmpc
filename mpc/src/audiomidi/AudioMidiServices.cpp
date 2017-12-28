@@ -516,23 +516,23 @@ bool AudioMidiServices::isCoreAudio()
 void AudioMidiServices::initializeDiskWriter()
 {
 	exportProcesses.clear();
-	std::shared_ptr<ExportAudioProcessAdapter> diskWriter;
+	ExportAudioProcessAdapter* diskWriter = nullptr;
 	if (outputProcesses[0] != nullptr) {
-		diskWriter = make_shared<ExportAudioProcessAdapter>(outputProcesses[0], format, "diskwriter");
+		diskWriter = new ExportAudioProcessAdapter(outputProcesses[0], format, "diskwriter");
 	}
 	else {
-		diskWriter = make_shared<ExportAudioProcessAdapter>(dummyProcess.get(), format, "diskwriter");
+		diskWriter = new ExportAudioProcessAdapter(dummyProcess.get(), format, "diskwriter");
 	}
 	exportProcesses.push_back(diskWriter);
-	mixer->getMainBus()->setOutputProcess(diskWriter.get());
+	mixer->getMainBus()->setOutputProcess(diskWriter);
 	for (int i = 1; i <= 4; i++) {
 		if (outputProcesses[i] != nullptr) {
-			diskWriter = make_shared<ExportAudioProcessAdapter>(outputProcesses[i], format, "diskwriter");
+			diskWriter = new ExportAudioProcessAdapter(outputProcesses[i], format, "diskwriter");
 		}
 		else {
-			diskWriter = make_shared<ExportAudioProcessAdapter>(dummyProcess.get(), format, "diskwriter");
+			diskWriter = new ExportAudioProcessAdapter(dummyProcess.get(), format, "diskwriter");
 		}
-		mixer->getStrip(string("AUX#" + to_string(i))).lock()->setDirectOutputProcess(diskWriter.get());
+		mixer->getStrip(string("AUX#" + to_string(i))).lock()->setDirectOutputProcess(diskWriter);
 		exportProcesses.push_back(diskWriter);
 	}
 }
@@ -591,7 +591,7 @@ void AudioMidiServices::destroySynth() {
 
 void AudioMidiServices::destroyDiskWriter() {
 	for (auto& eapa : exportProcesses) {
-		eapa.reset();
+		if (eapa != nullptr) delete eapa;
 	}
 }
 
@@ -673,12 +673,11 @@ void AudioMidiServices::startBouncing()
 {
 	if (!bouncePrepared)
 		return;
-
+	bouncePrepared = false;
+	bouncing = true;
 	for (auto& eapa : exportProcesses) {
 		eapa->start();
 	}
-	bouncePrepared = false;
-	bouncing = true;
 }
 
 void AudioMidiServices::stopBouncing()

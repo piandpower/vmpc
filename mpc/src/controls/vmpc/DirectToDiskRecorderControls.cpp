@@ -69,7 +69,6 @@ void DirectToDiskRecorderControls::function(int i)
 		split = false;
 		sequence = lSequencer->getSequence(seq).lock();
 		bool offline = d2dRecorderGui->isOffline();
-		lAms->getOfflineServer()->setRealTime(!offline);
 		auto sequenceRaw = sequence.get();
 		auto lastTick = sequence->getLastTick();
 		shared_ptr<mpc::sequencer::Song> song;
@@ -81,6 +80,7 @@ void DirectToDiskRecorderControls::function(int i)
 			lAms->prepareBouncing(settings.get());
 			sequence->setLoopEnabled(false);
 			lSequencer->playFromStart();
+			lAms->getOfflineServer()->setRealTime(!offline);
 			break;
 		case 1:
 			ls.lock()->openScreen("sequencer");
@@ -90,6 +90,7 @@ void DirectToDiskRecorderControls::function(int i)
 			sequence->setLoopEnabled(false);
 			lSequencer->move(sequence->getLoopStart());
 			lSequencer->play();
+			lAms->getOfflineServer()->setRealTime(!offline);
 			break;
 		case 2:
 			ls.lock()->openScreen("sequencer");
@@ -99,6 +100,7 @@ void DirectToDiskRecorderControls::function(int i)
 			sequence->setLoopEnabled(false);
 			lSequencer->move(d2dRecorderGui->getTime0());
 			lSequencer->play();
+			lAms->getOfflineServer()->setRealTime(!offline);
 			break;
 		case 3:
 			song = lSequencer->getSong(d2dRecorderGui->getSong()).lock();
@@ -110,6 +112,7 @@ void DirectToDiskRecorderControls::function(int i)
 			ls.lock()->openScreen("song");
 			lSequencer->setSongModeEnabled(true);
 			lSequencer->playFromStart();
+			lAms->getOfflineServer()->setRealTime(!offline);
 			mpc->getUis().lock()->getSongGui()->setLoop(false);
 			break;
 		case 4:

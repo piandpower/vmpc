@@ -1,6 +1,8 @@
 #include <audio/mixer/MixProcess.hpp>
 #include <audio/mixer/AudioMixerStrip.hpp>
 
+#include <Logger.hpp>
+
 using namespace ctoot::audio::mixer;
 using namespace ctoot::audio::core;
 using namespace std;
