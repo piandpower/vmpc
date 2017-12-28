@@ -30,7 +30,6 @@ int ChannelFormat::mix(ctoot::audio::core::AudioBuffer* destBuffer, ctoot::audio
 	vector<float>* out;
 	for (auto i = 0; i < dnc; i++) {
 		g = gain[i] * k;
-		g = 1.0f;
 		in = sourceBuffer->getChannel(i % snc);
 		out = destBuffer->getChannel(i);
 		if (doMix) {
