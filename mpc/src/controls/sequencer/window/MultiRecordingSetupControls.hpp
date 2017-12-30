@@ -22,9 +22,11 @@ namespace mpc {
 				public:
 					void left() override;
 					void right() override;
+					void up() override;
+					void down() override;
 					void turnWheel(int i) override;
-					//void keyEvent(unsigned char c) override;
 
+				public:
 					MultiRecordingSetupControls(mpc::Mpc* mpc);
 
 				};

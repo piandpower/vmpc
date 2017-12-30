@@ -1,6 +1,5 @@
 #include "MultiRecordingSetupControls.hpp"
 
-#include <lcdgui/LayeredScreen.hpp>
 #include <lcdgui/Field.hpp>
 #include <ui/sequencer/window/MultiRecordingSetupLine.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
@@ -43,7 +42,32 @@ void MultiRecordingSetupControls::turnWheel(int i)
 {
 	init();
 	auto seq = sequence.lock();
-	if (param[0] == 'b') {
+	if (param[0] == 'a') {
+		if (i > 0) {
+			if (yPos == 0) {
+				string res = param.substr(0, 1) + to_string(yPos + 1);
+				ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos + 1)));
+			}
+			else if (yPos == 1) {
+				ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos + 1)));
+			}
+			else if (yPos == 2) {
+				swGui->setMrsYOffset(swGui->getMrsYOffset() + 1);
+			}
+		}
+		else if (i < 0) {
+			if (yPos == 0) {
+				swGui->setMrsYOffset(swGui->getMrsYOffset() - 1);
+			}
+			else if (yPos == 1) {
+				ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos - 1)));
+			}
+			else if (yPos == 2) {
+				ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos - 1)));
+			}
+		}
+	}
+	else if (param[0] == 'b') {
 		swGui->setMrsTrack(yPos + swGui->getMrsYOffset(), (*swGui->getVisibleMrsLines())[yPos]->getTrack() + i);
 		swGui->setMrsOut(yPos + swGui->getMrsYOffset(), seq->getTrack((*swGui->getVisibleMrsLines())[yPos]->getTrack()).lock()->getDevice());
 	}
@@ -53,40 +77,31 @@ void MultiRecordingSetupControls::turnWheel(int i)
 	}
 }
 
-/*
-void MultiRecordingSetupControls::keyEvent(unsigned char e)
+void MultiRecordingSetupControls::up()
 {
 	init();
 	if (yPos == 0) {
-		if (e == mpc::controls::KbMapping::down() || (param[0] == 'a' && e == mpc::controls::KbMapping::dataWheelForward())) {
-			string res = param.substr(0, 1) + to_string(yPos + 1);
-			ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos + 1)), 1);
-			return;
-		}
-		else if (e == mpc::controls::KbMapping::up() || (param[0] == 'a' && e == mpc::controls::KbMapping::dataWheelBack())) {
-			swGui->setMrsYOffset(swGui->getMrsYOffset() - 1);
-			return;
-		}
+		swGui->setMrsYOffset(swGui->getMrsYOffset() - 1);
 	}
 	else if (yPos == 1) {
-		if (e == mpc::controls::KbMapping::down() || (param[0] == 'a' && e == mpc::controls::KbMapping::dataWheelForward())) {
-			ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos + 1)), 1);
-			return;
-		}
-		else if (e == mpc::controls::KbMapping::up() || (param[0] == 'a' && e == mpc::controls::KbMapping::dataWheelBack())) {
-			ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos - 1)), 1);
-			return;
-		}
+		ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos - 1)));
 	}
 	else if (yPos == 2) {
-		if (e == mpc::controls::KbMapping::down() || (param[0] == 'a' && e == mpc::controls::KbMapping::dataWheelForward())) {
-			swGui->setMrsYOffset(swGui->getMrsYOffset() + 1);
-			return;
-		}
-		else if (e == mpc::controls::KbMapping::up() || (param[0] == 'a' && e == mpc::controls::KbMapping::dataWheelBack())) {
-			ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos - 1)), 1);
-			return;
-		}
+		ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos - 1)));
 	}
 }
-*/
+
+void MultiRecordingSetupControls::down()
+{
+	init();
+	if (yPos == 0) {
+		string res = param.substr(0, 1) + to_string(yPos + 1);
+		ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos + 1)));
+	}
+	else if (yPos == 1) {
+		ls.lock()->setFocus(param.substr(0, 1).append(to_string(yPos + 1)));
+	}
+	else if (yPos == 2) {
+		swGui->setMrsYOffset(swGui->getMrsYOffset() + 1);
+	}
+}
