@@ -25,7 +25,6 @@ EditSequenceObserver::EditSequenceObserver(mpc::Mpc* mpc)
 	functionNames = { "COPY", "DURATION", "VELOCITY", "TRANSPOSE" };
 	modeNames = { "ADD VALUE", "SUB VALUE", "MULTI VAL%", "SET TO VAL" };
 	editSequenceGui = mpc->getUis().lock()->getEditSequenceGui();
-	editSequenceGui->deleteObservers();
 	editSequenceGui->addObserver(this);
 	auto lSequencer = sequencer.lock();
 	seqNum = lSequencer->getActiveSequenceIndex();
@@ -68,12 +67,9 @@ EditSequenceObserver::EditSequenceObserver(mpc::Mpc* mpc)
 	copiesLabel.lock()->setSize(250, 14);
 	lSequencer->deleteObservers();
 	lSequencer->addObserver(this);
-	seq->deleteObservers();
 	seq->addObserver(this);
 	auto lTrk = track.lock();
-	lTrk->deleteObservers();
 	lTrk->addObserver(this);
-	timeSig.deleteObservers();
 	timeSig.addObserver(this);
 	setEditFunctionValue();
 	displayTime();
@@ -230,9 +226,9 @@ void EditSequenceObserver::update(moduru::observer::Observable* o, boost::any ar
 {
 	auto lSequencer = sequencer.lock();
 	auto lTrk = track.lock();
-	lTrk->deleteObservers();
+	lTrk->deleteObserver(this);
 	sequence.lock()->deleteObserver(this);
-	timeSig.deleteObservers();
+	timeSig.deleteObserver(this);
 	seqNum = lSequencer->getActiveSequenceIndex();
 	sequence = lSequencer->getSequence(seqNum);
 	trackNum = lSequencer->getActiveTrackIndex();
@@ -332,4 +328,5 @@ EditSequenceObserver::~EditSequenceObserver() {
 	sequencer.lock()->deleteObserver(this);
 	timeSig.deleteObserver(this);
 	sequence.lock()->deleteObserver(this);
+	track.lock()->deleteObserver(this);
 }
