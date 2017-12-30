@@ -63,8 +63,7 @@ EditSequenceObserver::EditSequenceObserver(mpc::Mpc* mpc)
 	start2Label = ls->lookupLabel("start2");
 	copiesLabel = ls->lookupLabel("copies");
 	modeLabel = ls->lookupLabel("mode");
-	modeLabel.lock()->setSize(200, 7);
-	copiesLabel.lock()->setSize(250, 7);
+	modeLabel.lock()->enableRigorousClearing();
 	lSequencer->deleteObservers();
 	lSequencer->addObserver(this);
 	seq->addObserver(this);
@@ -145,7 +144,7 @@ void EditSequenceObserver::setEditFunctionValue()
     editFunctionField.lock()->setText(functionNames[editSequenceGui->getEditFunctionNumber()]);
     
 	if (editSequenceGui->getEditFunctionNumber() == 0) {
-        fromSqLabel.lock()->setLocation(131, 1);
+        fromSqLabel.lock()->setLocation(132, 1);
         fromSqField.lock()->setLocation(fromSqField.lock()->getX(), 1);
         tr0Label.lock()->setLocation(tr0Label.lock()->getX(), 1);
         tr0Field.lock()->setLocation(tr0Field.lock()->getX(), 1);
@@ -163,14 +162,15 @@ void EditSequenceObserver::setEditFunctionValue()
         start1Label.lock()->Hide(false);
         start2Label.lock()->Hide(false);
         copiesLabel.lock()->setText("Copies:");
+		copiesLabel.lock()->setSize(7 * 6 + 1, 7);
         copiesLabel.lock()->setLocation(138, 39);
         copiesField.lock()->setLocation(copiesField.lock()->getX(), 38);
-        modeLabel.lock()->setLocation(150, 21);
+        modeLabel.lock()->setLocation(150, 20);
         modeField.lock()->setSize(7 * 6 + 1, 9);
         copiesField.lock()->setSize(3 * 6 + 1, 9);
     }
     else if (editSequenceGui->getEditFunctionNumber() == 1 || editSequenceGui->getEditFunctionNumber() == 2) {
-        fromSqLabel.lock()->setLocation(131, 3);
+        fromSqLabel.lock()->setLocation(132, 3);
         fromSqField.lock()->setLocation(fromSqField.lock()->getX(), 3);
         tr0Label.lock()->setLocation(tr0Label.lock()->getX(), 3);
         tr0Field.lock()->setLocation(tr0Field.lock()->getX(), 3);
@@ -188,17 +188,20 @@ void EditSequenceObserver::setEditFunctionValue()
         start1Label.lock()->Hide(true);
         start2Label.lock()->Hide(true);
         copiesLabel.lock()->setText("Value:");
+		copiesLabel.lock()->setSize(6 * 6 + 1, 7);
         copiesLabel.lock()->setLocation(138, 35);
         copiesField.lock()->setLocation(copiesField.lock()->getX(), 34);
-        copiesField.lock()->setSize(4 * 6 + 1, 9);
         if(editSequenceGui->getEditFunctionNumber() == 2) {
             copiesField.lock()->setSize(3 * 6 + 1, 9);
         }
-        modeLabel.lock()->setLocation(150, 21);
+		else {
+			copiesField.lock()->setSize(4 * 6 + 1, 9);
+		}
+        modeLabel.lock()->setLocation(150, 20);
         modeField.lock()->setSize(10 * 6 + 1, 9);
     }
     else if (editSequenceGui->getEditFunctionNumber() == 3) {
-        fromSqLabel.lock()->setLocation(131, 3);
+        fromSqLabel.lock()->setLocation(132, 3);
         fromSqField.lock()->setLocation(fromSqField.lock()->getX(), 3 );
         tr0Label.lock()->setLocation(tr0Label.lock()->getX(), 3);
         tr0Field.lock()->setLocation(tr0Field.lock()->getX(), 3);
@@ -217,7 +220,8 @@ void EditSequenceObserver::setEditFunctionValue()
         start2Label.lock()->Hide(true);
         copiesLabel.lock()->setText("(Except drum track)");
         copiesLabel.lock()->setLocation(132, 38);
-        modeLabel.lock()->setLocation(138, 21);
+		copiesLabel.lock()->setSize(112, 7);
+		modeLabel.lock()->setLocation(138, 20);
         modeField.lock()->setSize(3 * 6 + 1, 9);
     }
 }
