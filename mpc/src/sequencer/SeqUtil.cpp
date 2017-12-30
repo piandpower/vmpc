@@ -215,11 +215,9 @@ void SeqUtil::setTimeSignature(Sequence* sequence, int bar, int num, int den)
 	for (int i = 0; i < 999; i++) {
 		newBarLengths[i] = (*sequence->getBarLengths())[i];
 	}
-	for (int i = bar; i < bar + 1; i++) {
-		newBarLengths[i] = newDenTicks * num;
-		(*sequence->getNumerators())[i] = num;
-		(*sequence->getDenominators())[i] = den;
-	}
+	newBarLengths[bar] = newDenTicks * num;
+	(*sequence->getNumerators())[bar] = num;
+	(*sequence->getDenominators())[bar] = den;
 	if (bar == sequence->getLastBar()) {
 		(*sequence->getNumerators())[sequence->getLastBar() + 1] = num;
 		(*sequence->getDenominators())[sequence->getLastBar() + 1] = den;

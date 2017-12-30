@@ -50,17 +50,23 @@ void BarCopyControls::function(int j)
 	case 4:
 		break;
 	case 5:
-		if (!lToSeq->isUsed()) {
-			lToSeq->init(lFromSeq->getLastBar());
-		}
 		firstBar = barCopyGui->getFirstBar();
 		lastBar = barCopyGui->getLastBar();
 		copies = barCopyGui->getCopies();
 		numberOfBars = (lastBar - firstBar + 1) * copies;
 		afterBar = barCopyGui->getAfterBar();
-		lToSeq->insertBars(numberOfBars, afterBar);
+		if (!lToSeq->isUsed()) {
+			lToSeq->init(numberOfBars - 1);
+		}
+		else {
+			lToSeq->insertBars(numberOfBars, afterBar);
+		}
+
+		int copyCounter = 0;
 		for (int i = 0; i < numberOfBars; i++) {
-			lToSeq->setTimeSignature(i + afterBar, lFromSeq->getNumerator(i + firstBar), lFromSeq->getDenominator(i + firstBar));
+			lToSeq->setTimeSignature(i + afterBar, lFromSeq->getNumerator(copyCounter + firstBar), lFromSeq->getDenominator(copyCounter + firstBar));
+			copyCounter++;
+			if (copyCounter >= copies) copyCounter = 0;
 		}
 		firstTick = 0;
 		lastTick = 0;
@@ -75,11 +81,13 @@ void BarCopyControls::function(int j)
 			lastTick += (*lFromSeq->getBarLengths())[i];
 			if (i == lastBar) break;
 		}
+
+		segmentLengthTicks = lastTick - firstTick;
+
 		for (int i = 0; i < 999; i++) {
 			if (i == afterBar) break;
 			firstTickOfToSeq += (*lToSeq->getBarLengths())[i];
 		}
-		segmentLengthTicks = lastTick - firstTick;
 		offset = firstTickOfToSeq - firstTick;
 		for (int i = 0; i < 64; i++) {
 			auto t1 = lFromSeq->getTrack(i).lock();
