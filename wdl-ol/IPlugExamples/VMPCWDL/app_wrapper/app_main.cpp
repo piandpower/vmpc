@@ -287,7 +287,7 @@ int AudioCallback(void *outputBuffer,
 
   int inRightOffset = 0;
 
-  int outputChannels = (int)userData;
+  int outputChannels = (int)(size_t)userData;
 
   if(!gState->mAudioInIsMono)
     inRightOffset = nFrames;
