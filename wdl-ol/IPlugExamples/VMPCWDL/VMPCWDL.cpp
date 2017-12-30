@@ -57,7 +57,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	pGraphics->AttachControl(mInputCatcher);
 
 	auto dataWheels = pGraphics->LoadIBitmap(DATAWHEEL_ID, DATAWHEEL_FN);
-	mDataWheel = new DataWheelControl(this, dataWheels, mpc->getHardware().lock()->getDataWheel());
+	mDataWheel = new DataWheelControl(this, dataWheels, mpc->getHardware().lock()->getDataWheel(), mInputCatcher);
 
 	mpc->getHardware().lock()->getDataWheel().lock()->addObserver(mDataWheel);
 	pGraphics->AttachControl(mDataWheel);

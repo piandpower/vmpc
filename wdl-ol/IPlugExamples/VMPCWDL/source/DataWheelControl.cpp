@@ -6,11 +6,12 @@
 
 #include "../resource.h"
 
-DataWheelControl::DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels, std::weak_ptr<mpc::hardware::DataWheel> dataWheel)
+DataWheelControl::DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels, std::weak_ptr<mpc::hardware::DataWheel> dataWheel, InputCatcherControl* ipc)
 	: IPanelControl(pPlug, *Constants::DATAWHEEL_RECT(), Constants::LCD_OFF())
 {
 	this->dataWheels = dataWheels;
 	this->dataWheel = dataWheel;
+	this->ipc = ipc;
 }
 
 static inline void clampIndex(int& dataWheelIndex) {
@@ -22,6 +23,15 @@ static inline void clampIndex(int& dataWheelIndex) {
 		while (dataWheelIndex > 99)
 			dataWheelIndex -= 100;
 	}
+}
+
+bool DataWheelControl::OnKeyDown(int x, int y, int c) {
+	return ipc->OnKeyDown(x, y, c);
+}
+
+
+bool DataWheelControl::OnKeyUp(int x, int y, int c) {
+	return ipc->OnKeyUp(x, y, c);
 }
 
 void DataWheelControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod) {
