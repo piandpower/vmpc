@@ -1,8 +1,6 @@
 #include <ui/sequencer/TrMoveObserver.hpp>
 
-//#include <disk/AbstractDisk.hpp>
 #include <ui/Uis.hpp>
-#include <lcdgui/LayeredScreen.hpp>
 #include <lcdgui/LayeredScreen.hpp>
 #include <lcdgui/Field.hpp>
 #include <ui/sequencer/TrMoveGui.hpp>
@@ -18,10 +16,9 @@ using namespace std;
 
 TrMoveObserver::TrMoveObserver(mpc::Mpc* mpc)
 {
-	this->sequencer = sequencer;
 	this->mpc = mpc;
+	sequencer = mpc->getSequencer();
 	tmGui = mpc->getUis().lock()->getTrMoveGui();
-	tmGui->deleteObservers();
 	tmGui->addObserver(this);
 	auto ls = mpc->getLayeredScreen().lock();
 	sqField = ls->lookupField("sq");
@@ -34,7 +31,6 @@ TrMoveObserver::TrMoveObserver(mpc::Mpc* mpc)
 	selectTrackLabel.lock()->setText("Select track");
 	toMoveLabel.lock()->setText("to move.");
 	auto lSequencer = sequencer.lock();
-	lSequencer->deleteObservers();
 	lSequencer->addObserver(this);
 	displaySq();
 	displayTrFields();
@@ -113,12 +109,12 @@ void TrMoveObserver::displayTrFields()
 		tr0Field.lock()->Hide(true);
 		tr1Field.lock()->Hide(false);
 		tr1Field.lock()->setText("Tr:" + moduru::lang::StrUtil::padLeft(to_string(tmGui->getCurrentTrackIndex() + 1), "0", 2) + "-" + s->getTrack(tmGui->getCurrentTrackIndex()).lock()->getName());
-		//if (lGui->getMainFrame().lock()->getFocus(0).compare(tr1Field.lock()->getName()) == 0) {
-		//	ls->drawFunctionKeys("trmove_notselected");
-		//}
-		//else {
-		//	ls->drawFunctionKeys("trmove");
-		//}
+		if (ls->getFocus().compare(tr1Field.lock()->getName()) == 0) {
+			ls->drawFunctionKeys("trmove_notselected");
+		}
+		else {
+			ls->drawFunctionKeys("trmove");
+		}
 	}
 }
 
@@ -133,10 +129,16 @@ void TrMoveObserver::update(moduru::observer::Observable* o, boost::any arg)
 		displayTrLabels();
 		displayTrFields();
 	}
+	auto ls = mpc->getLayeredScreen().lock();
+	ls->setCurrentBackground("trmove");
+	selectTrackLabel.lock()->setText("Select track");
+	toMoveLabel.lock()->setText("to move.");
+	displaySq();
 }
 
 void TrMoveObserver::displaySq()
 {
+	mpc->getLayeredScreen().lock()->lookupLabel("sq").lock()->SetDirty();
 	sqField.lock()->setText(moduru::lang::StrUtil::padLeft(to_string(tmGui->getSq() + 1), "0", 2) + "-" + sequencer.lock()->getSequence(tmGui->getSq()).lock()->getName());
 }
 

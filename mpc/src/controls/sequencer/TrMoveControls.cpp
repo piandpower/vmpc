@@ -27,9 +27,15 @@ void TrMoveControls::init()
 void TrMoveControls::turnWheel(int i)
 {
 	init();
-	if (param.find("tr") != string::npos && i > 0) tmGui->goUp();
-	if (param.find("tr") != string::npos && i < 0) tmGui->goDown();
-	if (param.compare("sq") == 0) tmGui->setSq(tmGui->getSq() + i);
+	if (param.find("tr") != string::npos && i > 0) {
+		tmGui->goUp();
+	}
+	else if (param.find("tr") != string::npos && i < 0) {
+		tmGui->goDown();
+	}
+	else if (param.compare("sq") == 0) {
+		tmGui->setSq(tmGui->getSq() + i);
+	}
 }
 
 void TrMoveControls::up()
@@ -47,17 +53,33 @@ void TrMoveControls::down()
 void TrMoveControls::left()
 {
 	init();
-	if (tmGui->isSelected() && param.compare("tr0") == 0) return;
-	if (!tmGui->isSelected() && param.compare("sq") == 0) return;
+	if (tmGui->isSelected() && param.compare("tr0") == 0) {
+		return;
+	}
+	else if (!tmGui->isSelected() && param.compare("sq") == 0) {
+		return;
+	}
 	super::left();
+	init();
+	if (param.compare("sq") == 0) {
+		ls.lock()->drawFunctionKeys("trmove");
+	}
 }
 
 void TrMoveControls::right()
 {
 	init();
-	if (tmGui->isSelected() && param.compare("tr0") == 0) return;
-	if (!tmGui->isSelected() && param.compare("tr1") == 0) return;
+	if (tmGui->isSelected() && param.compare("tr0") == 0) {
+		return;
+	}
+	if (!tmGui->isSelected() && param.compare("tr1") == 0) {
+		return;
+	}
 	super::right();
+	init();
+	if (param.compare("sq") != 0 && !tmGui->isSelected()) {
+		ls.lock()->drawFunctionKeys("trmove_notselected");
+	}
 }
 
 void TrMoveControls::function(int i)
@@ -80,9 +102,11 @@ void TrMoveControls::function(int i)
 		ls.lock()->setFocus("tr1");
 		break;
 	case 5:
+		if (param.compare("sq") == 0) break;
 		if (tmGui->isSelected()) {
 			tmGui->insert(seq.lock().get());
 			ls.lock()->setFocus("tr1");
+			ls.lock()->drawFunctionKeys("trmove_notselected");
 		}
 		else {
 			tmGui->select();
