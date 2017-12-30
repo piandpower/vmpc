@@ -35,7 +35,7 @@ void Field::initialize(std::string name, int x, int y, int columns) {
 	this->columns = columns;
 	
 	setText("");
-	setSize(columns * TEXT_WIDTH + 1, TEXT_HEIGHT + 2);
+	setSize(columns * TEXT_WIDTH + 1, TEXT_HEIGHT + 1);
 	setLocation(x, y);
 	clearRects.clear();
 	//loseFocus(name);

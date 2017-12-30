@@ -84,7 +84,7 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 
 void TextComp::setSize(int w, int h) {
 	const int margin = noLeftMargin ? 0 : 1;
-	MRECT clearRect(x, y, x + (TEXT_WIDTH * columns) + margin, y + TEXT_HEIGHT + 2);
+	MRECT clearRect(x, y, x + (TEXT_WIDTH * columns) + margin, y + TEXT_HEIGHT + 1);
 	clearRects.push_back(clearRect);
 
 	columns = w / TEXT_WIDTH;
@@ -96,7 +96,7 @@ void TextComp::setSize(int w, int h) {
 
 void TextComp::setLocation(int x, int y) {
 	const int margin = noLeftMargin ? 0 : 1;
-	MRECT clearRect(x, y, x + (TEXT_WIDTH * columns) + margin, y + TEXT_HEIGHT + 2);
+	MRECT clearRect(x, y, x + (TEXT_WIDTH * columns) + margin, y + TEXT_HEIGHT + 1);
 	clearRects.push_back(clearRect);
 
 	this->x = x;
