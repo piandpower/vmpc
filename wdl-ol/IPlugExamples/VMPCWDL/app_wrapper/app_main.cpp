@@ -287,6 +287,8 @@ int AudioCallback(void *outputBuffer,
 
   int inRightOffset = 0;
 
+  int outputChannels = (int)userData;
+
   if(!gState->mAudioInIsMono)
     inRightOffset = nFrames;
 
@@ -299,9 +301,12 @@ int AudioCallback(void *outputBuffer,
       if (gBufIndex == 0)
       {
         double* inputs[2] = {inputBufferD + i, inputBufferD + inRightOffset + i};
-        double* outputs[2] = {outputBufferD + i, outputBufferD + nFrames + i};
 
-        gPluginInstance->LockMutexAndProcessDoubleReplacing(inputs, outputs, gSigVS);
+		std::vector<double*> outputs;
+		for (int chan = 0; chan < outputChannels; chan++) {
+			outputs.push_back(outputBufferD + i + (chan * nFrames));
+		}
+        gPluginInstance->LockMutexAndProcessDoubleReplacing(inputs, &outputs[0], gSigVS, outputChannels);
       }
 
       // fade in
@@ -423,9 +428,14 @@ bool InitialiseAudio(unsigned int inId,
   iParams.nChannels = chnls;
   iParams.firstChannel = inChanL;
 
+  RtAudio::DeviceInfo infoOut;
+  infoOut = gDAC->getDeviceInfo(outId);
+
   oParams.deviceId = outId;
-  oParams.nChannels = chnls;
+  oParams.nChannels = infoOut.outputChannels;
   oParams.firstChannel = outChanL;
+
+  DBGMSG("infoOut.outputChannels %i ", infoOut.outputChannels);
 
   gIOVS = iovs; // gIOVS may get changed by stream
   gSigVS = atoi(gState->mAudioSigVS); // This is done here so that it changes when the callback is stopped
@@ -447,9 +457,8 @@ bool InitialiseAudio(unsigned int inId,
   try
   {
     TRACE;
-    gDAC->openStream( &oParams, &iParams, RTAUDIO_FLOAT64, sr, &gIOVS, &AudioCallback, NULL, &options);
+    gDAC->openStream( &oParams, &iParams, RTAUDIO_FLOAT64, sr, &gIOVS, &AudioCallback, (void*) oParams.nChannels, &options);
     gDAC->startStream();
-
     memcpy(gActiveState, gState, sizeof(AppState)); // copy state to active state
   }
   catch ( RtError& e )

@@ -431,7 +431,7 @@ void IPlugBase::PassThroughBuffers(double sampleType, int nFrames)
     }
     else
     {
-        IPlugBase::ProcessDoubleReplacing(mInData.Get(), mOutData.Get(), nFrames);
+        IPlugBase::ProcessDoubleReplacing(mInData.Get(), mOutData.Get(), nFrames, mOutData.GetSize());
     }
 }
 
@@ -455,12 +455,12 @@ void IPlugBase::PassThroughBuffers(float sampleType, int nFrames)
 
 void IPlugBase::ProcessBuffers(double sampleType, int nFrames)
 {
-    ProcessDoubleReplacing(mInData.Get(), mOutData.Get(), nFrames);
+    ProcessDoubleReplacing(mInData.Get(), mOutData.Get(), nFrames, mOutData.GetSize());
 }
 
 void IPlugBase::ProcessBuffers(float sampleType, int nFrames)
 {
-    ProcessDoubleReplacing(mInData.Get(), mOutData.Get(), nFrames);
+    ProcessDoubleReplacing(mInData.Get(), mOutData.Get(), nFrames, mOutData.GetSize());
     int i, n = NOutChannels();
     OutChannel** ppOutChannel = mOutChannels.GetList();
     
@@ -477,7 +477,7 @@ void IPlugBase::ProcessBuffers(float sampleType, int nFrames)
 
 void IPlugBase::ProcessBuffersAccumulating(float sampleType, int nFrames)
 {
-    ProcessDoubleReplacing(mInData.Get(), mOutData.Get(), nFrames);
+    ProcessDoubleReplacing(mInData.Get(), mOutData.Get(), nFrames, mOutData.GetSize());
     int i, n = NOutChannels();
     OutChannel** ppOutChannel = mOutChannels.GetList();
     
@@ -545,7 +545,7 @@ void IPlugBase::OnParamReset()
 }
 
 // Default passthrough.
-void IPlugBase::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames)
+void IPlugBase::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames, int outputChannels)
 {
     // Mutex is already locked.
     int i, nIn = mInChannels.GetSize(), nOut = mOutChannels.GetSize();

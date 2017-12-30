@@ -112,7 +112,7 @@ VMPCWDL::~VMPCWDL()
 	delete mpc;
 }
 
-void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames)
+void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames, int outputChannels)
 {
 	auto offlineServer = mpc->getAudioMidiServices().lock()->getOfflineServer();
 	if (!offlineServer->isRealTime()) return;
@@ -163,7 +163,7 @@ void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFra
 		m_WasPlaying = isPlaying;
 	}
 	auto server = mpc->getAudioMidiServices().lock()->getRtAudioServer();
-	server->work(inputs, outputs, nFrames);
+	server->work(inputs, outputs, nFrames, outputChannels);
 }
 
 void VMPCWDL::Reset()

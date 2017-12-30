@@ -35,7 +35,7 @@ void RtAudioServer::close() {
 void RtAudioServer::work() {
 }
 
-void RtAudioServer::work(double** InAudio, double** OutAudio, int nFrames) {
+void RtAudioServer::work(double** InAudio, double** OutAudio, int nFrames, int outputChannels) {
 	auto activeInputs = getActiveInputs();
 	if (activeInputs.size() != 0) {
 		activeInputs.at(0)->localBuffer.clear();
@@ -46,21 +46,15 @@ void RtAudioServer::work(double** InAudio, double** OutAudio, int nFrames) {
 			activeInputs.at(0)->localBuffer.push_back(inputBufferR[i]);
 		}
 	}
-
+	int channelsToProcess = activeOutputs.size() < (outputChannels / 2) ? activeOutputs.size() : (outputChannels / 2);
 	client->work(nFrames);
-	for (int output = 0; output < activeOutputs.size(); output++) {
+	for (int output = 0; output < channelsToProcess; output++) {
 		int counter = 0;
 		for (int i = 0; i < nFrames; i++) {
 			auto sampleL = activeOutputs[output]->localBuffer[counter++];
 			auto sampleR = activeOutputs[output]->localBuffer[counter++];
-			if (output == 0) {
-				OutAudio[0][i] = sampleL;
-				OutAudio[1][i] = sampleR;
-			}
-			else {
-				OutAudio[0][i] += sampleL;
-				OutAudio[1][i] += sampleR;
-			}
+			OutAudio[ (output * 2) ][i] = sampleL;
+			OutAudio[ (output * 2) + 1][i] = sampleR;
 		}
 	}
 }

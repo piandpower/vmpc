@@ -101,8 +101,8 @@ bool IPlugStandalone::SendSysEx(ISysEx* pSysEx)
   return false;
 }
 
-void IPlugStandalone::LockMutexAndProcessDoubleReplacing(double** inputs, double** outputs, int nFrames)
+void IPlugStandalone::LockMutexAndProcessDoubleReplacing(double** inputs, double** outputs, int nFrames, int outputChannels)
 {
   IMutexLock lock(this);
-  ProcessDoubleReplacing(inputs, outputs, nFrames);
+  ProcessDoubleReplacing(inputs, outputs, nFrames, outputChannels);
 }

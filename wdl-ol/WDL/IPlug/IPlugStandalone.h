@@ -57,7 +57,7 @@ public:
 
   void ResizeGraphics(int w, int h);
 
-  void LockMutexAndProcessDoubleReplacing(double** inputs, double** outputs, int nFrames);
+  void LockMutexAndProcessDoubleReplacing(double** inputs, double** outputs, int nFrames, int outputChannels);
 
 protected:
   bool SendMidiMsg(IMidiMsg* pMsg);

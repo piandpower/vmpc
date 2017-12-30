@@ -29,7 +29,7 @@ public:
 	void Reset();
 	void OnParamChange(int paramIdx);
 
-	void ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames);
+	void ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames, int outputChannels);
 	bool HostRequestingAboutBox();
 
 	void ProcessMidiMsg(IMidiMsg* pMsg);

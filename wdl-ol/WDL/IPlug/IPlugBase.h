@@ -53,7 +53,7 @@ public:
     
     // Default passthrough.  Inputs and outputs are [nChannel][nSample].
     // Mutex is already locked.
-    virtual void ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames);
+    virtual void ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames, int outputChannels);
     
     // In case the audio processing thread needs to do anything when the GUI opens
     // (like for example, set some state dependent initial values for controls).
