@@ -62,6 +62,7 @@ EditSequenceObserver::EditSequenceObserver(mpc::Mpc* mpc)
 	start1Label = ls->lookupLabel("start1");
 	start2Label = ls->lookupLabel("start2");
 	copiesLabel = ls->lookupLabel("copies");
+	copiesLabel.lock()->enableRigorousClearing();
 	modeLabel = ls->lookupLabel("mode");
 	modeLabel.lock()->enableRigorousClearing();
 	lSequencer->deleteObservers();
