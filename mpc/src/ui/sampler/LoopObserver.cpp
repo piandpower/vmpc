@@ -45,8 +45,8 @@ LoopObserver::LoopObserver(mpc::Mpc* mpc)
 	endLengthValueField = ls->lookupField("endlengthvalue");
 	loopField = ls->lookupField("loop");
 	dummyField = ls->lookupField("dummy");
-	toField.lock()->setSize(8 * 6 + 1, 9);
-	endLengthValueField.lock()->setSize(8 * 6 + 1, 9);
+	toField.lock()->setSize(9 * 6 + 1, 9);
+	endLengthValueField.lock()->setSize(9 * 6 + 1, 9);
 	displaySnd();
 	displayPlayX();
 	displayTo();
@@ -114,9 +114,10 @@ void LoopObserver::displayTo()
 
 void LoopObserver::displayEndLength()
 {
-	endLengthField.lock()->setSize(62, 18);
+	endLengthField.lock()->setSize(31, 9);
 	endLengthField.lock()->setText(soundGui->isEndSelected() ? "  End" : "Lngth");
 	displayEndLengthValue();
+	mpc->getLayeredScreen().lock()->lookupLabel("endlengthvalue").lock()->SetDirty();
 }
 
 void LoopObserver::displayEndLengthValue()

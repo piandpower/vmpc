@@ -231,10 +231,14 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["resample"] = new sampler::dialog::ResampleControls(mpc);
 	controls["stereotomono"] = new sampler::dialog::StereoToMonoControls(mpc);
 
-	controls["startfine"] = new sampler::window::ZoomControls(mpc);
-	controls["endfine"] = new sampler::window::ZoomControls(mpc);
-	controls["looptofine"] = new sampler::window::ZoomControls(mpc);
-	controls["loopendfine"] = new sampler::window::ZoomControls(mpc);
+	auto zc = new sampler::window::ZoomControls(mpc);
+	controls["startfine"] = zc;
+	controls["endfine"] = zc;
+	controls["looptofine"] = zc;
+	controls["loopendfine"] = zc;
+	controls["zonestartfine"] = zc;
+	controls["zoneendfine"] = zc;
+
 	controls["selectdrum"] = new sampler::SelectDrumControls(mpc);
 
 	controls["load"] = new disk::LoadControls(mpc);

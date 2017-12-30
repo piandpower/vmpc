@@ -132,6 +132,7 @@ void LoopControls::turnWheel(int i)
 
 void LoopControls::setSlider(int i)
 {
+	if (!mpc->getControls().lock()->isShiftPressed()) return;
 	init();
 	auto lSound = sound.lock();
 	auto const oldLength = lSound->getEnd() - lSound->getLoopTo();

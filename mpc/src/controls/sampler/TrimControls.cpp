@@ -124,6 +124,7 @@ void TrimControls::turnWheel(int i)
 
 void TrimControls::setSlider(int i)
 {
+	if (!mpc->getControls().lock()->isShiftPressed()) return;
     init();
 	auto lSound = sound.lock();
 	auto const oldLength = lSound->getEnd() - lSound->getStart();

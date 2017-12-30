@@ -360,7 +360,7 @@ void LayeredScreen::Draw() {
 		}
 
 		if (!underline->IsHidden() && i == 2) underline->Draw(&pixels);
-		if (!twoDots->IsHidden() && twoDots->IsDirty()) twoDots->Draw(&pixels);
+		if (!twoDots->IsHidden()) twoDots->Draw(&pixels);
 		if (i == 1 && fineWave->IsDirty()) fineWave->Draw(&pixels);
 		if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
 		if (currentScreenName.compare("mixerv2") == 0) {

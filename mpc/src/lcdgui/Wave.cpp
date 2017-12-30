@@ -6,6 +6,8 @@
 
 #include <gui/Bressenham.hpp>
 
+#include <Logger.hpp>
+
 #include <cmath>
 
 using namespace mpc::lcdgui;
@@ -70,11 +72,6 @@ void Wave::setSampleData(vector<float>* sampleData, bool mono, unsigned int view
 void Wave::setSelection(unsigned int start, unsigned int end) {
 	selectionStart = start;
 	selectionEnd = end;
-	if (!mono && view == 1) {
-		// keep this commented, or else selection doesn't look good on stereo files when viewing the right channel
-		//selectionStart += frames;
-		//selectionEnd += frames;
-	}
 	SetDirty();
 }
 
@@ -92,9 +89,9 @@ void Wave::makeLine(std::vector<std::vector<std::vector<int> > >* lines, std::ve
 	
 	if (!mono && view == 1) offset += frames;
 
-	if (offset < 0 || offset >= sampleData->size()) return;
-	if (!mono && view == 0 && offset > frames) return;
-	if (!mono && view == 1 && offset < frames) return;
+	if (offset < 0 || offset >= sampleData->size() && !fine) return;
+	if (!mono && view == 0 && offset > frames && !fine) return;
+	if (!mono && view == 1 && offset < frames && !fine) return;
 
 	float sample;
 	for (int i = 0; i < (floor)(samplesPerPixel); i++) {
@@ -119,7 +116,7 @@ void Wave::makeLine(std::vector<std::vector<std::vector<int> > >* lines, std::ve
 	}
 
 	if (peakPos > invisible) {
-		lines->push_back(Bressenham::Line(x, (13 - posLineLength) - 1, x, 13 - 1));
+		lines->push_back(Bressenham::Line(x, (13 - posLineLength) - 1, x, 12));
 	}
 
 	if (abs(peakNeg) > invisible) {
@@ -151,10 +148,31 @@ void Wave::makeLine(std::vector<std::vector<std::vector<int> > >* lines, std::ve
 			colors->push_back(false);
 		}
 		if (peakPos > invisible) {
-			colors->push_back(true);
+			if (fine) {
+				//MLOG("samplePos " + to_string(samplePos));
+				if (samplePos + samplesPerPixel >= frames) {
+					colors->push_back(false);
+				}
+				else {
+					colors->push_back(true);
+				}
+			}
+			else {
+				colors->push_back(true);
+			}
 		}
 		if (abs(peakNeg) > invisible) {
-			colors->push_back(true);
+			if (fine) {
+				if (samplePos + samplesPerPixel >= frames) {
+					colors->push_back(false);
+				}
+				else {
+					colors->push_back(true);
+				}
+			}
+			else {
+				colors->push_back(true);
+			}
 		}
 		if (negLineLength != 13) {
 			colors->push_back(false);
@@ -167,9 +185,9 @@ void Wave::Draw(std::vector<std::vector<bool> >* pixels) {
 	if (IsHidden()) return;
 	vector<vector<vector<int> > > lines;
 	vector<bool> colors;
-	vector<int> offsetxy{ fine ? 22 : 1 , fine ? 16 : 21 };
+	vector<int> offsetxy{ fine ? 23 : 1 , fine ? 16 : 21 };
 	for (int i = 0; i < width; i++) {
-		if (i == 56 && fine) {
+		if (i == 55 && fine) {
 			for (int j = 0; j < 27; j++) {
 				(*pixels)[i + offsetxy[0]][j + offsetxy[1]] = true;
 			}
@@ -180,7 +198,6 @@ void Wave::Draw(std::vector<std::vector<bool> >* pixels) {
 		for (auto& l : lines) {
 			mpc::Util::drawLine(pixels, &l, colors[counter++], &offsetxy);
 		}
-		//Util::drawScaled(g, lines, 2, colors, offsetxy);
 	}
 	dirty = false;
 }

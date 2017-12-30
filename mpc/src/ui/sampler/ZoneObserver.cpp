@@ -44,8 +44,8 @@ ZoneObserver::ZoneObserver(mpc::Mpc* mpc)
 		endField = ls->lookupField("end");
 		zoneField = ls->lookupField("zone");
 		dummyField = ls->lookupField("dummy");
-		stField.lock()->setSize(8 * 6 + 1, 9);
-		endField.lock()->setSize(8 * 6 + 1, 9);
+		stField.lock()->setSize(9 * 6 + 1, 9);
+		endField.lock()->setSize(9 * 6 + 1, 9);
 		displaySnd();
 		if (lSampler->getSoundCount() != 0) {
 			dummyField.lock()->setFocusable(false);
