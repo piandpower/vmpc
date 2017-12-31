@@ -85,6 +85,7 @@ void Mpc::init(std::string mode)
 	diskController = make_unique<DiskController>(this);
 	diskController->initDisks();
 	
+	/*
 	getDisk().lock()->moveForward("TEST2");
 	getDisk().lock()->initFiles();
 	mpc::disk::MpcFile* f = getDisk().lock()->getFile("FRUTZLE.ALL");
@@ -96,6 +97,7 @@ void Mpc::init(std::string mode)
 		this_thread::sleep_for(chrono::milliseconds(10));
 	}
 	delete apsLoader;
+	*/
 	//sequencer->playFromStart();
 	hardware->getSlider().lock()->setValue(mpc::nvram::NvRam::getSlider());
 

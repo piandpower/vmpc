@@ -18,6 +18,7 @@
 #include <ui/disk/DiskGui.hpp>
 #include <ui/sampler/MixerSetupGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
+#include <ui/sampler/SoundGui.hpp>
 #include <sampler/MixerChannel.hpp>
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Pad.hpp>
@@ -173,6 +174,7 @@ void ApsLoader::load()
 	uis->getMixerSetupGui()->setStereoMixSourceDrum(apsParser->getGlobalParameters()->isStereoMixSourceDrum());
 	uis->getSamplerGui()->setPadToIntSound(apsParser->getGlobalParameters()->isPadToIntSoundEnabled());
 	uis->getDiskGui()->removePopup();
+	uis->getSoundGui()->setSoundIndex(0, sampler->getSoundCount());
 	mpc->getLayeredScreen().lock()->openScreen("load");
 	lDisk->setBusy(false);
 }
