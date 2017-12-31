@@ -57,7 +57,7 @@ TrimObserver::TrimObserver(mpc::Mpc* mpc)
 		dummyField.lock()->setFocusable(false);
 		waveformLoadData();
 		wave.lock()->setSelection(lSound->getStart(), lSound->getEnd());
-		soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
+		soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex());
 	}
 	else {
 		wave.lock()->setSampleData(nullptr, false, 0);
@@ -141,7 +141,7 @@ void TrimObserver::update(moduru::observer::Observable* o, boost::any arg)
 		waveformLoadData();
 		auto lSound = sound.lock();
 		wave.lock()->setSelection(lSound->getStart(), lSound->getEnd());
-		soundGui->initZones(lSound->getLastFrameIndex() + 1);
+		soundGui->initZones(lSound->getLastFrameIndex());
 	}
 	else if (s.compare("start") == 0) {
 		displaySt();

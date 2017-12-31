@@ -49,7 +49,7 @@ ZoneObserver::ZoneObserver(mpc::Mpc* mpc)
 		displaySnd();
 		if (lSampler->getSoundCount() != 0) {
 			dummyField.lock()->setFocusable(false);
-			soundGui->initZones(lSampler->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
+			soundGui->initZones(lSampler->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex());
 			wave.lock()->setSelection(soundGui->getZoneStart(soundGui->getZoneNumber()), soundGui->getZoneEnd(soundGui->getZoneNumber()));
 		}
 		else {
@@ -135,7 +135,7 @@ void ZoneObserver::update(moduru::observer::Observable* o, boost::any arg)
 	string s = boost::any_cast<string>(arg);
 	if (s.compare("soundnumber") == 0) {
 		displaySnd();
-		soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
+		soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex());
 		displaySt();
 		displayEnd();
 		waveformLoadData();

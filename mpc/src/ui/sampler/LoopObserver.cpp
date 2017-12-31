@@ -58,7 +58,7 @@ LoopObserver::LoopObserver(mpc::Mpc* mpc)
 		waveformLoadData();
 		auto lSound = sound.lock();
 		wave.lock()->setSelection(lSound->getLoopTo(), lSound->getEnd());
-		soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
+		soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex());
 	}
 	else {
 		wave.lock()->setSampleData(nullptr, false, 0);
@@ -155,7 +155,7 @@ void LoopObserver::update(moduru::observer::Observable* o, boost::any arg)
 		displayEndLength();
 		waveformLoadData();
 		wave.lock()->setSelection(lSound->getLoopTo(), lSound->getEnd());
-		soundGui->initZones(lSound->getLastFrameIndex() + 1);
+		soundGui->initZones(lSound->getLastFrameIndex());
 	}
 	else if (s.compare("loopto") == 0) {
 		displayTo();

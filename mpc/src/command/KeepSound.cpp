@@ -57,5 +57,5 @@ void KeepSound::execute()
 			}
 		}
 	}
-	soundGui->initZones(lSound->getLastFrameIndex() + 1);
+	soundGui->initZones(lSound->getLastFrameIndex());
 }

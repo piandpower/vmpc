@@ -30,7 +30,7 @@ SndParamsObserver::SndParamsObserver(mpc::Mpc* mpc)
 		auto lSound = sound.lock();
 		lSound->addObserver(this);
 		lSound->getMsoc()->addObserver(this);
-		soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex() + 1);
+		soundGui->initZones(sampler.lock()->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex());
 	}
 	auto ls = mpc->getLayeredScreen().lock();
 	sndField = ls->lookupField("snd");
@@ -168,7 +168,7 @@ void SndParamsObserver::update(moduru::observer::Observable* o, boost::any arg)
 	if (s.compare("soundnumber") == 0) {
 		auto lSound = sound.lock();
 		displaySnd();
-		soundGui->initZones(lSound->getLastFrameIndex() + 1);
+		soundGui->initZones(lSound->getLastFrameIndex());
 		displayBeat();
 		displaySampleAndNewTempo();
 		displayTune();

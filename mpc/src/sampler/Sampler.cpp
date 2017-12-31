@@ -361,6 +361,11 @@ void Sampler::setLoopEnabled(int sampleIndex, bool enabled)
 void Sampler::trimSample(int sampleNumber, int start, int end)
 {
 	auto s = sounds[sampleNumber];
+	trimSample(s, start, end);
+}
+
+void Sampler::trimSample(weak_ptr<Sound> sound, int start, int end) {
+	auto s = sound.lock();
 	auto data = s->getSampleData();
 	auto lf = s->getLastFrameIndex();
 
@@ -376,6 +381,9 @@ void Sampler::trimSample(int sampleNumber, int start, int end)
 		data->erase(data->begin() + end, data->end());
 		data->erase(data->begin(), data->begin() + start);
 	}
+	s->setStart(0);
+	s->setEnd(s->getLastFrameIndex() + 1);
+	s->setLoopTo(s->getLastFrameIndex() + 1);
 }
 
 void Sampler::deleteSection(const unsigned int sampleNumber, const unsigned int start, const unsigned int end) {
@@ -496,29 +504,16 @@ void Sampler::process8Bit(vector<float>* fa)
 	}
 }
 
-Sound* Sampler::createZone(Sound* source, int start, int end, int endMargin)
+weak_ptr<Sound> Sampler::createZone(weak_ptr<Sound> source, int start, int end, int endMargin)
 {
-	auto overlap = (int)(endMargin * (source->getSampleRate() / 1000.0));
-	if (!source->isMono()) {
-		start *= 2;
-		end *= 2;
-		overlap *= 2;
-	}
-	if (overlap > end - start)
+	auto lSource = source.lock();
+	auto overlap = (int)(endMargin * (lSource->getSampleRate() / 1000.0));
+	if (overlap > end - start) {
 		overlap = end - start;
-
-	auto zone = new Sound(source->getSampleRate(), sounds.size());
+	}
+	auto zone = copySound(source);
 	auto zoneLength = end - start + overlap;
-	auto zoneData = vector<float>(zoneLength);
-	for (int i = 0; i < zoneLength; i++) {
-		zoneData[i] = (*source->getSampleData())[i + start];
-	}
-	auto zoneDataPointer = zone->getSampleData();
-	zoneDataPointer->clear();
-	for (int i = 0; i < zoneData.size(); i++) {
-		zoneDataPointer->push_back(zoneData[i]);
-	}
-	zone->setMono(source->isMono());
+	trimSample(zone, start, start + zoneLength);
 	return zone;
 }
 
@@ -747,6 +742,7 @@ void Sampler::deleteSound(weak_ptr<Sound> sound) {
 
 vector<float> Sampler::mergeToStereo(vector<float> fa0, vector<float> fa1)
 {
+	/*
 	int newSampleLength = fa0.size() * 2;
 	if (fa1.size() > fa0.size()) {
 		newSampleLength = fa1.size() * 2;
@@ -765,6 +761,22 @@ vector<float> Sampler::mergeToStereo(vector<float> fa0, vector<float> fa1)
 		}
 		else {
 			newSampleData[i + 1] = 0.0f;
+		}
+	}*/
+	int newLengthFrames = fa0.size() > fa1.size() ? fa0.size() : fa1.size();
+	vector<float> newSampleData = vector<float>(newLengthFrames * 2);
+	for (int i = 0; i < newLengthFrames; i++) {
+		if (i < fa0.size()) {
+			newSampleData[i] = fa0[i];
+		}
+		else {
+			newSampleData[i] = 0;
+		}
+		if (i < fa1.size()) {
+			newSampleData[i + newLengthFrames] = fa1[i];
+		}
+		else {
+			newSampleData[i + newLengthFrames] = 0;
 		}
 	}
 	return newSampleData;
@@ -1024,9 +1036,10 @@ void Sampler::setSoundGuiNextSound()
 	soundGui->setSoundIndex(getNextSoundIndex(soundGui->getSoundIndex(), true), getSoundCount());
 }
 
-Sound* Sampler::copySound(Sound* sound)
+weak_ptr<Sound> Sampler::copySound(weak_ptr<Sound> source)
 {
-	auto newSound = new Sound(sound->getSampleRate(), sounds.size());
+	auto sound = source.lock();
+	auto newSound = addSound(sound->getSampleRate()).lock();
 	newSound->setName(sound->getName());
 	newSound->setLoopEnabled(sound->isLoopEnabled());
 	auto dest = newSound->getSampleData();

@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+#include <Logger.hpp>
+
 using namespace mpc::ui::sampler;
 using namespace std;
 
@@ -187,7 +189,7 @@ void SoundGui::initZones(int length)
 {
 	if (zone > numberOfZones - 1) zone = 0;
 	this->totalLength = length;
-	int zoneLength = (int)floor(length / numberOfZones);
+	int zoneLength = (int)floor(length  / numberOfZones);
 	int zoneStart = 0;
 	zones.clear();
 	for (int i = 0; i < numberOfZones - 1; i++) {

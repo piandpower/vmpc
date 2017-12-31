@@ -27,9 +27,8 @@ void CopySoundControls::function(int i)
 		break;
 	case 4:
 		sound = lSampler->getSound(soundGui->getSoundIndex());
-		//newSound = lSampler->copySound(sound);
-		//newSound->setName(*soundGui->getNewName());
-		//lSampler->getSounds()->push_back(newSound);
+		newSound = lSampler->copySound(sound);
+		newSound.lock()->setName(soundGui->getNewName());
 		soundGui->setSoundIndex(lSampler->getSoundCount() - 1, lSampler->getSoundCount());
 		lLs->openScreen("sound");
 		break;

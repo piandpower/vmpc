@@ -121,6 +121,9 @@ namespace mpc {
 			void sort();
 
 		private:
+			void trimSample(std::weak_ptr<Sound>, int start, int end);
+
+		private:
 			static bool memIndexCmp(std::weak_ptr<Sound> a, std::weak_ptr<Sound> b);
 			static bool nameCmp(std::weak_ptr<Sound> a, std::weak_ptr<Sound> b);
 			static bool sizeCmp(std::weak_ptr<Sound> a, std::weak_ptr<Sound> b);
@@ -130,7 +133,7 @@ namespace mpc {
 			void deleteAllSamples();
 			void process12Bit(std::vector<float>* fa);
 			void process8Bit(std::vector<float>* fa);
-			Sound* createZone(Sound* source, int start, int end, int endMargin);
+			std::weak_ptr<Sound> createZone(std::weak_ptr<Sound> source, int start, int end, int endMargin);
 			void stopAllVoices();
 			void stopAllVoices(int frameOffset);
 			void playX(int playXMode, std::vector<int>* zone);
@@ -188,7 +191,7 @@ namespace mpc {
 			void setSoundGuiPrevSound();
 			void setSoundGuiNextSound();
 			std::vector<std::weak_ptr<mpc::sampler::MixerChannel>> getDrumMixer(int i);
-			Sound* copySound(Sound* sound);
+			std::weak_ptr<Sound> copySound(std::weak_ptr<Sound> source);
 			void setActiveInput(ctoot::audio::server::IOAudioProcess* input);
 
 		public:

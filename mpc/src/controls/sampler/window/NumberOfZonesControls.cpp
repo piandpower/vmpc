@@ -16,7 +16,7 @@ void NumberOfZonesControls::function(int f)
     super::function(f);
     switch (f) {
     case 4:
-        soundGui->initZones(sound.lock()->getLastFrameIndex() + 1);
+        soundGui->initZones(sound.lock()->getLastFrameIndex());
         ls.lock()->openScreen("zone");
         break;
     }
