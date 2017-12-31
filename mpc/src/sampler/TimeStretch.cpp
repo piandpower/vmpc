@@ -3,9 +3,9 @@
 using namespace mpc::sampler;
 using namespace std;
 
-TimeStretch::TimeStretch(vector<float> sampleData, float ratio, int sampleRate) 
+TimeStretch::TimeStretch(vector<float> sampleData, float ratio, int sampleRate, int adjust) 
 {
-	oldBlockSize = int(1300);
+	oldBlockSize = 1300 + (13 * adjust);
 	overlap = 0.1f;
 	this->sampleRate = sampleRate;
 	auto numberOfBlocks = static_cast< int >(ceil(sampleData.size() / oldBlockSize));
@@ -194,8 +194,8 @@ vector<float> TimeStretch::fade(float from, float to, int startIndex, int length
     for (int i = 0; i < fa.size(); i++) {
         temp[i] = fa[i];
     }
-    auto hannOffset = int(0);
-    auto hannLength = fadeLengthExpand * int(2);
+    auto hannOffset = 0;
+	auto hannLength = fadeLengthExpand * 2;
     auto ampCoEf = from;
 	if (from == to) {
 		for (auto i = startIndex; i < startIndex + length; i++) {
@@ -207,7 +207,7 @@ vector<float> TimeStretch::fade(float from, float to, int startIndex, int length
     if(from > to) {
         descending = true;
         if(from < 1) {
-            hannOffset = static_cast< int >((from * fadeLengthExpand));
+            hannOffset = (int)(from * fadeLengthExpand);
         }
     }
     for (int i = 0; i < length; i++) {

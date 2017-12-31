@@ -10,7 +10,7 @@
 #include <sampler/Program.hpp>
 #include <sampler/Sampler.hpp>
 #include <sampler/Sound.hpp>
-#include <sampler/TimeStretch.hpp>
+#include <sampler/TimeStretch1.hpp>
 #include <sequencer/Sequence.hpp>
 #include <sequencer/Track.hpp>
 #include <sequencer/Sequencer.hpp>
@@ -202,9 +202,9 @@ void EditSoundControls::function(int j)
 				sampleDataLeft.erase(sampleDataLeft.begin() + (sampleDataLeft.size() / 2), sampleDataLeft.end());
 				vector<float> sampleDataRight = (*sound->getSampleData());
 				sampleDataRight.erase(sampleDataRight.begin(), sampleDataRight.begin() + (sampleDataRight.size() / 2));
-				auto ts0 = mpc::sampler::TimeStretch(sampleDataLeft, (float)(editSoundGui->getTimeStretchRatio() / 10000.0), sound->getSampleRate());
+				auto ts0 = mpc::sampler::TimeStretch(sampleDataLeft, (float)(editSoundGui->getTimeStretchRatio() / 10000.0), sound->getSampleRate(), editSoundGui->getTimeStretchAdjust());
 				auto newSampleDataLeft = ts0.getProcessedData();
-				auto ts1 = mpc::sampler::TimeStretch(sampleDataRight, (float)(editSoundGui->getTimeStretchRatio() / 10000.0), sound->getSampleRate());
+				auto ts1 = mpc::sampler::TimeStretch(sampleDataRight, (float)(editSoundGui->getTimeStretchRatio() / 10000.0), sound->getSampleRate(), editSoundGui->getTimeStretchAdjust());
 				auto newSampleDataRight = ts1.getProcessedData();
 				auto newSample = lSampler->addSound(sound->getSampleRate()).lock();
 				auto newSampleData = mpc::sampler::Sampler::mergeToStereo(newSampleDataLeft, newSampleDataRight);
@@ -214,7 +214,7 @@ void EditSoundControls::function(int j)
 				newSample->setName(editSoundGui->getNewName());
 			}
 			if (sound->isMono()) {
-				auto ts = mpc::sampler::TimeStretch(*sound->getSampleData(), (float)(editSoundGui->getTimeStretchRatio() / 10000.0), sound->getSampleRate());
+				auto ts = mpc::sampler::TimeStretch(*sound->getSampleData(), (float)(editSoundGui->getTimeStretchRatio() / 10000.0), sound->getSampleRate(), editSoundGui->getTimeStretchAdjust());
 				auto newSample = lSampler->addSound(sound->getSampleRate()).lock();
 				newSample->getSampleData()->swap(ts.getProcessedData());
 				newSample->setMono(true);

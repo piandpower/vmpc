@@ -16,9 +16,11 @@ namespace mpc {
 				{
 
 				private:
-					int edit{ 0 };
+					//int edit{ 0 };
+					int edit{ 7 };
 					int insertSoundNumber{ 0 };
 					//int timeStretchRatio{ 10000 };
+					//int timeStretchRatio{ 20000 };
 					int timeStretchRatio{ 20000 };
 					int timeStretchPresetNumber{ 0 };
 					int timeStretchAdjust{ 0 };
