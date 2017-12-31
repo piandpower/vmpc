@@ -88,5 +88,6 @@ void TimeStretch::fade(int length, vector<float>* fa)
 
 float TimeStretch::value(int length, int index)
 {
-    return 0.5f * (1.0f - static_cast< float >(cos(TWO_PI * index / (length - 1.0f))));
+    //return 0.5f * (1.0f - static_cast< float >(cos(TWO_PI * index / (length - 1.0f))));
+    return 0;
 }

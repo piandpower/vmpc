@@ -216,7 +216,8 @@ void EditSoundControls::function(int j)
 			if (sound->isMono()) {
 				auto ts = mpc::sampler::TimeStretch(*sound->getSampleData(), (float)(editSoundGui->getTimeStretchRatio() / 10000.0), sound->getSampleRate(), editSoundGui->getTimeStretchAdjust());
 				auto newSample = lSampler->addSound(sound->getSampleRate()).lock();
-				newSample->getSampleData()->swap(ts.getProcessedData());
+                auto procData = ts.getProcessedData();
+				newSample->getSampleData()->swap(procData);
 				newSample->setMono(true);
 				newSample->setName(editSoundGui->getNewName());
 			}
