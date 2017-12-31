@@ -10,7 +10,7 @@
 #include <sampler/Program.hpp>
 #include <sampler/Sampler.hpp>
 #include <sampler/Sound.hpp>
-//#include <sampler/TimeStretch.hpp>
+#include <sampler/TimeStretch.hpp>
 #include <sequencer/Sequence.hpp>
 #include <sequencer/Track.hpp>
 #include <sequencer/Sequencer.hpp>
@@ -193,32 +193,35 @@ void EditSoundControls::function(int j)
 			lLs->openScreen(editSoundGui->getPreviousScreenName());
 			break;
 		}
-		if (editSoundGui->getEdit() == 7) {
+		else if (editSoundGui->getEdit() == 7) {
 			if (editSoundGui->getTimeStretchRatio() == 10000)
 				return;
 
 			if (!sound->isMono()) {
-				//auto ts0 = mpc::sampler::TimeStretch(sound->getSampleDataLeft(), static_cast<float>((editSoundGui->getTimeStretchRatio() / 10000.0)), sound->getSampleRate());
-				//auto newSampleDataLeft = npc(ts0)->getProcessedData();
-				//auto ts1 = mpc::sampler::TimeStretch(sound->getSampleDataRight(), static_cast<float>((editSoundGui->getTimeStretchRatio() / 10000.0)), sound->getSampleRate());
-				//auto newSampleDataRight = npc(ts1)->getProcessedData();
-				//auto newSample = mpc::sampler::Sound(sound->getSampleRate());
-				//newSample->setSampleData(mpc::sampler::Sampler::mergeToStereo(newSampleDataLeft, newSampleDataRight));
-				//newSample->setMono(sound->isMono());
-				//newSample->setName(editSoundGui->getNewName());
-				//sampler->getSounds()->push_back(newSample);
+				vector<float> sampleDataLeft = (*sound->getSampleData());
+				sampleDataLeft.erase(sampleDataLeft.begin() + (sampleDataLeft.size() / 2), sampleDataLeft.end());
+				vector<float> sampleDataRight = (*sound->getSampleData());
+				sampleDataRight.erase(sampleDataRight.begin(), sampleDataRight.begin() + (sampleDataRight.size() / 2));
+				auto ts0 = mpc::sampler::TimeStretch(sampleDataLeft, (float)(editSoundGui->getTimeStretchRatio() / 10000.0), sound->getSampleRate());
+				auto newSampleDataLeft = ts0.getProcessedData();
+				auto ts1 = mpc::sampler::TimeStretch(sampleDataRight, (float)(editSoundGui->getTimeStretchRatio() / 10000.0), sound->getSampleRate());
+				auto newSampleDataRight = ts1.getProcessedData();
+				auto newSample = lSampler->addSound(sound->getSampleRate()).lock();
+				auto newSampleData = mpc::sampler::Sampler::mergeToStereo(newSampleDataLeft, newSampleDataRight);
+				auto newSampleDataP = newSample->getSampleData();
+				newSampleDataP->swap(newSampleData);
+				newSample->setMono(false);
+				newSample->setName(editSoundGui->getNewName());
 			}
 			if (sound->isMono()) {
-				//auto ts = mpc::sampler::TimeStretch(sound->getSampleData(), static_cast<float>((editSoundGui->getTimeStretchRatio() / 10000.0)), sound->getSampleRate());
-				//auto newSample = mpc::sampler::Sound(sound->getSampleRate());
-				//newSample->setSampleData(npc(ts)->getProcessedData());
-				//newSample->setMono(sound->isMono());
-				//newSample->setName(editSoundGui->getNewName());
-				//lSampler->getSounds()->push_back(newSample);
+				auto ts = mpc::sampler::TimeStretch(*sound->getSampleData(), (float)(editSoundGui->getTimeStretchRatio() / 10000.0), sound->getSampleRate());
+				auto newSample = lSampler->addSound(sound->getSampleRate()).lock();
+				newSample->getSampleData()->swap(ts.getProcessedData());
+				newSample->setMono(true);
+				newSample->setName(editSoundGui->getNewName());
 			}
-		}
-				
-		if (editSoundGui->getEdit() == 8) {
+		}	
+		else if (editSoundGui->getEdit() == 8) {
 			auto endMargin = editSoundGui->getEndMargin();
 			auto source = lSampler->getSound(soundGui->getSoundIndex());
 			for (int i = 0; i < soundGui->getNumberOfZones(); i++) {
