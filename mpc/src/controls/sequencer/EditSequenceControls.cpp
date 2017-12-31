@@ -54,7 +54,6 @@ void EditSequenceControls::function(int i)
 			}
 
 			auto destTrack = lToSeq->getTrack(editSequenceGui->getTr1()).lock();
-			if (!destTrack->isUsed()) destTrack->setUsed(true);
 
 			if (!editSequenceGui->isModeMerge()) {
 				for (auto& e : destTrack->getEvents()) {

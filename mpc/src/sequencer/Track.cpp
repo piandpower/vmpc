@@ -58,15 +58,7 @@ void Track::move(int tick, int oldTick)
 		eventIndex = 0;
 		return;
 	}
-	//vector<weak_ptr<NoteEvent>> noteOffsVec;
-	//weak_ptr<NoteEvent> e;
-	//while (noteOffs.size_approx() != 0) {
-//		noteOffs.try_dequeue(e);
-		//noteOffsVec.push_back(e);
-	//}
-	//sort(noteOffsVec.begin(), noteOffsVec.end(), tickCmp);
 	sort(noteOffs.begin(), noteOffs.end(), tickCmp);
-	//for (auto& no : noteOffsVec) {
 	for (auto& no : noteOffs) {
 		auto lNo = no.lock();
 		lNo->setTick((lNo->getTick() - oldTick) + tick);
@@ -79,9 +71,9 @@ void Track::move(int tick, int oldTick)
 		if (eventIndex == events.size()) return;
 		startIndex = eventIndex;
 	}
-	if (tick < oldTick && eventIndex == 0)
+	if (tick < oldTick && eventIndex == 0) {
 		return;
-
+	}
 	eventIndex = events.size();
 	for (int i = startIndex; i < events.size(); i++) {
 		if (events[i]->getTick() >= tick) {
@@ -106,13 +98,6 @@ weak_ptr<NoteEvent> Track::recordNoteOn()
 	auto lSequencer = sequencer.lock();
 	auto n = make_shared<NoteEvent>();
 	n->setTick(lSequencer->getTickPosition());
-	//vector<shared_ptr<NoteEvent>> eventsVec;
-	//shared_ptr<NoteEvent> e;
-	//while (queuedNoteOnEvents.size_approx() != 0) {
-//		queuedNoteOnEvents.try_dequeue(e);
-		//eventsVec.push_back(e);
-	//}
-	//for (auto& ne : eventsVec) {
 	for (auto& ne : queuedNoteOnEvents) {
 		if (ne->getNote() == n->getNote()) {
 			auto nne = new NoteEvent();
@@ -124,19 +109,12 @@ weak_ptr<NoteEvent> Track::recordNoteOn()
 		}
 	}
 	if (n->getTick() >= lSequencer->getCurrentlyPlayingSequence().lock()->getLastTick()) n->setTick(0);
-	//for (auto& e : eventsVec)
-//		queuedNoteOnEvents.enqueue(e);
-	//queuedNoteOnEvents.enqueue(n);
 	queuedNoteOnEvents.push_back(n);
 	return n;
 }
 
 void Track::flushNoteCache()
 {
-//	weak_ptr<NoteEvent> ne;
-//	while (queuedNoteOnEvents.size_approx() != 0) {
-		//queuedNoteOnEvents.try_dequeue(ne);
-	//}
 	queuedNoteOnEvents.clear();
 }
 
@@ -144,12 +122,6 @@ void Track::recordNoteOff(NoteEvent* n)
 {
 	auto note = n->getNote();
 	shared_ptr<NoteEvent> noteOn;
-	//vector<shared_ptr<NoteEvent>> eventsVec;
-	//shared_ptr<NoteEvent> e;
-	//while (queuedNoteOnEvents.size_approx() != 0) {
-//		queuedNoteOnEvents.try_dequeue(e);
-		//eventsVec.push_back(e);
-	//}
 	int eraseIndex = -1;
 	for (auto& noteEvent : queuedNoteOnEvents) {
 		eraseIndex++;
@@ -163,8 +135,6 @@ void Track::recordNoteOff(NoteEvent* n)
 
 	if (eraseIndex != -1 && eraseIndex != queuedNoteOnEvents.size()) queuedNoteOnEvents.erase(queuedNoteOnEvents.begin() + eraseIndex);
 	
-	//for (auto& e : eventsVec)
-//		queuedNoteOnEvents.enqueue(e);
 	if (n->getTick() >= noteOn->getTick()) {
 		int candidate = n->getTick() - noteOn->getTick();
 		if (candidate < 1) candidate = 1;
@@ -230,10 +200,10 @@ void Track::removeEvent(weak_ptr<Event> event) {
 void Track::adjustDurLastEvent(int newDur)
 {
 	auto lLastAdded = lastAdded.lock();
-	if(!lLastAdded) return;
-    lLastAdded->setDuration(newDur);
-    setChanged();
-    notifyObservers(string("resetstepeditor"));
+	if (!lLastAdded) return;
+	lLastAdded->setDuration(newDur);
+	setChanged();
+	notifyObservers(string("resetstepeditor"));
 }
 
 weak_ptr<Event> Track::addEvent(int tick, string type) {
@@ -305,6 +275,8 @@ weak_ptr<Event> Track::cloneEvent(weak_ptr<Event> src) {
 		me->CopyValuesTo(res);
 	}
 
+	if (!used) setUsed(true);
+
 	events.push_back(res);
 
 	sortEvents();
@@ -326,8 +298,12 @@ void Track::removeEvents() {
 
 void Track::setVelocityRatio(int i)
 {
-    if (i < 1) i = 1;
-    if (i > 200) i = 200;
+	if (i < 1) {
+		i = 1;
+	}
+	else if (i > 200) {
+		i = 200;
+	}
     velocityRatio = i;
     setChanged();
     notifyObservers(string("velocityratio"));
@@ -407,36 +383,20 @@ vector<weak_ptr<Event>> Track::getEvents()
 
 int Track::getNextTick()
 {
-	//if (eventIndex + 1 > events.size() && noteOffs.size_approx() == 0) {
 	if (eventIndex + 1 > events.size() && noteOffs.size() == 0) {
 		return MAX_TICK;
 	}
 	eventAvailable = eventIndex < events.size();
-	//vector<weak_ptr<NoteEvent>> noteOffsVec;
-	//weak_ptr<NoteEvent> e;
-	//while (noteOffs.size_approx() != 0) {
-//	noteOffs.try_dequeue(e);
-		//noteOffsVec.push_back(e);
-	//}
-	//sort(noteOffsVec.begin(), noteOffsVec.end(), tickCmp);
 	sort(noteOffs.begin(), noteOffs.end(), tickCmp);
-	//if (noteOffsVec.size() != 0) {
 	if (noteOffs.size() != 0) {
-		//for (auto& no : noteOffsVec) {
 		for (auto& no : noteOffs) {
 				auto lNo = no.lock();
 			if (eventAvailable) {
 				if (lNo->getTick() < events[eventIndex]->getTick()) {
-					//for (auto& n : noteOffsVec)
-						//noteOffs.enqueue(n);
-					//noteOffsVec.clear();
 					return lNo->getTick();
 				}
 			}
 			else {
-				//for (auto& n : noteOffsVec)
-//					noteOffs.enqueue(n);
-				//noteOffsVec.clear();
 				return lNo->getTick();
 			}
 		}
@@ -444,15 +404,11 @@ int Track::getNextTick()
 	if (eventAvailable) {
 		return events[eventIndex]->getTick();
 	}
-	else {
-		return MAX_TICK;
-	}
 	return MAX_TICK;
 }
 
 void Track::playNext()
 {
-	//if (eventIndex + 1 > events.size() && noteOffs.size_approx() == 0) return;
 	if (eventIndex + 1 > events.size() && noteOffs.size() == 0) return;
 	auto lSequencer = sequencer.lock();
 	multi = lSequencer->isRecordingModeMulti();
@@ -461,31 +417,18 @@ void Track::playNext()
 		delete_ = true;
 
 	int counter = 0;
-//	vector<weak_ptr<NoteEvent>> noteOffsVec;
-//	weak_ptr<NoteEvent> e;
-//	while (noteOffs.size_approx() != 0) {
-		//noteOffs.try_dequeue(e);
-		//noteOffsVec.push_back(e);
-	//}
-	//sort(noteOffsVec.begin(), noteOffsVec.end(), tickCmp);
 	sort(noteOffs.begin(), noteOffs.end(), tickCmp);
 	for (auto& no : noteOffs) {
 		auto lNo = no.lock();
 		if (eventIndex + 1 > events.size() || lNo->getTick() < events[eventIndex]->getTick()) {
-			if (!delete_) mpc->getEventHandler().lock()->handle(lNo, this);
+			if (!delete_) {
+				mpc->getEventHandler().lock()->handle(lNo, this);
+			}
 			noteOffs.erase(noteOffs.begin() + counter);
-			//for (auto& n : noteOffsVec)
-//				noteOffs.enqueue(n);
-	//		noteOffsVec.clear();
 			return;
 		}
 		counter++;
 	}
-
-	//for (auto& n : noteOffsVec)
-//		noteOffs.enqueue(n);
-//	noteOffsVec.clear();
-
 	event = events[eventIndex];
 	auto lEvent = event.lock();
 	auto note = dynamic_pointer_cast<NoteEvent>(lEvent);
@@ -509,7 +452,6 @@ void Track::playNext()
 
 			noteOff->setTick(ne->getTick() + dur);
 			noteOff->setVelocity(0);
-			//noteOffs.enqueue(noteOff);
 			noteOffs.push_back(noteOff);
 		}
 	}

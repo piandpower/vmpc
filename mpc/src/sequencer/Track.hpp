@@ -6,7 +6,6 @@
 #include <sequencer/NoteEvent.hpp>
 #include <observer/Observable.hpp>
 
-//#include <thirdp/concurrentqueue.h>
 #include <memory>
 
 namespace mpc {
@@ -20,9 +19,6 @@ namespace mpc {
 			static const int MAX_TICK{ 2147483647 };
 
 			std::vector<std::shared_ptr<Event>> events{};
-
-			//moodycamel::ConcurrentQueue<std::shared_ptr<NoteEvent>> queuedNoteOnEvents{};
-			//moodycamel::ConcurrentQueue<std::weak_ptr<NoteEvent>> noteOffs{};
 
 			std::vector<std::shared_ptr<NoteEvent> > queuedNoteOnEvents;
 			std::vector<std::weak_ptr<NoteEvent> > noteOffs;
@@ -127,6 +123,7 @@ namespace mpc {
 		public:
 			std::string getActualName();
 
+		public:
 			Track(mpc::sequencer::Sequence* parent, Mpc* mpc, int i);
 			Track(Mpc* mpc, int i);
 			~Track();
