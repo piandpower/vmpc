@@ -7,6 +7,9 @@
 #include <memory>
 
 namespace mpc {
+
+	class Mpc;
+
 	namespace sampler {
 
 		class MixerChannel;
@@ -43,7 +46,8 @@ namespace mpc {
 			void initPadAssign();
 			int getNoteFromPad(int i);
 
-			Program(mpc::sampler::Sampler* sampler);
+		public:
+			Program(mpc::Mpc* mpc, mpc::sampler::Sampler* sampler);
 			~Program();
 
 		};

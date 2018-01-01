@@ -220,7 +220,7 @@ int Sampler::getProgramCount()
 
 weak_ptr<Program> Sampler::addProgram(int i) {
 	if (programs[i]) return weak_ptr<Program>();
-	programs[i] = make_shared<Program>(this);
+	programs[i] = make_shared<Program>(mpc, this);
 	return programs[i];
 }
 
@@ -228,7 +228,7 @@ weak_ptr<Program> Sampler::addProgram()
 {
 	for (auto& p : programs) {
 		if (!p) {
-			p = make_shared<Program>(this);
+			p = make_shared<Program>(mpc, this);
 			return p;
 		}
 	}

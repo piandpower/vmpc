@@ -6,6 +6,9 @@
 #include <memory>
 
 namespace mpc {
+
+	class Mpc;
+
 	namespace sampler {
 
 		class Pad
@@ -23,7 +26,8 @@ namespace mpc {
 			std::weak_ptr<MixerChannel> getMixerChannel();
 			int getNumber();
 
-			Pad(int number);
+		public:
+			Pad(mpc::Mpc* mpc, int number);
 			~Pad();
 
 		};

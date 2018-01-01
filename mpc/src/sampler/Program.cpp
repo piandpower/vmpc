@@ -3,11 +3,13 @@
 #include <sampler/Sampler.hpp>
 #include <sampler/Pad.hpp>
 
+#include <Mpc.hpp>
+
 using namespace mpc::sampler;
 using namespace mpc::ctootextensions;
 using namespace std;
 
-Program::Program(mpc::sampler::Sampler* sampler) 
+Program::Program(mpc::Mpc* mpc, mpc::sampler::Sampler* sampler) 
 {
 	this->sampler = sampler;
 	init();
@@ -16,7 +18,7 @@ Program::Program(mpc::sampler::Sampler* sampler)
 		noteParameters.push_back(n);
 	}
 	for (int i = 0; i < 64; i++) {
-		auto p = new Pad(i);
+		auto p = new Pad(mpc, i);
 		pads.push_back(p);
 	}
 	slider = new PgmSlider();
