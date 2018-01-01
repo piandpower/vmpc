@@ -16,6 +16,9 @@ namespace mpc {
 		{
 
 		private:
+			mpc::Mpc* mpc;
+
+		private:
 			int note{ 0 };
 			std::shared_ptr<MixerChannel> mixerChannel{};
 			int number{ 0 };

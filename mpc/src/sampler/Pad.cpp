@@ -1,6 +1,8 @@
 #include <sampler/Pad.hpp>
 
 #include <Mpc.hpp>
+#include <ui/Uis.hpp>
+#include <ui/sampler/SamplerGui.hpp>
 #include <StartUp.hpp>
 #include <sampler/MixerChannel.hpp>
 #include <sampler/Sampler.hpp>
@@ -10,6 +12,7 @@ using namespace std;
 
 Pad::Pad(mpc::Mpc* mpc, int number)
 {
+	this->mpc = mpc;
 	this->number = number;
 	note = mpc::StartUp::getUserDefaults().lock()->getPadNotes()[number];
 	mixerChannel = make_shared<MixerChannel>();
@@ -17,25 +20,27 @@ Pad::Pad(mpc::Mpc* mpc, int number)
 
 void Pad::setNote(int i)
 {
-    if(i < 34 || i > 98) return;
+	if (i < 34 || i > 98) return;
 
-    //if(mpc::ui::sampler::SamplerGui::isPadAssignMaster()) {
-  //      (*Sampler::masterPadAssign())[number] = i;
-    //} else {
-        note = i;
-    //}
-    setChanged();
-    notifyObservers(string("padnotenumber"));
-    setChanged();
-    notifyObservers(string("note"));
-    setChanged();
-    notifyObservers(string("samplenumber"));
+	if (mpc->getUis().lock()->getSamplerGui()->isPadAssignMaster()) {
+		(*mpc->getSampler().lock()->getMasterPadAssign())[number] = i;
+	}
+	else {
+		note = i;
+	}
+	setChanged();
+	notifyObservers(string("padnotenumber"));
+	setChanged();
+	notifyObservers(string("note"));
+	setChanged();
+	notifyObservers(string("samplenumber"));
 }
 
 int Pad::getNote()
 {
-//	if (mpc::ui::sampler::SamplerGui::isPadAssignMaster())
-//		return (*Sampler::masterPadAssign())[number];
+	if (mpc->getUis().lock()->getSamplerGui()->isPadAssignMaster()) {
+		return (*mpc->getSampler().lock()->getMasterPadAssign())[number];
+	}
 	return note;
 }
 
