@@ -15,8 +15,6 @@ SamplerGui::SamplerGui(mpc::Mpc* mpc)
 	this->mpc = mpc;
 }
 
-bool SamplerGui::padAssignMaster = false;
-
 void SamplerGui::setPadAndNote(int pad, int note)
 {
     if (pad < -1 || pad > 63 || note < 34 | note > 98) return;

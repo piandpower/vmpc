@@ -14,12 +14,10 @@ namespace mpc {
 			{
 				
 			private:
-				static bool padAssignMaster;
-
-			private:
 				mpc::Mpc* mpc;
 
 			private:
+				bool padAssignMaster{ false };
 				int bank{ 0 };
 				int pad{ 0 };
 				int note{ 60 };
@@ -41,7 +39,7 @@ namespace mpc {
 				int getNote();
 				int getPad();
 				void setPadAssignMaster(bool b);
-				static bool isPadAssignMaster();
+				bool isPadAssignMaster();
 				void setBank(int i);
 				int getBank();
 				void setSelectedDrum(int i);

@@ -91,7 +91,7 @@ void PgmAssignObserver::displaySoundName()
 
 void PgmAssignObserver::displayPadAssignMode()
 {
-	padAssignModeField.lock()->setText(SamplerGui::isPadAssignMaster() ? "MASTER" : "PROGRAM");
+	padAssignModeField.lock()->setText(samplerGui->isPadAssignMaster() ? "MASTER" : "PROGRAM");
 }
 
 void PgmAssignObserver::displayPadNote()

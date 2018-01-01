@@ -1,5 +1,6 @@
 #include <sampler/Pad.hpp>
 
+#include <StartUp.hpp>
 #include <sampler/MixerChannel.hpp>
 #include <sampler/Sampler.hpp>
 
@@ -9,8 +10,7 @@ using namespace std;
 Pad::Pad(int number)
 {
 	this->number = number;
-	//note = StartUp::getUserDefaults().lock()->getPadNotes()[number];
-	note = number + 35;
+	note = mpc::StartUp::getUserDefaults().lock()->getPadNotes()[number];
 	mixerChannel = make_shared<MixerChannel>();
 }
 

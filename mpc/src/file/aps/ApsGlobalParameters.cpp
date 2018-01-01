@@ -32,7 +32,7 @@ ApsGlobalParameters::ApsGlobalParameters(mpc::Mpc* mpc)
 	saveBytes[i] = TEMPLATE[i];
 	auto uis = mpc->getUis().lock();
 	auto const padToInternalSoundVal = uis->getSamplerGui()->isPadToIntSound();
-	auto const padAssignMasterVal = mpc::ui::sampler::SamplerGui::isPadAssignMaster();
+	auto const padAssignMasterVal = uis->getSamplerGui()->isPadAssignMaster();
 	auto const stereoMixSourceDrumVal = uis->getMixerSetupGui()->isStereoMixSourceDrum();
 	auto const indivFxSourceDrumVal = uis->getMixerSetupGui()->isIndivFxSourceDrum();
 	auto const copyPgmMixToDrumVal = uis->getMixerSetupGui()->isCopyPgmMixToDrumEnabled();

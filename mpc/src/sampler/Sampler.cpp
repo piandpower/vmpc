@@ -156,7 +156,7 @@ void Sampler::init()
 {
 	auto program = addProgram().lock();;
 	program->setName("NewPgm-A");
-	program->initPadAssign();
+	//program->initPadAssign();
 	for (int i = 0; i < 4; i++) {
 		for (auto j = 0; j < 16; j++) {
 			string result = "";
