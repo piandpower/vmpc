@@ -59,14 +59,19 @@ namespace mpc {
 			std::vector<std::shared_ptr<mpc::sampler::MixerChannel>> mixerChannels{};
 
 		public:
-			void setProgram(int i);
 			int getProgram() override;
+			void setLocation(std::string location) override;
+			void noteOn(int note, int velo) override;
+			void noteOff(int note) override;
+			void allNotesOff() override;
+			void allSoundOff() override;
+
+		public:
+			void setProgram(int i);
 			bool receivesPgmChange();
 			void setReceivePgmChange(bool b);
 			bool receivesMidiVolume();
 			void setReceiveMidiVolume(bool b);
-			void setLocation(std::string location) override;
-			void noteOn(int note, int velo) override;
 			virtual void mpcNoteOn(int track, int note, int velo, int varType, int varValue, int frameOffset);
 
 		private:
@@ -74,9 +79,6 @@ namespace mpc {
 			void stopPad(int p, int o);
 
 		public:
-			void noteOff(int note) override;
-			void allNotesOff() override;
-			void allSoundOff() override;
 			void allSoundOff(int frameOffset);
 			void connectVoices();
 			std::weak_ptr<ctoot::audio::core::MetaInfo> getInfo();

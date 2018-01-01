@@ -15,12 +15,12 @@ using namespace std;
 
 ApsGlobalParameters::ApsGlobalParameters(vector<char> loadBytes)
 {
-	padToInternalSound_ = BitUtil::getBits(loadBytes[0])[7] == '1';
-	padAssignMaster_ = BitUtil::getBits(loadBytes[1])[7] == '1';
-	stereoMixSourceDrum_ = BitUtil::getBits(loadBytes[2])[7] == '1';
-	indivFxSourceDrum_ = BitUtil::getBits(loadBytes[2])[6] == '1';
-	copyPgmMixToDrum_ = BitUtil::getBits(loadBytes[3])[7] == '1';
-	recordMixChanges_ = BitUtil::getBits(loadBytes[3])[3] == '1';
+	padToInternalSound = BitUtil::getBits(loadBytes[0])[7] == '1';
+	padAssignMaster = BitUtil::getBits(loadBytes[1])[7] == '1';
+	stereoMixSourceDrum = BitUtil::getBits(loadBytes[2])[7] == '1';
+	indivFxSourceDrum = BitUtil::getBits(loadBytes[2])[6] == '1';
+	copyPgmMixToDrum = BitUtil::getBits(loadBytes[3])[7] == '1';
+	recordMixChanges = BitUtil::getBits(loadBytes[3])[3] == '1';
 	fxDrum = readFxDrum(loadBytes[4]);
 	masterLevel = loadBytes[6];
 }
@@ -73,32 +73,32 @@ int ApsGlobalParameters::getFxDrum()
 
 bool ApsGlobalParameters::isPadToIntSoundEnabled()
 {
-    return padToInternalSound_;
+    return padToInternalSound;
 }
 
 bool ApsGlobalParameters::isPadAssignMaster()
 {
-    return padAssignMaster_;
+    return padAssignMaster;
 }
 
 bool ApsGlobalParameters::isStereoMixSourceDrum()
 {
-    return stereoMixSourceDrum_;
+    return stereoMixSourceDrum;
 }
 
 bool ApsGlobalParameters::isIndivFxSourceDrum()
 {
-    return indivFxSourceDrum_;
+    return indivFxSourceDrum;
 }
 
-bool ApsGlobalParameters::copyPgmMixToDrum()
+bool ApsGlobalParameters::isCopyPgmMixToDrumEnabled()
 {
-    return copyPgmMixToDrum_;
+    return copyPgmMixToDrum;
 }
 
-bool ApsGlobalParameters::recordMixChanges()
+bool ApsGlobalParameters::isRecordMixChangesEnabled()
 {
-    return recordMixChanges_;
+    return recordMixChanges;
 }
 
 int ApsGlobalParameters::getMasterLevel()

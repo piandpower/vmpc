@@ -168,7 +168,8 @@ void ApsLoader::load()
 		drum->setReceiveMidiVolume(apsParser->getDrumConfiguration(i)->getReceiveMidiVolume());
 	}
 	auto uis = mpc->getUis().lock();
-	uis->getMixerSetupGui()->setCopyPgmMixToDrumEnabled(apsParser->getGlobalParameters()->copyPgmMixToDrum());
+	uis->getMixerSetupGui()->setRecordMixChangesEnabled(apsParser->getGlobalParameters()->isRecordMixChangesEnabled());
+	uis->getMixerSetupGui()->setCopyPgmMixToDrumEnabled(apsParser->getGlobalParameters()->isCopyPgmMixToDrumEnabled());
 	uis->getMixerSetupGui()->setFxDrum(apsParser->getGlobalParameters()->getFxDrum());
 	uis->getMixerSetupGui()->setIndivFxSourceDrum(apsParser->getGlobalParameters()->isIndivFxSourceDrum());
 	uis->getMixerSetupGui()->setStereoMixSourceDrum(apsParser->getGlobalParameters()->isStereoMixSourceDrum());

@@ -14,15 +14,15 @@ namespace mpc {
 			class ApsGlobalParameters
 			{
 
-			public:
-				bool padToInternalSound_{};
-				bool padAssignMaster_{};
-				bool stereoMixSourceDrum_{};
-				bool indivFxSourceDrum_{};
-				bool copyPgmMixToDrum_{};
-				bool recordMixChanges_{};
-				int masterLevel{};
-				int fxDrum{};
+			private:
+				bool padToInternalSound;
+				bool padAssignMaster;
+				bool stereoMixSourceDrum;
+				bool indivFxSourceDrum;
+				bool copyPgmMixToDrum;
+				bool recordMixChanges;
+				int masterLevel;
+				int fxDrum;
 
 			private:
 				static std::vector<char> TEMPLATE;
@@ -39,8 +39,8 @@ namespace mpc {
 				bool isPadAssignMaster();
 				bool isStereoMixSourceDrum();
 				bool isIndivFxSourceDrum();
-				bool copyPgmMixToDrum();
-				bool recordMixChanges();
+				bool isCopyPgmMixToDrumEnabled();
+				bool isRecordMixChangesEnabled();
 				int getMasterLevel();
 
 			public:
