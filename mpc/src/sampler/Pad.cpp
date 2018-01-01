@@ -3,6 +3,7 @@
 #include <Mpc.hpp>
 #include <ui/Uis.hpp>
 #include <ui/sampler/SamplerGui.hpp>
+#include <ui/sampler/MixerSetupGui.hpp>
 #include <StartUp.hpp>
 #include <sampler/MixerChannel.hpp>
 #include <sampler/Sampler.hpp>
@@ -46,6 +47,7 @@ int Pad::getNote()
 
 weak_ptr<MixerChannel> Pad::getMixerChannel()
 {
+	//if (mpc->getUis().lock()->getMixerSetupGui()->
     return mixerChannel;
 }
 

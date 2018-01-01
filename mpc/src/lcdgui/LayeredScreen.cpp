@@ -50,6 +50,7 @@
 #include <ui/sampler/TrimObserver.hpp>
 #include <ui/sampler/ZoneObserver.hpp>
 
+#include <ui/sampler/window/ChannelSettingsObserver.hpp>
 #include <ui/sampler/window/EditSoundObserver.hpp>
 #include <ui/sampler/window/MuteAssignObserver.hpp>
 #include <ui/sampler/window/SamplerWindowObserver.hpp>
@@ -863,8 +864,11 @@ void LayeredScreen::initObserver()
 	else if (csn.compare("step_tc") == 0 || csn.compare("editmultiple") == 0 || csn.compare("insertevent") == 0) {
 		activeObserver = make_unique<StepWindowObserver>(mpc);
 	}
-	else if (csn.compare("mixerv2") == 0 || csn.compare("channelsettings") == 0 || csn.compare("mixersetup") == 0) {
+	else if (csn.compare("mixerv2") == 0 || csn.compare("mixersetup") == 0) {
 		activeObserver = make_unique<MixerObserver>(mpc);
+	}
+	else if (csn.compare("channelsettings") == 0) {
+		activeObserver = make_unique<ChannelSettingsObserver>(mpc);
 	}
 	else if (csn.compare("edit") == 0) {
 		activeObserver = make_unique<EditSequenceObserver>(mpc);

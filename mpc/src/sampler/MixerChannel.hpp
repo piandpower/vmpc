@@ -20,10 +20,10 @@ namespace mpc {
 			bool stereo{ false };
 
 		public:
-			virtual void setFollowStereo(bool b);
-			virtual bool isFollowingStereo();
-			virtual void setStereo(bool b);
-			virtual bool isStereo();
+			void setFollowStereo(bool b);
+			bool isFollowingStereo();
+			void setStereo(bool b);
+			bool isStereo();
 			int getOutput();
 			void setOutput(int i);
 			void setVolumeIndividualOut(int i);
@@ -37,6 +37,7 @@ namespace mpc {
 			void setFxSendLevel(int i);
 			int getFxSendLevel();
 
+		public:
 			MixerChannel();
 
 		};
