@@ -34,8 +34,8 @@ MixerObserver::MixerObserver(mpc::Mpc* mpc)
 	samplerGui->addObserver(this);
 	bank = samplerGui->getBank();
 	mixGui = uis->getMixerGui();
+	mixGui->setXPos(samplerGui->getPad());
 	mixGui->addObserver(this);
-
 	ls = mpc->getLayeredScreen();
 	auto lLs = ls.lock();
 	sampler = mpc->getSampler();

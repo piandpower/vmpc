@@ -20,6 +20,12 @@ MixerControls::MixerControls(mpc::Mpc* mpc)
 {
 }
 
+void MixerControls::pad(int i, int velo, bool repeat, int tick) {
+	init();
+	mixerGui->setXPos(i);
+	super::pad(i, velo, repeat, tick);
+}
+
 void MixerControls::up()
 {
     init();
