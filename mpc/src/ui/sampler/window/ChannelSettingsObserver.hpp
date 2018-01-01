@@ -59,14 +59,17 @@ namespace mpc {
 				std::weak_ptr<mpc::lcdgui::Field> fxPathField{};
 				std::weak_ptr<mpc::lcdgui::Field> followStereoField{};
 				std::vector<std::string> fxPathNames{};
-				std::vector<std::string> stereoNames{};
 				std::vector<std::string> stereoNamesSlash{};
-				std::vector<std::string> monoNames{};
 
 			private:
-				void displayOutputField();
 				void displayNoteField();
-				void displayPanningField();
+				void displayStereoVolume();
+				void displayIndividualVolume();
+				void displayFxSendLevel();
+				void displayPanning();
+				void displayOutput();
+				void displayFxPath();
+				void displayFollowStereo();
 				void displayChannel();
 
 			public:

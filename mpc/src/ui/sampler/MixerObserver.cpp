@@ -28,7 +28,6 @@ MixerObserver::MixerObserver(mpc::Mpc* mpc)
 	this->mpc = mpc;
 	fxPathNames = { "--", "M1", "M2", "R1", "R2" };
 	stereoNames = { "-", "12", "12", "34", "34", "56", "56", "78", "78" };
-	stereoNamesSlash = { "-", "1/2", "1/2", "3/4", "3/4", "5/6", "5/6", "7/8", "7/8" };
 	monoNames = { "-", "1", "2", "3", "4", "5", "6", "7", "8" };
 	auto uis = mpc->getUis().lock();
 	samplerGui = uis->getSamplerGui();
