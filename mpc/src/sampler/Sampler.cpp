@@ -13,7 +13,8 @@
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
+#include <sampler/IndivFxMixerChannel.hpp>
 #include <sampler/MonitorOutput.hpp>
 #include <sampler/Sound.hpp>
 #include <sequencer/NoteEvent.hpp>
@@ -59,9 +60,14 @@ int Sampler::getInputLevel() {
 	return inputLevel;
 }
 
-vector<weak_ptr<mpc::sampler::MixerChannel>> Sampler::getDrumMixer(int i)
+vector<weak_ptr<mpc::sampler::StereoMixerChannel>> Sampler::getDrumStereoMixerChannels(int i)
 {
-	return mpc->getDrums()[i]->getMixerChannels();
+	return mpc->getDrums()[i]->getStereoMixerChannels();
+}
+
+vector<weak_ptr<mpc::sampler::IndivFxMixerChannel>> Sampler::getDrumIndivFxMixerChannels(int i)
+{
+	return mpc->getDrums()[i]->getIndivFxMixerChannels();
 }
 
 const int Sampler::VU_BUFFER_SIZE;
@@ -722,7 +728,7 @@ void Sampler::deleteSound(weak_ptr<Sound> sound) {
 	}
 
 	stable_sort(sounds.begin(), sounds.end(), memIndexCmp);
-	
+
 	for (int i = 0; i < sounds.size(); i++) {
 		sounds[i]->setMemoryIndex(i);
 	}
@@ -745,23 +751,23 @@ vector<float> Sampler::mergeToStereo(vector<float> fa0, vector<float> fa1)
 	/*
 	int newSampleLength = fa0.size() * 2;
 	if (fa1.size() > fa0.size()) {
-		newSampleLength = fa1.size() * 2;
+	newSampleLength = fa1.size() * 2;
 	}
 	auto newSampleData = vector<float>(newSampleLength);
 	int k = 0;
 	for (int i = 0; i < newSampleLength; i = i + 2) {
-		if (fa0.size() > k) {
-			newSampleData[i] = fa0[k];
-		}
-		else {
-			newSampleData[i] = 0.0f;
-		}
-		if (fa1.size() > k) {
-			newSampleData[i + 1] = fa1[k++];
-		}
-		else {
-			newSampleData[i + 1] = 0.0f;
-		}
+	if (fa0.size() > k) {
+	newSampleData[i] = fa0[k];
+	}
+	else {
+	newSampleData[i] = 0.0f;
+	}
+	if (fa1.size() > k) {
+	newSampleData[i + 1] = fa1[k++];
+	}
+	else {
+	newSampleData[i + 1] = 0.0f;
+	}
 	}*/
 	int newLengthFrames = fa0.size() > fa1.size() ? fa0.size() : fa1.size();
 	vector<float> newSampleData = vector<float>(newLengthFrames * 2);

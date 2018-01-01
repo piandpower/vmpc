@@ -9,7 +9,8 @@ namespace mpc {
 
 	namespace sampler {
 		class Program;
-		class MixerChannel;
+		class StereoMixerChannel;
+		class IndivFxMixerChannel;
 	}
 
 	namespace file {
@@ -60,8 +61,10 @@ namespace mpc {
 
 			public:
 				std::vector<char> getBytes();
-				mpc::sampler::MixerChannel* getMixParameters(int note);
+				mpc::sampler::StereoMixerChannel* getStereoMixerChannel(int note);
+				mpc::sampler::IndivFxMixerChannel* getIndivFxMixerChannel(int note);
 
+			public:
 				ApsProgram(std::vector<char> loadBytes);
 				ApsProgram(mpc::sampler::Program* program, int index);
 			};

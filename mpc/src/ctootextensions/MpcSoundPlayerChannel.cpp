@@ -12,7 +12,8 @@
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Program.hpp>
 #include <sampler/Sampler.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
+#include <sampler/IndivFxMixerChannel.hpp>
 
 // ctoot
 #include <audio/core/MetaInfo.hpp>
@@ -40,7 +41,8 @@ MpcSoundPlayerChannel::MpcSoundPlayerChannel(weak_ptr<MpcSoundPlayerControls> co
 	mixer = lControls->getMixer();
 	server = lControls->getServer();
 	for (int i = 0; i < 64; i++) {
-		mixerChannels.push_back(make_shared<mpc::sampler::MixerChannel>());
+		stereoMixerChannels.push_back(make_shared<mpc::sampler::StereoMixerChannel>());
+		indivFxMixerChannels.push_back(make_shared<mpc::sampler::IndivFxMixerChannel>());
 	}
 }
 
@@ -117,19 +119,18 @@ void MpcSoundPlayerChannel::mpcNoteOn(int track, int note, int velo, int varType
 	}
 
 	auto vars = lSampler->getSound(soundNumber);
-	auto pgmMixerChannel = lProgram->getMixerChannel(padNumber);
-	auto lPmc = pgmMixerChannel.lock();
+	auto smc = lProgram->getStereoMixerChannel(padNumber).lock();
+	auto ifmc = lProgram->getIndivFxMixerChannel(padNumber).lock();
 	shared_ptr<ctoot::audio::mixer::AudioMixer> lMixer = mixer.lock();
 	auto audioControlsChain = lMixer->getMixerControls()->getStripControls(to_string(voice->getStripNumber()));
 	auto mainMixControls = dynamic_pointer_cast<ctoot::audio::mixer::MainMixControls>(audioControlsChain->getControls()[4]).get();
-	dynamic_pointer_cast<ctoot::audio::mixer::PanControl>(mainMixControls->getControls()[0])->setValue((lPmc->getPanning()) / 100.0);
-	dynamic_pointer_cast<ctoot::audio::fader::FaderControl>(mainMixControls->getControls()[2])->setValue(lPmc->getLevel());
+	dynamic_pointer_cast<ctoot::audio::mixer::PanControl>(mainMixControls->getControls()[0])->setValue((smc->getPanning()) / 100.0);
+	dynamic_pointer_cast<ctoot::audio::fader::FaderControl>(mainMixControls->getControls()[2])->setValue(smc->getLevel());
 	audioControlsChain = lMixer->getMixerControls()->getStripControls(to_string(voice->getStripNumber() + 32));
 	mainMixControls = dynamic_pointer_cast<ctoot::audio::mixer::MainMixControls>(audioControlsChain->getControls()[4]).get();
-	if (lPmc->getOutput() > 0) {
+	if (ifmc->getOutput() > 0) {
 		if (vars.lock()->isMono()) {
-			if (lPmc->getOutput() % 2 == 1) {
-
+			if (ifmc->getOutput() % 2 == 1) {
 				mixerConnections[voice->getStripNumber() - 1]->setLeftEnabled(true);
 				mixerConnections[voice->getStripNumber() - 1]->setRightEnabled(false);
 			}
@@ -148,11 +149,11 @@ void MpcSoundPlayerChannel::mpcNoteOn(int track, int note, int velo, int varType
 
 	if (faderControl->getValue() != 0) faderControl->setValue(0);
 
-	auto auxBus = (int)(ceil((lPmc->getOutput() - 2) / 2.0));
+	auto auxBus = (int)(ceil((ifmc->getOutput() - 2) / 2.0));
 	for (int i = 0; i < 4; i++) {
 		auto compoundControl = dynamic_pointer_cast<ctoot::control::CompoundControl>(audioControlsChain->getControls()[i]).get();
 		if (i == auxBus) {
-			dynamic_pointer_cast<MpcFaderControl>(compoundControl->getControls()[2])->setValue((float)(lPmc->getVolumeIndividualOut()));
+			dynamic_pointer_cast<MpcFaderControl>(compoundControl->getControls()[2])->setValue((float)(ifmc->getVolumeIndividualOut()));
 		}
 		else {
 			dynamic_pointer_cast<MpcFaderControl>(compoundControl->getControls()[2])->setValue(0);
@@ -240,10 +241,18 @@ weak_ptr<ctoot::audio::core::MetaInfo> MpcSoundPlayerChannel::getInfo()
 	return weak_ptr<ctoot::audio::core::MetaInfo>();
 }
 
-vector<weak_ptr<mpc::sampler::MixerChannel>> MpcSoundPlayerChannel::getMixerChannels()
+vector<weak_ptr<mpc::sampler::StereoMixerChannel>> MpcSoundPlayerChannel::getStereoMixerChannels()
 {
-	vector<weak_ptr<mpc::sampler::MixerChannel>> res;
-	for (auto& m : mixerChannels)
+	vector<weak_ptr<mpc::sampler::StereoMixerChannel>> res;
+	for (auto& m : stereoMixerChannels)
+		res.push_back(m);
+	return res;
+}
+
+vector<weak_ptr<mpc::sampler::IndivFxMixerChannel>> MpcSoundPlayerChannel::getIndivFxMixerChannels()
+{
+	vector<weak_ptr<mpc::sampler::IndivFxMixerChannel>> res;
+	for (auto& m : indivFxMixerChannels)
 		res.push_back(m);
 	return res;
 }

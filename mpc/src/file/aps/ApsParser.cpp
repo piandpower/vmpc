@@ -5,13 +5,13 @@
 #include <file/aps/ApsAssignTable.hpp>
 #include <file/aps/ApsGlobalParameters.hpp>
 #include <file/aps/ApsHeader.hpp>
-//#include <file/aps/ApsMixer.hpp>
 #include <file/aps/ApsName.hpp>
 #include <file/aps/ApsSoundNames.hpp>
 #include <sampler/Program.hpp>
 #include <sampler/Sampler.hpp>
 #include <ctootextensions/MpcSoundPlayerChannel.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
+#include <sampler/IndivFxMixerChannel.hpp>
 
 #include <VecUtil.hpp>
 
@@ -66,7 +66,7 @@ ApsParser::ApsParser(mpc::Mpc* mpc, string apsNameString)
 	chunks.push_back(masterTable.getBytes());
 	chunks.push_back(vector<char>{ 4, 0, (char) 136, 1, 64, 0, 6 });
 	for (int i = 0; i < 4; i++) {
-		auto mixer = ApsMixer(sampler->getDrumMixer(i));
+		auto mixer = ApsMixer(sampler->getDrumStereoMixerChannels(i), sampler->getDrumIndivFxMixerChannels(i));
 		auto drumConfig = ApsDrumConfiguration(sampler->getDrumBusProgramNumber(i + 1), sampler->getDrum(i)->receivesPgmChange(), sampler->getDrum(i)->receivesMidiVolume());
 		chunks.push_back(mixer.getBytes());
 		if (i < 3) {

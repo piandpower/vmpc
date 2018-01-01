@@ -1,6 +1,7 @@
 #include <file/pgmwriter/Mixer.hpp>
 
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
+#include <sampler/IndivFxMixerChannel.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
 
@@ -12,13 +13,14 @@ Mixer::Mixer(mpc::sampler::Program* program)
 	mixerArray = vector<char>(384 + 3);
 	for (int i = 0; i < 64; i++) {
 		auto pad = program->getPad(i);
-		auto mc = pad->getMixerChannel().lock();
-		setVolume(i, mc->getLevel());
-		setPan(i, mc->getPanning());
-		setVolumeIndividual(i, mc->getVolumeIndividualOut());
-		setOutput(i, mc->getOutput());
-		setEffectsSendLevel(i, mc->getFxSendLevel());
-		setEffectsOutput(i, mc->getFxPath());
+		auto smc = pad->getStereoMixerChannel().lock();
+		auto ifmc = pad->getIndivFxMixerChannel().lock();
+		setVolume(i, smc->getLevel());
+		setPan(i, smc->getPanning());
+		setVolumeIndividual(i, ifmc->getVolumeIndividualOut());
+		setOutput(i, ifmc->getOutput());
+		setEffectsSendLevel(i, ifmc->getFxSendLevel());
+		setEffectsOutput(i, ifmc->getFxPath());
 	}
 	mixerArray[384] = 0;
 	mixerArray[385] = 64;

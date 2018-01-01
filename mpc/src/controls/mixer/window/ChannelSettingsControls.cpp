@@ -3,7 +3,8 @@
 #include <ui/sampler/MixerGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <sampler/Program.hpp>
-#include <sampler/mixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
+#include <sampler/IndivFxMixerChannel.hpp>
 
 using namespace mpc::controls::mixer::window;
 using namespace std;
@@ -16,7 +17,8 @@ ChannelSettingsControls::ChannelSettingsControls(mpc::Mpc* mpc)
 void ChannelSettingsControls::turnWheel(int i)
 {
     init();
-	auto lMc = mixerChannel.lock();
+	auto smc = stereoMixerChannel.lock();
+	auto ifmc = indivFxMixerChannel.lock();
 	if (param.compare("note") == 0) {
 		int note = samplerGui->getNote() + i;
 		if (note >= 35 && note <= 98) {
@@ -25,25 +27,25 @@ void ChannelSettingsControls::turnWheel(int i)
 		}
 	}
 	else if (param.compare("stereovolume") == 0) {
-		lMc->setLevel(lMc->getLevel() + i);
+		smc->setLevel(smc->getLevel() + i);
 	}
 	else if (param.compare("individualvolume") == 0) {
-		lMc->setVolumeIndividualOut(lMc->getVolumeIndividualOut() + i);
+		ifmc->setVolumeIndividualOut(ifmc->getVolumeIndividualOut() + i);
 	}
 	else if (param.compare("fxsendlevel") == 0) {
-		lMc->setFxSendLevel(lMc->getFxSendLevel() + i);
+		ifmc->setFxSendLevel(ifmc->getFxSendLevel() + i);
 	}
 	else if (param.compare("panning") == 0) {
-		lMc->setPanning(lMc->getPanning() + i);
+		smc->setPanning(smc->getPanning() + i);
 	}
 	else if (param.compare("output") == 0) {
-		lMc->setOutput(lMc->getOutput() + i);
+		ifmc->setOutput(ifmc->getOutput() + i);
 	}
 	else if (param.compare("fxpath") == 0) {
-		lMc->setFxPath(lMc->getFxPath() + i);
+		ifmc->setFxPath(ifmc->getFxPath() + i);
 	}
 	else if (param.compare("followstereo") == 0) {
-		lMc->setFollowStereo(true);
+		ifmc->setFollowStereo(true);
 	}
 }
 

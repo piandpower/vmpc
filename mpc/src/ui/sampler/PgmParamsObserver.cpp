@@ -5,7 +5,7 @@
 #include <lcdgui/Field.hpp>
 #include <lcdgui/EnvGraph.hpp>
 #include <ui/sampler/SamplerGui.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -133,7 +133,7 @@ void PgmParamsObserver::displayNote()
 	auto sampleName = sampleNumber != -1 ? lSampler->getSoundName(sampleNumber) : "OFF";
 	auto padNumber = lProgram->getPadNumberFromNote(note);
 	if (padNumber != -1) {
-		auto stereo = lProgram->getPad(padNumber)->getMixerChannel().lock()->isStereo() && sampleNumber != -1 ? "(ST)" : "";
+		auto stereo = lProgram->getPad(padNumber)->getStereoMixerChannel().lock()->isStereo() && sampleNumber != -1 ? "(ST)" : "";
 		auto padName = lSampler->getPadName(padNumber);
 		noteField.lock()->setText(to_string(note) + "/" + padName + "-" + moduru::lang::StrUtil::padRight(sampleName, " ", 16) + stereo);
 	}

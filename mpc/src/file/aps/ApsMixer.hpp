@@ -6,7 +6,8 @@
 namespace mpc {
 
 	namespace sampler {
-		class MixerChannel;
+		class StereoMixerChannel;
+		class IndivFxMixerChannel;
 	}
 
 	namespace file {
@@ -25,7 +26,8 @@ namespace mpc {
 				std::vector<char> saveBytes = std::vector<char>(384);
 				
 			public: 
-				mpc::sampler::MixerChannel* getMixVariables(int note);
+				mpc::sampler::StereoMixerChannel* getStereoMixerChannel(int note);
+				mpc::sampler::IndivFxMixerChannel* getIndivFxMixerChannel(int note);
 				int getFxPath(int note);
 				int getLevel(int note);
 				int getPanning(int note);
@@ -34,8 +36,9 @@ namespace mpc {
 				int getSendLevel(int note);
 				std::vector<char> getBytes();
 
+			public:
 				ApsMixer(std::vector<char> loadBytes);
-				ApsMixer(std::vector<std::weak_ptr<mpc::sampler::MixerChannel>> mixer);
+				ApsMixer(std::vector<std::weak_ptr<mpc::sampler::StereoMixerChannel>> smc, std::vector<std::weak_ptr<mpc::sampler::IndivFxMixerChannel>> ifmc);
                 
 			};
 

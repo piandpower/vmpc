@@ -4,7 +4,7 @@
 #include <file/aps/ApsNoteParameters.hpp>
 #include <file/aps/ApsSlider.hpp>
 #include <file/pgmwriter/Pads.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
 #include <sampler/Program.hpp>
 
 #include <lang/StrUtil.hpp>
@@ -52,12 +52,14 @@ ApsProgram::ApsProgram(mpc::sampler::Program* program, int index)
 		byteList.push_back(np->getBytes());
 	}
 	byteList.push_back(vector<char>{ 6 });
-	auto mixerChannels = vector <weak_ptr<mpc::sampler::MixerChannel>>(64);
+	auto smcs = vector<weak_ptr<mpc::sampler::StereoMixerChannel>>(64);
+	auto ifmcs = vector<weak_ptr<mpc::sampler::IndivFxMixerChannel>>(64);
 	for (int i = 0; i < 64; i++) {
-		mixerChannels[i] = program->getMixerChannel(i);
+		smcs[i] = program->getStereoMixerChannel(i);
+		ifmcs[i] = program->getIndivFxMixerChannel(i);
 	}
 
-	auto mixer = new ApsMixer(mixerChannels);
+	auto mixer = new ApsMixer(smcs, ifmcs);
 	byteList.push_back(mixer->getBytes());
 	byteList.push_back(vector<char>{ 0, 64, 0 });
 	auto assignTable = vector<int>(64);
@@ -126,7 +128,12 @@ vector<char> ApsProgram::getBytes()
     return saveBytes;
 }
 
-mpc::sampler::MixerChannel* ApsProgram::getMixParameters(int note)
+mpc::sampler::StereoMixerChannel* ApsProgram::getStereoMixerChannel(int note)
 {
-	return mixer->getMixVariables(note);
+	return mixer->getStereoMixerChannel(note);
+}
+
+mpc::sampler::IndivFxMixerChannel* ApsProgram::getIndivFxMixerChannel(int note)
+{
+	return mixer->getIndivFxMixerChannel(note);
 }

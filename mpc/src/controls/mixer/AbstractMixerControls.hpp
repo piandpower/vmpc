@@ -6,7 +6,8 @@
 namespace mpc {
 	class Mpc;
 	namespace sampler {
-		class MixerChannel;
+		class StereoMixerChannel;
+		class IndivFxMixerChannel;
 	}
 
 	namespace ui {
@@ -29,7 +30,8 @@ namespace mpc {
 			protected:
 				mpc::ui::sampler::MixerGui* mixerGui{ nullptr };
 				mpc::ui::sampler::MixerSetupGui* mixerSetupGui{ nullptr };
-				std::weak_ptr<mpc::sampler::MixerChannel> mixerChannel{};
+				std::weak_ptr<mpc::sampler::StereoMixerChannel> stereoMixerChannel;
+				std::weak_ptr<mpc::sampler::IndivFxMixerChannel> indivFxMixerChannel;
 
 			protected:
 				void init() override;

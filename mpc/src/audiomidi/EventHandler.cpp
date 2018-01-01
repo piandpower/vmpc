@@ -21,7 +21,7 @@
 #include <ui/vmpc/MidiGui.hpp>
 #include <sampler/Program.hpp>
 #include <sampler/Sampler.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
 #include <ctootextensions/MpcMultiMidiSynth.hpp>
 #include <thirdp/bcmath/bcmath_stl.h>
 //#include <midi/InvalidMidiDataException.hpp>
@@ -125,7 +125,7 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 		auto pad = me->getPad();
 		auto lSampler = sampler.lock();
 		auto p = lSampler->getProgram(lSampler->getDrumBusProgramNumber(track->getBusNumber())).lock();
-		auto mixer = p->getMixerChannel(pad).lock();
+		auto mixer = p->getStereoMixerChannel(pad).lock();
 		if (me->getParameter() == 0) {
 			mixer->setLevel(me->getValue());
 		}

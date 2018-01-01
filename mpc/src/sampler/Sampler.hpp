@@ -28,7 +28,8 @@ namespace mpc {
 	namespace sampler {
 
 		class MonitorOutput;
-		class MixerChannel;
+		class StereoMixerChannel;
+		class IndivFxMixerChannel;
 
 		class Sampler
 			: public virtual ctoot::audio::server::AudioClient
@@ -190,7 +191,8 @@ namespace mpc {
 			int getNextSoundIndex(int j, bool up);
 			void setSoundGuiPrevSound();
 			void setSoundGuiNextSound();
-			std::vector<std::weak_ptr<mpc::sampler::MixerChannel>> getDrumMixer(int i);
+			std::vector<std::weak_ptr<mpc::sampler::StereoMixerChannel>> getDrumStereoMixerChannels(int i);
+			std::vector<std::weak_ptr<mpc::sampler::IndivFxMixerChannel>> getDrumIndivFxMixerChannels(int i);
 			std::weak_ptr<Sound> copySound(std::weak_ptr<Sound> source);
 			void setActiveInput(ctoot::audio::server::IOAudioProcess* input);
 

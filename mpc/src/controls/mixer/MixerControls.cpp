@@ -3,14 +3,15 @@
 #include <ui/sampler/MixerGui.hpp>
 #include <ui/sampler/MixerSetupGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
+#include <sampler/IndivFxMixerChannel.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
 #include <sequencer/MixerEvent.hpp>
 #include <sequencer/Sequence.hpp>
 #include <sequencer/Track.hpp>
 #include <sequencer/Sequencer.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
 
 using namespace mpc::controls::mixer;
 using namespace std;
@@ -83,24 +84,29 @@ void MixerControls::turnWheel(int i)
 	init();
 	int pad = mixerGui->getXPos() + (bank_ * 16);
 	auto lProgram = program.lock();
-	auto m = lProgram->getPad(pad)->getMixerChannel().lock();
-	auto ma = vector<weak_ptr<mpc::sampler::MixerChannel>>(16);
+	
+	auto smc = lProgram->getPad(pad)->getStereoMixerChannel().lock();
+	auto smcs = vector<weak_ptr<mpc::sampler::StereoMixerChannel>>(16);
+	auto ifmc = lProgram->getPad(pad)->getIndivFxMixerChannel().lock();
+	auto ifmcs = vector<weak_ptr<mpc::sampler::IndivFxMixerChannel>>(16);
+
 	for (int i = 0; i < 16; i++) {
-		ma[i] = lProgram->getPad(i + (bank_ * 16))->getMixerChannel();
+		smcs[i] = lProgram->getPad(i + (bank_ * 16))->getStereoMixerChannel();
+		ifmcs[i] = lProgram->getPad(i + (bank_ * 16))->getIndivFxMixerChannel();
 	}
 
 	if (mixerGui->getTab() == 0) {
 		bool record = sequencer.lock()->isRecordingOrOverdubbing() && mixerSetupGui->isRecordMixChangesEnabled();
 		if (mixerGui->getYPos() == 0) {
 			if (!mixerGui->getLink()) {
-				m->setPanning(m->getPanning() + i);
+				smc->setPanning(smc->getPanning() + i);
 				if (record) {
-					recordMixerEvent(pad, 1, m->getPanning());
+					recordMixerEvent(pad, 1, smc->getPanning());
 				}
 			}
 			else {
 				int padCounter = 0;
-				for (auto mcTemp : ma) {
+				for (auto mcTemp : smcs) {
 					auto lMcTemp = mcTemp.lock();
 					lMcTemp->setPanning(lMcTemp->getPanning() + i);
 					if (record) {
@@ -110,16 +116,15 @@ void MixerControls::turnWheel(int i)
 			}
 		}
 		else if (mixerGui->getYPos() == 1) {
-
 			if (!mixerGui->getLink()) {
-				m->setLevel(m->getLevel() + i);
+				smc->setLevel(smc->getLevel() + i);
 				if (record) {
-					recordMixerEvent(pad, 0, m->getLevel());
+					recordMixerEvent(pad, 0, smc->getLevel());
 				}
 			}
 			else {
 				auto padCounter = 0;
-				for (auto mcTemp : ma) {
+				for (auto mcTemp : smcs) {
 					auto lMcTemp = mcTemp.lock();
 					lMcTemp->setLevel(lMcTemp->getLevel() + i);
 					if (record) {
@@ -132,11 +137,11 @@ void MixerControls::turnWheel(int i)
 	else if (mixerGui->getTab() == 1) {
 		if (mixerGui->getYPos() == 0) {
 			if (!mixerGui->getLink()) {
-				m->setOutput(m->getOutput() + i);
+				ifmc->setOutput(ifmc->getOutput() + i);
 				return;
 			}
 			else {
-				for (auto mcTemp : ma) {
+				for (auto mcTemp : ifmcs) {
 					auto lMcTemp = mcTemp.lock();
 					lMcTemp->setOutput(lMcTemp->getOutput() + i);
 				}
@@ -144,10 +149,10 @@ void MixerControls::turnWheel(int i)
 		}
 		else if (mixerGui->getYPos() == 1) {
 			if (!mixerGui->getLink()) {
-				m->setVolumeIndividualOut(m->getVolumeIndividualOut() + i);
+				ifmc->setVolumeIndividualOut(ifmc->getVolumeIndividualOut() + i);
 			}
 			else {
-				for (auto mcTemp : ma) {
+				for (auto mcTemp : ifmcs) {
 					auto lMcTemp = mcTemp.lock();
 					lMcTemp->setVolumeIndividualOut(lMcTemp->getVolumeIndividualOut() + i);
 				}
@@ -157,10 +162,10 @@ void MixerControls::turnWheel(int i)
 	else if (mixerGui->getTab() == 2) {
 		if (mixerGui->getYPos() == 0) {
 			if (!mixerGui->getLink()) {
-				m->setFxPath(m->getFxPath() + i);
+				ifmc->setFxPath(ifmc->getFxPath() + i);
 			}
 			else {
-				for (auto mcTemp : ma) {
+				for (auto mcTemp : ifmcs) {
 					auto lMcTemp = mcTemp.lock();
 					lMcTemp->setFxPath(lMcTemp->getFxPath() + i);
 				}
@@ -168,10 +173,10 @@ void MixerControls::turnWheel(int i)
 		}
 		else if (mixerGui->getYPos() == 1) {
 			if (!mixerGui->getLink()) {
-				m->setFxSendLevel(m->getFxSendLevel() + i);
+				ifmc->setFxSendLevel(ifmc->getFxSendLevel() + i);
 			}
 			else {
-				for (auto mcTemp : ma) {
+				for (auto mcTemp : ifmcs) {
 					auto lMcTemp = mcTemp.lock();
 					lMcTemp->setFxSendLevel(lMcTemp->getFxSendLevel() + i);
 				}

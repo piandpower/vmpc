@@ -1,7 +1,7 @@
 #include <disk/ProgramImportAdapter.hpp>
 
 #include <Mpc.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -38,7 +38,7 @@ void ProgramImportAdapter::initMixer(int note)
 	if (!sound) return;
 
 	auto pad = lResult->getPad(lResult->getPadNumberFromNote(note));
-	auto mc = pad->getMixerChannel().lock();
+	auto mc = pad->getStereoMixerChannel().lock();
 	if (sound->isMono()) {
 		mc->setStereo(false);
 	}

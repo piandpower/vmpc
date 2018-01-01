@@ -4,7 +4,7 @@
 #include <Mpc.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <ui/sampler/SoundGui.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -48,7 +48,7 @@ void KeepSound::execute()
 		auto pn = lProgram->getPadNumberFromNote(samplerGui->getNote());
 		if (pn != -1) {
 			auto pad = lProgram->getPad(pn);
-			auto mixerChannel = pad->getMixerChannel().lock();
+			auto mixerChannel = pad->getStereoMixerChannel().lock();
 			if (lSound->isMono()) {
 				mixerChannel->setStereo(false);
 			}

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <observer/Observable.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
+#include <sampler/IndivFxMixerChannel.hpp>
 
 #include <memory>
 
@@ -20,13 +21,15 @@ namespace mpc {
 
 		private:
 			int note{ 0 };
-			std::shared_ptr<MixerChannel> mixerChannel{};
 			int number{ 0 };
+			std::shared_ptr<StereoMixerChannel> mixerChannel{};
+			std::shared_ptr<IndivFxMixerChannel> indivFxMixerChannel{};
 
 		public:
 			void setNote(int i);
 			int getNote();
-			std::weak_ptr<MixerChannel> getMixerChannel();
+			std::weak_ptr<StereoMixerChannel> getStereoMixerChannel();
+			std::weak_ptr<IndivFxMixerChannel> getIndivFxMixerChannel();
 			int getNumber();
 
 		public:

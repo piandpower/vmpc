@@ -1,6 +1,7 @@
 #include <file/aps/ApsMixer.hpp>
 
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
+#include <sampler/IndivFxMixerChannel.hpp>
 
 using namespace mpc::file::aps;
 using namespace std;
@@ -17,28 +18,35 @@ ApsMixer::ApsMixer(vector<char> loadBytes)
 	}
 }
 
-ApsMixer::ApsMixer(vector<weak_ptr<mpc::sampler::MixerChannel>> mixer) 
+ApsMixer::ApsMixer(vector<weak_ptr<mpc::sampler::StereoMixerChannel>> smcs, vector<weak_ptr<mpc::sampler::IndivFxMixerChannel>> ifmcs)
 {
 	for (int i = 0; i < 64; i++) {
-		auto mixerChannel = mixer[i].lock();
-		saveBytes[(i * 6) + 0] = (int8_t)(mixerChannel->getFxPath());
+		auto mixerChannel = smcs[i].lock();
+		auto indivFxMixerChannel = ifmcs[i].lock();
+		saveBytes[(i * 6) + 0] = (int8_t)(indivFxMixerChannel->getFxPath());
 		saveBytes[(i * 6) + 1] = (int8_t)(mixerChannel->getLevel());
 		saveBytes[(i * 6) + 2] = (int8_t)((mixerChannel->getPanning()));
-		saveBytes[(i * 6) + 3] = (int8_t)(mixerChannel->getVolumeIndividualOut());
-		saveBytes[(i * 6) + 4] = (int8_t)(mixerChannel->getOutput());
-		saveBytes[(i * 6) + 5] = (int8_t)(mixerChannel->getFxSendLevel());
+		saveBytes[(i * 6) + 3] = (int8_t)(indivFxMixerChannel->getVolumeIndividualOut());
+		saveBytes[(i * 6) + 4] = (int8_t)(indivFxMixerChannel->getOutput());
+		saveBytes[(i * 6) + 5] = (int8_t)(indivFxMixerChannel->getFxSendLevel());
 	}
 }
 
-mpc::sampler::MixerChannel* ApsMixer::getMixVariables(int noteNumber)
+mpc::sampler::StereoMixerChannel* ApsMixer::getStereoMixerChannel(int noteNumber)
 {
-	auto params = new mpc::sampler::MixerChannel();
-	params->setFxPath(getFxPath(noteNumber));
+	auto params = new mpc::sampler::StereoMixerChannel();
 	params->setLevel(getLevel(noteNumber));
 	params->setPanning(getPanning(noteNumber));
+	return params;
+}
+
+mpc::sampler::IndivFxMixerChannel* ApsMixer::getIndivFxMixerChannel(int noteNumber)
+{
+	auto params = new mpc::sampler::IndivFxMixerChannel();
 	params->setVolumeIndividualOut(getIndividualLevel(noteNumber));
 	params->setOutput(getIndividualOutput(noteNumber));
 	params->setFxSendLevel(getSendLevel(noteNumber));
+	params->setFxPath(getFxPath(noteNumber));
 	return params;
 }
 

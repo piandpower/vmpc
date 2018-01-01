@@ -74,4 +74,3 @@ int Mixer::getEffectsSendLevel(int pad)
     auto effectsSendLevel = getMixerArray()[(pad * 6) + 5];
     return effectsSendLevel;
 }
-

@@ -28,7 +28,8 @@ namespace mpc {
 
 	namespace sampler {
 		class Sampler;
-		class MixerChannel;
+		class StereoMixerChannel;
+		class IndivFxMixerChannel;
 		class Program;
 		class NoteParameters;
 		class Sound;
@@ -56,7 +57,8 @@ namespace mpc {
 			int programNumber{ 0 };
 			bool receivePgmChange{ false };
 			bool receiveMidiVolume{ false };
-			std::vector<std::shared_ptr<mpc::sampler::MixerChannel>> mixerChannels{};
+			std::vector<std::shared_ptr<mpc::sampler::StereoMixerChannel>> stereoMixerChannels;
+			std::vector<std::shared_ptr<mpc::sampler::IndivFxMixerChannel>> indivFxMixerChannels;
 
 		public:
 			int getProgram() override;
@@ -82,7 +84,8 @@ namespace mpc {
 			void allSoundOff(int frameOffset);
 			void connectVoices();
 			std::weak_ptr<ctoot::audio::core::MetaInfo> getInfo();
-			std::vector<std::weak_ptr<mpc::sampler::MixerChannel>> getMixerChannels();
+			std::vector<std::weak_ptr<mpc::sampler::StereoMixerChannel>> getStereoMixerChannels();
+			std::vector<std::weak_ptr<mpc::sampler::IndivFxMixerChannel>> getIndivFxMixerChannels();
 			int getDrumNumber();
 
 		public:

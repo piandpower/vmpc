@@ -5,7 +5,6 @@
 #include <ui/sampler/SamplerGui.hpp>
 #include <ui/sampler/MixerSetupGui.hpp>
 #include <StartUp.hpp>
-#include <sampler/MixerChannel.hpp>
 #include <sampler/Sampler.hpp>
 
 using namespace mpc::sampler;
@@ -16,7 +15,8 @@ Pad::Pad(mpc::Mpc* mpc, int number)
 	this->mpc = mpc;
 	this->number = number;
 	note = mpc::StartUp::getUserDefaults().lock()->getPadNotes()[number];
-	mixerChannel = make_shared<MixerChannel>();
+	mixerChannel = make_shared<StereoMixerChannel>();
+	indivFxMixerChannel = make_shared<IndivFxMixerChannel>();
 }
 
 void Pad::setNote(int i)
@@ -45,10 +45,16 @@ int Pad::getNote()
 	return note;
 }
 
-weak_ptr<MixerChannel> Pad::getMixerChannel()
+weak_ptr<StereoMixerChannel> Pad::getStereoMixerChannel()
 {
 	//if (mpc->getUis().lock()->getMixerSetupGui()->
     return mixerChannel;
+}
+
+weak_ptr<IndivFxMixerChannel> Pad::getIndivFxMixerChannel()
+{
+	//if (mpc->getUis().lock()->getMixerSetupGui()->
+	return indivFxMixerChannel;
 }
 
 int Pad::getNumber()

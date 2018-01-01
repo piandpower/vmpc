@@ -12,7 +12,8 @@ namespace mpc {
 
 	namespace sampler {
 
-		class MixerChannel;
+		class StereoMixerChannel;
+		class IndivFxMixerChannel;
 		class Pad;
 		class Sampler;
 
@@ -36,7 +37,8 @@ namespace mpc {
 			std::string getName();
 			NoteParameters* getNoteParameters(int i);
 			Pad* getPad(int i);
-			std::weak_ptr<MixerChannel> getMixerChannel(int padNumber);
+			std::weak_ptr<StereoMixerChannel> getStereoMixerChannel(int pad);
+			std::weak_ptr<IndivFxMixerChannel> getIndivFxMixerChannel(int pad);
 			int getPadNumberFromNote(int note);
 			std::vector<NoteParameters*> getNotesParameters();
 			mpc::sampler::PgmSlider* getSlider();

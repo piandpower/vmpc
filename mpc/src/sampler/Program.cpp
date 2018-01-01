@@ -1,5 +1,5 @@
 #include <sampler/Program.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
 #include <sampler/Sampler.hpp>
 #include <sampler/Pad.hpp>
 
@@ -62,9 +62,14 @@ Pad* Program::getPad(int i)
 	return pads[i];
 }
 
-weak_ptr<MixerChannel> Program::getMixerChannel(int padNumber)
+weak_ptr<StereoMixerChannel> Program::getStereoMixerChannel(int pad)
 {
-	return pads[padNumber]->getMixerChannel();
+	return pads[pad]->getStereoMixerChannel();
+}
+
+weak_ptr<IndivFxMixerChannel> Program::getIndivFxMixerChannel(int pad)
+{
+	return pads[pad]->getIndivFxMixerChannel();
 }
 
 int Program::getPadNumberFromNote(int note)

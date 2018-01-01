@@ -4,7 +4,7 @@
 #include <ui/sampler/SamplerGui.hpp>
 #include <ui/sampler/SoundGui.hpp>
 #include <ui/sampler/window/SamplerWindowGui.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -92,7 +92,7 @@ void PgmAssignControls::turnWheel(int i)
 		auto sound = lSampler->getSound(lastNp->getSndNumber()).lock();
 		if (sound) {
 			if (sound->isMono()) {
-				lastPad->getMixerChannel().lock()->setStereo(false);
+				lastPad->getStereoMixerChannel().lock()->setStereo(false);
 			}
 			if (sound->isLoopEnabled()) {
 				lastNp->setVoiceOverlap(2);

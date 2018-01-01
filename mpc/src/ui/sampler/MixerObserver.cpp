@@ -9,7 +9,8 @@
 #include <ui/sampler/MixerGui.hpp>
 #include <ui/sampler/MixerSetupGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
+#include <sampler/IndivFxMixerChannel.hpp>
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -47,9 +48,10 @@ MixerObserver::MixerObserver(mpc::Mpc* mpc)
 
 	for (int i = (bank * 16); i < (bank * 16) + 16; i++) {
 		auto pad = program.lock()->getPad(i);
-		auto mixerChannel = pad->getMixerChannel();
-		auto lMc = mixerChannel.lock();
-		lMc->addObserver(this);
+		auto stMixerChannel = pad->getStereoMixerChannel().lock();
+		auto indivFxMixerChannel = pad->getIndivFxMixerChannel().lock();
+		stMixerChannel->addObserver(this);
+		indivFxMixerChannel->addObserver(this);
 	}
 
 	if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
@@ -110,11 +112,6 @@ void MixerObserver::initPadNameLabels()
 
 void MixerObserver::initMixerStrips()
 {
-	auto lProgram = program.lock();
-	for (int i = (bank * 16); i < (bank * 16) + 16; i++) {
-		auto pad = lProgram->getPad(i);
-		auto mixerChannel = pad->getMixerChannel();
-	}
 	mixerStrips.clear();
 	for (int i = 0; i < 16; i++) {
 		auto mixerStrip = new mpc::lcdgui::MixerStrip(i, bank, mpc);
@@ -128,24 +125,24 @@ void MixerObserver::initMixerStrips()
 void MixerObserver::displayMixerStrips()
 {
 	for (int i = 0; i < 16; i++) {
-		auto mixerChannel = program.lock()->getPad(i + (bank * 16))->getMixerChannel();
-		auto lMc = mixerChannel.lock();
+		auto smc = program.lock()->getPad(i + (bank * 16))->getStereoMixerChannel().lock();
+		auto ifmc = program.lock()->getPad(i + (bank * 16))->getIndivFxMixerChannel().lock();
 		if (mixGui->getTab() == 0) {
-			mixerStrips[i]->setValueA(lMc->getPanning());
-			mixerStrips[i]->setValueB(lMc->getLevel());
+			mixerStrips[i]->setValueA(smc->getPanning());
+			mixerStrips[i]->setValueB(smc->getLevel());
 		}
 		else if (mixGui->getTab() == 1) {
-			if (lMc->isStereo()) {
-				mixerStrips[i]->setValueAString(stereoNames[lMc->getOutput()]);
+			if (smc->isStereo()) {
+				mixerStrips[i]->setValueAString(stereoNames[ifmc->getOutput()]);
 			}
 			else {
-				mixerStrips[i]->setValueAString(monoNames[lMc->getOutput()]);
+				mixerStrips[i]->setValueAString(monoNames[ifmc->getOutput()]);
 			}
-			mixerStrips[i]->setValueB(lMc->getVolumeIndividualOut());
+			mixerStrips[i]->setValueB(ifmc->getVolumeIndividualOut());
 		}
 		else if (mixGui->getTab() == 2) {
-			mixerStrips[i]->setValueAString(fxPathNames[lMc->getFxPath()]);
-			mixerStrips[i]->setValueB(lMc->getFxSendLevel());
+			mixerStrips[i]->setValueAString(fxPathNames[ifmc->getFxPath()]);
+			mixerStrips[i]->setValueB(ifmc->getFxSendLevel());
 		}
 	}
 }
@@ -157,18 +154,20 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 
 	for (int i = (bank * 16); i < (bank * 16) + 16; i++) {
 		auto pad = lProgram->getPad(i);
-		auto mixerChannel = pad->getMixerChannel();
-		auto lMc = mixerChannel.lock();
-		lMc->deleteObserver(this);
+		auto stereoMixerChannel = pad->getStereoMixerChannel().lock();
+		auto indivFxMixerChannel = pad->getIndivFxMixerChannel().lock();
+		stereoMixerChannel->deleteObserver(this);
+		indivFxMixerChannel->deleteObserver(this);
 	}
 
 	bank = samplerGui->getBank();
 
 	for (int i = (bank * 16); i < (bank * 16) + 16; i++) {
 		auto pad = lProgram->getPad(i);
-		auto mixerChannel = pad->getMixerChannel();
-		auto lMc = mixerChannel.lock();
-		lMc->addObserver(this);
+		auto stMixerChannel = pad->getStereoMixerChannel().lock();
+		auto indivFxMixerChannel = pad->getIndivFxMixerChannel().lock();
+		stMixerChannel->addObserver(this);
+		indivFxMixerChannel->addObserver(this);
 	}
 
 	string s = boost::any_cast<string>(arg);
@@ -199,13 +198,13 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 	else if (s.compare("volume") == 0) {
 		if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
-				auto mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
+				auto mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getStereoMixerChannel();
 				auto lMc = mixerChannel.lock();
 				mixerStrips[mixGui->getXPos()]->setValueB(lMc->getLevel());
 			}
 			else {
 				for (int i = 0; i < 16; i++) {
-					auto mc = lProgram->getPad(i + (bank * 16))->getMixerChannel().lock();
+					auto mc = lProgram->getPad(i + (bank * 16))->getStereoMixerChannel().lock();
 					mixerStrips[i]->setValueB(mc->getLevel());
 				}
 			}
@@ -214,13 +213,13 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 	else if (s.compare("panning") == 0) {
 		if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
-				auto mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
+				auto mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getStereoMixerChannel();
 				auto lMc = mixerChannel.lock();
 				mixerStrips[mixGui->getXPos()]->setValueA(lMc->getPanning());
 			}
 			else {
 				for (int i = 0; i < 16; i++) {
-					auto mc = lProgram->getPad(i + (bank * 16))->getMixerChannel().lock();
+					auto mc = lProgram->getPad(i + (bank * 16))->getStereoMixerChannel().lock();
 					mixerStrips[i]->setValueA(mc->getPanning());
 				}
 			}
@@ -229,23 +228,24 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 	else if (s.compare("output") == 0) {
 		if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
-				auto mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
-				auto lMc = mixerChannel.lock();
-				if (lMc->isStereo()) {
-					mixerStrips[mixGui->getXPos()]->setValueAString(stereoNames[lMc->getOutput()]);
+				auto smc = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getStereoMixerChannel().lock();
+				auto ifmc = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getIndivFxMixerChannel().lock();
+				if (smc->isStereo()) {
+					mixerStrips[mixGui->getXPos()]->setValueAString(stereoNames[ifmc->getOutput()]);
 				}
 				else {
-					mixerStrips[mixGui->getXPos()]->setValueAString(monoNames[lMc->getOutput()]);
+					mixerStrips[mixGui->getXPos()]->setValueAString(monoNames[ifmc->getOutput()]);
 				}
 			}
 			else {
 				for (int i = 0; i < 16; i++) {
-					auto mc = lProgram->getPad(i + bank * 16)->getMixerChannel().lock();
-					if (mc->isStereo()) {
-						mixerStrips[i]->setValueAString(stereoNames[mc->getOutput()]);
+					auto smc = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getStereoMixerChannel().lock();
+					auto ifmc = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getIndivFxMixerChannel().lock();
+					if (smc->isStereo()) {
+						mixerStrips[i]->setValueAString(stereoNames[ifmc->getOutput()]);
 					}
 					else {
-						mixerStrips[i]->setValueAString(monoNames[mc->getOutput()]);
+						mixerStrips[i]->setValueAString(monoNames[ifmc->getOutput()]);
 					}
 				}
 			}
@@ -254,13 +254,13 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 	else if (s.compare("volumeindividual") == 0) {
 		if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
-				auto mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
+				auto mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getIndivFxMixerChannel();
 				auto lMc = mixerChannel.lock();
 				mixerStrips[mixGui->getXPos()]->setValueB(lMc->getVolumeIndividualOut());
 			}
 			else {
 				for (int i = 0; i < 16; i++) {
-					auto mc = lProgram->getPad(i + (bank * 16))->getMixerChannel().lock();
+					auto mc = lProgram->getPad(i + (bank * 16))->getIndivFxMixerChannel().lock();
 					mixerStrips[i]->setValueB(mc->getVolumeIndividualOut());
 				}
 			}
@@ -269,13 +269,13 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 	else if (s.compare("fxpath") == 0) {
 		if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
-				auto mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
+				auto mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getIndivFxMixerChannel();
 				auto lMc = mixerChannel.lock();
 				mixerStrips[mixGui->getXPos()]->setValueAString(fxPathNames[lMc->getFxPath()]);
 			}
 			else {
 				for (int i = 0; i < 16; i++) {
-					auto mc = lProgram->getPad(i + (bank * 16))->getMixerChannel().lock();
+					auto mc = lProgram->getPad(i + (bank * 16))->getIndivFxMixerChannel().lock();
 					mixerStrips[i]->setValueAString(fxPathNames[mc->getFxPath()]);
 				}
 			}
@@ -284,13 +284,13 @@ void MixerObserver::update(moduru::observer::Observable* o, boost::any arg)
 	else if (s.compare("fxsendlevel") == 0) {
 		if (lLs->getCurrentScreenName().compare("mixerv2") == 0) {
 			if (!mixGui->getLink()) {
-				auto mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getMixerChannel();
+				auto mixerChannel = lProgram->getPad(mixGui->getXPos() + (bank * 16))->getIndivFxMixerChannel();
 				auto lMc = mixerChannel.lock();
 				mixerStrips[mixGui->getXPos()]->setValueB(lMc->getFxSendLevel());
 			}
 			else {
 				for (int i = 0; i < 16; i++) {
-					auto mc = lProgram->getPad(i + (bank * 16))->getMixerChannel().lock();
+					auto mc = lProgram->getPad(i + (bank * 16))->getIndivFxMixerChannel().lock();
 					mixerStrips[i]->setValueB(mc->getFxSendLevel());
 				}
 			}
@@ -395,9 +395,10 @@ MixerObserver::~MixerObserver() {
 
 	for (int i = (bank * 16); i < (bank * 16) + 16; i++) {
 		auto pad = program.lock()->getPad(i);
-		auto mixerChannel = pad->getMixerChannel();
-		auto lMc = mixerChannel.lock();
-		lMc->deleteObserver(this);
+		auto stereoMixerChannel = pad->getStereoMixerChannel().lock();
+		auto indivFxMixerChannel = pad->getIndivFxMixerChannel().lock();
+		stereoMixerChannel->deleteObserver(this);
+		indivFxMixerChannel->deleteObserver(this);
 	}
 
 	for (auto& m : mixerStrips) {

@@ -8,7 +8,7 @@
 #include <file/pgmreader/ProgramName.hpp>
 #include <file/pgmreader/PRSlider.hpp>
 #include <file/pgmreader/SoundNames.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -110,12 +110,13 @@ void PgmToProgramConverter::setMixer()
 		}
 		if (pmn != -1) {
 			auto mixindex = pmn - 35 - skippedMixerChannels;
-			auto mc = lProgram->getPad(i)->getMixerChannel().lock();
-			mc->setLevel(pgmMixer->getVolume(mixindex));
-			mc->setVolumeIndividualOut(pgmMixer->getVolumeIndividual(mixindex));
-			mc->setPanning(pgmMixer->getPan(mixindex));
-			mc->setOutput(pgmMixer->getOutput(mixindex));
-			mc->setFxPath(pgmMixer->getEffectsOutput(mixindex));
+			auto smc = lProgram->getPad(i)->getStereoMixerChannel().lock();
+			auto ifmc = lProgram->getPad(i)->getIndivFxMixerChannel().lock();
+			smc->setLevel(pgmMixer->getVolume(mixindex));
+			smc->setPanning(pgmMixer->getPan(mixindex));
+			ifmc->setVolumeIndividualOut(pgmMixer->getVolumeIndividual(mixindex));
+			ifmc->setOutput(pgmMixer->getOutput(mixindex));
+			ifmc->setFxPath(pgmMixer->getEffectsOutput(mixindex));
 		}
 		else {
 			skippedMixerChannels++;

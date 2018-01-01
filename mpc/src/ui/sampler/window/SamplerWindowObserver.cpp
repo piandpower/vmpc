@@ -5,7 +5,7 @@
 #include <lcdgui/EnvGraph.hpp>
 #include <ui/sampler/SamplerGui.hpp>
 #include <ui/sampler/window/SamplerWindowGui.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
 #include <sampler/NoteParameters.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -270,7 +270,7 @@ void SamplerWindowObserver::displayNote()
 	auto pad = lProgram->getPad(pn);
 	auto padName = pn != -1 ? lSampler->getPadName(pn) : "OFF";
 	auto sampleName = sn != -1 ? lSampler->getSoundName(sn) : "OFF";
-	auto stereo = pad->getMixerChannel().lock()->isStereo() && sn != -1 ? "(ST)" : "";
+	auto stereo = pad->getStereoMixerChannel().lock()->isStereo() && sn != -1 ? "(ST)" : "";
 	noteField.lock()->setText(to_string(noteParameters->getNumber()) + "/" + padName + "-" + moduru::lang::StrUtil::padRight(sampleName, " ", 16) + stereo);
 }
 

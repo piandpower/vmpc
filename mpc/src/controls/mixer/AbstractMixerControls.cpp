@@ -4,7 +4,8 @@
 #include <ui/sampler/MixerGui.hpp>
 #include <ui/sampler/MixerSetupGui.hpp>
 #include <ui/sampler/SamplerGui.hpp>
-#include <sampler/MixerChannel.hpp>
+#include <sampler/StereoMixerChannel.hpp>
+#include <sampler/IndivFxMixerChannel.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
 
@@ -22,7 +23,8 @@ void AbstractMixerControls::init()
 {
 	super::init();
 	auto lProgram = program.lock();
-	mixerChannel = lProgram->getPad(samplerGui->getPad())->getMixerChannel();
+	stereoMixerChannel = lProgram->getPad(samplerGui->getPad())->getStereoMixerChannel();
+	indivFxMixerChannel = lProgram->getPad(samplerGui->getPad())->getIndivFxMixerChannel();
 }
 
 AbstractMixerControls::~AbstractMixerControls() {
