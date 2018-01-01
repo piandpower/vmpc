@@ -80,25 +80,29 @@ void ChannelSettingsObserver::update(moduru::observer::Observable* o, boost::any
 		lMc->addObserver(this);
 	}
 
+
 	string s = boost::any_cast<string>(arg);
 
-	if (s.compare("panning") == 0) {
+	if (s.compare("padandnote") == 0) {
+		displayChannel();
+	}
+	else if (s.compare("volume") == 0) {
+		displayStereoVolume();
+	}
+	else if (s.compare("volumeindividual") == 0) {
+		displayIndividualVolume();
+	}
+	else if (s.compare("fxsendlevel") == 0) {
+		displayFxSendLevel();
+	}
+	else if (s.compare("panning") == 0) {
 		displayPanning();
 	}
 	else if (s.compare("output") == 0) {
 		displayOutput();
 	}
-	else if (s.compare("volumeindividual") == 0) {
-		displayIndividualVolume();
-	}
 	else if (s.compare("fxpath") == 0) {
 		displayFxPath();
-	}
-	else if (s.compare("fxsendlevel") == 0) {
-		displayFxSendLevel();
-	}
-	else if (s.compare("note") == 0) {
-		displayChannel();
 	}
 	else if (s.compare("followstereo") == 0) {
 		displayFollowStereo();
@@ -125,34 +129,33 @@ void ChannelSettingsObserver::displayNoteField()
 	auto lSampler = sampler.lock();
 	string soundString = "OFF";
 	auto lProgram = program.lock();
-	auto sampleNumber = lProgram->getNoteParameters(mixGui->getChannelSettingsNote())->getSndNumber();
-	auto padNumber = lProgram->getPadNumberFromNote(mixGui->getChannelSettingsNote());
+	auto sampleNumber = lProgram->getNoteParameters(samplerGui->getNote())->getSndNumber();
 	if (sampleNumber > 0 && sampleNumber < lSampler->getSoundCount()) {
 		soundString = lSampler->getSoundName(sampleNumber);
 		if (!lSampler->getSound(sampleNumber).lock()->isMono()) {
 			soundString += moduru::lang::StrUtil::padLeft("(ST)", " ", 23 - soundString.length());
 		}
 	}
-	noteField.lock()->setText(to_string(mixGui->getChannelSettingsNote()) + "/" + lSampler->getPadName(padNumber) + "-" + soundString);
+	noteField.lock()->setText(to_string(samplerGui->getNote()) + "/" + lSampler->getPadName(samplerGui->getPad()) + "-" + soundString);
 }
 
 void ChannelSettingsObserver::displayStereoVolume() {
 	auto lProgram = program.lock();
-	auto mixerChannel = lProgram->getPad(lProgram->getPadNumberFromNote(mixGui->getChannelSettingsNote()))->getMixerChannel();
+	auto mixerChannel = lProgram->getPad(samplerGui->getPad())->getMixerChannel();
 	auto lMc = mixerChannel.lock();
 	stereoVolumeField.lock()->setTextPadded(lMc->getLevel(), " ");
 }
 
 void ChannelSettingsObserver::displayIndividualVolume() {
 	auto lProgram = program.lock();
-	auto mixerChannel = lProgram->getPad(lProgram->getPadNumberFromNote(mixGui->getChannelSettingsNote()))->getMixerChannel();
+	auto mixerChannel = lProgram->getPad(samplerGui->getPad())->getMixerChannel();
 	auto lMc = mixerChannel.lock();
 	individualVolumeField.lock()->setTextPadded(lMc->getVolumeIndividualOut(), " ");
 }
 
 void ChannelSettingsObserver::displayFxSendLevel() {
 	auto lProgram = program.lock();
-	auto mixerChannel = lProgram->getPad(lProgram->getPadNumberFromNote(mixGui->getChannelSettingsNote()))->getMixerChannel();
+	auto mixerChannel = lProgram->getPad(samplerGui->getPad())->getMixerChannel();
 	auto lMc = mixerChannel.lock();
 	fxSendLevelField.lock()->setTextPadded(lMc->getFxSendLevel(), " ");
 }
@@ -160,19 +163,22 @@ void ChannelSettingsObserver::displayFxSendLevel() {
 void ChannelSettingsObserver::displayPanning()
 {
 	auto lProgram = program.lock();
-	auto mixerChannel = lProgram->getPad(lProgram->getPadNumberFromNote(mixGui->getChannelSettingsNote()))->getMixerChannel();
+	auto mixerChannel = lProgram->getPad(samplerGui->getPad())->getMixerChannel();
 	auto lMc = mixerChannel.lock();
-	auto panning = "L";
-	if (lMc->getPanning() > 0) panning = "R";
-	panningField.lock()->setText(panning + moduru::lang::StrUtil::padLeft(to_string(abs(lMc->getPanning())), " ", 2));
-	if (lMc->getPanning() == 0) {
+	if (lMc->getPanning() != 0) {
+		auto panning = "L";
+		if (lMc->getPanning() > 0) panning = "R";
+		panningField.lock()->setText(panning + moduru::lang::StrUtil::padLeft(to_string(abs(lMc->getPanning())), " ", 2));
+	}
+	else
+	{
 		panningField.lock()->setText("MID");
 	}
 }
 
 void ChannelSettingsObserver::displayOutput() {
 	auto lProgram = program.lock();
-	auto mixerChannel = lProgram->getPad(lProgram->getPadNumberFromNote(mixGui->getChannelSettingsNote()))->getMixerChannel();
+	auto mixerChannel = lProgram->getPad(samplerGui->getPad())->getMixerChannel();
 	auto lMc = mixerChannel.lock();
 
 	if (lMc->isStereo()) {
@@ -185,7 +191,7 @@ void ChannelSettingsObserver::displayOutput() {
 
 void ChannelSettingsObserver::displayFxPath() {
 	auto lProgram = program.lock();
-	auto mixerChannel = lProgram->getPad(lProgram->getPadNumberFromNote(mixGui->getChannelSettingsNote()))->getMixerChannel();
+	auto mixerChannel = lProgram->getPad(samplerGui->getPad())->getMixerChannel();
 	auto lMc = mixerChannel.lock();
 	fxPathField.lock()->setText(fxPathNames[lMc->getFxPath()]);
 }

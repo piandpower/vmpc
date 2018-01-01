@@ -1,6 +1,8 @@
 #include <controls/mixer/window/ChannelSettingsControls.hpp>
 
 #include <ui/sampler/MixerGui.hpp>
+#include <ui/sampler/SamplerGui.hpp>
+#include <sampler/Program.hpp>
 #include <sampler/mixerChannel.hpp>
 
 using namespace mpc::controls::mixer::window;
@@ -16,7 +18,11 @@ void ChannelSettingsControls::turnWheel(int i)
     init();
 	auto lMc = mixerChannel.lock();
 	if (param.compare("note") == 0) {
-		mixerGui->setChannelSettingsNote(mixerGui->getChannelSettingsNote() + i);
+		int note = samplerGui->getNote() + i;
+		if (note >= 35 && note <= 98) {
+			int pad = program.lock()->getPadNumberFromNote(note);
+			samplerGui->setPadAndNote(note, pad);
+		}
 	}
 	else if (param.compare("stereovolume") == 0) {
 		lMc->setLevel(lMc->getLevel() + i);

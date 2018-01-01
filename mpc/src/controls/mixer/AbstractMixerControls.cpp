@@ -3,6 +3,7 @@
 #include <Mpc.hpp>
 #include <ui/sampler/MixerGui.hpp>
 #include <ui/sampler/MixerSetupGui.hpp>
+#include <ui/sampler/SamplerGui.hpp>
 #include <sampler/MixerChannel.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -21,7 +22,7 @@ void AbstractMixerControls::init()
 {
 	super::init();
 	auto lProgram = program.lock();
-	mixerChannel = lProgram->getPad(lProgram->getPadNumberFromNote(mixerGui->getChannelSettingsNote()))->getMixerChannel();
+	mixerChannel = lProgram->getPad(samplerGui->getPad())->getMixerChannel();
 }
 
 AbstractMixerControls::~AbstractMixerControls() {

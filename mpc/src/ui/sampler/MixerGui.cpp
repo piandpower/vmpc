@@ -70,18 +70,5 @@ void MixerGui::setYPos(int i)
     notifyObservers(string("position"));
 }
 
-void MixerGui::setChannelSettingsNote(int i)
-{
-    if(i < 35 || i > 98) return;
-    channelSettingsNote = i;
-    setChanged();
-    notifyObservers(string("note"));
-}
-
-int MixerGui::getChannelSettingsNote()
-{
-    return channelSettingsNote;
-}
-
 MixerGui::~MixerGui() {
 }

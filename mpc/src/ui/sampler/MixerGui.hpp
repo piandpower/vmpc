@@ -21,8 +21,7 @@ namespace mpc {
 				std::vector<mpc::lcdgui::MixerStrip*> mixerStrips{};
 				int xPos{ 0 };
 				int yPos{ 0 };
-				int channelSettingsNote{ 35 };
-
+	
 			public:
 				void setLink(bool b);
 				bool getLink();
@@ -34,9 +33,8 @@ namespace mpc {
 				void setXPos(int i);
 				int getYPos();
 				void setYPos(int i);
-				void setChannelSettingsNote(int i);
-				int getChannelSettingsNote();
 
+			public:
 				MixerGui();
 				~MixerGui();
 

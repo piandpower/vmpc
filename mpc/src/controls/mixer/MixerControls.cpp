@@ -2,6 +2,7 @@
 
 #include <ui/sampler/MixerGui.hpp>
 #include <ui/sampler/MixerSetupGui.hpp>
+#include <ui/sampler/SamplerGui.hpp>
 #include <sampler/MixerChannel.hpp>
 #include <sampler/Pad.hpp>
 #include <sampler/Program.hpp>
@@ -46,7 +47,9 @@ void MixerControls::right()
 void MixerControls::openWindow()
 {
 	init();
-	mixerGui->setChannelSettingsNote(program.lock()->getPad(mixerGui->getXPos() + (bank_ * 16))->getNote());
+	int pad = mixerGui->getXPos() + (bank_ * 16);
+	int note = program.lock()->getPad(pad)->getNote();
+	samplerGui->setPadAndNote(pad, note);
 	ls.lock()->openScreen("channelsettings");
 }
 
