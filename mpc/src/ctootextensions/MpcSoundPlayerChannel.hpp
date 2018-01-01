@@ -48,23 +48,15 @@ namespace mpc {
 			std::weak_ptr<MpcSoundPlayerControls> controls{};
 			std::weak_ptr<mpc::sampler::Sampler> sampler{};
 			std::weak_ptr<ctoot::audio::mixer::AudioMixer> mixer{};
+			std::vector<MpcMixerInterconnection*> mixerConnections{};
+			ctoot::audio::server::AudioServer* server{ nullptr };
+
+		private:
+			int index{ 0 };
 			int programNumber{ 0 };
 			bool receivePgmChange{ false };
 			bool receiveMidiVolume{ false };
-			std::shared_ptr<ctoot::audio::core::MetaInfo> info{};
 			std::vector<std::shared_ptr<mpc::sampler::MixerChannel>> mixerChannels{};
-			int index{ 0 };
-			std::vector<MpcMixerInterconnection*> mixerConnections{};
-			std::weak_ptr<mpc::sampler::Program> program{};
-			int padNumber{ 0 };
-			mpc::sampler::NoteParameters* np{ nullptr };
-			int soundNumber{ 0 };
-			std::weak_ptr<mpc::sampler::Sound> vars{};
-			std::weak_ptr<mpc::sampler::MixerChannel> pgmMixerChannel{};
-			MpcFaderControl* faderControl{ nullptr };
-			int auxBus{ 0 };
-			ctoot::control::CompoundControl* compoundControl{ nullptr };
-			ctoot::audio::server::AudioServer* server{ nullptr };
 
 		public:
 			void setProgram(int i);

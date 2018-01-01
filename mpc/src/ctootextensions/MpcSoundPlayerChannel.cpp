@@ -96,12 +96,12 @@ void MpcSoundPlayerChannel::mpcNoteOn(int track, int note, int velo, int varType
 	if (note < 35 || note > 98) return;
 	if (velo == 0) return;
 	auto lSampler = sampler.lock();
-	program = lSampler->getProgram(programNumber);
+	auto program = lSampler->getProgram(programNumber);
 	auto lProgram = program.lock();
-	padNumber = lProgram->getPadNumberFromNote(note);
-	np = lProgram->getNoteParameters(note);
+	auto padNumber = lProgram->getPadNumberFromNote(note);
+	auto np = lProgram->getNoteParameters(note);
 	checkForMutes(np);
-	soundNumber = np->getSndNumber();
+	auto soundNumber = np->getSndNumber();
 
 	Voice* voice = nullptr;
 	auto lControls = controls.lock();
@@ -116,8 +116,8 @@ void MpcSoundPlayerChannel::mpcNoteOn(int track, int note, int velo, int varType
 		return;
 	}
 
-	vars = lSampler->getSound(soundNumber);
-	pgmMixerChannel = lProgram->getMixerChannel(padNumber);
+	auto vars = lSampler->getSound(soundNumber);
+	auto pgmMixerChannel = lProgram->getMixerChannel(padNumber);
 	auto lPmc = pgmMixerChannel.lock();
 	shared_ptr<ctoot::audio::mixer::AudioMixer> lMixer = mixer.lock();
 	auto audioControlsChain = lMixer->getMixerControls()->getStripControls(to_string(voice->getStripNumber()));
@@ -144,13 +144,13 @@ void MpcSoundPlayerChannel::mpcNoteOn(int track, int note, int velo, int varType
 		}
 	}
 
-	faderControl = dynamic_pointer_cast<MpcFaderControl>(mainMixControls->getControls()[2]).get();
+	auto faderControl = dynamic_pointer_cast<MpcFaderControl>(mainMixControls->getControls()[2]).get();
 
 	if (faderControl->getValue() != 0) faderControl->setValue(0);
 
-	auxBus = (int)(ceil((lPmc->getOutput() - 2) / 2.0));
+	auto auxBus = (int)(ceil((lPmc->getOutput() - 2) / 2.0));
 	for (int i = 0; i < 4; i++) {
-		compoundControl = dynamic_pointer_cast<ctoot::control::CompoundControl>(audioControlsChain->getControls()[i]).get();
+		auto compoundControl = dynamic_pointer_cast<ctoot::control::CompoundControl>(audioControlsChain->getControls()[i]).get();
 		if (i == auxBus) {
 			dynamic_pointer_cast<MpcFaderControl>(compoundControl->getControls()[2])->setValue((float)(lPmc->getVolumeIndividualOut()));
 		}
@@ -237,7 +237,7 @@ void MpcSoundPlayerChannel::connectVoices()
 
 weak_ptr<ctoot::audio::core::MetaInfo> MpcSoundPlayerChannel::getInfo()
 {
-	return info;
+	return weak_ptr<ctoot::audio::core::MetaInfo>();
 }
 
 vector<weak_ptr<mpc::sampler::MixerChannel>> MpcSoundPlayerChannel::getMixerChannels()
