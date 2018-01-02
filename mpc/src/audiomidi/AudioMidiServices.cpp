@@ -218,7 +218,7 @@ void AudioMidiServices::createSynth()
 	synthRackControls->setSynthControls(0, msc);
 	mms = dynamic_pointer_cast<mpc::ctootextensions::MpcMultiMidiSynth>(synthRack->getMidiSynth(0).lock());
 	for (int i = 0; i < 4; i++) {
-		auto m = make_shared<ctootextensions::MpcSoundPlayerControls>(mms, mpc->getSampler(), i, mixer, server);
+		auto m = make_shared<ctootextensions::MpcSoundPlayerControls>(mms, mpc->getSampler(), i, mixer, server, mpc->getUis().lock()->getMixerSetupGui());
 		msc->setChannelControls(i, m);
 		synthChannelControls.push_back(m);
 	}

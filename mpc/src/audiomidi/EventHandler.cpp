@@ -19,17 +19,19 @@
 #include <ui/misc/TransGui.hpp>
 #include <ui/vmpc/DirectToDiskRecorderGui.hpp>
 #include <ui/vmpc/MidiGui.hpp>
+#include <ui/sampler/MixerSetupGui.hpp>
 #include <sampler/Program.hpp>
 #include <sampler/Sampler.hpp>
 #include <sampler/StereoMixerChannel.hpp>
 #include <ctootextensions/MpcMultiMidiSynth.hpp>
-#include <thirdp/bcmath/bcmath_stl.h>
+#include <ctootextensions/MpcSoundPlayerChannel.hpp>
 //#include <midi/InvalidMidiDataException.hpp>
 #include <midi/core/MidiMessage.hpp>
 #include <midi/core/ShortMessage.hpp>
 #include <midi/core/MidiInput.hpp>
 
 #include <file/File.hpp>
+#include <thirdp/bcmath/bcmath_stl.h>
 
 using namespace mpc::audiomidi;
 using namespace std;
@@ -126,6 +128,18 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 		auto lSampler = sampler.lock();
 		auto p = lSampler->getProgram(lSampler->getDrumBusProgramNumber(track->getBusNumber())).lock();
 		auto mixer = p->getStereoMixerChannel(pad).lock();
+		if (mpc->getUis().lock()->getMixerSetupGui()->isStereoMixSourceDrum()) {
+			auto busNumber = track->getBusNumber();
+			if (busNumber != 0) {
+				auto drumIndex = busNumber - 1;
+				auto drum = mpc->getDrum(drumIndex);
+				mixer = drum->getStereoMixerChannels().at(pad).lock();
+			}
+			else {
+				// don't process MixerEvent in case this is a midi only channel
+				return;
+			}
+		}
 		if (me->getParameter() == 0) {
 			mixer->setLevel(me->getValue());
 		}

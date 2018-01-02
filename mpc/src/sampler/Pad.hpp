@@ -22,7 +22,7 @@ namespace mpc {
 		private:
 			int note{ 0 };
 			int number{ 0 };
-			std::shared_ptr<StereoMixerChannel> mixerChannel{};
+			std::shared_ptr<StereoMixerChannel> stereoMixerChannel{};
 			std::shared_ptr<IndivFxMixerChannel> indivFxMixerChannel{};
 
 		public:

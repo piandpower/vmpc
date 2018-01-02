@@ -11,7 +11,7 @@
 #include <sequencer/Sequence.hpp>
 #include <sequencer/Track.hpp>
 #include <sequencer/Sequencer.hpp>
-#include <sampler/StereoMixerChannel.hpp>
+#include <ctootextensions/MpcSoundPlayerChannel.hpp>
 
 using namespace mpc::controls::mixer;
 using namespace std;
@@ -85,14 +85,18 @@ void MixerControls::turnWheel(int i)
 	int pad = mixerGui->getXPos() + (bank_ * 16);
 	auto lProgram = program.lock();
 	
-	auto smc = lProgram->getPad(pad)->getStereoMixerChannel().lock();
-	auto smcs = vector<weak_ptr<mpc::sampler::StereoMixerChannel>>(16);
-	auto ifmc = lProgram->getPad(pad)->getIndivFxMixerChannel().lock();
-	auto ifmcs = vector<weak_ptr<mpc::sampler::IndivFxMixerChannel>>(16);
+	bool sSrcDrum = mixerSetupGui->isStereoMixSourceDrum();
+	bool iSrcDrum = mixerSetupGui->isIndivFxSourceDrum();
+	auto drum = mpc->getDrum(samplerGui->getSelectedDrum());
+
+	auto smc = sSrcDrum ? drum->getStereoMixerChannels().at(pad).lock() : lProgram->getPad(pad)->getStereoMixerChannel().lock();
+	auto smcs = sSrcDrum ? drum->getStereoMixerChannels() : vector<weak_ptr<mpc::sampler::StereoMixerChannel>>(16);
+	auto ifmc = iSrcDrum ? drum->getIndivFxMixerChannels().at(pad).lock() : lProgram->getPad(pad)->getIndivFxMixerChannel().lock();
+	auto ifmcs = iSrcDrum ? drum->getIndivFxMixerChannels() : vector<weak_ptr<mpc::sampler::IndivFxMixerChannel>>(16);
 
 	for (int i = 0; i < 16; i++) {
-		smcs[i] = lProgram->getPad(i + (bank_ * 16))->getStereoMixerChannel();
-		ifmcs[i] = lProgram->getPad(i + (bank_ * 16))->getIndivFxMixerChannel();
+		if (!sSrcDrum) smcs[i] = lProgram->getPad(i + (bank_ * 16))->getStereoMixerChannel();
+		if (!iSrcDrum) ifmcs[i] = lProgram->getPad(i + (bank_ * 16))->getIndivFxMixerChannel();
 	}
 
 	if (mixerGui->getTab() == 0) {

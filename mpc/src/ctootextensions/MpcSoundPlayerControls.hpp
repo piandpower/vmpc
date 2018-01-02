@@ -7,6 +7,12 @@
 
 namespace mpc {
 
+	namespace ui {
+		namespace sampler {
+			class MixerSetupGui;
+		}
+	}
+
 	namespace sampler {
 		class Sampler;
 	}
@@ -35,6 +41,7 @@ namespace mpc {
 			std::weak_ptr<ctoot::audio::mixer::AudioMixer> mixer{};
 			int drumNumber{ 0 };
 			std::weak_ptr<ctoot::audio::server::AudioServer> server{ };
+			mpc::ui::sampler::MixerSetupGui* mixerSetupGui;
 			
 		public:
 			std::weak_ptr<MpcMultiMidiSynth> getMms();
@@ -42,9 +49,10 @@ namespace mpc {
 			int getDrumNumber();
 			std::weak_ptr<ctoot::audio::mixer::AudioMixer> getMixer();
 			ctoot::audio::server::AudioServer* getServer();
+			mpc::ui::sampler::MixerSetupGui* getMixerSetupGui();
 
 		public:
-			MpcSoundPlayerControls(std::weak_ptr<MpcMultiMidiSynth> mms, std::weak_ptr<mpc::sampler::Sampler> sampler, int drumNumber, std::weak_ptr<ctoot::audio::mixer::AudioMixer> mixer, std::weak_ptr<ctoot::audio::server::AudioServer> server);
+			MpcSoundPlayerControls(std::weak_ptr<MpcMultiMidiSynth> mms, std::weak_ptr<mpc::sampler::Sampler> sampler, int drumNumber, std::weak_ptr<ctoot::audio::mixer::AudioMixer> mixer, std::weak_ptr<ctoot::audio::server::AudioServer> server, mpc::ui::sampler::MixerSetupGui* mixerSetupGui);
 			~MpcSoundPlayerControls();
 
 		public:

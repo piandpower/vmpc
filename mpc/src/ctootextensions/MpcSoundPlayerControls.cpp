@@ -11,7 +11,8 @@ MpcSoundPlayerControls::MpcSoundPlayerControls(weak_ptr<MpcMultiMidiSynth> mms,
 	weak_ptr<mpc::sampler::Sampler> sampler
 	, int drumNumber
 	, weak_ptr<ctoot::audio::mixer::AudioMixer> mixer
-	, weak_ptr<ctoot::audio::server::AudioServer> server)
+	, weak_ptr<ctoot::audio::server::AudioServer> server
+	, mpc::ui::sampler::MixerSetupGui* mixerSetupGui)
 	: ctoot::synth::SynthChannelControls(MPC_SOUND_PLAYER_CHANNEL_ID, NAME_)
 {
 	this->mms = mms;
@@ -19,6 +20,7 @@ MpcSoundPlayerControls::MpcSoundPlayerControls(weak_ptr<MpcMultiMidiSynth> mms,
 	this->drumNumber = drumNumber;
 	this->mixer = mixer;
 	this->server = server;
+	this->mixerSetupGui = mixerSetupGui;
 }
 
 const int MpcSoundPlayerControls::MPC_SOUND_PLAYER_CHANNEL_ID;

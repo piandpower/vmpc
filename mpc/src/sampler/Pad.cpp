@@ -15,7 +15,7 @@ Pad::Pad(mpc::Mpc* mpc, int number)
 	this->mpc = mpc;
 	this->number = number;
 	note = mpc::StartUp::getUserDefaults().lock()->getPadNotes()[number];
-	mixerChannel = make_shared<StereoMixerChannel>();
+	stereoMixerChannel = make_shared<StereoMixerChannel>();
 	indivFxMixerChannel = make_shared<IndivFxMixerChannel>();
 }
 
@@ -47,13 +47,11 @@ int Pad::getNote()
 
 weak_ptr<StereoMixerChannel> Pad::getStereoMixerChannel()
 {
-	//if (mpc->getUis().lock()->getMixerSetupGui()->
-    return mixerChannel;
+    return stereoMixerChannel;
 }
 
 weak_ptr<IndivFxMixerChannel> Pad::getIndivFxMixerChannel()
 {
-	//if (mpc->getUis().lock()->getMixerSetupGui()->
 	return indivFxMixerChannel;
 }
 

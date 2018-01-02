@@ -14,6 +14,7 @@
 #include <sampler/Sampler.hpp>
 #include <sampler/StereoMixerChannel.hpp>
 #include <sampler/IndivFxMixerChannel.hpp>
+#include <ui/sampler/MixerSetupGui.hpp>
 
 // ctoot
 #include <audio/core/MetaInfo.hpp>
@@ -121,6 +122,12 @@ void MpcSoundPlayerChannel::mpcNoteOn(int track, int note, int velo, int varType
 	auto vars = lSampler->getSound(soundNumber);
 	auto smc = lProgram->getStereoMixerChannel(padNumber).lock();
 	auto ifmc = lProgram->getIndivFxMixerChannel(padNumber).lock();
+
+	bool sSrcDrum = controls.lock()->getMixerSetupGui()->isStereoMixSourceDrum();
+	bool iSrcDrum = controls.lock()->getMixerSetupGui()->isIndivFxSourceDrum();
+	if (sSrcDrum) smc = stereoMixerChannels[padNumber];
+	if (iSrcDrum) ifmc = indivFxMixerChannels[padNumber];
+
 	shared_ptr<ctoot::audio::mixer::AudioMixer> lMixer = mixer.lock();
 	auto audioControlsChain = lMixer->getMixerControls()->getStripControls(to_string(voice->getStripNumber()));
 	auto mainMixControls = dynamic_pointer_cast<ctoot::audio::mixer::MainMixControls>(audioControlsChain->getControls()[4]).get();
