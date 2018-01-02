@@ -55,5 +55,9 @@ ctoot::audio::server::AudioServer* MpcSoundPlayerControls::getServer()
     return server.lock().get();
 }
 
+mpc::ui::sampler::MixerSetupGui* MpcSoundPlayerControls::getMixerSetupGui() {
+	return mixerSetupGui;
+}
+
 MpcSoundPlayerControls::~MpcSoundPlayerControls() {
 }
