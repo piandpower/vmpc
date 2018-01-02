@@ -6,6 +6,7 @@
 #include <lcdgui/TwoDots.hpp>
 #include <lcdgui/Wave.hpp>
 #include <ui/sampler/SoundGui.hpp>
+#include <ui/sampler/window/EditSoundGui.hpp>
 #include <sampler/Sampler.hpp>
 #include <sampler/Sound.hpp>
 #include <ctootextensions/MpcSoundOscillatorControls.hpp>
@@ -49,7 +50,7 @@ ZoneObserver::ZoneObserver(mpc::Mpc* mpc)
 		displaySnd();
 		if (lSampler->getSoundCount() != 0) {
 			dummyField.lock()->setFocusable(false);
-			soundGui->initZones(lSampler->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex());
+			//soundGui->initZones(lSampler->getSound(soundGui->getSoundIndex()).lock()->getLastFrameIndex()); this prolly kills any changes made while zooming in
 			wave.lock()->setSelection(soundGui->getZoneStart(soundGui->getZoneNumber()), soundGui->getZoneEnd(soundGui->getZoneNumber()));
 		}
 		else {
@@ -176,6 +177,7 @@ ZoneObserver::~ZoneObserver() {
 		twoDots.lock()->Hide(true);
 	}
 	soundGui->deleteObserver(this);
+	if (mpc->getUis().lock()->getEditSoundGui()->getEdit() == 8) mpc->getUis().lock()->getEditSoundGui()->setEdit(0);
 	auto lSound = sound.lock();
 	if (lSound) {
 		lSound->deleteObserver(this);

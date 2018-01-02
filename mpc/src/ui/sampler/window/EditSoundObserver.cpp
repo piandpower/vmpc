@@ -57,6 +57,8 @@ EditSoundObserver::EditSoundObserver(mpc::Mpc* mpc)
 void EditSoundObserver::displayEdit()
 {
     editField.lock()->setText(editNames[editSoundGui->getEdit()]);
+	auto editLabel = mpc->getLayeredScreen().lock()->lookupLabel("edit").lock();
+	editLabel->SetDirty();
     auto b = mpc->getLayeredScreen().lock()->getCurrentBackground();
 	auto fk = mpc->getLayeredScreen().lock()->getFunctionKeys();
 	if (editSoundGui->getEdit() == 0) {

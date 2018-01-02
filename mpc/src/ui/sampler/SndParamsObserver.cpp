@@ -98,7 +98,8 @@ void SndParamsObserver::displaySampleAndNewTempo()
 	auto bpm = (int)(600000.0 / (lengthMs / lSound->getBeatCount()));
 	auto bpmString = to_string(bpm);
 	auto part1 = bpmString.substr(0, bpmString.length() - 1);
-	auto part2 = bpmString.substr(bpmString.length() - 1, bpmString.length());
+	auto part2 = bpmString.substr(bpmString.length() - 1);
+
 	if (bpm < 300 || bpm > 3000) {
 		part1 = "---";
 		part2 = "-";
@@ -113,7 +114,7 @@ void SndParamsObserver::displaySampleAndNewTempo()
 	auto newBpm = (int)(pow(2.0, (lSound->getTune() / 120.0)) * bpm);
 	bpmString = to_string(newBpm);
 	part1 = bpmString.substr(0, bpmString.length() - 1);
-	part2 = bpmString.substr(bpmString.length() - 1, bpmString.length());
+	part2 = bpmString.substr(bpmString.length() - 1);
 	if (newBpm < 300 || newBpm > 3000) {
 		part1 = "---";
 		part2 = "-";
