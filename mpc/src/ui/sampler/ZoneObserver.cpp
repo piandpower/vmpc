@@ -29,6 +29,7 @@ ZoneObserver::ZoneObserver(mpc::Mpc* mpc)
 		auto lSound = sound.lock();
 		lSound->addObserver(this);
 		lSound->getMsoc()->addObserver(this);
+		waveformLoadData();
 	}
 	twoDots = ls->getTwoDots();
 	twoDots.lock()->setVisible(0, true);
@@ -76,8 +77,8 @@ void ZoneObserver::displaySnd()
 {
 	auto lSampler = sampler.lock();
 	if (lSampler->getSoundCount() != 0) {
-		waveformLoadData();
-		mpc->getLayeredScreen().lock()->setFocus("snd");
+		auto ls = mpc->getLayeredScreen().lock();
+		if (ls->getFocus().compare("dummy") == 0) ls->setFocus(sndField.lock()->getName());
 		auto lSound = sound.lock();
 		lSound->deleteObserver(this);
 		lSound->getMsoc()->deleteObserver(this);

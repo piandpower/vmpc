@@ -42,7 +42,7 @@ SndParamsObserver::SndParamsObserver(mpc::Mpc* mpc)
 	newTempoLabel = ls->lookupLabel("newtempo");
 	dummyField = ls->lookupField("dummy");
 	if (lSampler->getSoundCount() != 0) {
-		//dummyField->setFocusable(false);
+		dummyField.lock()->setFocusable(false);
 	}
 	displaySnd();
 	displayPlayX();
@@ -131,15 +131,17 @@ void SndParamsObserver::displaySampleAndNewTempo()
 void SndParamsObserver::displaySnd()
 {
 	auto lSound = sound.lock();
-	if(sampler.lock()->getSoundCount() != 0) {
-        //sndField->grabFocus();
-        auto sampleName = lSound->getName();
-        if(!lSound->isMono()) {
+	if (sampler.lock()->getSoundCount() != 0) {
+		auto ls = mpc->getLayeredScreen().lock();
+		if (ls->getFocus().compare("dummy") == 0) ls->setFocus(sndField.lock()->getName());
+		auto sampleName = lSound->getName();
+		if (!lSound->isMono()) {
 			sampleName = moduru::lang::StrUtil::padRight(sampleName, " ", 16);
-            sampleName += "(ST)";
-        }
-        sndField.lock()->setText(sampleName);
-    } else {
+			sampleName += "(ST)";
+		}
+		sndField.lock()->setText(sampleName);
+	}
+	else {
         sndField.lock()->setText("(no sound)");
  //       dummyField->grabFocus();
     }

@@ -76,7 +76,7 @@ void LoopObserver::displaySnd()
 	auto lSampler = sampler.lock();
 	auto ls = mpc->getLayeredScreen().lock();
 	if (lSampler->getSoundCount() != 0) {
-		ls->setFocus(sndField.lock()->getName());
+		if (ls->getFocus().compare("dummy") == 0) ls->setFocus(sndField.lock()->getName());
 		auto lSound = sound.lock();
 		lSound->deleteObserver(this);
 		lSound->getMsoc()->deleteObserver(this);
