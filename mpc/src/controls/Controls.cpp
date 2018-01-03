@@ -295,6 +295,21 @@ Controls::Controls(mpc::Mpc* mpc)
 	controls["recordingfinished"] = new vmpc::RecordingFinishedControls(mpc);
 }
 
+void Controls::setCtrlPressed(bool b) {
+	ctrlPressed = b;
+}
+
+void Controls::setAltPressed(bool b) {
+	altPressed = b;
+}
+
+bool Controls::isCtrlPressed() {
+	return ctrlPressed;
+}
+
+bool Controls::isAltPressed() {
+	return altPressed;
+}
 
 bool Controls::isErasePressed() {
 	return erasePressed;

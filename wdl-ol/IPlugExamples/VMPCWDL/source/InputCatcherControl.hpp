@@ -19,6 +19,7 @@ public:
 	bool OnKeyDown(int x, int y, int key) override;
 	bool OnKeyUp(int x, int y, int key) override;
 
+public:
 	InputCatcherControl(IPlugBase* pPlug, mpc::Mpc* mpc);
 	~InputCatcherControl();
 

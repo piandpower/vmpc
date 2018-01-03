@@ -34,7 +34,16 @@ bool InputCatcherControl::OnKeyDown(int x, int y, int c) {
 		}
 	}
 
-	if (c == KbMapping::numPadEnter()) {
+
+	if (c == KbMapping::ctrl()) {
+		mpc->getControls().lock()->setCtrlPressed(true);
+		return true;
+	}
+	else  if (c == KbMapping::alt()) {
+		mpc->getControls().lock()->setAltPressed(true);
+		return true;
+	}
+	else if (c == KbMapping::numPadEnter()) {
 		hw->getButton("enter").lock()->push();
 		return true;
 	}
@@ -218,6 +227,8 @@ bool InputCatcherControl::OnKeyDown(int x, int y, int c) {
 		auto controls = mpc->getControls().lock();
 		auto increment = -1;
 		if (controls->isShiftPressed()) increment *= 10;
+		if (controls->isAltPressed()) increment *= 10;
+		if (controls->isCtrlPressed()) increment *= 10;
 		hw->getDataWheel().lock()->turn(increment);
 		return true;
 	}
@@ -225,6 +236,8 @@ bool InputCatcherControl::OnKeyDown(int x, int y, int c) {
 		auto controls = mpc->getControls().lock();
 		auto increment = 1;
 		if (controls->isShiftPressed()) increment *= 10;
+		if (controls->isAltPressed()) increment *= 10;
+		if (controls->isCtrlPressed()) increment *= 10;
 		hw->getDataWheel().lock()->turn(increment);
 		return true;
 	}
@@ -241,6 +254,14 @@ bool InputCatcherControl::OnKeyUp(int x, int y, int c) {
 		}
 	}
 
+	if (c == KbMapping::ctrl()) {
+		mpc->getControls().lock()->setCtrlPressed(false);
+		return true;
+	}
+	else  if (c == KbMapping::alt()) {
+		mpc->getControls().lock()->setAltPressed(false);
+		return true;
+	}
 	if (c == KbMapping::erase()) {
 		hw->getButton("erase").lock()->release();
 		return true;

@@ -17,6 +17,16 @@ namespace mpc {
 		class Controls
 		{
 		private:
+			bool ctrlPressed{ false };
+			bool altPressed{ false };
+
+		public:
+			void setCtrlPressed(bool b);
+			void setAltPressed(bool b);
+			bool isCtrlPressed();
+			bool isAltPressed();
+
+		private:
 			bool shiftPressed{ false };
 			bool recPressed{ false };
 			bool overDubPressed{ false };
