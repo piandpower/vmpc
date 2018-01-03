@@ -83,7 +83,9 @@ bool PadControl::Draw(IGraphics* g) {
 		}
 	}
 	IChannelBlend tmp = IChannelBlend::kBlendAdd;
-	g->DrawBitmap(&padhit, GetRECT(), 0, 0, &tmp);
+	auto bm = g->ScaleBitmap(&padhit, 96 * gui_scale, 96 * gui_scale);
+	g->DrawBitmap(&bm, GetRECT(), 0, 0, &tmp);
+	g->ReleaseBitmap(&bm);
 	return true;
 }
 

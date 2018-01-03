@@ -72,16 +72,16 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	mLCDControl = new LCDControl(this, mpc->getLayeredScreen());
 	pGraphics->AttachControl(mLCDControl);
 
-	const int padWidth = 96;
-	int padSpacing = 25;
-	const int padOffsetX = 778;
-	const int padOffsetY = 397;
+	const int padWidth = 96 * gui_scale;
+	int padSpacing = floor(25 * gui_scale);
+	const int padOffsetX = 778 * gui_scale;
+	const int padOffsetY = ceil(397 * gui_scale);
 	int padCounter = 0;
 	IBitmap padhit = pGraphics->LoadIBitmap(PADHIT_ID, PADHIT_FN);
 	for (int j = 3; j >= 0; j--) {
 		for (int i = 0; i < 4; i++) {
-			int x1 = (padWidth + padSpacing) * i + padOffsetX + i;
-			int x2 = x1 + padWidth + i;
+			int x1 = (padWidth + padSpacing) * i + padOffsetX + floor(i * gui_scale);
+			int x2 = x1 + padWidth + floor(i * gui_scale);
 			int y1 = (padWidth + padSpacing) * j + padOffsetY;
 			int y2 = y1 + padWidth;
 			IRECT rect(x1, y1, x2, y2);

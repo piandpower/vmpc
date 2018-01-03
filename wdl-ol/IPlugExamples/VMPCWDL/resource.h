@@ -74,7 +74,7 @@
 // GUI default dimensions
 #define GUI_WIDTH   1298
 #define GUI_HEIGHT  994
-#define gui_scale 0.5
+#define gui_scale 1
 
 // on MSVC, you must define SA_API in the resource editor preprocessor macros as well as the c++ ones
 #if defined(SA_API) && !defined(OS_IOS)
