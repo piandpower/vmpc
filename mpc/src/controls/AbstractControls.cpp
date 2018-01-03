@@ -9,6 +9,7 @@
 #include <hardware/Hardware.hpp>
 #include <hardware/Led.hpp>
 #include <hardware/HwSlider.hpp>
+#include <hardware/HwPad.hpp>
 
 #include <sequencer/Sequencer.hpp>
 #include <sampler/Sampler.hpp>
@@ -581,6 +582,8 @@ void AbstractControls::bank(int i)
 	auto newPadNr = samplerGui->getPad() + diff;
 	auto newNN = program.lock()->getPad(newPadNr)->getNote();
 	samplerGui->setPadAndNote(newPadNr, newNN);
+	for (int i=0;i<16;i++)
+		mpc->getHardware().lock()->getPad(i).lock()->notifyObservers(255);
 }
 
 void AbstractControls::fullLevel()

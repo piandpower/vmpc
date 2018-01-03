@@ -14,12 +14,15 @@
 #include <sequencer/TempoChangeEvent.hpp>
 
 #include <ui/Uis.hpp>
+#include <ui/sampler/SamplerGui.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <ui/midisync/MidiSyncGui.hpp>
 #include <ui/misc/TransGui.hpp>
 #include <ui/vmpc/DirectToDiskRecorderGui.hpp>
 #include <ui/vmpc/MidiGui.hpp>
 #include <ui/sampler/MixerSetupGui.hpp>
+#include <hardware/Hardware.hpp>
+#include <hardware/HwPad.hpp>
 #include <sampler/Program.hpp>
 #include <sampler/Sampler.hpp>
 #include <sampler/StereoMixerChannel.hpp>
@@ -119,6 +122,17 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 					midiAdapter.process(ne, drum, newVelo);
 					auto eventFrame = mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->getEventFrameOffset(event->getTick());
 					mpc->getMms()->mpcTransport(track->getTrackIndex(), midiAdapter.get().lock().get(), 0, ne->getVariationTypeNumber(), ne->getVariationValue(), eventFrame);
+					
+					auto note = ne->getNote();
+					auto program = mpc->getSampler().lock()->getProgram(mpc->getDrum(drum)->getProgram());
+					int pad = program.lock()->getPadNumberFromNote(note);
+					int bank = mpc->getUis().lock()->getSamplerGui()->getBank();
+					pad -= bank * 16;
+					if (pad >= 0 && pad <= 15) {
+						int notifyVelo = ne->getVelocity();
+						if (notifyVelo == 0) notifyVelo = 255;
+						mpc->getHardware().lock()->getPad(pad).lock()->notifyObservers(notifyVelo);
+					}
 				}
 			}
 		}
