@@ -42,8 +42,10 @@ bool DataWheelControl::Draw(IGraphics* g) {
 	IChannelBlend tmp = IChannelBlend::kBlendNone;
 	IRECT cropRect(0, dataWheelIndex * 171, 171, (dataWheelIndex * 171) + 171);
 	auto bm = g->CropBitmap(&dataWheels, &cropRect);
-	bm = g->ScaleBitmap(&bm, floor(171 * gui_scale), floor(171 * gui_scale));
-	g->DrawBitmap(&bm, GetRECT(), 0, 0, &tmp);
+	auto bm1 = g->ScaleBitmap(&bm, floor(171 * gui_scale), floor(171 * gui_scale));
+	g->DrawBitmap(&bm1, GetRECT(), 0, 0, &tmp);
+	g->ReleaseBitmap(&bm);
+	g->ReleaseBitmap(&bm1);
 	return true;
 }
 

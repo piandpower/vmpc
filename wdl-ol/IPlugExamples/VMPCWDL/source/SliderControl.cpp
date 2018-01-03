@@ -48,8 +48,10 @@ bool SliderControl::Draw(IGraphics* g) {
 	IChannelBlend tmp = IChannelBlend::kBlendNone;
 	IRECT cropRect(0, sliderIndex * 247, sliders.W, (sliderIndex * 247) + 247);
 	auto bm = g->CropBitmap(&sliders, &cropRect);
-	bm = g->ScaleBitmap(&bm, floor(sliders.W * gui_scale), floor(247 * gui_scale));
-	g->DrawBitmap(&bm, GetRECT(), 0, 0, &tmp);
+	auto bm1 = g->ScaleBitmap(&bm, floor(sliders.W * gui_scale), floor(247 * gui_scale));
+	g->DrawBitmap(&bm1, GetRECT(), 0, 0, &tmp);
+	g->ReleaseBitmap(&bm);
+	g->ReleaseBitmap(&bm1);
 	return true;
 }
 

@@ -73,18 +73,19 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	pGraphics->AttachControl(mLCDControl);
 
 	const int padWidth = 96;
-	const int padSpacing = 25;
-	const int padOffsetX = 777;
-	const int padOffsetY = 398;
+	int padSpacing = 25;
+	const int padOffsetX = 778;
+	const int padOffsetY = 397;
 	int padCounter = 0;
+	IBitmap padhit = pGraphics->LoadIBitmap(PADHIT_ID, PADHIT_FN);
 	for (int j = 3; j >= 0; j--) {
 		for (int i = 0; i < 4; i++) {
-			int x1 = (padWidth + padSpacing) * i + padOffsetX;
-			int x2 = x1 + padWidth;
+			int x1 = (padWidth + padSpacing) * i + padOffsetX + i;
+			int x2 = x1 + padWidth + i;
 			int y1 = (padWidth + padSpacing) * j + padOffsetY;
 			int y2 = y1 + padWidth;
 			IRECT rect(x1, y1, x2, y2);
-			auto pc = new PadControl(this, rect, mpc->getHardware().lock()->getPad(padCounter++));
+			auto pc = new PadControl(this, rect, mpc->getHardware().lock()->getPad(padCounter++), padhit);
 			pGraphics->AttachControl(pc);
 		}
 	}

@@ -59,6 +59,7 @@
 #define SLIDER_ID		105
 #define RECKNOB_ID		106
 #define VOLKNOB_ID		107
+#define PADHIT_ID		108
 
 // Image resource locations for this plug.
 #define BG_FN			"resources/img/bg.png"
@@ -68,11 +69,12 @@
 #define SLIDER_FN		"resources/img/sliders.png"
 #define RECKNOB_FN		"resources/img/recknobs.png"
 #define VOLKNOB_FN		"resources/img/volknobs.png"
+#define PADHIT_FN		"resources/img/padhit.png"
 
 // GUI default dimensions
 #define GUI_WIDTH   1298
 #define GUI_HEIGHT  994
-#define gui_scale 1
+#define gui_scale 0.5
 
 // on MSVC, you must define SA_API in the resource editor preprocessor macros as well as the c++ ones
 #if defined(SA_API) && !defined(OS_IOS)

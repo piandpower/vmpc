@@ -49,8 +49,11 @@ bool KnobControl::Draw(IGraphics* g) {
 	float height = knobType == 0 ? 73 : 75;
 	IRECT cropRect(0, knobIndex * height, knobs.W, (knobIndex * height) + height);
 	auto bm = g->CropBitmap(&knobs, &cropRect);
-	bm = g->ScaleBitmap(&bm, floor(knobs.W * gui_scale), floor(height * gui_scale));
-	g->DrawBitmap(&bm, GetRECT(), 0, 0, &tmp);	return true;
+	auto bm1 = g->ScaleBitmap(&bm, floor(knobs.W * gui_scale), floor(height * gui_scale));
+	g->DrawBitmap(&bm1, GetRECT(), 0, 0, &tmp);
+	g->ReleaseBitmap(&bm);
+	g->ReleaseBitmap(&bm1);
+	return true;
 }
 
 KnobControl::~KnobControl() {

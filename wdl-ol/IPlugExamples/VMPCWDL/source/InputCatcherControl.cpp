@@ -41,7 +41,7 @@ bool InputCatcherControl::OnKeyDown(int x, int y, int c) {
 	}
 	else  if (c == KbMapping::alt()) {
 		mpc->getControls().lock()->setAltPressed(true);
-		return true;
+		return false;
 	}
 	else if (c == KbMapping::numPadEnter()) {
 		hw->getButton("enter").lock()->push();
@@ -260,7 +260,7 @@ bool InputCatcherControl::OnKeyUp(int x, int y, int c) {
 	}
 	else  if (c == KbMapping::alt()) {
 		mpc->getControls().lock()->setAltPressed(false);
-		return true;
+		return false;
 	}
 	if (c == KbMapping::erase()) {
 		hw->getButton("erase").lock()->release();

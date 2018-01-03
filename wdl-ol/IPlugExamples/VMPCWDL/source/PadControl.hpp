@@ -1,6 +1,9 @@
 #pragma once
 #include <IControl.h>
 
+#include <observer/Observer.hpp>
+
+#include <thread>
 #include <memory>
 
 namespace mpc {
@@ -10,11 +13,14 @@ namespace mpc {
 }
 
 class PadControl
-	: public IPanelControl	
+	: public IPanelControl,
+	public moduru::observer::Observer
 	{
 
 private:
+	IBitmap padhit;
 	std::weak_ptr<mpc::hardware::HwPad> pad;
+	int padhitBrightness = 0;
 
 private:
 	int getVelo(int x, int y);
@@ -25,8 +31,17 @@ public:
 	void OnMouseDblClick(int x, int y, IMouseMod* pMod) override;
 	void OnMouseUp(int x, int y, IMouseMod* pMod) override;
 
+	public:
+		void update(moduru::observer::Observable* o, boost::any arg) override;
+
+	private:
+		bool fading = false;
+		std::thread fadeOutThread;
+		void fadeOut();
+		static void static_fadeOut(void * args);
+
 public:
-	PadControl(IPlugBase* pPlug, IRECT rect, std::weak_ptr<mpc::hardware::HwPad> pad);
+	PadControl(IPlugBase* pPlug, IRECT rect, std::weak_ptr<mpc::hardware::HwPad> pad, IBitmap padhit);
 	~PadControl();
 
 };

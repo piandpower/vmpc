@@ -21,8 +21,8 @@ AppState *gActiveState;
 
 char *gINIPath = new char[200]; // path of ini file
 
-unsigned int gIOVS = 512;
-unsigned int gSigVS = 32;
+unsigned int gIOVS = 1024;
+unsigned int gSigVS = 512;
 unsigned int gBufIndex = 0; // Loops 0 to SigVS
 unsigned int gVecElapsed = 0;
 double gFadeMult = 0.; // Fade multiplier
