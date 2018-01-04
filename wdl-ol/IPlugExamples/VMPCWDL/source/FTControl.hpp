@@ -19,7 +19,6 @@
 
 typedef unsigned char uint8;
 typedef unsigned short uint16;
-typedef unsigned int uint32;
 
 #if (('1234' >> 24) == '1')
 #elif (('4321' >> 24) == '1')
@@ -40,7 +39,7 @@ union Pixel32
 		a = ai;
 	}
 
-	uint32 integer;
+	uint32_t integer;
 
 	struct
 	{
