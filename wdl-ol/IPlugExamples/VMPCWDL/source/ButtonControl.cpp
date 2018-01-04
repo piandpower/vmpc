@@ -2,7 +2,6 @@
 #include <hardware/Button.hpp>
 
 #include "Constants.hpp"
-//#include <mpc/gui/ControlPanel.hpp>
 
 #include <math.h>
 
@@ -57,6 +56,10 @@ IRECT ButtonControl::sixteenlevels = IRECT(861 * gui_scale, 180 * gui_scale, 900
 IRECT ButtonControl::nextseq = IRECT(778 * gui_scale, 263 * gui_scale, 817 * gui_scale, 279 * gui_scale);
 IRECT ButtonControl::trackmute = IRECT(860 * gui_scale, 261 * gui_scale, 900 * gui_scale, 278 * gui_scale);
 
+std::string ButtonControl::getButtonLabel() {
+	return button.lock()->getLabel();
+}
+
 void ButtonControl::initRects() {
 	if (rects.size() != 0) return;
 
@@ -107,7 +110,6 @@ void ButtonControl::OnMouseUp(int x, int y, IMouseMod* pMod) {
 }
 
 bool ButtonControl::Draw(IGraphics* g) {
-	//return IPanelControl::Draw(g);
 	return false;
 }
 

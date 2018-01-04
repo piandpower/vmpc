@@ -11,7 +11,7 @@ add_subdirectory(mpc)
 add_subdirectory(ctoot)
 add_subdirectory(moduru)
 add_subdirectory(wdl-ol)
-#add_subdirectory(vmpc-sa-win)
+add_subdirectory(freetype)
 
 project(vmpc)
 

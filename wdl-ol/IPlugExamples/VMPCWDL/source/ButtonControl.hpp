@@ -17,6 +17,8 @@ class ButtonControl
 
 private:
 	std::weak_ptr<mpc::hardware::Button> button;
+	ITextControl* kbLabelOutline;
+	ITextControl* kbLabel;
 
 	public:
 		static std::unordered_map<std::string, IRECT*> rects;
@@ -65,6 +67,9 @@ private:
 		static IRECT sixteenlevels;
 		static IRECT nextseq;
 		static IRECT trackmute;
+
+	public:
+		std::string getButtonLabel();
 
 public:
 	bool Draw(IGraphics* pGraphics) override;

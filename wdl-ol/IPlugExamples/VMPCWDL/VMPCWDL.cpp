@@ -13,6 +13,8 @@
 #include "source/SliderControl.hpp"
 #include "source/ButtonControl.hpp"
 
+#include "source/FTControl.hpp"
+
 // mpc
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/Sequence.hpp>
@@ -47,6 +49,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 
 	IGraphics* pGraphics = MakeGraphics(this, GUI_WIDTH * gui_scale, GUI_HEIGHT * gui_scale);
 	pGraphics->AttachBackground(BG_ID, BG_FN);
+		
 	mLedPanel = new LedControl(this, pGraphics);
 	for (auto& l : mpc->getHardware().lock()->getLeds()) {
 		l->addObserver(mLedPanel);
@@ -94,12 +97,16 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	auto sc = new SliderControl(this, sliders, mpc->getHardware().lock()->getSlider(), 0, mInputCatcher);
 	pGraphics->AttachControl(sc);
 
+	auto ftControl = new FTControl(this, 300, 300, "Freetype, testing", 35, 8);
+	pGraphics->AttachControl(ftControl);
+
 	ButtonControl::initRects();
 	std::vector<std::string> buttonLabels{ "rec", "overdub", "stop", "play", "playstart", "mainscreen", "prevstepevent", "nextstepevent",	"goto",	"prevbarstart",	"nextbarend", "tap", "nextseq",	"trackmute", "openwindow", "fulllevel", "sixteenlevels", "f1", "f2", "f3", "f4", "f5", "f6", "shift", "enter", "undoseq", "erase", "after", "banka", "bankb", "bankc", "bankd" };
 	for (auto& l : buttonLabels) {
 		auto bc = new ButtonControl(this, *ButtonControl::rects[l], mpc->getHardware().lock()->getButton(l));
 		pGraphics->AttachControl(bc);
 	}
+	
 	AttachGraphics(pGraphics);
 
 	//MakePreset("preset 1", ... );

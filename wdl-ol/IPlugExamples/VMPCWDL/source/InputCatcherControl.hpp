@@ -7,6 +7,9 @@
 
 namespace mpc {
 	class Mpc;
+	namespace controls {
+		class KbMapping;
+	}
 }
 
 class InputCatcherControl
@@ -14,6 +17,7 @@ class InputCatcherControl
 
 private:
 	mpc::Mpc* mpc;
+	mpc::controls::KbMapping* kbMapping;
 
 public:
 	bool OnKeyDown(int x, int y, int key) override;
