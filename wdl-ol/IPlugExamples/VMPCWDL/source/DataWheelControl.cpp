@@ -4,8 +4,6 @@
 
 #include "Constants.hpp"
 
-#include <Logger.hpp>
-
 #include "../resource.h"
 
 DataWheelControl::DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels, std::weak_ptr<mpc::hardware::DataWheel> dataWheel, InputCatcherControl* ipc)
@@ -41,7 +39,6 @@ void DataWheelControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod
 }
 
 bool DataWheelControl::Draw(IGraphics* g) {
-	MLOG("DataWheelControl::Draw()");
 	IChannelBlend tmp = IChannelBlend::kBlendNone;
 	IRECT cropRect(0, dataWheelIndex * 171, 171, (dataWheelIndex * 171) + 171);
 	auto bm = g->CropBitmap(&dataWheels, &cropRect);

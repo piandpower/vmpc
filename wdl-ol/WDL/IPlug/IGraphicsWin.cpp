@@ -5,8 +5,6 @@
 #include <Shlobj.h>
 #include <commctrl.h>
 
-#include <Logger.hpp>
-
 #pragma comment(lib,"wininet.lib")
 
 #ifdef RTAS_API
@@ -457,7 +455,6 @@ LRESULT CALLBACK IGraphicsWin::ParamEditProc(HWND hWnd, UINT msg, WPARAM wParam,
 		}
 		case WM_KEYDOWN:
 		{
-			moduru::Logger::l.log("ParamEditProc KEYDOWN\n");
 			if (wParam == VK_RETURN)
 			{
 				pGraphics->mParamEditMsg = kCommit;
@@ -531,7 +528,7 @@ IGraphicsWin::IGraphicsWin(IPlugBase* pPlug, int w, int h, int refreshFPS)
 
 IGraphicsWin::~IGraphicsWin()
 {
-	moduru::Logger::l.log("IGraphicsWin dtor\n");
+	releaseKbHook();
 	CloseWindow();
 	FREE_NULL(mCustomColorStorage);
 }

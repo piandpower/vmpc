@@ -2,8 +2,6 @@
 #define __VMPCWDL__
 
 #include "IPlug_include_in_plug_hdr.h"
-#include "VMPCWDLDSP.h"
-
 #include <Mpc.hpp>
 
 #define MAX_VOICES 16
