@@ -3,6 +3,9 @@
 #include <vector>
 #include <thirdp/wrpkey/key.hxx>
 
+#include <unordered_map>
+#include <string>
+
 namespace mpc {
 	namespace controls {
 
@@ -12,8 +15,8 @@ namespace mpc {
 		private:
 			const static WonderRabbitProject::key::key_helper_t* kh;
 
-		public:
-			KbMapping();
+		private:
+			std::unordered_map<std::string, int> labelKeyMap;
 
 		public:
 			static int left();
@@ -60,6 +63,14 @@ namespace mpc {
 			static int alt();
 			static int leftShift();
 			static int rightShift();
+
+		public:
+			int getKeyCodeFromLabel(std::string label);
+			std::string getLabelFromKeyCode(int keyCode);
+			std::string getKeyCodeString(int keyCode);
+
+		public:
+			KbMapping();
 
 		};
 

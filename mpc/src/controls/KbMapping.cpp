@@ -7,8 +7,71 @@ using namespace std;
 
 KbMapping::KbMapping()
 {
+	labelKeyMap["left"] = kh->code("left");
+	labelKeyMap["right"] = kh->code("right");
+	labelKeyMap["up"] = kh->code("up");
+	labelKeyMap["down"] = kh->code("down");
+	labelKeyMap["rec"] = kh->code("l");
+	labelKeyMap["overdub"] = kh->code("semicolon");
+	labelKeyMap["stop"] = kh->code("quote");
+	labelKeyMap["play"] = kh->code("space");
+	labelKeyMap["playstart"] = kh->code("backslash");
+	labelKeyMap["mainscreen"] = kh->code("escape");
+	labelKeyMap["openwindow"] = kh->code("i");
+	labelKeyMap["prevstepevent"] = kh->code("q");
+	labelKeyMap["nextstepevent"] = kh->code("w");
+	labelKeyMap["goto"] = kh->code("e");
+	labelKeyMap["prevbarstart"] = kh->code("r");
+	labelKeyMap["nextbarend"] = kh->code("t");
+	labelKeyMap["tap"] = kh->code("y");
+	labelKeyMap["nextseq"] = kh->code("[");
+	labelKeyMap["trackmute"] = kh->code("]");
+	labelKeyMap["fulllevel"] = kh->code("o");
+	labelKeyMap["sixteenlevels"] = kh->code("p");
+	labelKeyMap["f1"] = kh->code("f1");
+	labelKeyMap["f2"] = kh->code("f2");
+	labelKeyMap["f3"] = kh->code("f3");
+	labelKeyMap["f4"] = kh->code("f4");
+	labelKeyMap["f5"] = kh->code("f5");
+	labelKeyMap["f6"] = kh->code("f6");
+	labelKeyMap["shift"] = kh->code("left shift");
+	labelKeyMap["enter"] = kh->code("enter");
+	labelKeyMap["undoseq"] = kh->code("f10");
+	labelKeyMap["erase"] = kh->code("f11");
+	labelKeyMap["after"] = kh->code("f12");
+	labelKeyMap["banka"] = kh->code("home");
+	labelKeyMap["bankb"] = kh->code("end");
+	labelKeyMap["bankc"] = kh->code("insert");
+	labelKeyMap["bankd"] = kh->code("delete");
+	labelKeyMap["0"] = kh->code("0");
+	labelKeyMap["1"] = kh->code("1");
+	labelKeyMap["2"] = kh->code("2");
+	labelKeyMap["3"] = kh->code("3");
+	labelKeyMap["4"] = kh->code("4");
+	labelKeyMap["5"] = kh->code("5");
+	labelKeyMap["6"] = kh->code("6");
+	labelKeyMap["7"] = kh->code("7");
+	labelKeyMap["8"] = kh->code("8");
+	labelKeyMap["9"] = kh->code("9");
 }
 const key_helper_t* mpc::controls::KbMapping::kh = &key_helper_t::instance();
+
+int KbMapping::getKeyCodeFromLabel(std::string label) {
+	if (labelKeyMap.find(label) == labelKeyMap.end()) return -1;
+	return labelKeyMap[label];
+}
+
+std::string KbMapping::getLabelFromKeyCode(int keyCode) {
+	for (std::pair<std::string, int> x : labelKeyMap) {
+		std::string key = x.first;
+		if (keyCode == x.second) return key;
+	}
+	return "";
+}
+
+std::string KbMapping::getKeyCodeString(int keyCode) {
+	return kh->name(keyCode);
+}
 
 int KbMapping::left() {
 	return kh->code("left");
