@@ -1,18 +1,12 @@
 #pragma once
 #include <IControl.h>
 
-#ifdef __APPLE__
-#define FONTSIZE 17
-#else
-#define FONTSIZE 8
-#endif
-
 class Constants {
 
 public:
 	static const float TFACTOR;
-	//static const int TEXT_HEIGHT = 7;
-	//static const int TEXT_WIDTH = 6;
+	static const int KBLABEL_FONT_SIZE = 20;
+	static const int KBLABEL_OUTLINE_SIZE = 4;
 
 	static IColor* LCD_ON();
 	static IColor* LCD_HALF_ON();
@@ -40,5 +34,4 @@ private:
 	static IRECT RECKNOB_RECT_;
 	static IRECT VOLKNOB_RECT_;
 	static IRECT SLIDER_RECT_;
-	static IRECT UNDERLINE_RECT_;
 };

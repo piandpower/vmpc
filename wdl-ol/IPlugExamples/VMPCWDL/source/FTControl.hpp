@@ -4,6 +4,8 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <string>
+#include <thread>
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -66,28 +68,39 @@ class FTControl
 	: public IPanelControl	
 	{
 	private:
-		int fontSize = 0;
-		int outlineSize = 0;
+		bool unhideDesired = false;
+		std::thread unhideThread;
+		void unhide();
+		static void static_unhide(void * args);
+
+	private:
 		std::string text;
 		std::vector<Pixel32> pixels;
 		unsigned char *fontBuffer;
 		FT_Library library;
-		std::fstream::pos_type fontFileSize;
 		FT_Face face;
 		int x = 0;
 		int y = 0;
 
 	private:
 		void WriteGlyph(const Pixel32 &fontCol, const Pixel32 outlineCol);
-		int getStringWidth();
-
 		void RenderSpans(FT_Outline * const outline, Spans *spans);
+
+	private:
+		static std::string fontPath;
+		static int fontSize;
+		static int outlineSize;
+
+	public:
+		static int getStringWidth(std::string text);
+
 
 public:
 	bool Draw(IGraphics* pGraphics) override;
+	void Hide(bool b) override;
 
 public:
-	FTControl(IPlugBase* pPlug, int x, int y, std::string text, int fontSize, int outlineSize);
+	FTControl(IPlugBase* pPlug, int x, int y, std::string text);
 	~FTControl();
 
 };

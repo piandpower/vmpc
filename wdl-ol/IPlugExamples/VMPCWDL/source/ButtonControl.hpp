@@ -1,9 +1,10 @@
 #pragma once
 #include <IControl.h>
-
 #include <string>
 #include <memory>
 #include <unordered_map>
+
+#include "FTControl.hpp"
 
 namespace mpc {
 	namespace hardware {
@@ -15,10 +16,10 @@ class ButtonControl
 	: public IPanelControl	
 	{
 
-private:
+	private:
 	std::weak_ptr<mpc::hardware::Button> button;
-	ITextControl* kbLabelOutline;
-	ITextControl* kbLabel;
+	FTControl* kbLabel;
+	bool mouseEntered = false;
 
 	public:
 		static std::unordered_map<std::string, IRECT*> rects;
@@ -68,16 +69,15 @@ private:
 		static IRECT nextseq;
 		static IRECT trackmute;
 
-	public:
-		std::string getButtonLabel();
-
 public:
 	bool Draw(IGraphics* pGraphics) override;
 	void OnMouseDown(int x, int y, IMouseMod* pMod) override;
 	void OnMouseUp(int x, int y, IMouseMod* pMod) override;
+	void OnMouseOver(int x, int y, IMouseMod *pMod) override;
+	void OnMouseOut() override;
 
 public:
-	ButtonControl(IPlugBase* pPlug, IRECT rect, std::weak_ptr<mpc::hardware::Button> button);
+	ButtonControl(IPlugBase* pPlug, IGraphics* gui, IRECT rect, std::weak_ptr<mpc::hardware::Button> button);
 	~ButtonControl();
 
 };

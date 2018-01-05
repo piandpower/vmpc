@@ -3,14 +3,35 @@
 
 #include "Constants.hpp"
 
-#include <math.h>
+#include "FTControl.hpp"
+#include <controls/KbMapping.hpp>
 
+#include <math.h>
+#include <algorithm>
 #include  "../resource.h"
 
-ButtonControl::ButtonControl(IPlugBase* pPlug, IRECT rect, std::weak_ptr<mpc::hardware::Button> button)
+#include <Logger.hpp>
+#include <thirdp/wrpkey/key.hxx>
+
+ButtonControl::ButtonControl(IPlugBase* pPlug, IGraphics* gui, IRECT rect, std::weak_ptr<mpc::hardware::Button> button)
 	: IPanelControl(pPlug, rect, Constants::LCD_OFF())
 {
 	this->button = button;
+	mpc::controls::KbMapping kbMapping;
+	auto buttonLabel = button.lock()->getLabel();
+	int keyCode = kbMapping.getKeyCodeFromLabel(buttonLabel);
+	if (buttonLabel.compare("bankc") == 0) {
+		//MLOG("bankc keyCode: " + std::to_string(keyCode));
+	}
+	auto labelString = kbMapping.getKeyCodeString(keyCode);
+	std::transform(labelString.begin(), labelString.end(), labelString.begin(), ::toupper);
+	int labelWidth = FTControl::getStringWidth(labelString);
+	int yMouseCursorOffset = Constants::KBLABEL_FONT_SIZE;
+	int labelOffsetX = rect.MW() - (labelWidth / 2) - ((Constants::KBLABEL_OUTLINE_SIZE) * gui_scale);
+	int labelOffsetY = rect.MH() - (((Constants::KBLABEL_FONT_SIZE / 2) - Constants::KBLABEL_OUTLINE_SIZE + yMouseCursorOffset) * gui_scale);
+	kbLabel = new FTControl(pPlug, labelOffsetX, labelOffsetY, labelString);
+	kbLabel->Hide(true);
+	gui->AttachControl(kbLabel);
 }
 std::unordered_map<std::string, IRECT*> ButtonControl::rects;
 IRECT ButtonControl::undoseq = IRECT(212 * gui_scale, 652 * gui_scale, 252 * gui_scale, 669 * gui_scale);
@@ -56,10 +77,6 @@ IRECT ButtonControl::sixteenlevels = IRECT(861 * gui_scale, 180 * gui_scale, 900
 IRECT ButtonControl::nextseq = IRECT(778 * gui_scale, 263 * gui_scale, 817 * gui_scale, 279 * gui_scale);
 IRECT ButtonControl::trackmute = IRECT(860 * gui_scale, 261 * gui_scale, 900 * gui_scale, 278 * gui_scale);
 
-std::string ButtonControl::getButtonLabel() {
-	return button.lock()->getLabel();
-}
-
 void ButtonControl::initRects() {
 	if (rects.size() != 0) return;
 
@@ -103,10 +120,22 @@ void ButtonControl::initRects() {
 
 void ButtonControl::OnMouseDown(int x, int y, IMouseMod* pMod) {
 	button.lock()->push();
+	kbLabel->Hide(true);
 }
 
 void ButtonControl::OnMouseUp(int x, int y, IMouseMod* pMod) {
 	button.lock()->release();
+}
+
+void ButtonControl::OnMouseOver(int x, int y, IMouseMod *pMod) {
+	if (mouseEntered) return;
+	mouseEntered = true;
+	kbLabel->Hide(false);
+}
+
+void ButtonControl::OnMouseOut() {
+	mouseEntered = false;
+	kbLabel->Hide(true);
 }
 
 bool ButtonControl::Draw(IGraphics* g) {

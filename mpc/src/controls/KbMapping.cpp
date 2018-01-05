@@ -1,6 +1,11 @@
 #include "KbMapping.hpp"
 #include <thirdp/wrpkey/key.hxx>
 
+#include <file/File.hpp>
+#include <StartUp.hpp>
+
+#include <Logger.hpp>
+
 using namespace mpc::controls;
 using namespace WonderRabbitProject::key;
 using namespace std;
@@ -53,8 +58,32 @@ KbMapping::KbMapping()
 	labelKeyMap["7"] = kh->code("7");
 	labelKeyMap["8"] = kh->code("8");
 	labelKeyMap["9"] = kh->code("9");
+	exportMapping();
 }
 const key_helper_t* mpc::controls::KbMapping::kh = &key_helper_t::instance();
+
+void KbMapping::exportMapping() {
+	auto path = mpc::StartUp::resPath + "/keys.txt";
+	moduru::file::File f(path, nullptr);
+	if (f.exists()) {
+		f.del();
+	}
+	else {
+		f.create();
+	}
+	std::vector<char> bytes;
+	for (std::pair<std::string, int> x : labelKeyMap) {
+		for (char& c : x.first)
+			bytes.push_back(c);
+		bytes.push_back(' ');
+		string keyCode = to_string(x.second);
+		for (char& c : keyCode)
+			bytes.push_back(c);
+		bytes.push_back('\n');
+	}
+	f.setData(&bytes);
+	f.close();
+}
 
 int KbMapping::getKeyCodeFromLabel(std::string label) {
 	if (labelKeyMap.find(label) == labelKeyMap.end()) return -1;
@@ -70,23 +99,17 @@ std::string KbMapping::getLabelFromKeyCode(int keyCode) {
 }
 
 std::string KbMapping::getKeyCodeString(int keyCode) {
+	auto names = kh->names(keyCode);
+	if (names.size() > 1) {
+		//MLOG("\nKeycode: " + std::to_string(keyCode));
+		//MLOG("Button label: " + getLabelFromKeyCode(keyCode));
+		//MLOG("Key names:");
+		for (auto& s : names) {
+			//MLOG(s);
+			if (s.length() > 3) return s;
+		}
+	}
 	return kh->name(keyCode);
-}
-
-int KbMapping::left() {
-	return kh->code("left");
-}
-
-int KbMapping::right() {
-	return kh->code("right");
-}
-
-int KbMapping::up() {
-	return kh->code("up");
-}
-
-int KbMapping::down() {
-	return kh->code("down");
 }
 
 int KbMapping::dataWheelBack()
@@ -100,129 +123,9 @@ int KbMapping::dataWheelForward()
 	return kh->code("equals");
 }
 
-vector<int> KbMapping::bankKeys()
-{
-	return vector<int>{ kh->code("home"), kh->code("end"), kh->code("insert"), kh->code("delete") };
-}
-
 vector<int> KbMapping::padKeys()
 {
     return vector<int>{ kh->code("z"), kh->code("x"), kh->code("c"), kh->code("v"), kh->code("a"), kh->code("s"), kh->code("d"), kh->code("f"), kh->code("b"), kh->code("n"), kh->code("m"), kh->code("comma"), kh->code("g"), kh->code("h"), kh->code("j"), kh->code("k") };
-}
-
-int KbMapping::rec()
-{
-    return kh->code("l");
-}
-
-int KbMapping::overdub()
-{
-	return kh->code("semicolon"); // semi-colon, 186
-}
-
-int KbMapping::stop()
-{
-	return kh->code("quote"); // quote, 222
-}
-
-int KbMapping::play()
-{   
-    return kh->code("space");
-}
-
-int KbMapping::playstart()
-{   
-    return kh->code("backslash"); // backslash, 220
-}
-
-int KbMapping::mainscreen()
-{   
-    return kh->code("escape");
-}
-
-int KbMapping::prevStepEvent()
-{   
-    return kh->code("q");
-}
-
-int KbMapping::nextStepEvent()
-{   
-    return kh->code("w");
-}
-
-int KbMapping::goTo()
-{    
-    return kh->code("e");
-}
-
-int KbMapping::prevBarStart()
-{
-    return kh->code("r");
-}
-
-int KbMapping::nextBarEnd()
-{
-    return kh->code("t");
-}
-
-int KbMapping::tap()
-{
-    return kh->code("y");
-}
-
-int KbMapping::nextSeq()
-{
-    return kh->code("[");
-}
-
-int KbMapping::trackMute()
-{
-    return kh->code("]");
-}
-
-int KbMapping::openWindow()
-{
-    return kh->code("i");
-}
-
-int KbMapping::fullLevel()
-{
-    return kh->code("o");
-}
-
-int KbMapping::sixteenLevels()
-{
-    return kh->code("p");
-}
-
-int KbMapping::f1()
-{
-    return kh->code("f1");
-}
-
-int KbMapping::f2()
-{
-    return kh->code("f2");
-}
-
-int KbMapping::f3()
-{
-    return kh->code("f3");
-}
-
-int KbMapping::f4()
-{
-    return kh->code("f4");
-}
-
-int KbMapping::f5()
-{
-    return kh->code("f5");
-}
-
-int KbMapping::f6()
-{
-    return kh->code("f6");
 }
 
 vector<int> KbMapping::numPad()
@@ -235,30 +138,6 @@ vector<int> KbMapping::altNumPad()
 	return vector<int>{ 96, 97, 98, 99, 100, 101, 102, 103, 104, 105 };
 }
 
-int KbMapping::numPadShift()
-{
-    return kh->code("left shift");
-}
-
-int KbMapping::numPadEnter()
-{
-    return kh->code("enter");
-}
-
-int KbMapping::undoSeq()
-{
-    return kh->code("f10");
-}
-
-int KbMapping::erase()
-{
-	return kh->code("f11");
-}
-
-int KbMapping::after()
-{
-    return kh->code("f12");
-}
 
 int KbMapping::ctrl() {
 	return kh->code("left control");
@@ -266,12 +145,4 @@ int KbMapping::ctrl() {
 
 int KbMapping::alt() {
 	return kh->code("left alternate");
-}
-
-int KbMapping::leftShift() {
-	return kh->code("left shift");
-}
-
-int KbMapping::rightShift() {
-	return kh->code("right shift");
 }

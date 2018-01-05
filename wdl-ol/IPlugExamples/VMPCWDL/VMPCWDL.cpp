@@ -97,16 +97,16 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	auto sc = new SliderControl(this, sliders, mpc->getHardware().lock()->getSlider(), 0, mInputCatcher);
 	pGraphics->AttachControl(sc);
 
-	auto ftControl = new FTControl(this, 300, 300, "Freetype, testing", 35, 8);
-	pGraphics->AttachControl(ftControl);
+	//auto ftControl = new FTControl(this, 300, 300, "Freetype, testing", 35, 8);
+	//pGraphics->AttachControl(ftControl);
 
 	ButtonControl::initRects();
 	std::vector<std::string> buttonLabels{ "rec", "overdub", "stop", "play", "playstart", "mainscreen", "prevstepevent", "nextstepevent",	"goto",	"prevbarstart",	"nextbarend", "tap", "nextseq",	"trackmute", "openwindow", "fulllevel", "sixteenlevels", "f1", "f2", "f3", "f4", "f5", "f6", "shift", "enter", "undoseq", "erase", "after", "banka", "bankb", "bankc", "bankd" };
 	for (auto& l : buttonLabels) {
-		auto bc = new ButtonControl(this, *ButtonControl::rects[l], mpc->getHardware().lock()->getButton(l));
+		auto bc = new ButtonControl(this, pGraphics, *ButtonControl::rects[l], mpc->getHardware().lock()->getButton(l));
 		pGraphics->AttachControl(bc);
 	}
-	
+	pGraphics->HandleMouseOver(true);
 	AttachGraphics(pGraphics);
 
 	//MakePreset("preset 1", ... );

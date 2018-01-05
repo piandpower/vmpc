@@ -1,7 +1,39 @@
 #include "FTControl.hpp"
 #include "Constants.hpp"
 
-#include <Logger.hpp>
+#include "../resource.h"
+
+std::string FTControl::fontPath = "c:/temp/arial.ttf";
+int FTControl::fontSize = Constants::KBLABEL_FONT_SIZE * gui_scale;
+int FTControl::outlineSize = Constants::KBLABEL_OUTLINE_SIZE * gui_scale;
+
+void FTControl::Hide(bool b) {
+	if (b) {
+		unhideDesired = false;
+		IPanelControl::Hide(true);
+	}
+	else {
+		unhideDesired = true;
+		if (unhideThread.joinable()) unhideThread.join();
+		unhideThread = std::thread(&FTControl::static_unhide, this);
+	}
+}
+
+void FTControl::static_unhide(void * args)
+{
+	static_cast<FTControl*>(args)->unhide();
+}
+
+void FTControl::unhide() {
+	int timeWaited = 0;
+	while (unhideDesired && timeWaited < 800) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		timeWaited += 5;
+	}
+	if (unhideDesired) {
+		IPanelControl::Hide(false);
+	}
+}
 
 struct Vec2
 {
@@ -103,17 +135,14 @@ void FTControl::WriteGlyph(const Pixel32 &fontCol,
 
 					if (!spans.empty())
 					{
-						//MLOG("\nchar    : " + text.substr(n, 1));
 						auto bearingX = face->glyph->metrics.horiBearingX >> 6;
 						auto bearingY = face->glyph->metrics.horiBearingY >> 6;
 						auto height = face->glyph->metrics.height >> 6;
-						//MLOG("bearingX: " + std::to_string(bearingX));
-						//MLOG("width   : " + std::to_string(width));
 						int xdist = bearingX;
 						int ydist = height - bearingY;
 						if (n == 0) xdist = 0;
 						Rect rect(spans.front().x,
-							(spans.front().y) - (fontSize *0.5) + ydist,
+							(spans.front().y) - (fontSize *0.6) + ydist,
 							spans.front().x,
 							(spans.front().y));
 
@@ -173,43 +202,53 @@ void FTControl::WriteGlyph(const Pixel32 &fontCol,
 	}
 }
 
-FTControl::FTControl(IPlugBase* pPlug, int x, int y, std::string text, int fontSize, int outlineSize)
+FTControl::FTControl(IPlugBase* pPlug, int x, int y, std::string text)
 	: IPanelControl(pPlug, IRECT(0,0,0,0), Constants::LCD_OFF()) {
 	this->x = x;
 	this->y = y;
-	this->fontSize = fontSize;
-	this->outlineSize = outlineSize;
 	this->text = text;
 	FT_Init_FreeType(&library);
 
-	std::ifstream fontFile("c:/temp/Vera.ttf", std::ios::binary);
+	std::ifstream fontFile(fontPath, std::ios::binary);
 	fontFile.seekg(0, std::ios::end);
-	fontFileSize = fontFile.tellg();
+	std::fstream::pos_type fontFileSize = fontFile.tellg();
 	fontFile.seekg(0);
 	fontBuffer = new unsigned char[fontFileSize];
 	fontFile.read((char *)fontBuffer, fontFileSize);
 	FT_New_Memory_Face(library, fontBuffer, fontFileSize, 0, &face);
 	FT_Set_Char_Size(face, fontSize << 6, fontSize << 6, 90, 90);
 
-	int width = getStringWidth() + (2 * outlineSize);
-	int height = (fontSize*1.25) + (2 * outlineSize);
+	int width = getStringWidth(text) + (2 * outlineSize);
+	int height = (fontSize*1.5) + (2 * outlineSize);
 	mRECT = IRECT(x, y, x + width, y + height);
-	pixels = std::vector<Pixel32>(mRECT.W() * mRECT.H());
 }
 
-int FTControl::getStringWidth() {
+int FTControl::getStringWidth(std::string text) {
 	int res = 0;
+	FT_Library ftlib;
+	FT_Init_FreeType(&ftlib);
+	std::ifstream fontFile(fontPath, std::ios::binary);
+	fontFile.seekg(0, std::ios::end);
+	std::fstream::pos_type fontFileSize = fontFile.tellg();
+	fontFile.seekg(0);
+	auto fb = new unsigned char[fontFileSize];
+	FT_Face fc;
+	fontFile.read((char *)fb, fontFileSize);
+	FT_New_Memory_Face(ftlib, fb, fontFileSize, 0, &fc);
+	FT_Set_Char_Size(fc, fontSize << 6, fontSize << 6, 90, 90);
 
 	for (int n = 0; n < text.length(); n++)
 	{
 		//MLOG("calculating advance value for char " + text.substr(n, 1));
-		FT_UInt gindex = FT_Get_Char_Index(face, text[n]);
-		if (FT_Load_Glyph(face, gindex, FT_LOAD_DEFAULT) == 0) {
-			int advance = face->glyph->advance.x >> 6;
+		FT_UInt gindex = FT_Get_Char_Index(fc, text[n]);
+		if (FT_Load_Glyph(fc, gindex, FT_LOAD_DEFAULT) == 0) {
+			int advance = fc->glyph->advance.x >> 6;
 			//MLOG("no error, advance.x == " + std::to_string(advance));
 			res += advance;
 		}
 	}
+	if (fb) delete[] fb;
+	FT_Done_FreeType(ftlib);
 	return res;
 }
 
@@ -224,6 +263,7 @@ void blend_alpha(unsigned char result[4], unsigned char fg[4], unsigned char bg[
 }
 
 bool FTControl::Draw(IGraphics* g) {
+	pixels = std::vector<Pixel32>(mRECT.W() * mRECT.H());
 	Pixel32 oc(0, 0, 0);
 	Pixel32 tc(255, 255, 255);
 	WriteGlyph(tc, oc);
@@ -242,12 +282,12 @@ bool FTControl::Draw(IGraphics* g) {
 			g->DrawPoint(&resc, x, y, &blend);
 		}
 	}
-
 	//g->DrawRect(Constants::LCD_ON(), &mRECT);
-	return true;
+	return false;
 }
 
 FTControl::~FTControl() {
 	if (fontBuffer) delete[] fontBuffer;
 	FT_Done_FreeType(library);
+	if (unhideThread.joinable()) unhideThread.join();
 }
