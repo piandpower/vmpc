@@ -60,6 +60,7 @@ public:
 	* Implement IPanelControl
 	*/
 	bool Draw(IGraphics* pGraphics) override;
+	//bool IsDirty() override { return true; };
 
 	/*
 	* Implement Observer

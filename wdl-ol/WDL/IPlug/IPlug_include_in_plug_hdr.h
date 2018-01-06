@@ -4,8 +4,19 @@
 // Include this file in the main header for your plugin,
 // after #defining either VST_API or AU_API.
 #include <stdio.h>
+#include <stdint.h>
+typedef uint32_t uint32;
+
 #include "IPlugOSDetect.h"
 #include "../../IPlugExamples/VMPCWDL/resource.h"
+
+#include "IPlugGUIResize.h"
+//#include "IPlugGUILiveEdit.h"
+
+#ifdef USING_YCAIRO
+#include "ycairo.h"
+#endif
+
 #ifdef VST_API
   #include "IPlugVST.h"
   typedef IPlugVST IPlug;
@@ -43,8 +54,6 @@
   #else
     #define EXPORT __declspec(dllexport)
   #endif
-
-
 #elif defined OS_OSX
   #include "IGraphicsMac.h"
   #define EXPORT __attribute__ ((visibility("default")))

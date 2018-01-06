@@ -1,14 +1,18 @@
 #include "IGraphics.h"
+#include "IPlugGUIResize.h"
 
-#define DEFAULT_FPS 25
+#define DEFAULT_FPS 120
 
 // If not dirty for this many timer ticks, we call OnGUIIDle.
 // Only looked at if USE_IDLE_CALLS is defined.
-#define IDLE_TICKS 20
+
+//#define USE_IDLE_CALLS
+//#define IDLE_TICKS 1
 
 #ifndef CONTROL_BOUNDS_COLOR
 #define CONTROL_BOUNDS_COLOR COLOR_GREEN
 #endif
+
 
 class BitmapStorage
 {
@@ -69,6 +73,69 @@ public:
 	}
 };
 
+class GUIResizeBitmapStorage
+{
+private:
+	int current_size = 0;
+public:
+
+	struct BitmapKey
+	{
+		int id;
+		const char *name;
+		IBitmap* bitmap;
+	};
+
+	WDL_PtrList<BitmapKey> m_bitmaps;
+	WDL_Mutex m_mutex;
+
+	IBitmap* GetBitmap(int index)
+	{
+		BitmapKey* key = m_bitmaps.Get(index);
+		return key->bitmap;
+	}
+
+	int GetID(int index)
+	{
+		BitmapKey* key = m_bitmaps.Get(index);
+		return key->id;
+	}
+
+	const char *GetName(int index)
+	{
+		BitmapKey* key = m_bitmaps.Get(index);
+		return key->name;
+	}
+
+	int GetSize()
+	{
+		return current_size;
+	}
+
+	void Add(IBitmap* bitmap, int id, const char *pName)
+	{
+		WDL_MutexLock lock(&m_mutex);
+		BitmapKey* key = m_bitmaps.Add(new BitmapKey);
+		key->id = id;
+		key->name = pName;
+		key->bitmap = bitmap;
+
+		current_size++;
+	}
+
+
+	~GUIResizeBitmapStorage()
+	{
+		int i, n = m_bitmaps.GetSize();
+		for (i = 0; i < n; ++i)
+		{
+			delete(m_bitmaps.Get(i)->bitmap);
+		}
+		m_bitmaps.Empty(true);
+	}
+};
+
+static GUIResizeBitmapStorage storeLoadedBitmap;
 static BitmapStorage s_bitmapCache;
 
 class FontStorage
@@ -189,22 +256,239 @@ IGraphics::~IGraphics()
 	if (mKeyCatcher)
 		DELETE_NULL(mKeyCatcher);
 
-	// Izmael
-	//mControls.Empty(true);
-
+	mControls.Empty(true);
+	mControlGroups.Empty(true);
 	DELETE_NULL(mDrawBitmap);
 	DELETE_NULL(mTmpBitmap);
+}
+
+inline int SafeGetPixel(int* input, int x_get, int y_get, int rowSpan, int w, int h)
+{
+	// Inside buffer
+	if (x_get < w && y_get < h)
+	{
+		return input[x_get + (y_get * rowSpan)];
+	}
+
+	return 0;
+}
+
+void ResizeBilinear(int sourceRowSpan, int sourceWidth, int destinationRowSpan, int destinationWidth, int* input, int* out, int w1, int h1, int w2, int h2, bool framesAreHoriztonal = false)
+{
+	int a = 0, b = 0, c = 0, d = 0;
+	int x, y;
+
+	int w_ratio = IPMAX(int(double(w1) / double(w2) + 0.99999999999), 0);
+	int h_ratio = IPMAX(int(double(h1) / double(h2) + 0.99999999999), 0);
+
+	double x_ratio = ((double)w1) / (double)(w2);
+	double y_ratio = ((double)h1) / (double)(h2);
+
+	double hw_ratio = 1.0 / IPMAX(double(w_ratio * h_ratio), 1.0);
+
+	double x_diff, y_diff;
+	double blue = 0.0, red = 0.0, green = 0.0, alpha = 0.0;
+	int offset = 0;
+
+	for (int i = 0; i<h2; i++)
+	{
+		for (int j = 0; j<w2; j++)
+		{
+			blue = 0.0; red = 0.0; green = 0.0; alpha = 0.0;
+
+			x = (int)(x_ratio * j);
+			y = (int)(y_ratio * i);
+			x_diff = (x_ratio * j) - x;
+			y_diff = (y_ratio * i) - y;
+
+			for (int h = -1; h < h_ratio; h++)
+			{
+				if (h == -1) h++;
+				for (int w = -1; w < w_ratio; w++)
+				{
+					if (w == -1) w++;
+
+					a = SafeGetPixel(input, x + w, y + h, sourceRowSpan, sourceWidth, h1);
+					b = SafeGetPixel(input, x + w + 1, y + h, sourceRowSpan, sourceWidth, h1);
+					c = SafeGetPixel(input, x + w, y + h + 1, sourceRowSpan, sourceWidth, h1);
+					d = SafeGetPixel(input, x + w + 1, y + h + 1, sourceRowSpan, sourceWidth, h1);
+
+					// blue element
+					blue += (a & 0xff)*(1 - x_diff)*(1 - y_diff) + (b & 0xff)*(x_diff)*(1 - y_diff) +
+						(c & 0xff)*(y_diff)*(1 - x_diff) + (d & 0xff)*(x_diff*y_diff);
+
+					// green element
+					green += ((a >> 8) & 0xff)*(1 - x_diff)*(1 - y_diff) + ((b >> 8) & 0xff)*(x_diff)*(1 - y_diff) +
+						((c >> 8) & 0xff)*(y_diff)*(1 - x_diff) + ((d >> 8) & 0xff)*(x_diff*y_diff);
+
+					// red element
+					red += ((a >> 16) & 0xff)*(1 - x_diff)*(1 - y_diff) + ((b >> 16) & 0xff)*(x_diff)*(1 - y_diff) +
+						((c >> 16) & 0xff)*(y_diff)*(1 - x_diff) + ((d >> 16) & 0xff)*(x_diff*y_diff);
+
+					// alpha element
+					alpha += ((a >> 24) & 0xff)*(1 - x_diff)*(1 - y_diff) + ((b >> 24) & 0xff)*(x_diff)*(1 - y_diff) +
+						((c >> 24) & 0xff)*(y_diff)*(1 - x_diff) + ((d >> 24) & 0xff)*(x_diff*y_diff);
+				}
+			}
+
+			blue *= hw_ratio;
+			green *= hw_ratio;
+			red *= hw_ratio;
+			alpha *= hw_ratio;
+
+			out[offset++] =
+				((((int)alpha) << 24) & 0xff000000) |
+				((((int)red) << 16) & 0xff0000) |
+				((((int)green) << 8) & 0xff00) |
+				((int)blue);
+		}
+
+
+		if (framesAreHoriztonal)
+		{
+			offset += destinationRowSpan - w2;
+		}
+		else
+		{
+			offset += destinationRowSpan - destinationWidth;
+		}
+	}
+}
+
+void ResizeBitmap(LICE_IBitmap* source, LICE_IBitmap* destination, int nStates, bool framesAreHoriztonal)
+{
+	int* pointer_to_source = (int*)source->getBits();
+	int srcX = 0;
+	int srcY = 0;
+
+	int* pointer_to_destination = (int*)destination->getBits();
+	int dstX = 0;
+	int dstY = 0;
+
+	if (nStates > 1)
+	{
+		if (framesAreHoriztonal)
+		{
+			int src_width = (int)((double)source->getWidth() / nStates);
+			int dst_width = (int)((double)(destination->getWidth() - nStates) / nStates);
+
+			// Set whole destination bitmap to 0 alpha. This is to fix some graphical glitches on different knob positions
+			LICE_Clear(destination, 0);
+
+			for (int i = 0; i < nStates; i++)
+			{
+				srcX = int(0.5 + (double)source->getWidth() * (double)(i) / (double)nStates);
+				dstX = int(0.5 + (double)destination->getWidth() * (double)(i) / (double)nStates);
+
+				pointer_to_source = pointer_to_source + srcX;
+				pointer_to_destination = pointer_to_destination + dstX;
+
+				ResizeBilinear(source->getRowSpan(), source->getWidth(), destination->getRowSpan(), destination->getWidth(),
+					pointer_to_source, pointer_to_destination, src_width, source->getHeight(), dst_width, destination->getHeight(), true);
+
+				pointer_to_source = pointer_to_source - srcX;
+				pointer_to_destination = pointer_to_destination - dstX;
+			}
+		}
+		else
+		{
+
+			int src_height = (int)((double)source->getHeight() / nStates);
+			int dst_height = (int)((double)(destination->getHeight() - nStates) / nStates);
+
+			// Set whole destination bitmap to 0 alpha. This is to fix some graphical glitches on different knob positions
+
+			LICE_Clear(destination, 0);
+
+			for (int i = 0; i < nStates; i++)
+			{
+				srcY = int(0.5 + (double)source->getHeight() * (double)(i) / (double)nStates);
+				dstY = int(0.5 + (double)destination->getHeight() * (double)(i) / (double)nStates);
+
+				pointer_to_source = pointer_to_source + (srcY * source->getRowSpan());
+				pointer_to_destination = pointer_to_destination + (dstY * destination->getRowSpan());
+
+				ResizeBilinear(source->getRowSpan(), source->getWidth(), destination->getRowSpan(), destination->getWidth() + 1,
+					pointer_to_source, pointer_to_destination, source->getWidth(), src_height, destination->getWidth() + 1, dst_height + 1);
+				//ResizeBilinear(source->getRowSpan(), source->getWidth(), destination->getRowSpan(), destination->getWidth(),
+					//pointer_to_source, pointer_to_destination, source->getWidth(), src_height, destination->getWidth(), dst_height);
+
+				pointer_to_source = pointer_to_source - (srcY * source->getRowSpan());
+				pointer_to_destination = pointer_to_destination - (dstY * destination->getRowSpan());
+			}
+		}
+	}
+	else
+	{
+		ResizeBilinear(source->getRowSpan(), source->getWidth(), destination->getRowSpan(), destination->getWidth(),
+			pointer_to_source, pointer_to_destination, source->getWidth(), source->getHeight(), destination->getWidth(), destination->getHeight());
+	}
+}
+
+void IGraphics::RescaleBitmaps(double guiScaleRatio)
+{
+	for (int i = 0; i < storeLoadedBitmap.GetSize(); i++)
+	{
+		// Load bitmaps from binary 
+		LICE_IBitmap* lb = OSLoadBitmap(storeLoadedBitmap.GetID(i), storeLoadedBitmap.GetName(i));
+
+		// Get new bitmap width and height
+		int new_width = (int)(guiScaleRatio * (double)(lb->getWidth() / bitmapOversample));
+		int new_height = (int)(guiScaleRatio * (double)(lb->getHeight() / bitmapOversample));
+
+		// Get current bitmap
+		LICE_IBitmap* currentBitmap = (LICE_IBitmap*)storeLoadedBitmap.GetBitmap(i)->mData;
+
+		// Get current bitmap properties
+		int nStates = storeLoadedBitmap.GetBitmap(i)->N;
+		bool framesAreHoriztonal = storeLoadedBitmap.GetBitmap(i)->mFramesAreHorizontal;
+
+		// Create new LICE_IBitmap to use after resizing
+		LICE_IBitmap* newBitmap;
+
+		// We are adding nStates to have headroom of 1px between all frames. 
+		// This is to fix graphical glitches that may occur during bitmap rescaling.
+
+		if (nStates > 1 && !framesAreHoriztonal)
+			newBitmap = (LICE_IBitmap*) new LICE_MemBitmap(new_width, new_height + nStates);
+		else if (nStates > 1 && framesAreHoriztonal)
+			newBitmap = (LICE_IBitmap*) new LICE_MemBitmap(new_width + nStates, new_height);
+		else
+			newBitmap = (LICE_IBitmap*) new LICE_MemBitmap(new_width, new_height);
+
+
+		// Resize old content and write to new bitmap
+		ResizeBitmap(lb, newBitmap, nStates, framesAreHoriztonal);
+
+		// Copy resized image to cached bitmap that all plugins are using
+		LICE_Copy(currentBitmap, newBitmap);
+
+
+		// Store new window size
+		storeLoadedBitmap.GetBitmap(i)->W = newBitmap->getWidth();
+		storeLoadedBitmap.GetBitmap(i)->H = newBitmap->getHeight();
+
+		delete newBitmap;
+		delete lb;
+	}
 }
 
 void IGraphics::Resize(int w, int h)
 {
 	mWidth = w;
 	mHeight = h;
-	ReleaseMouseCapture();
-	mControls.Empty(true);
 	DELETE_NULL(mDrawBitmap);
 	DELETE_NULL(mTmpBitmap);
 	PrepDraw();
+
+#ifdef __APPLE__
+	if (mPlug->GetGUIResize() && IsUsingSystemGUIScaling())
+	{
+		w /= GetSystemGUIScaleRatio();
+		h /= GetSystemGUIScaleRatio();
+	}
+#endif  
+
 	mPlug->ResizeGraphics(w, h);
 }
 
@@ -232,25 +516,100 @@ void IGraphics::SetFromStringAfterPrompt(IControl* pControl, IParam* pParam, cha
 	}
 }
 
+void UpdateLayerPosition(WDL_PtrList<IControl>* pControls)
+{
+	for (int i = 0; i < pControls->GetSize(); i++)
+	{
+		pControls->Get(i)->UpdateLayerPositionIndex(i);
+	}
+}
 
 void IGraphics::AttachBackground(int ID, const char* name)
 {
-	IBitmap bg = LoadIBitmap(ID, name);
-	bg = ScaleBitmap(&bg, mWidth, mHeight);
-	IControl* pBG = new IBitmapControl(mPlug, 0, 0, -1, &bg, IChannelBlend::kBlendClobber);
+	IBitmap *bg = LoadPointerToBitmap(ID, name);
+
+	IControl* pBG = new IBitmapControl(mPlug, 0, 0, -1, bg, IChannelBlend::kBlendClobber);
 	mControls.Insert(0, pBG);
+	UpdateLayerPosition(&mControls);
 }
 
 void IGraphics::AttachPanelBackground(const IColor *pColor)
 {
 	IControl* pBG = new IPanelControl(mPlug, IRECT(0, 0, mWidth, mHeight), pColor);
 	mControls.Insert(0, pBG);
+	UpdateLayerPosition(&mControls);
 }
 
-int IGraphics::AttachControl(IControl* pControl)
+int* IGraphics::AttachControl(IControl* pControl)
 {
 	mControls.Add(pControl);
-	return mControls.GetSize() - 1;
+	UpdateLayerPosition(&mControls);
+	return pControl->GetLayerPosition();
+}
+
+IControlGroup * IGraphics::CreateControlGroup()
+{
+	IControlGroup* pControlGroup = new IControlGroup(mPlug);
+	mControlGroups.Add(pControlGroup);
+
+	return pControlGroup;
+}
+
+void IGraphics::MoveControlLayers(int fromIndex, int toIndex)
+{
+	int controlSize = mControls.GetSize();
+	if (mPlug->GetGUIResize()) controlSize -= 3;
+
+	if (fromIndex > 0 && fromIndex < controlSize && toIndex > 0 && toIndex < controlSize)
+	{
+		IControl* pControl = mControls.Get(fromIndex);
+
+		mControls.Delete(fromIndex);
+		mControls.Insert(toIndex, pControl);
+		UpdateLayerPosition(&mControls);
+	}
+}
+
+void IGraphics::SwapControlLayers(int fromIndex, int toIndex)
+{
+	int controlSize = mControls.GetSize();
+	if (mPlug->GetGUIResize()) controlSize -= 3;
+
+	if (fromIndex > 0 && fromIndex < controlSize && toIndex > 0 && toIndex < controlSize)
+	{
+		IControl* pControl = mControls.Get(fromIndex);
+
+		mControls.Set(fromIndex, mControls.Get(toIndex));
+		mControls.Set(toIndex, pControl);
+		UpdateLayerPosition(&mControls);
+	}
+}
+
+int FindPointerPosition(IControl* pControl, WDL_PtrList<IControl> vControl)
+{
+	for (int i = 0; i < vControl.GetSize(); i++)
+	{
+		if (pControl == vControl.Get(i)) return i;
+	}
+	return -1;
+}
+
+void IGraphics::ReplaceControl(int Index, IControl* pControl)
+{
+	int controlSize = mControls.GetSize();
+	if (mPlug->GetGUIResize()) controlSize -= 3;
+
+	if (Index > 0 && Index < controlSize)
+	{
+		mControls.Set(Index, pControl);
+		UpdateLayerPosition(&mControls);
+	}
+}
+
+void IGraphics::RemoveControl(int Index)
+{
+	mControls.Delete(Index);
+	UpdateLayerPosition(&mControls);
 }
 
 void IGraphics::AttachKeyCatcher(IControl* pControl)
@@ -328,7 +687,7 @@ void IGraphics::SetParameterFromPlug(int paramIdx, double value, bool normalized
 			// Could be more than one, don't break until we check them all.
 		}
 
-		// now look for any auxilliary parameters
+		// now look for any auxiliary parameters
 		int auxParamIdx = pControl->AuxParamIdx(paramIdx);
 
 		if (auxParamIdx > -1) // there are aux params
@@ -423,9 +782,10 @@ void IGraphics::PromptUserInput(IControl* pControl, IParam* pParam, IRECT* pText
 
 }
 
-IBitmap IGraphics::LoadIBitmap(int ID, const char* name, int nStates, bool framesAreHoriztonal)
+IBitmap* IGraphics::LoadPointerToBitmap(int ID, const char* name, int nStates, bool framesAreHoriztonal)
 {
 	LICE_IBitmap* lb = s_bitmapCache.Find(ID);
+	LICE_IBitmap* newBitmap;
 	if (!lb)
 	{
 		lb = OSLoadBitmap(ID, name);
@@ -433,9 +793,32 @@ IBitmap IGraphics::LoadIBitmap(int ID, const char* name, int nStates, bool frame
 		bool imgResourceFound = lb;
 #endif
 		assert(imgResourceFound); // Protect against typos in resource.h and .rc files.
-		s_bitmapCache.Add(lb, ID);
+
+								  // Rescale bitmap if oversample is specified
+								  // If we use bitmap oversampling we wont rescale bitmaps here. We will let iplugguiresize do it for us
+		if (bitmapOversample > 1)
+		{
+			// Get new bitmap width and height
+			int new_width = (int)(double)(lb->getWidth() / bitmapOversample);
+			int new_height = (int)(double)(lb->getHeight() / bitmapOversample);
+
+			newBitmap = (LICE_IBitmap*) new LICE_MemBitmap(1, 1);
+			s_bitmapCache.Add(newBitmap, ID);
+			storeLoadedBitmap.Add(new IBitmap(newBitmap, new_width, new_height, nStates, framesAreHoriztonal), ID, name);
+			delete lb;
+		}
+		else
+		{
+			s_bitmapCache.Add(lb, ID);
+			storeLoadedBitmap.Add(new IBitmap(lb, lb->getWidth(), lb->getHeight(), nStates, framesAreHoriztonal), ID, name);
+		}
 	}
-	return IBitmap(lb, lb->getWidth(), lb->getHeight(), nStates, framesAreHoriztonal);
+	else
+	{
+		storeLoadedBitmap.Add(new IBitmap(lb, lb->getWidth(), lb->getHeight(), nStates, framesAreHoriztonal), ID, name);
+	}
+
+	return storeLoadedBitmap.GetBitmap(storeLoadedBitmap.GetSize() - 1);
 }
 
 void IGraphics::RetainBitmap(IBitmap* pBitmap)
@@ -706,8 +1089,8 @@ bool IGraphics::DrawHorizontalLine(const IColor* pColor, IRECT* pR, float y)
 bool IGraphics::DrawRadialLine(const IColor* pColor, float cx, float cy, float angle, float rMin, float rMax,
 	const IChannelBlend* pBlend, bool antiAlias)
 {
-	float sinV = sin(angle);
-	float cosV = cos(angle);
+	float sinV = sinf(angle);
+	float cosV = cosf(angle);
 	float xLo = cx + rMin * sinV;
 	float xHi = cx + rMax * sinV;
 	float yLo = cy - rMin * cosV;
@@ -717,25 +1100,44 @@ bool IGraphics::DrawRadialLine(const IColor* pColor, float cx, float cy, float a
 
 bool IGraphics::IsDirty(IRECT* pR)
 {
-#ifndef NDEBUG
-	if (mShowControlBounds)
-	{
-		*pR = mDrawRECT;
-		return true;
-	}
-#endif
-
 	bool dirty = false;
 	int i, n = mControls.GetSize();
 	IControl** ppControl = mControls.GetList();
+	DRECT nonScaledDrawRECT; // TODO: Find a better way to detect dirty area
+
 	for (i = 0; i < n; ++i, ++ppControl)
 	{
 		IControl* pControl = *ppControl;
-		if (pControl->IsDirty())
+
+		if (mPlug->GetGUIResize())
 		{
-			*pR = pR->Union(pControl->GetRECT());
-			dirty = true;
+			if (pControl->IsDirty())
+			{
+				nonScaledDrawRECT = nonScaledDrawRECT.Union(pControl->GetNonScaledDrawRECT());
+				dirty = true;
+			}
 		}
+		else
+		{
+			if (pControl->IsDirty())
+			{
+				*pR = pR->Union(pControl->GetDrawRECT());
+				dirty = true;
+			}
+		}
+	}
+
+	// Upscale draw rect
+	if (mPlug->GetGUIResize() && dirty)
+	{
+		double guiScaleRatio = mPlug->GetGUIResize()->GetGUIScaleRatio();
+
+		nonScaledDrawRECT.L = int(nonScaledDrawRECT.L * guiScaleRatio);
+		nonScaledDrawRECT.T = int(nonScaledDrawRECT.T * guiScaleRatio);
+		nonScaledDrawRECT.R = int(nonScaledDrawRECT.R * guiScaleRatio + 0.9999999);
+		nonScaledDrawRECT.B = int(nonScaledDrawRECT.B * guiScaleRatio + 0.9999999);
+
+		*pR = nonScaledDrawRECT;
 	}
 
 #ifdef USE_IDLE_CALLS
@@ -750,6 +1152,14 @@ bool IGraphics::IsDirty(IRECT* pR)
 	}
 #endif
 
+#ifndef NDEBUG
+	if (mShowControlBounds)
+	{
+		*pR = mDrawRECT;
+		return true;
+	}
+#endif
+
 	return dirty;
 }
 
@@ -759,6 +1169,17 @@ bool IGraphics::Draw(IRECT* pR)
 {
 	//  #pragma REMINDER("Mutex set while drawing")
 	//  WDL_MutexLock lock(&mMutex);
+
+
+	// If GUIResize is actuve and fast bitmap resizing is active, draw overlay image on the plugin while resizing
+	if (mPlug->GetGUIResize() && mPlug->GetGUIResize()->CurrentlyFastResizing())
+	{
+		IRECT backgroundRECT = IRECT(0, 0, Width(), Height());
+		mPlug->GetGUIResize()->DrawBackgroundAtFastResizing(this, &backgroundRECT);
+
+		return DrawScreen(&backgroundRECT);
+	}
+
 
 	int i, j, n = mControls.GetSize();
 	if (!n)
@@ -774,7 +1195,7 @@ bool IGraphics::Draw(IRECT* pR)
 		for (int i = 0; i < n; ++i, ++ppControl)
 		{
 			IControl* pControl = *ppControl;
-			if (!(pControl->IsHidden()) && pR->Intersects(pControl->GetRECT()))
+			if (!(pControl->IsHidden()) && pR->Intersects(pControl->GetDrawRECT()))
 			{
 				pControl->Draw(this);
 			}
@@ -786,7 +1207,7 @@ bool IGraphics::Draw(IRECT* pR)
 		IControl* pBG = mControls.Get(0);
 		if (pBG->IsDirty())   // Special case when everything needs to be drawn.
 		{
-			mDrawRECT = *(pBG->GetRECT());
+			mDrawRECT = *(pBG->GetDrawRECT());
 			for (int j = 0; j < n; ++j)
 			{
 				IControl* pControl2 = mControls.Get(j);
@@ -807,15 +1228,15 @@ bool IGraphics::Draw(IRECT* pR)
 
 					// printf("control %i is Dirty\n", i);
 
-					mDrawRECT = *(pControl->GetRECT()); // put the rect in the mDrawRect member variable
+					mDrawRECT = *(pControl->GetDrawRECT()); // put the rect in the mDrawRect member variable
 					for (j = 0; j < n; ++j)   // loop through all controls
 					{
 						IControl* pControl2 = mControls.Get(j); // assign control j to pControl2
 
 																// if control1 == control2 OR control2 is not hidden AND control2's rect intersects mDrawRect
-						if (!pControl2->IsHidden() && (i == j || pControl2->GetRECT()->Intersects(&mDrawRECT)))
+						if (!pControl2->IsHidden() && (i == j || pControl2->GetDrawRECT()->Intersects(&mDrawRECT)))
 						{
-							//if ((i == j) && (!pControl2->IsHidden())|| (!(pControl2->IsHidden()) && pControl2->GetRECT()->Intersects(&mDrawRECT))) {
+							//if ((i == j) && (!pControl2->IsHidden())|| (!(pControl2->IsHidden()) && pControl2->GetDrawRECT()->Intersects(&mDrawRECT))) {
 							//printf("control %i and %i \n", i, j);
 
 							pControl2->Draw(this);
@@ -830,10 +1251,14 @@ bool IGraphics::Draw(IRECT* pR)
 #ifndef NDEBUG
 	if (mShowControlBounds)
 	{
-		for (int j = 1; j < mControls.GetSize(); j++)
+		int controlSize = mControls.GetSize();
+		if (mPlug->GetGUIResize()) controlSize -= 3;
+
+		for (int j = 1; j < controlSize; j++)
 		{
 			IControl* pControl = mControls.Get(j);
-			DrawRect(&CONTROL_BOUNDS_COLOR, pControl->GetRECT());
+
+			DrawRect(&CONTROL_BOUNDS_COLOR, pControl->GetDrawRECT());
 		}
 
 		WDL_String str;
@@ -842,8 +1267,8 @@ bool IGraphics::Draw(IRECT* pR)
 		IRECT rect(Width() - 150, Height() - 20, Width(), Height());
 		DrawIText(&txt, str.Get(), &rect);
 	}
-#endif
 
+#endif
 	return DrawScreen(pR);
 }
 
@@ -855,6 +1280,9 @@ void IGraphics::SetStrictDrawing(bool strict)
 
 void IGraphics::OnMouseDown(int x, int y, IMouseMod* pMod)
 {
+	// Call globaly
+	for (int i = 1; i < mControls.GetSize(); i++) mControls.Get(i)->OnGlobalMouseDown(x, y, pMod);
+
 	ReleaseMouseCapture();
 	int c = GetMouseControlIdx(x, y);
 	if (c >= 0)
@@ -909,6 +1337,9 @@ void IGraphics::OnMouseDown(int x, int y, IMouseMod* pMod)
 
 void IGraphics::OnMouseUp(int x, int y, IMouseMod* pMod)
 {
+	// Call globaly
+	for (int i = 1; i < mControls.GetSize(); i++) mControls.Get(i)->OnGlobalMouseUp(x, y, pMod);
+
 	int c = GetMouseControlIdx(x, y);
 	mMouseCapture = mMouseX = mMouseY = -1;
 	if (c >= 0)
@@ -956,8 +1387,12 @@ void IGraphics::OnMouseOut()
 	mMouseOver = -1;
 }
 
+
 void IGraphics::OnMouseDrag(int x, int y, IMouseMod* pMod)
 {
+	// Call globaly
+	for (int i = 1; i < mControls.GetSize(); i++) mControls.Get(i)->OnGlobalMouseDrag(x, y, x - mMouseX, y - mMouseY, pMod);
+
 	int c = mMouseCapture;
 	if (c >= 0)
 	{
@@ -974,30 +1409,38 @@ void IGraphics::OnMouseDrag(int x, int y, IMouseMod* pMod)
 
 bool IGraphics::OnMouseDblClick(int x, int y, IMouseMod* pMod)
 {
-	ReleaseMouseCapture();
-	bool newCapture = false;
-	int c = GetMouseControlIdx(x, y);
-	if (c >= 0)
-	{
-		IControl* pControl = mControls.Get(c);
-		if (pControl->MouseDblAsSingleClick())
+	// Call globaly
+	for (int i = 1; i < mControls.GetSize(); i++)
+		if (mControls.Get(i)->MouseDblAsSingleClick()) mControls.Get(i)->OnGlobalMouseDown(x, y, pMod);
+		else mControls.Get(i)->OnGlobalMouseDblClick(x, y, pMod);
+
+		ReleaseMouseCapture();
+		bool newCapture = false;
+		int c = GetMouseControlIdx(x, y);
+		if (c >= 0)
 		{
-			mMouseCapture = c;
-			mMouseX = x;
-			mMouseY = y;
-			pControl->OnMouseDown(x, y, pMod);
-			newCapture = true;
+			IControl* pControl = mControls.Get(c);
+			if (pControl->MouseDblAsSingleClick())
+			{
+				mMouseCapture = c;
+				mMouseX = x;
+				mMouseY = y;
+				pControl->OnMouseDown(x, y, pMod);
+				newCapture = true;
+			}
+			else
+			{
+				pControl->OnMouseDblClick(x, y, pMod);
+			}
 		}
-		else
-		{
-			pControl->OnMouseDblClick(x, y, pMod);
-		}
-	}
-	return newCapture;
+		return newCapture;
 }
 
 void IGraphics::OnMouseWheel(int x, int y, IMouseMod* pMod, int d)
 {
+	// Call globaly
+	for (int i = 1; i < mControls.GetSize(); i++) mControls.Get(i)->OnGlobalMouseWheel(x, y, pMod, d);
+
 	int c = GetMouseControlIdx(x, y);
 	if (c >= 0)
 	{
@@ -1012,10 +1455,15 @@ void IGraphics::ReleaseMouseCapture()
 
 bool IGraphics::OnKeyDown(int x, int y, int key)
 {
+	// Call globaly
+	//for (int i = 1; i < mControls.GetSize(); i++) mControls.Get(i)->OnGlobalKeyDown(x, y, key);
+	/*
 	int c = GetMouseControlIdx(x, y);
 	if (c > 0)
 		return mControls.Get(c)->OnKeyDown(x, y, key);
-	else if (mKeyCatcher)
+	else
+		*/
+	if (mKeyCatcher)
 		return mKeyCatcher->OnKeyDown(x, y, key);
 	else
 		return false;
@@ -1023,10 +1471,14 @@ bool IGraphics::OnKeyDown(int x, int y, int key)
 
 bool IGraphics::OnKeyUp(int x, int y, int key)
 {
-	int c = GetMouseControlIdx(x, y);
-	if (c > 0)
-		return mControls.Get(c)->OnKeyUp(x, y, key);
-	else if (mKeyCatcher)
+	// Call globaly
+	//for (int i = 1; i < mControls.GetSize(); i++) mControls.Get(i)->OnGlobalKeyUp(x, y, key);
+
+	//int c = GetMouseControlIdx(x, y);
+	//if (c > 0)
+		//return mControls.Get(c)->OnKeyUp(x, y, key);
+	//else 
+	if (mKeyCatcher)
 		return mKeyCatcher->OnKeyUp(x, y, key);
 	else
 		return false;
@@ -1039,10 +1491,10 @@ int IGraphics::GetMouseControlIdx(int x, int y, bool mo)
 		return mMouseCapture;
 	}
 
-	bool allow; // this is so that mouseovers can still be called when a control is greyed out
+	bool allow; // this is so that mouseovers can still be called when a control is grayed out
 
 				// The BG is a control and will catch everything, so assume the programmer
-				// attached the controls from back to front, and return the frontmost match.
+				// attached the controls from back to front, and return the front most match.
 	int i = mControls.GetSize() - 1;
 	IControl** ppControl = mControls.GetList() + i;
 	for (/* */; i >= 0; --i, --ppControl)
@@ -1118,9 +1570,12 @@ bool IGraphics::DrawIText(IText* pTxt, char* str, IRECT* pR, bool measure)
 	}
 
 	LICE_pixel color = LiceColor(&pTxt->mColor);
+
 	font->SetTextColor(color);
 
 	UINT fmt = DT_NOCLIP;
+	fmt |= DT_VCENTER;
+	fmt |= DT_SINGLELINE;
 	if (LICE_GETA(color) < 255) fmt |= LICE_DT_USEFGALPHA;
 	if (pTxt->mAlign == IText::kAlignNear)
 		fmt |= DT_LEFT;
@@ -1210,4 +1665,18 @@ LICE_IFont* IGraphics::CacheFont(IText* pTxt)
 	}
 	pTxt->mCached = font;
 	return font;
+}
+
+bool IGraphics::BlurBitmap(IBitmap* pISrc, int dstx, int dsty, IRECT x)
+{
+	LICE_IBitmap* pSrc = (LICE_IBitmap*)pISrc->mData;
+	LICE_Blur(mDrawBitmap, pSrc, dstx, dsty, x.L, x.T, x.W(), x.H());
+	return true;
+}
+
+bool IGraphics::FillCBezier(IColor* pColor, float xstart, float ystart, float xctl1, float yctl1,
+	float xctl2, float yctl2, float xend, float yend, int yfill, float alpha, int mode, float tol)
+{
+	LICE_FillCBezier(mDrawBitmap, xstart, ystart, xctl1, yctl1, xctl2, yctl2, xend, yend, yfill, LiceColor(pColor), alpha, mode, tol);
+	return true;
 }

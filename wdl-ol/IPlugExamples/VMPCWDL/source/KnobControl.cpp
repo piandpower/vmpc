@@ -17,24 +17,16 @@ static inline void clampIndex(int& knobIndex) {
 	}
 }
 
-KnobControl::KnobControl(IPlugBase* pPlug, int type, IBitmap knobs, std::weak_ptr<mpc::hardware::Pot> pot, int startIndex)
-	: IPanelControl(pPlug, type == 0 ? *Constants::RECKNOB_RECT() : *Constants::VOLKNOB_RECT(), Constants::LCD_OFF())
+KnobControl::KnobControl(IPlugBase* pPlug, int type, IBitmap* knobs, std::weak_ptr<mpc::hardware::Pot> pot, int startIndex)
+	: IBitmapControl(pPlug, type == 0 ? Constants::RECKNOB_RECT()->L : Constants::VOLKNOB_RECT()->L, type == 0 ? Constants::RECKNOB_RECT()->T : Constants::VOLKNOB_RECT()->T, knobs)
 {
 	knobType = type;
 	knobIndex = startIndex;
-	this->knobs = knobs;
 	this->pot = pot;
 	knobIndex = pot.lock()->getValue();
 	clampIndex(knobIndex);
 	SetDirty(false);
 }
-
-//void KnobControl::update(moduru::observer::Observable* o, boost::any arg) {
-	//int increment = boost::any_cast<int>(arg);
-	//knobIndex += increment;
-	//clampIndex(knobIndex);
-	//SetDirty();
-//}
 
 void KnobControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod) {
 	std::string val = std::to_string(pot.lock()->getValue());
@@ -45,15 +37,8 @@ void KnobControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod) {
 }
 
 bool KnobControl::Draw(IGraphics* g) {
-	IChannelBlend tmp = IChannelBlend::kBlendNone;
-	float height = knobType == 0 ? 73 : 75;
-	IRECT cropRect(0, knobIndex * height, knobs.W, (knobIndex * height) + height);
-	auto bm = g->CropBitmap(&knobs, &cropRect);
-	auto bm1 = g->ScaleBitmap(&bm, floor(knobs.W * gui_scale), floor(height * gui_scale));
-	g->DrawBitmap(&bm1, GetRECT(), 0, 0, &tmp);
-	g->ReleaseBitmap(&bm);
-	g->ReleaseBitmap(&bm1);
-	return true;
+	IRECT r(mDrawRECT.L, mDrawRECT.T, mDrawRECT.R, mDrawRECT.B - 1);
+	return g->DrawBitmap(mBitmap, &r, knobIndex, &mBlend);
 }
 
 KnobControl::~KnobControl() {

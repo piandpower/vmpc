@@ -16,10 +16,9 @@ static inline void clampIndex(int& sliderIndex) {
 	}
 }
 
-SliderControl::SliderControl(IPlugBase* pPlug, IBitmap sliders, std::weak_ptr<mpc::hardware::Slider> slider, int startIndex, InputCatcherControl* ipc)
-	: IPanelControl(pPlug, *Constants::SLIDER_RECT(), Constants::LCD_OFF())
+SliderControl::SliderControl(IPlugBase* pPlug, IBitmap* sliders, std::weak_ptr<mpc::hardware::Slider> slider, int startIndex, InputCatcherControl* ipc)
+	: IBitmapControl(pPlug, Constants::SLIDER_RECT()->L, Constants::SLIDER_RECT()->T, sliders)
 {
-	this->sliders = sliders;
 	this->slider = slider;
 	this->ipc = ipc;
 	sliderIndex = startIndex;
@@ -45,14 +44,8 @@ void SliderControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod) {
 }
 
 bool SliderControl::Draw(IGraphics* g) {
-	IChannelBlend tmp = IChannelBlend::kBlendNone;
-	IRECT cropRect(0, sliderIndex * 247, sliders.W, (sliderIndex * 247) + 247);
-	auto bm = g->CropBitmap(&sliders, &cropRect);
-	auto bm1 = g->ScaleBitmap(&bm, floor(sliders.W * gui_scale), floor(247 * gui_scale));
-	g->DrawBitmap(&bm1, GetRECT(), 0, 0, &tmp);
-	g->ReleaseBitmap(&bm);
-	g->ReleaseBitmap(&bm1);
-	return true;
+	IRECT r(mDrawRECT.L, mDrawRECT.T, mDrawRECT.R, mDrawRECT.B - 1);
+	return g->DrawBitmap(mBitmap, &r, sliderIndex, &mBlend);
 }
 
 SliderControl::~SliderControl() {

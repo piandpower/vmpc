@@ -9,12 +9,11 @@
 
 using namespace std;
 
-PadControl::PadControl(IPlugBase* pPlug, IRECT rect, std::weak_ptr<mpc::hardware::HwPad> pad, IBitmap padhit)
-	: IPanelControl(pPlug, rect, Constants::LCD_OFF())
+PadControl::PadControl(IPlugBase* pPlug, IRECT rect, std::weak_ptr<mpc::hardware::HwPad> pad, IBitmap* padhit)
+	: IBitmapControl(pPlug, rect.L, rect.T, padhit)
 {
 	this->pad = pad;
 	pad.lock()->addObserver(this);
-	this->padhit = padhit;
 }
 
 void PadControl::static_fadeOut(void * args)
@@ -48,8 +47,8 @@ void PadControl::update(moduru::observer::Observable* o, boost::any arg) {
 }
 
 int PadControl::getVelo(int x, int y) {
-	float centX = mRECT.MW();
-	float centY = mRECT.MH();
+	float centX = GetDrawRECT()->MW();
+	float centY = GetDrawRECT()->MH();
 	float distX = x - centX;
 	float distY = y - centY;
 	float powX = pow(distX, 2);
@@ -73,21 +72,19 @@ void PadControl::OnMouseUp(int x, int y, IMouseMod* pMod) {
 }
 
 bool PadControl::Draw(IGraphics* g) {
-	LICE_IBitmap* srcData = (LICE_IBitmap*)(padhit.mData);
-	int pixelCount = padhit.H * padhit.W;
+	LICE_IBitmap* srcData = (LICE_IBitmap*)(mBitmap->mData);
+	int pixelCount = mBitmap->H * mBitmap->W;
 	int pixelCounter = 0;
-	for (int i = 0; i < padhit.H; i++) {
-		for (int j = 0; j < padhit.W; j++) {
+	for (int i = 0; i < mBitmap->H; i++) {
+		for (int j = 0; j < mBitmap->W; j++) {
 			LICE_pixel_chan* p = (LICE_pixel_chan*) &srcData->getBits()[pixelCounter++];
 			p[LICE_PIXEL_A] = padhitBrightness;
 		}
 	}
 	IChannelBlend tmp = IChannelBlend::kBlendAdd;
-	auto bm = g->ScaleBitmap(&padhit, 96 * gui_scale, 96 * gui_scale);
-	g->DrawBitmap(&bm, GetRECT(), 0, 0, &tmp);
-	g->ReleaseBitmap(&bm);
-	return true;
+	return g->DrawBitmap(mBitmap, GetDrawRECT(), 1, &tmp);
 }
 
 PadControl::~PadControl() {
+	if (fadeOutThread.joinable()) fadeOutThread.join();
 }

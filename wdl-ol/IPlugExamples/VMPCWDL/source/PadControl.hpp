@@ -13,12 +13,11 @@ namespace mpc {
 }
 
 class PadControl
-	: public IPanelControl,
-	public moduru::observer::Observer
+	: public IBitmapControl
+	, public moduru::observer::Observer
 	{
 
 private:
-	IBitmap padhit;
 	std::weak_ptr<mpc::hardware::HwPad> pad;
 	int padhitBrightness = 0;
 
@@ -41,7 +40,7 @@ public:
 		static void static_fadeOut(void * args);
 
 public:
-	PadControl(IPlugBase* pPlug, IRECT rect, std::weak_ptr<mpc::hardware::HwPad> pad, IBitmap padhit);
+	PadControl(IPlugBase* pPlug, IRECT rect, std::weak_ptr<mpc::hardware::HwPad> pad, IBitmap* padhit);
 	~PadControl();
 
 };

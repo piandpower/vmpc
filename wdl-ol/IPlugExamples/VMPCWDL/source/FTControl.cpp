@@ -1,11 +1,13 @@
 #include "FTControl.hpp"
 #include "Constants.hpp"
 
+#include "IPlugGUIResize.h"
+
 #include "../resource.h"
 
 std::string FTControl::fontPath = "c:/temp/arial.ttf";
-int FTControl::fontSize = Constants::KBLABEL_FONT_SIZE * gui_scale;
-int FTControl::outlineSize = Constants::KBLABEL_OUTLINE_SIZE * gui_scale;
+int FTControl::fontSize = Constants::KBLABEL_FONT_SIZE;
+int FTControl::outlineSize = Constants::KBLABEL_OUTLINE_SIZE;
 
 void FTControl::Hide(bool b) {
 	if (b) {
@@ -99,7 +101,7 @@ void FTControl::WriteGlyph(const Pixel32 &fontCol,
 {
 	FT_Vector pen;
 	pen.x = 0 * 64;
-	pen.y = (mRECT.H() - 0) * 64;
+	pen.y = (GetDrawRECT()->H() - 0) * 64;
 
 	for (int n = 0; n < text.length(); n++) {
 		FT_UInt gindex = FT_Get_Char_Index(face, text[n]);
@@ -164,9 +166,9 @@ void FTControl::WriteGlyph(const Pixel32 &fontCol,
 							for (int w = 0; w < s->width; ++w) {
 								int x = (s->x + pen.x + xdist) - rect.xmin + w;
 								int y = (s->y - rect.ymin);
-								if (x >= mRECT.W()) continue;
-								if (y >= mRECT.H()) continue;
-								int pixindex = (int)((mRECT.H() - 1 - y) * mRECT.W() + x);
+								if (x >= GetDrawRECT()->W()) continue;
+								if (y >= GetDrawRECT()->H()) continue;
+								int pixindex = (int)((GetDrawRECT()->H() - 1 - y) * GetDrawRECT()->W() + x);
 								if (pixindex > pixels.size()) continue;
 								auto bgpixel = pixels[pixindex];
 								auto textpixel = Pixel32(outlineCol.r, outlineCol.g, outlineCol.b, s->coverage);
@@ -180,9 +182,9 @@ void FTControl::WriteGlyph(const Pixel32 &fontCol,
 							{
 								int x = (s->x + pen.x + xdist) - rect.xmin + w;
 								int y = (s->y - rect.ymin);
-								if (x >= mRECT.W()) continue;
-								if (y >= mRECT.H()) continue;
-								int pixindex = (int)((mRECT.H() - 1 - y) * mRECT.W() + x);
+								if (x >= GetDrawRECT()->W()) continue;
+								if (y >= GetDrawRECT()->H()) continue;
+								int pixindex = (int)((GetDrawRECT()->H() - 1 - y) * GetDrawRECT()->W() + x);
 								if (pixindex > pixels.size()) continue;
 								Pixel32 &dst =
 									pixels[pixindex];
@@ -220,7 +222,7 @@ FTControl::FTControl(IPlugBase* pPlug, int x, int y, std::string text)
 
 	int width = getStringWidth(text) + (2 * outlineSize);
 	int height = (fontSize*1.5) + (2 * outlineSize);
-	mRECT = IRECT(x, y, x + width, y + height);
+	SetDrawRECT(DRECT(x, y, x + width, y + height));
 }
 
 int FTControl::getStringWidth(std::string text) {
@@ -263,15 +265,19 @@ void blend_alpha(unsigned char result[4], unsigned char fg[4], unsigned char bg[
 }
 
 bool FTControl::Draw(IGraphics* g) {
-	pixels = std::vector<Pixel32>(mRECT.W() * mRECT.H());
+	auto ratio = GetGUIResize()->GetGUIScaleRatio();
+	fontSize = Constants::KBLABEL_FONT_SIZE * ratio;
+	outlineSize = Constants::KBLABEL_OUTLINE_SIZE * ratio;
+	FT_Set_Char_Size(face, fontSize << 6, fontSize << 6, 90, 90);
+	pixels = std::vector<Pixel32>(GetDrawRECT()->W() * GetDrawRECT()->H());
 	Pixel32 oc(0, 0, 0);
 	Pixel32 tc(255, 255, 255);
 	WriteGlyph(tc, oc);
 
 	const IChannelBlend blend = IChannelBlend::kBlendNone;
 	int pixelCounter = 0;
-	for (int y = mRECT.T; y < mRECT.B; y++) {
-		for (int x = mRECT.L; x < mRECT.R; x++) {
+	for (int y = GetDrawRECT()->T; y < GetDrawRECT()->B; y++) {
+		for (int x = GetDrawRECT()->L; x < GetDrawRECT()->R; x++) {
 			Pixel32 pixel = pixels[pixelCounter++];
 			IColor bgc = g->GetPoint(x, y);
 			unsigned char res[4] = { 0,0,0,0 };
@@ -282,7 +288,7 @@ bool FTControl::Draw(IGraphics* g) {
 			g->DrawPoint(&resc, x, y, &blend);
 		}
 	}
-	//g->DrawRect(Constants::LCD_ON(), &mRECT);
+	//g->DrawRect(Constants::LCD_ON(), &mDrawRECT);
 	return false;
 }
 

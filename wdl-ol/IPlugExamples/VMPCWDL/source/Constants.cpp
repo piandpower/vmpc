@@ -10,38 +10,38 @@ IRECT* Constants::LCD_RECT()
 {
     return &LCD_RECT_;
 }
-IRECT Constants::LCD_RECT_ = IRECT(116 * gui_scale, 102 * gui_scale, (116 + 496) * gui_scale, (102 + 120) * gui_scale);
+IRECT Constants::LCD_RECT_ = IRECT(116, 102, (116 + 496), (102 + 120));
 
 IRECT* Constants::PLUG_RECT()
 {
     return &PLUG_RECT_;
 }
-IRECT Constants::PLUG_RECT_ = IRECT(0, 0, GUI_WIDTH * gui_scale, GUI_HEIGHT * gui_scale);
+IRECT Constants::PLUG_RECT_ = IRECT(0, 0, GUI_WIDTH, GUI_HEIGHT);
 
 IRECT* Constants::DATAWHEEL_RECT()
 {
     return &DATAWHEEL_RECT_;
 }
-IRECT Constants::DATAWHEEL_RECT_ = IRECT(378 * gui_scale, 415 * gui_scale, (378 + 171) * gui_scale, (415 + 171) * gui_scale);
+IRECT Constants::DATAWHEEL_RECT_ = IRECT(378, 415, (378 + 171), (415 + 171));
 
 IRECT* Constants::RECKNOB_RECT()
 {
     return &RECKNOB_RECT_;
 }
-IRECT Constants::RECKNOB_RECT_ = IRECT(1014 * gui_scale, 183 * gui_scale, (1014 + 72) * gui_scale, (183 + 73) * gui_scale);
+IRECT Constants::RECKNOB_RECT_ = IRECT(1014, 183, (1014 + 72), (183 + 73));
 
 IRECT* Constants::VOLKNOB_RECT()
 {
     return &VOLKNOB_RECT_;
 }
-IRECT Constants::VOLKNOB_RECT_ = IRECT(1137 * gui_scale, 181 * gui_scale, (1137 + 74) * gui_scale, (181 + 75) * gui_scale);
+IRECT Constants::VOLKNOB_RECT_ = IRECT(1137, 181, (1137 + 74), (181 + 75));
 
 IRECT* Constants::SLIDER_RECT()
 {
     return &SLIDER_RECT_;
 
 }
-IRECT Constants::SLIDER_RECT_ = IRECT(33 * gui_scale, 668 * gui_scale, (33 + 128) * gui_scale, (668 + 247) * gui_scale);
+IRECT Constants::SLIDER_RECT_ = IRECT(33, 668, (33 + 128), (668 + 247));
 
 IColor* Constants::TRANS_BLACK() {
     return &TRANS_BLACK_;

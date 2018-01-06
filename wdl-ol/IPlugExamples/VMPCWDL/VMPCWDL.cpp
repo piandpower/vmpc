@@ -38,8 +38,36 @@
 const int kNumPrograms = 8;
 const int kNumParams = 1;
 
+enum ELayout
+{
+	kWidth = GUI_WIDTH,
+	kHeight = GUI_HEIGHT,
+};
+
+// Adding names for views. Default view is needed, place it on top
+enum viewSets
+{
+	defaultView, // Default view will always be at 0
+
+};
+
+void VMPCWDL::SetGUILayout(int viewMode, double windowWidth, double windowHeight)
+{
+	// Use this function to move, hide, show and resize controls. windowWidth and windowHeight are not affected by GUI scaling
+
+	// Every view will have it's own gui layout, so if you for example hide some control on miniView you don't
+	// need to unhide it in defaultView because layout is separate for every view
+
+	if (viewMode == defaultView)
+	{
+		//GetGUIResize()->MoveControlHorizontally(*knobIndex, windowWidth - 200);
+		//GetGUIResize()->MoveControlHorizontally(*mDataWheel_index, windowWidth - 920);
+		//GetGUIResize()->MoveControlVertically(*mDataWheel_index, windowHeight - 579);
+	}
+}
+
 VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
-	: IPLUG_CTOR(kNumParams, kNumPrograms, instanceInfo),
+	: IPLUG_CTOR(kNumParams, kNumParams, kNumPrograms, instanceInfo),
 	mSampleRate(44100.)
 {   
 	mpc = new mpc::Mpc();
@@ -47,7 +75,15 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	MLOG("mpc initialized");
 	TRACE;
 
-	IGraphics* pGraphics = MakeGraphics(this, GUI_WIDTH * gui_scale, GUI_HEIGHT * gui_scale);
+	IGraphics* pGraphics = MakeGraphics(this, GUI_WIDTH, GUI_HEIGHT);
+	auto guiResize = new IPlugGUIResize(this, pGraphics, true, 25, 25);
+	AttachGUIResize(guiResize);
+
+	GetGUIResize()->UsingBitmaps();
+	GetGUIResize()->SelectViewMode(defaultView);
+	GetGUIResize()->SetGUIScaleLimits(50, 100);
+	GetGUIResize()->SetWindowSizeLimits(defaultView, 1298/2, 994/2, 1298, 994);
+
 	pGraphics->AttachBackground(BG_ID, BG_FN);
 		
 	mLedPanel = new LedControl(this, pGraphics);
@@ -57,34 +93,31 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	pGraphics->AttachControl(mLedPanel);
 
 	mInputCatcher = new InputCatcherControl(this, mpc);
-	pGraphics->AttachControl(mInputCatcher);
+	pGraphics->AttachKeyCatcher(mInputCatcher);
 
-	auto dataWheels = pGraphics->LoadIBitmap(DATAWHEEL_ID, DATAWHEEL_FN);
+	auto dataWheels = pGraphics->LoadPointerToBitmap(DATAWHEEL_ID, DATAWHEEL_FN, 100);
 	mDataWheel = new DataWheelControl(this, dataWheels, mpc->getHardware().lock()->getDataWheel(), mInputCatcher);
 
 	mpc->getHardware().lock()->getDataWheel().lock()->addObserver(mDataWheel);
-	pGraphics->AttachControl(mDataWheel);
+	mDataWheel_index = pGraphics->AttachControl(mDataWheel);
 
-	auto knobs = pGraphics->LoadIBitmap(RECKNOB_ID, RECKNOB_FN);
+	auto knobs = pGraphics->LoadPointerToBitmap(RECKNOB_ID, RECKNOB_FN, 100);
 	mRecKnob = new KnobControl(this, 0, knobs, mpc->getHardware().lock()->getRecPot(), mpc->getAudioMidiServices().lock()->getRecordLevel());
-	knobs = pGraphics->LoadIBitmap(VOLKNOB_ID, VOLKNOB_FN);
+	knobs = pGraphics->LoadPointerToBitmap(VOLKNOB_ID, VOLKNOB_FN, 100);
 	mVolKnob = new KnobControl(this, 1, knobs, mpc->getHardware().lock()->getVolPot(), mpc->getAudioMidiServices().lock()->getMasterLevel());
 	pGraphics->AttachControl(mRecKnob);
 	pGraphics->AttachControl(mVolKnob);
 
-	mLCDControl = new LCDControl(this, mpc->getLayeredScreen());
-	pGraphics->AttachControl(mLCDControl);
-
-	const int padWidth = 96 * gui_scale;
-	int padSpacing = floor(25 * gui_scale);
-	const int padOffsetX = 778 * gui_scale;
-	const int padOffsetY = ceil(397 * gui_scale);
+	const int padWidth = 96;
+	int padSpacing = 25;
+	const int padOffsetX = 778;
+	const int padOffsetY = 397;
 	int padCounter = 0;
-	IBitmap padhit = pGraphics->LoadIBitmap(PADHIT_ID, PADHIT_FN);
+	auto padhit = pGraphics->LoadPointerToBitmap(PADHIT_ID, PADHIT_FN);
 	for (int j = 3; j >= 0; j--) {
 		for (int i = 0; i < 4; i++) {
-			int x1 = (padWidth + padSpacing) * i + padOffsetX + floor(i * gui_scale);
-			int x2 = x1 + padWidth + floor(i * gui_scale);
+			int x1 = (padWidth + padSpacing) * i + padOffsetX + i;
+			int x2 = x1 + padWidth + i;
 			int y1 = (padWidth + padSpacing) * j + padOffsetY;
 			int y2 = y1 + padWidth;
 			IRECT rect(x1, y1, x2, y2);
@@ -93,12 +126,10 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 		}
 	}
 
-	auto sliders = pGraphics->LoadIBitmap(SLIDER_ID, SLIDER_FN);
+	auto sliders = pGraphics->LoadPointerToBitmap(SLIDER_ID, SLIDER_FN);
+	sliders->N = 100;
 	auto sc = new SliderControl(this, sliders, mpc->getHardware().lock()->getSlider(), 0, mInputCatcher);
 	pGraphics->AttachControl(sc);
-
-	//auto ftControl = new FTControl(this, 300, 300, "Freetype, testing", 35, 8);
-	//pGraphics->AttachControl(ftControl);
 
 	ButtonControl::initRects();
 	std::vector<std::string> buttonLabels{ "rec", "overdub", "stop", "play", "playstart", "mainscreen", "prevstepevent", "nextstepevent",	"goto",	"prevbarstart",	"nextbarend", "tap", "nextseq",	"trackmute", "openwindow", "fulllevel", "sixteenlevels", "f1", "f2", "f3", "f4", "f5", "f6", "shift", "enter", "undoseq", "erase", "after", "banka", "bankb", "bankc", "bankd" };
@@ -107,8 +138,12 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 		pGraphics->AttachControl(bc);
 	}
 	pGraphics->HandleMouseOver(true);
-	AttachGraphics(pGraphics);
+	mLCDControl = new LCDControl(this, mpc->getLayeredScreen());
+	pGraphics->AttachControl(mLCDControl);
+	
+	GetGUIResize()->UseHandleForGUIScaling(true);
 
+	AttachGraphics(pGraphics);
 	//MakePreset("preset 1", ... );
 	MakeDefaultPreset((char *) "-", kNumPrograms);
 

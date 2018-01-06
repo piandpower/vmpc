@@ -12,13 +12,12 @@ namespace mpc {
 }
 
 class KnobControl
-	: public IPanelControl
+	: public IBitmapControl
 	//, public moduru::observer::Observer
 	
 	{
 
 private:
-	IBitmap knobs{};
 	//std::weak_ptr<mpc::audiomidi::AudioMidiServices> ams{};
 	std::weak_ptr<mpc::hardware::Pot> pot;
 	int knobIndex{ 0 };
@@ -35,7 +34,7 @@ public:
 		//void update(moduru::observer::Observable* o, boost::any arg) override;
 
 public:
-	KnobControl(IPlugBase* pPlug, int type, IBitmap knobs, std::weak_ptr<mpc::hardware::Pot> pot, int startIndex);
+	KnobControl(IPlugBase* pPlug, int type, IBitmap* knobs, std::weak_ptr<mpc::hardware::Pot> pot, int startIndex);
 	~KnobControl();
 
 };

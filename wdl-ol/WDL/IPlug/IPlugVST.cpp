@@ -13,7 +13,8 @@ int VSTSpkrArrType(int nchan)
 }
 
 IPlugVST::IPlugVST(IPlugInstanceInfo instanceInfo,
-                   int nParams,
+	               int nPublicParams,
+	               int nPrivateParams,
                    const char* channelIOStr,
                    int nPresets,
                    const char* effectName,
@@ -27,7 +28,8 @@ IPlugVST::IPlugVST(IPlugInstanceInfo instanceInfo,
                    bool plugDoesChunks,
                    bool plugIsInst,
                    int plugScChans)
-  : IPlugBase(nParams,
+  : IPlugBase(nPublicParams,
+	          nPrivateParams,
               channelIOStr,
               nPresets,
               effectName,
@@ -57,7 +59,7 @@ IPlugVST::IPlugVST(IPlugInstanceInfo instanceInfo,
   mAEffect.getParameter = VSTGetParameter;
   mAEffect.setParameter = VSTSetParameter;
   mAEffect.numPrograms = nPresets;
-  mAEffect.numParams = nParams;
+  mAEffect.numParams = nPublicParams;
   mAEffect.numInputs = nInputs;
   mAEffect.numOutputs = nOutputs;
   mAEffect.uniqueID = uniqueID;
@@ -232,10 +234,14 @@ void IPlugVST::ResizeGraphics(int w, int h)
   if (pGraphics)
   {
     mEditRect.left = mEditRect.top = 0;
-    mEditRect.right = pGraphics->Width();
-    mEditRect.bottom = pGraphics->Height();
-
+    mEditRect.right = w;
+    mEditRect.bottom = h;
+      
     OnWindowResize();
+
+#ifdef USING_YCAIRO
+	ResizeCairoSurface();
+#endif
   }
 }
 
@@ -346,6 +352,7 @@ VstIntPtr VSTCALLBACK IPlugVST::VSTDispatcher(AEffect *pEffect, VstInt32 opCode,
 
   Trace(TRACELOC, "%d(%s):%d:%d", opCode, VSTOpcodeStr(opCode), idx, (int) value);
 
+    
   switch (opCode)
   {
     case effOpen:
@@ -448,6 +455,7 @@ VstIntPtr VSTCALLBACK IPlugVST::VSTDispatcher(AEffect *pEffect, VstInt32 opCode,
       {
         _this->OnActivate(true);
       }
+       
       return 0;
     }
     case effEditGetRect:
@@ -480,6 +488,7 @@ VstIntPtr VSTCALLBACK IPlugVST::VSTDispatcher(AEffect *pEffect, VstInt32 opCode,
         if (pGraphics)
         {
           _this->OnGUIOpen();
+		  _this->ResizeAtGUIOpen(pGraphics);
           return 1;
         }
       }

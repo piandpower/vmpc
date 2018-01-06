@@ -6,15 +6,11 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <winuser.h>
+#include "UTF_Helper.h"
 
-class IGraphicsWin : public IGraphics
+class IGraphicsWin : public IGraphics, Windows_UTF_Converter
 {
 public:
-
-	/// izzy added this
-	void releaseKbHook() override;
-
-	//// below is original
 	IGraphicsWin(IPlugBase* pPlug, int w, int h, int refreshFPS);
 	virtual ~IGraphicsWin();
 
@@ -34,11 +30,14 @@ public:
 	void CloseWindow();
 	bool WindowIsOpen() { return (mPlugWnd); }
 
+	double GetSystemGUIScaleRatio();
+
 	void UpdateTooltips() {}
 
 	void HostPath(WDL_String* pPath);
 	void PluginPath(WDL_String* pPath);
 	void DesktopPath(WDL_String* pPath);
+	void DocumentsPath(WDL_String * pPath);
 	//void VST3PresetsPath(WDL_String* pPath, bool isSystem = true);
 	void AppSupportPath(WDL_String* pPath, bool isSystem = false);
 	void SandboxSafeAppSupportPath(WDL_String* pPath) { AppSupportPath(pPath, false); }
@@ -72,10 +71,6 @@ protected:
 	void ShowTooltip();
 	void HideTooltip();
 
-public:
-	bool hasFocus();
-	int mParamEditMsg;
-
 private:
 	HHOOK globalKeyboardHook;
 	HINSTANCE mHInstance;
@@ -84,6 +79,7 @@ private:
 	IControl* mEdControl;
 	IParam* mEdParam;
 	WNDPROC mDefEditProc;
+	int mParamEditMsg;
 	bool mShowingTooltip;
 	int mTooltipIdx;
 	COLORREF* mCustomColorStorage;
@@ -91,7 +87,6 @@ private:
 	DWORD mPID;
 	HWND mParentWnd, mMainWnd;
 	WDL_String mMainWndClassName;
-
 public:
 	static LRESULT CALLBACK globalKeyboardHookProcedure(int nCode, WPARAM wParam, LPARAM lParam);
 

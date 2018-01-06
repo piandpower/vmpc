@@ -10,56 +10,55 @@ using namespace std;
 LedControl::LedControl(IPlugBase* pPlug, IGraphics* pGraphics) 
 	: IPanelControl(pPlug, *Constants::PLUG_RECT(), Constants::LCD_OFF())
 {
-	ledGreen = pGraphics->LoadIBitmap(LED_GREEN_ID, LED_GREEN_FN);
-	ledRed = pGraphics->LoadIBitmap(LED_RED_ID, LED_RED_FN);
+	ledGreen = pGraphics->LoadPointerToBitmap(LED_GREEN_ID, LED_GREEN_FN);
+	ledRed = pGraphics->LoadPointerToBitmap(LED_RED_ID, LED_RED_FN);
 	
 	int x, y;
-	int ledSize = 10 * gui_scale;
-	ledGreen = pGraphics->ScaleBitmap(&ledGreen, ledSize, ledSize);
-	ledRed = pGraphics->ScaleBitmap(&ledRed, ledSize, ledSize);
+	int ledSize = 10;
 
-	x = 874 * gui_scale;
-	y = 216 * gui_scale;
+	x = 874;
+	y = 216;
 	sixteenLevels = IRECT(x, y, x + ledSize, y + ledSize);
-	x = 791 * gui_scale;
-	y = 298 * gui_scale;
+	x = 791;
+	y = 298;
 	nextSeq = IRECT(x, y, x + ledSize, y + ledSize);
-	x = 875 * gui_scale;
-	y = 298 * gui_scale;
+	x = 875;
+	y = 298;
 	trackMute = IRECT(x, y, x + ledSize, y + ledSize);
-	x = 103 * gui_scale;
-	y = 601 * gui_scale;
+	x = 103;
+	y = 601;
 	after = IRECT(x, y, x + ledSize, y + ledSize);
-	x = 226 * gui_scale;
-	y = 686 * gui_scale;
+	x = 226;
+	y = 686;
 	undoSeq = IRECT(x, y, x + ledSize, y + ledSize);
-	x = 214 * gui_scale;
-	y = 833 * gui_scale;
+	x = 214;
+	y = 833;
 	rec = IRECT(x, y, x + ledSize, y + ledSize);
-	x = 294 * gui_scale;
-	y = 833 * gui_scale;
+	x = 294;
+	y = 833;
 	overDub = IRECT(x, y, x + ledSize, y + ledSize);
-	x = 451 * gui_scale;
-	y = 830 * gui_scale;
+	x = 451;
+	y = 830;
 	play = IRECT(x, y, x + ledSize, y + ledSize);
-	x = 791 * gui_scale;
-	y = 216 * gui_scale;
+	x = 791;
+	y = 216;
 	fullLevel = IRECT(x, y, x  + ledSize, y + ledSize);
-	x = 958 * gui_scale;
-	y = 298 * gui_scale;
+	x = 958;
+	y = 298;
 	padBankA = IRECT(x, y, x + ledSize, y + ledSize);
-	x = 1041 * gui_scale;
-	y = 298 * gui_scale;
+	x = 1041;
+	y = 298;
 	padBankB = IRECT(x, y, x + ledSize, y + ledSize);
-	x = 1124 * gui_scale;
-	y = 297 * gui_scale;
+	x = 1124;
+	y = 297;
 	padBankC = IRECT(x, y, x + ledSize, y + ledSize);
-	x = 1206 * gui_scale;
-	y = 296 * gui_scale;
+	x = 1206;
+	y = 296;
 	padBankD = IRECT(x, y, x + ledSize, y + ledSize);
 }
 
 bool LedControl::Draw(IGraphics* g) {
+	return false;
 	IChannelBlend tmp = IChannelBlend::kBlendNone;
 	if (fullLevelOn) {
 		g->DrawBitmap(&ledGreen, &fullLevel, 0, &tmp);

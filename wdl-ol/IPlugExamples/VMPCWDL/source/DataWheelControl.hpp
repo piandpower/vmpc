@@ -15,12 +15,11 @@ namespace mpc {
 
 	
 class DataWheelControl
-	: public IPanelControl
+	: public IBitmapControl
 	, public moduru::observer::Observer
 {
 
 private:
-	IBitmap dataWheels{};
 	std::weak_ptr<mpc::hardware::DataWheel> dataWheel;
 	int dataWheelIndex = 0;
 	InputCatcherControl* ipc;
@@ -41,7 +40,7 @@ public:
 	void update(moduru::observer::Observable* o, boost::any arg) override;
 
 public:
-	DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels, std::weak_ptr<mpc::hardware::DataWheel> dataWheel, InputCatcherControl* ipc);
+	DataWheelControl(IPlugBase* pPlug, IBitmap* dataWheels, std::weak_ptr<mpc::hardware::DataWheel> dataWheel, InputCatcherControl* ipc);
 	~DataWheelControl();
 
 };

@@ -12,13 +12,11 @@ namespace mpc {
 }
 
 class SliderControl
-	: public IPanelControl
-	
+	: public IBitmapControl	
 	{
 
 private:
 	InputCatcherControl* ipc;
-	IBitmap sliders{};
 	std::weak_ptr<mpc::hardware::Slider> slider;
 	int sliderIndex{ 0 };
 
@@ -29,7 +27,7 @@ public:
 	bool OnKeyUp(int x, int y, int key) override;
 
 public:
-	SliderControl(IPlugBase* pPlug, IBitmap sliders, std::weak_ptr<mpc::hardware::Slider> slider, int startIndex, InputCatcherControl* ipc);
+	SliderControl(IPlugBase* pPlug, IBitmap* sliders, std::weak_ptr<mpc::hardware::Slider> slider, int startIndex, InputCatcherControl* ipc);
 	~SliderControl();
 
 };

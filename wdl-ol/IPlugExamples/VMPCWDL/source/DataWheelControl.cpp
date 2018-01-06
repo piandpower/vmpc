@@ -6,10 +6,9 @@
 
 #include "../resource.h"
 
-DataWheelControl::DataWheelControl(IPlugBase* pPlug, IBitmap dataWheels, std::weak_ptr<mpc::hardware::DataWheel> dataWheel, InputCatcherControl* ipc)
-	: IPanelControl(pPlug, *Constants::DATAWHEEL_RECT(), Constants::LCD_OFF())
+DataWheelControl::DataWheelControl(IPlugBase* pPlug, IBitmap* dataWheels, std::weak_ptr<mpc::hardware::DataWheel> dataWheel, InputCatcherControl* ipc)
+	: IBitmapControl(pPlug, Constants::DATAWHEEL_RECT()->L, Constants::DATAWHEEL_RECT()->T, dataWheels)
 {
-	this->dataWheels = dataWheels;
 	this->dataWheel = dataWheel;
 	this->ipc = ipc;
 }
@@ -39,14 +38,8 @@ void DataWheelControl::OnMouseDrag(int x, int y, int dX, int dY, IMouseMod* pMod
 }
 
 bool DataWheelControl::Draw(IGraphics* g) {
-	IChannelBlend tmp = IChannelBlend::kBlendNone;
-	IRECT cropRect(0, dataWheelIndex * 171, 171, (dataWheelIndex * 171) + 171);
-	auto bm = g->CropBitmap(&dataWheels, &cropRect);
-	auto bm1 = g->ScaleBitmap(&bm, floor(171 * gui_scale), floor(171 * gui_scale));
-	g->DrawBitmap(&bm1, GetRECT(), 0, 0, &tmp);
-	g->ReleaseBitmap(&bm);
-	g->ReleaseBitmap(&bm1);
-	return true;
+	IRECT r(mDrawRECT.L, mDrawRECT.T, mDrawRECT.R, mDrawRECT.B - 1);
+	return g->DrawBitmap(mBitmap, &r, dataWheelIndex, &mBlend);
 }
 
 void DataWheelControl::update(moduru::observer::Observable* o, boost::any arg) {

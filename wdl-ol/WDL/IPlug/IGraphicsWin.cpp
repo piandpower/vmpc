@@ -5,8 +5,6 @@
 #include <Shlobj.h>
 #include <commctrl.h>
 
-#pragma comment(lib,"wininet.lib")
-
 #ifdef RTAS_API
 #include "PlugInUtils.h"
 #endif
@@ -80,13 +78,11 @@ LRESULT CALLBACK IGraphicsWin::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 		SetWindowLongPtr(hWnd, GWLP_USERDATA, (LPARAM)(lpcs->lpCreateParams));
 		int mSec = int(1000.0 / sFPS);
 		SetTimer(hWnd, IPLUG_TIMER_ID, mSec, NULL);
-		SetFocus(hWnd); // gets scroll wheel working straight away
-		SetForegroundWindow(hWnd);
+		//SetFocus(hWnd); // gets scroll wheel working straight away
 		return 0;
 	}
 
 	IGraphicsWin* pGraphics = (IGraphicsWin*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
-	char txt[MAX_PARAM_LEN];
 	double v;
 
 	if (!pGraphics || hWnd != pGraphics->mPlugWnd)
@@ -117,7 +113,14 @@ LRESULT CALLBACK IGraphicsWin::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 				{
 				case kCommit:
 				{
-					SendMessage(pGraphics->mParamEditWnd, WM_GETTEXT, MAX_PARAM_LEN, (LPARAM)txt);
+					int charNumber = pGraphics->mEdControl->GetTextEntryLength();
+
+					std::wstring txt;
+					txt.resize(charNumber);
+
+					Windows_UTF_Converter convert;
+
+					SendMessageW(pGraphics->mParamEditWnd, WM_GETTEXT, charNumber, (LPARAM)txt.c_str());
 
 					if (pGraphics->mEdParam)
 					{
@@ -126,12 +129,12 @@ LRESULT CALLBACK IGraphicsWin::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 						if (type == IParam::kTypeEnum || type == IParam::kTypeBool)
 						{
 							int vi = 0;
-							pGraphics->mEdParam->MapDisplayText(txt, &vi);
+							pGraphics->mEdParam->MapDisplayText((char*)convert.utf16_to_utf8(txt).c_str(), &vi);
 							v = (double)vi;
 						}
 						else
 						{
-							v = atof(txt);
+							v = atof((char*)convert.utf16_to_utf8(txt).c_str());
 							if (pGraphics->mEdParam->DisplayIsNegated())
 							{
 								v = -v;
@@ -141,7 +144,7 @@ LRESULT CALLBACK IGraphicsWin::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 					}
 					else
 					{
-						pGraphics->mEdControl->TextFromTextEntry(txt);
+						pGraphics->mEdControl->TextFromTextEntry((char*)convert.utf16_to_utf8(txt).c_str());
 					}
 					// Fall through.
 				}
@@ -169,7 +172,7 @@ LRESULT CALLBACK IGraphicsWin::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 
 				if (pGraphics->mParamEditWnd)
 				{
-					IRECT* notDirtyR = pGraphics->mEdControl->GetRECT();
+					IRECT* notDirtyR = pGraphics->mEdControl->GetDrawRECT();
 					RECT r2 = { notDirtyR->L, notDirtyR->T, notDirtyR->R, notDirtyR->B };
 					ValidateRect(hWnd, &r2); // make sure we dont redraw the edit box area
 					UpdateWindow(hWnd);
@@ -194,7 +197,6 @@ LRESULT CALLBACK IGraphicsWin::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 			return 0;
 		}
 		SetFocus(hWnd); // Added to get keyboard focus again when user clicks in window
-
 		SetCapture(hWnd);
 #ifdef RTAS_API
 		// pass ctrl-start-alt-click or ctrl-start-click to host window (Pro Tools)
@@ -280,6 +282,7 @@ LRESULT CALLBACK IGraphicsWin::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 		return 0;
 	}
 	case WM_LBUTTONUP:
+	case WM_MBUTTONUP:
 	case WM_RBUTTONUP:
 	{
 		ReleaseCapture();
@@ -312,49 +315,52 @@ LRESULT CALLBACK IGraphicsWin::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 			return 0;
 		}
 	}
-
 	/*
 	case WM_KEYDOWN:
 	{
-	moduru::Logger::l.log("WndProc KEYDOWN\n");
-	bool handle = true;
-	int key;
+		bool handle = true;
+		int key;
 
-	if (wParam == VK_SPACE) key = KEY_SPACE;
-	else if (wParam == VK_UP) key = KEY_UPARROW;
-	else if (wParam == VK_DOWN) key = KEY_DOWNARROW;
-	else if (wParam == VK_LEFT) key = KEY_LEFTARROW;
-	else if (wParam == VK_RIGHT) key = KEY_RIGHTARROW;
-	else if (wParam >= '0' && wParam <= '9') key = KEY_DIGIT_0 + wParam - '0';
-	else if (wParam >= 'A' && wParam <= 'Z') key = KEY_ALPHA_A + wParam - 'A';
-	else if (wParam >= 'a' && wParam <= 'z') key = KEY_ALPHA_A + wParam - 'a';
-	else handle = false;
+		if (wParam == VK_SPACE) key = KEY_SPACE;
+		else if (wParam == VK_UP) key = KEY_UPARROW;
+		else if (wParam == VK_DOWN) key = KEY_DOWNARROW;
+		else if (wParam == VK_LEFT) key = KEY_LEFTARROW;
+		else if (wParam == VK_RIGHT) key = KEY_RIGHTARROW;
+		else if (wParam >= '0' && wParam <= '9') key = KEY_DIGIT_0 + wParam - '0';
+		else if (wParam >= 'A' && wParam <= 'Z') key = KEY_ALPHA_A + wParam - 'A';
+		else if (wParam >= 'a' && wParam <= 'z') key = KEY_ALPHA_A + wParam - 'a';
+		else handle = false;
 
-	if (handle)
-	{
-	POINT p;
-	GetCursorPos(&p);
-	ScreenToClient(hWnd, &p);
-	//handle = pGraphics->OnKeyDown(p.x, p.y, key);
-	//handle = pGraphics->OnKeyDown(p.x, p.y, (int)(wParam));
-	}
+		if (handle)
+		{
+			POINT p;
+			GetCursorPos(&p);
+			ScreenToClient(hWnd, &p);
+			handle = pGraphics->OnKeyDown(p.x, p.y, key);
+		}
 
-	if (!handle)
-	{
-	HWND rootHWnd = GetAncestor(hWnd, GA_ROOT);
-	SendMessage(rootHWnd, WM_KEYDOWN, wParam, lParam);
-	return DefWindowProc(hWnd, msg, wParam, lParam);
-	}
-	else
-	return 0;
+		if (!handle)
+		{
+			HWND rootHWnd = GetAncestor(hWnd, GA_ROOT);
+			SendMessage(rootHWnd, WM_KEYDOWN, wParam, lParam);
+			return DefWindowProc(hWnd, msg, wParam, lParam);
+		}
+		else
+			return 0;
 	}
 	case WM_KEYUP:
 	{
-	HWND rootHWnd = GetAncestor(hWnd, GA_ROOT);
-	SendMessage(rootHWnd, msg, wParam, lParam);
-	return DefWindowProc(hWnd, msg, wParam, lParam);
+		HWND rootHWnd = GetAncestor(hWnd, GA_ROOT);
+		SendMessage(rootHWnd, msg, wParam, lParam);
+		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
 	*/
+	case WM_SIZE:
+	{
+		InvalidateRect(hWnd, NULL, FALSE);
+		//UpdateWindow(hWnd);
+		return 0;
+	}
 	case WM_PAINT:
 	{
 		RECT r;
@@ -414,7 +420,6 @@ LRESULT CALLBACK IGraphicsWin::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARA
 // static
 LRESULT CALLBACK IGraphicsWin::ParamEditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-
 	IGraphicsWin* pGraphics = (IGraphicsWin*)GetWindowLongPtr(GetParent(hWnd), GWLP_USERDATA);
 
 	if (pGraphics && pGraphics->mParamEditWnd && pGraphics->mParamEditWnd == hWnd)
@@ -451,6 +456,18 @@ LRESULT CALLBACK IGraphicsWin::ParamEditProc(HWND hWnd, UINT msg, WPARAM wParam,
 					break;
 				}
 			}
+			else
+			{
+				// Set char limits
+				std::wstring c;
+				c.push_back(wParam);
+
+				Windows_UTF_Converter convert;
+				std::string check_char = convert.utf16_to_utf8(c);
+
+				if (pGraphics->mEdControl->IsTextEntryCharAllowed(check_char)) break;
+				else return 0;
+			}
 			break;
 		}
 		case WM_KEYDOWN:
@@ -479,21 +496,19 @@ LRESULT CALLBACK IGraphicsWin::ParamEditProc(HWND hWnd, UINT msg, WPARAM wParam,
 		}
 		// handle WM_GETDLGCODE so that we can say that we want the return key message
 		//  (normally single line edit boxes don't get sent return key messages)
-		/*
 		case WM_GETDLGCODE:
 		{
-		if (pGraphics->mEdParam) break;
-		LPARAM lres;
-		// find out if the original control wants it
-		lres = CallWindowProc(pGraphics->mDefEditProc, hWnd, WM_GETDLGCODE, wParam, lParam);
-		// add in that we want it if it is a return keydown
-		if (lParam && ((MSG*)lParam)->message == WM_KEYDOWN  &&  wParam == VK_RETURN)
-		{
-		lres |= DLGC_WANTMESSAGE;
+			if (pGraphics->mEdParam) break;
+			LPARAM lres;
+			// find out if the original control wants it
+			lres = CallWindowProc(pGraphics->mDefEditProc, hWnd, WM_GETDLGCODE, wParam, lParam);
+			// add in that we want it if it is a return keydown
+			if (lParam && ((MSG*)lParam)->message == WM_KEYDOWN  &&  wParam == VK_RETURN)
+			{
+				lres |= DLGC_WANTMESSAGE;
+			}
+			return lres;
 		}
-		return lres;
-		}
-		*/
 		case WM_COMMAND:
 		{
 			switch HIWORD(wParam)
@@ -528,15 +543,11 @@ IGraphicsWin::IGraphicsWin(IPlugBase* pPlug, int w, int h, int refreshFPS)
 
 IGraphicsWin::~IGraphicsWin()
 {
-	releaseKbHook();
-	CloseWindow();
-	FREE_NULL(mCustomColorStorage);
-}
-
-void IGraphicsWin::releaseKbHook() {
 	if (globalKeyboardHook) {
 		UnhookWindowsHookEx(globalKeyboardHook);
 	}
+	CloseWindow();
+	FREE_NULL(mCustomColorStorage);
 }
 
 LICE_IBitmap* IGraphicsWin::OSLoadBitmap(int ID, const char* name)
@@ -588,10 +599,12 @@ void IGraphicsWin::ForceEndUserEdit()
 
 void IGraphicsWin::Resize(int w, int h)
 {
+
 	if (w == Width() && h == Height()) return;
 
 	int dw = w - Width(), dh = h - Height();
 	IGraphics::Resize(w, h);
+
 
 	if (WindowIsOpen())
 	{
@@ -611,7 +624,10 @@ void IGraphicsWin::Resize(int w, int h)
 			}
 		}
 
-		SetWindowPos(mPlugWnd, 0, 0, 0, plugW + dw, plugH + dh, SETPOS_FLAGS);
+		if (mPlug->GetAPI() == kAPIAAX)
+			SetWindowPos(mPlugWnd, 0, 0, 0, plugW + 0, plugH + 0, SETPOS_FLAGS);
+		else
+			SetWindowPos(mPlugWnd, 0, 0, 0, plugW + dw, plugH + dh, SETPOS_FLAGS);
 
 		// don't want to touch the host window in VST3 or RTAS
 		if (mPlug->GetAPI() != kAPIVST3 && mPlug->GetAPI() != kAPIRTAS)
@@ -628,7 +644,9 @@ void IGraphicsWin::Resize(int w, int h)
 		}
 
 		RECT r = { 0, 0, Width(), Height() };
+
 		InvalidateRect(mPlugWnd, &r, FALSE);
+		UpdateWindow(mPlugWnd);
 	}
 }
 
@@ -827,6 +845,20 @@ void IGraphicsWin::CloseWindow()
 	}
 }
 
+double IGraphicsWin::GetSystemGUIScaleRatio()
+{
+	HDC screen = GetDC(0);
+
+	int dpiX = GetDeviceCaps(screen, LOGPIXELSX);
+	int dpiY = GetDeviceCaps(screen, LOGPIXELSY);
+
+	ReleaseDC(0, screen);
+
+	int dpi = IPMAX(dpiX, dpiY);
+
+	return (double)dpi / 96.0;
+}
+
 IPopupMenu* IGraphicsWin::GetItemMenu(long idx, long &idxInMenu, long &offsetIdx, IPopupMenu* pMenu)
 {
 	long oldIDx = offsetIdx;
@@ -1006,11 +1038,11 @@ void IGraphicsWin::CreateTextEntry(IControl* pControl, IText* pText, IRECT* pTex
 	default:                  editStyle = ES_CENTER; break;
 	}
 
-	mParamEditWnd = CreateWindow("EDIT", pString, ES_AUTOHSCROLL /*only works for left aligned text*/ | WS_CHILD | WS_VISIBLE | ES_MULTILINE | editStyle,
+	mParamEditWnd = CreateWindowW(L"EDIT", utf8_to_utf16(pString).c_str(), ES_AUTOHSCROLL /*only works for left aligned text*/ | WS_CHILD | WS_VISIBLE | ES_MULTILINE | editStyle,
 		pTextRect->L, pTextRect->T, pTextRect->W() + 1, pTextRect->H() + 1,
 		mPlugWnd, (HMENU)PARAM_EDIT_ID, mHInstance, 0);
 
-	HFONT font = CreateFont(pText->mSize, 0, 0, 0, pText->mStyle == IText::kStyleBold ? FW_BOLD : 0, pText->mStyle == IText::kStyleItalic ? TRUE : 0, 0, 0, 0, 0, 0, 0, 0, pText->mFont);
+	HFONT font = CreateFontW(pText->mSize, 0, 0, 0, pText->mStyle == IText::kStyleBold ? FW_BOLD : 0, pText->mStyle == IText::kStyleItalic ? TRUE : 0, 0, 0, 0, 0, 0, 0, 0, utf8_to_utf16(pText->mFont).c_str());
 
 	SendMessage(mParamEditWnd, EM_LIMITTEXT, (WPARAM)pControl->GetTextEntryLength(), 0);
 	SendMessage(mParamEditWnd, WM_SETFONT, (WPARAM)font, 0);
@@ -1018,8 +1050,8 @@ void IGraphicsWin::CreateTextEntry(IControl* pControl, IText* pText, IRECT* pTex
 
 	SetFocus(mParamEditWnd);
 
-	mDefEditProc = (WNDPROC)SetWindowLongPtr(mParamEditWnd, GWLP_WNDPROC, (LONG_PTR)ParamEditProc);
-	SetWindowLongPtr(mParamEditWnd, GWLP_USERDATA, 0xdeadf00b);
+	mDefEditProc = (WNDPROC)SetWindowLongPtrW(mParamEditWnd, GWLP_WNDPROC, (LONG_PTR)ParamEditProc);
+	SetWindowLongPtrW(mParamEditWnd, GWLP_USERDATA, 0xdeadf00b);
 
 	//DeleteObject(font);
 
@@ -1032,21 +1064,22 @@ void IGraphicsWin::CreateTextEntry(IControl* pControl, IText* pText, IRECT* pTex
 void GetModulePath(HMODULE hModule, WDL_String* pPath)
 {
 	pPath->Set("");
-	char pathCStr[MAX_PATH_LEN];
+	WCHAR pathCStr[MAX_PATH_LEN];
 	pathCStr[0] = '\0';
-	if (GetModuleFileName(hModule, pathCStr, MAX_PATH_LEN))
+	if (GetModuleFileNameW(hModule, pathCStr, MAX_PATH_LEN))
 	{
 		int s = -1;
-		for (int i = 0; i < strlen(pathCStr); ++i)
+		for (int i = 0; i < wcslen(pathCStr); ++i)
 		{
 			if (pathCStr[i] == '\\')
 			{
 				s = i;
 			}
 		}
-		if (s >= 0 && s + 1 < strlen(pathCStr))
+		if (s >= 0 && s + 1 < wcslen(pathCStr))
 		{
-			pPath->Set(pathCStr, s + 1);
+			Windows_UTF_Converter convert;
+			pPath->Set(convert.utf16_to_utf8(pathCStr).c_str(), s + 1);
 		}
 	}
 }
@@ -1064,23 +1097,34 @@ void IGraphicsWin::PluginPath(WDL_String* pPath)
 void IGraphicsWin::DesktopPath(WDL_String* pPath)
 {
 #ifndef __MINGW_H // TODO: alternative for gcc?
-	TCHAR strPath[MAX_PATH_LEN];
-	SHGetSpecialFolderPath(0, strPath, CSIDL_DESKTOP, FALSE);
-	pPath->Set(strPath, MAX_PATH_LEN);
+	WCHAR strPath[MAX_PATH_LEN];
+	SHGetSpecialFolderPathW(0, strPath, CSIDL_DESKTOP, FALSE);
+	pPath->Set(utf16_to_utf8(strPath).c_str(), MAX_PATH_LEN);
+#endif
+}
+
+void IGraphicsWin::DocumentsPath(WDL_String* pPath)
+{
+#ifndef __MINGW_H // TODO: alternative for gcc?
+	WCHAR strPath[MAX_PATH_LEN];
+
+	SHGetFolderPathW(NULL, CSIDL_PERSONAL, NULL, SHGFP_TYPE_CURRENT, strPath);
+
+	pPath->Set(utf16_to_utf8(strPath).c_str(), MAX_PATH_LEN);
 #endif
 }
 
 void IGraphicsWin::AppSupportPath(WDL_String* pPath, bool isSystem)
 {
 #ifndef __MINGW_H // TODO: alternative for gcc?
-	TCHAR strPath[MAX_PATH_LEN];
+	WCHAR strPath[MAX_PATH_LEN];
 
 	if (isSystem)
-		SHGetFolderPathA(NULL, CSIDL_COMMON_APPDATA, NULL, 0, strPath);
+		SHGetFolderPathW(NULL, CSIDL_COMMON_APPDATA, NULL, 0, strPath);
 	else
-		SHGetFolderPathA(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, strPath);
+		SHGetFolderPathW(NULL, CSIDL_LOCAL_APPDATA, NULL, 0, strPath);
 
-	pPath->Set(strPath, MAX_PATH_LEN);
+	pPath->Set(utf16_to_utf8(strPath).c_str(), MAX_PATH_LEN);
 #endif
 }
 
@@ -1262,6 +1306,7 @@ bool IGraphicsWin::PromptForColor(IColor* pColor, char* prompt)
 bool IGraphicsWin::OpenURL(const char* url,
 	const char* msgWindowTitle, const char* confirmMsg, const char* errMsgOnFailure)
 {
+	/*
 	if (confirmMsg && MessageBox(mPlugWnd, confirmMsg, msgWindowTitle, MB_YESNO) != IDYES)
 	{
 		return false;
@@ -1278,6 +1323,7 @@ bool IGraphicsWin::OpenURL(const char* url,
 	{
 		MessageBox(mPlugWnd, errMsgOnFailure, msgWindowTitle, MB_OK);
 	}
+	*/
 	return false;
 }
 
@@ -1286,10 +1332,6 @@ void IGraphicsWin::SetTooltip(const char* tooltip)
 	TOOLINFO ti = { TTTOOLINFOA_V2_SIZE, 0, mPlugWnd, (UINT_PTR)mPlugWnd };
 	ti.lpszText = (LPTSTR)tooltip;
 	SendMessage(mTooltipWnd, TTM_UPDATETIPTEXT, 0, (LPARAM)&ti);
-}
-
-bool IGraphicsWin::hasFocus() {
-	return GetFocus() == mPlugWnd;
 }
 
 void IGraphicsWin::ShowTooltip()

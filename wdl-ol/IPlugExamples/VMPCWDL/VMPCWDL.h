@@ -24,6 +24,8 @@ public:
 	VMPCWDL(IPlugInstanceInfo instanceInfo);
 	~VMPCWDL();
 
+	void SetGUILayout(int viewMode, double windowWidth, double windowHeight) override;
+
 	void Reset();
 	void OnParamChange(int paramIdx);
 
@@ -34,9 +36,10 @@ public:
 
 private:
 	mpc::Mpc* mpc = nullptr;
-
+	
 private:
 	DataWheelControl* mDataWheel;
+	int* mDataWheel_index;
 	KnobControl* mRecKnob;
 	KnobControl* mVolKnob;
 	LedControl* mLedPanel;
@@ -47,5 +50,6 @@ private:
 	double mSampleRate;
 	double m_Tempo = 120.0;
 };
+
 
 #endif //__VMPCWDL__
