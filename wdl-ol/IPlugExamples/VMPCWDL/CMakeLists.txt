@@ -6,6 +6,7 @@ set(VMPCWDL_IMG
 	resources/img/sliders.png
 	resources/img/recknobs.png
 	resources/img/volknobs.png
+	resources/img/padhit.png
 )
 
 create_example(VMPCWDL)

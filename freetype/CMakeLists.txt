@@ -333,6 +333,11 @@ endif ()
 
 set(CMAKE_DEBUG_POSTFIX d)
 
+if(APPLE)
+  set(CMAKE_OSX_ARCHITECTURES "x86_64;i386")
+  set(CMAKE_CXX_STANDARD 14)
+endif(APPLE)
+
 add_library(freetype
   ${PUBLIC_HEADERS}
   ${PUBLIC_CONFIG_HEADERS}
