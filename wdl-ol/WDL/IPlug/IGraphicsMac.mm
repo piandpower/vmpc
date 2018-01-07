@@ -146,7 +146,7 @@ static void SWELL_fastDoubleUpImage(unsigned int *op, const unsigned int *ip, in
 
 @implementation CUSTOM_COCOA_WINDOW
 - (BOOL)canBecomeKeyWindow {return YES;}
-- (BOOL)canBecomeMainWindow {return YES;}
+//- (BOOL)canBecomeMainWindow {return YES;}
 @end
 
 IGraphicsMac::IGraphicsMac(IPlugBase* pPlug, int w, int h, int refreshFPS)
@@ -414,7 +414,7 @@ void IGraphicsMac::AttachSubWindow(void* hostWindowRef)
     [childWindow performSelector:@selector(orderFront:) withObject :(id) nil afterDelay :0.05];
 
   mHostNSWindow = (void*) hostWindow;
-
+  mChildNSWindow = (void*) childWindow;
 }
 
 void IGraphicsMac::RemoveSubWindow()
@@ -469,22 +469,34 @@ bool IGraphicsMac::WindowIsOpen()
 
 void IGraphicsMac::Resize(int w, int h)
 {
-  if (w == Width() && h == Height()) return;
-
-  IGraphics::Resize(w, h);
-
-  #ifndef IPLUG_NO_CARBON_SUPPORT
-  if (mGraphicsCarbon)
-  {
-    mGraphicsCarbon->Resize(w, h);
-  }
-  else
-  #endif
-  if (mGraphicsCocoa)
-  {
-    NSSize size = { static_cast<CGFloat>(w), static_cast<CGFloat>(h) };
-    [(IGRAPHICS_COCOA*) mGraphicsCocoa setFrameSize: size ];
-  }
+    if (w == Width() && h == Height()) return;
+    
+    IGraphics::Resize(w, h);
+    
+#ifndef IPLUG_NO_CARBON_SUPPORT
+    if (mGraphicsCarbon)
+    {
+        mGraphicsCarbon->Resize(w, h);
+    }
+    else
+#endif
+        if (mGraphicsCocoa)
+        {
+            double dW = w, dH = h;
+            if (mPlug->GetGUIResize() && IsUsingSystemGUIScaling())
+            {
+                dW /= GetSystemGUIScaleRatio();
+                dH /= GetSystemGUIScaleRatio();
+            }
+            
+            [NSAnimationContext beginGrouping]; // Prevent animated resizing
+            [[NSAnimationContext currentContext] setDuration:0.0f];
+            
+            NSSize size = { static_cast<CGFloat>(dW), static_cast<CGFloat>(dH) };
+            [(IGRAPHICS_COCOA*) mGraphicsCocoa setFrameSize: size ];
+            
+            [NSAnimationContext endGrouping];
+        }
 }
 
 void IGraphicsMac::HideMouseCursor()

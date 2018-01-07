@@ -228,9 +228,22 @@ inline int GetMouseOver(IGraphicsMac* pGraphics)
     mGraphics = pGraphics;
     NSRect r;
     r.origin.x = r.origin.y = 0.0f;
-    r.size.width = (float) pGraphics->Width();
-    r.size.height = (float) pGraphics->Height();
+    
+    if (mGraphics->GetPlug()->GetGUIResize() && mGraphics->IsUsingSystemGUIScaling())
+    {
+        double systemScaleRatio = mGraphics->GetSystemGUIScaleRatio();
+        
+        r.size.width = (float) pGraphics->Width() / systemScaleRatio;
+        r.size.height = (float) pGraphics->Height() / systemScaleRatio;
+    }
+    else
+    {
+        r.size.width = (float) pGraphics->Width();
+        r.size.height = (float) pGraphics->Height();
+    }
+    
     self = [super initWithFrame:r];
+    
     double sec = 1.0 / (double) pGraphics->FPS();
     mTimer = [NSTimer timerWithTimeInterval:sec target:self selector:@selector(onTimer:) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer: mTimer forMode: (NSString*) kCFRunLoopCommonModes];
@@ -248,47 +261,11 @@ inline int GetMouseOver(IGraphicsMac* pGraphics)
     return YES;
 }
 
-/*
-- (BOOL) canBecomeMainWindow
-{
-    return YES;
-}
-
-- (BOOL) canBecomeKeyWindow
-{
-    return YES;
-}
-*/
-
 - (BOOL) acceptsFirstMouse: (NSEvent*) pEvent
 {
     return YES;
 }
 
-/*
-- (void) viewDidMoveToWindow
-{
-    NSWindow* pWindow = [self window];
-    if (pWindow)
-    {
-        printf("\npWindow trying to make itself first responder\n\n");
-        [pWindow makeFirstResponder: self];
-        if (self == [pWindow firstResponder]) {
-            printf("pWindow is now first responder\n");
-        }
-        [pWindow makeKeyWindow];
-        if ([pWindow isKeyWindow]) {
-            printf("\npWindow is now keyWindow\n");
-        }
-        [pWindow makeMainWindow];
-        if ([pWindow isMainWindow]) {
-            printf("\npWindow is now mainWindow\n");
-        }
-
-        [pWindow setAcceptsMouseMovedEvents: YES];
-    }
-}
-*/
 
 - (void) viewDidMoveToWindow
 {
@@ -323,8 +300,28 @@ inline int GetMouseOver(IGraphicsMac* pGraphics)
     if (mGraphics)
     {
         NSPoint pt = [self convertPoint:[pEvent locationInWindow] fromView:nil];
-        *pX = (int) pt.x - 2;
-        *pY = mGraphics->Height() - (int) pt.y - 3;
+        
+        pt.x -= 1;
+        pt.y -= 1;
+        
+        if (mGraphics->GetPlug()->GetGUIResize() && mGraphics->IsUsingSystemGUIScaling())
+        {
+            double systemScaleRatio = mGraphics->GetSystemGUIScaleRatio();
+            
+            double x = pt.x * systemScaleRatio;
+            *pX = (int)ceil(x);
+            
+            double y = mGraphics->Height() - ((pt.y + 3) * systemScaleRatio);
+            *pY =  int(y);
+        }
+        else
+        {
+            *pX = int(pt.x);
+            
+            *pY = mGraphics->Height() - (int) pt.y - 4;
+        }
+        
+        
         mPrevX = *pX;
         mPrevY = *pY;
     }

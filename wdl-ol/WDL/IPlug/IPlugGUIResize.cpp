@@ -150,7 +150,7 @@ IPlugGUIResize::IPlugGUIResize(IPlugBase* pPlug, IGraphics* pGraphics, bool useH
 
 	settings_ini_path.Append("/Settings.ini");
 
-	//gui_scale_ratio = GetDoubleFromFile("guiscale");
+	gui_scale_ratio = GetDoubleFromFile("guiscale");
 	if (gui_scale_ratio < 0.0)
 	{
 		SetDoubleToFile("guiscale", 1.0);
@@ -160,8 +160,7 @@ IPlugGUIResize::IPlugGUIResize(IPlugBase* pPlug, IGraphics* pGraphics, bool useH
 	{
 		gui_scale_ratio = GetDoubleFromFile("guiscale");
 	}
-	//gui_scale_ratio = 0.5;
-
+    
 	// Initialize parameters
 	guiResizeParameters.Add(new IParam);
 	guiResizeParameters.Get(0)->InitInt("", -1, -1, 1000000);
