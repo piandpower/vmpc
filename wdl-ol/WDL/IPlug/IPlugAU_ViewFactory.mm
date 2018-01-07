@@ -4,7 +4,7 @@
 
 @interface VIEW_CLASS : NSObject <AUCocoaUIBase>
 {
-    IPlugBase* mPlug;
+  IPlugBase* mPlug;
 }
 - (id) init;
 - (NSView*) uiViewForAudioUnit: (AudioUnit) audioUnit withSize: (NSSize) preferredSize;
@@ -16,34 +16,35 @@
 
 - (id) init
 {
-    TRACE;
-    mPlug = 0;
-    return [super init];
+  TRACE;  
+  mPlug = 0;
+  return [super init];
 }
 
 - (NSView*) uiViewForAudioUnit: (AudioUnit) audioUnit withSize: (NSSize) preferredSize
 {
-    TRACE;
-    mPlug = (IPlugBase*) GetComponentInstanceStorage(audioUnit);
-    if (mPlug) {
-        IGraphics* pGraphics = mPlug->GetGUI();
-        if (pGraphics) {
-            IGRAPHICS_COCOA* pView = (IGRAPHICS_COCOA*) pGraphics->OpenWindow(0);
-            mPlug->OnGUIOpen();
-            return pView;
-        }
+  TRACE;
+  mPlug = (IPlugBase*) GetComponentInstanceStorage(audioUnit);
+  if (mPlug) {
+    IGraphics* pGraphics = mPlug->GetGUI();   
+    if (pGraphics) {
+      IGRAPHICS_COCOA* pView = (IGRAPHICS_COCOA*) pGraphics->OpenWindow(0);
+      mPlug->OnGUIOpen();
+	  mPlug->ResizeAtGUIOpen(pGraphics);
+      return pView;
     }
-    return 0;
+  }
+  return 0; 
 }
 
 - (unsigned) interfaceVersion
 {
-    return 0;
+  return 0;
 }
 
 - (NSString *) description
 {
-    return ToNSString(PLUG_NAME " View");
+  return ToNSString(PLUG_NAME " View");
 }
 
 @end
