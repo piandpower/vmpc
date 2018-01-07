@@ -3,9 +3,10 @@
 
 #include "IPlugGUIResize.h"
 
+#include <StartUp.hpp>
+
 #include "../resource.h"
 
-std::string FTControl::fontPath = "/Users/admin/vMPC/resources/arial.ttf";
 int FTControl::fontSize = Constants::KBLABEL_FONT_SIZE;
 int FTControl::outlineSize = Constants::KBLABEL_OUTLINE_SIZE;
 
@@ -211,7 +212,7 @@ FTControl::FTControl(IPlugBase* pPlug, int x, int y, std::string text)
 	this->text = text;
 	FT_Init_FreeType(&library);
 
-	std::ifstream fontFile(fontPath, std::ios::binary);
+	std::ifstream fontFile(mpc::StartUp::resPath + "/arial.ttf", std::ios::binary);
 	fontFile.seekg(0, std::ios::end);
 	std::fstream::pos_type fontFileSize = fontFile.tellg();
 	fontFile.seekg(0);
@@ -229,7 +230,7 @@ int FTControl::getStringWidth(std::string text) {
 	int res = 0;
 	FT_Library ftlib;
 	FT_Init_FreeType(&ftlib);
-	std::ifstream fontFile(fontPath, std::ios::binary);
+	std::ifstream fontFile(mpc::StartUp::resPath + "/arial.ttf", std::ios::binary);
 	fontFile.seekg(0, std::ios::end);
 	std::fstream::pos_type fontFileSize = fontFile.tellg();
 	fontFile.seekg(0);

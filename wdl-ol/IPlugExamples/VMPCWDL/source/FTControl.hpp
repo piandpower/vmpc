@@ -87,7 +87,6 @@ class FTControl
 		void RenderSpans(FT_Outline * const outline, Spans *spans);
 
 	private:
-		static std::string fontPath;
 		static int fontSize;
 		static int outlineSize;
 
