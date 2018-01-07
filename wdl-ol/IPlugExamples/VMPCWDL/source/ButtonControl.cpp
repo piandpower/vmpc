@@ -20,9 +20,6 @@ ButtonControl::ButtonControl(IPlugBase* pPlug, IGraphics* gui, IRECT rect, std::
 	mpc::controls::KbMapping kbMapping;
 	auto buttonLabel = button.lock()->getLabel();
 	int keyCode = kbMapping.getKeyCodeFromLabel(buttonLabel);
-	if (buttonLabel.compare("bankc") == 0) {
-		//MLOG("bankc keyCode: " + std::to_string(keyCode));
-	}
 	auto labelString = kbMapping.getKeyCodeString(keyCode);
 	std::transform(labelString.begin(), labelString.end(), labelString.begin(), ::toupper);
 	int labelWidth = FTControl::getStringWidth(labelString);

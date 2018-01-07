@@ -5,7 +5,7 @@
 
 #include "../resource.h"
 
-std::string FTControl::fontPath = "c:/temp/arial.ttf";
+std::string FTControl::fontPath = "/Users/admin/vMPC/resources/arial.ttf";
 int FTControl::fontSize = Constants::KBLABEL_FONT_SIZE;
 int FTControl::outlineSize = Constants::KBLABEL_OUTLINE_SIZE;
 

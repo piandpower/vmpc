@@ -78,7 +78,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	IGraphics* pGraphics = MakeGraphics(this, GUI_WIDTH, GUI_HEIGHT);
 	auto guiResize = new IPlugGUIResize(this, pGraphics, true, 25, 25);
 	AttachGUIResize(guiResize);
-
+  
 	GetGUIResize()->UsingBitmaps();
 	GetGUIResize()->SelectViewMode(defaultView);
 	GetGUIResize()->SetGUIScaleLimits(50, 100);

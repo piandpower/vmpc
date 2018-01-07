@@ -142,6 +142,7 @@ IPlugGUIResize::IPlugGUIResize(IPlugBase* pPlug, IGraphics* pGraphics, bool useH
 	CreateDirectory(settings_ini_path.Get(), NULL);
 	DBGMSG("\n\nsettings ini path ");
 	DBGMSG(settings_ini_path.Get());
+    DBGMSG("\n");
 	settings_ini_path.Append("/");
 	settings_ini_path.Append(pPlug->GetEffectName());
 
