@@ -10,6 +10,8 @@ SET(IPLUG_SRC
 	IPlugStructs.cpp
 	IPopupMenu.cpp
 	Log.cpp
+	IControlGroup.cpp
+	IPlugGUIResize.cpp
 	
 #	app_main.cpp
 #	app_dialog.cpp
