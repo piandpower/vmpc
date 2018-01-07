@@ -218,6 +218,14 @@ LICE_IBitmap* IGraphicsMac::OSLoadBitmap(int ID, const char* name)
   return LoadImgFromResourceOSX(GetBundleID(), name);
 }
 
+double IGraphicsMac::GetSystemGUIScaleRatio()
+{
+    // More info for getting GUI scaling https://developer.apple.com/library/content/documentation/GraphicsAnimation/Conceptual/HighResolutionOSX/APIs/APIs.html
+    
+    double mainScreenScalingRatio = [[NSScreen mainScreen] backingScaleFactor];
+    return mainScreenScalingRatio;
+}
+
 bool IGraphicsMac::DrawScreen(IRECT* pR)
 {
   CGContextRef pCGC = 0;

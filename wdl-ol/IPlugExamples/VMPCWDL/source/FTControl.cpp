@@ -282,7 +282,7 @@ bool FTControl::Draw(IGraphics* g) {
 			IColor bgc = g->GetPoint(x, y);
 			unsigned char res[4] = { 0,0,0,0 };
 			unsigned char fg[4] = { pixel.r, pixel.g, pixel.b, pixel.a };
-			unsigned char bg[4] = { bgc.R, bgc.G, bgc.B, bgc.A };
+			unsigned char bg[4] = { (unsigned char) bgc.R, (unsigned char) bgc.G, (unsigned char) bgc.B, (unsigned char) bgc.A };
 			blend_alpha(res, fg, bg);
 			IColor resc(res[3], res[0], res[1], res[2]);
 			g->DrawPoint(&resc, x, y, &blend);

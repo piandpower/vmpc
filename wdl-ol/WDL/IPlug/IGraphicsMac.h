@@ -117,6 +117,8 @@ public:
   
   bool GetTextFromClipboard(WDL_String* pStr);
 
+    double GetSystemGUIScaleRatio();
+    
 protected:
   virtual LICE_IBitmap* OSLoadBitmap(int ID, const char* name);
   
