@@ -165,7 +165,7 @@ add_definitions(-DFT2_BUILD_LIBRARY)
 
 
 # Find dependencies
-foreach (d ZLIB BZip2 PNG HarfBuzz)
+foreach (d ZLIB BZip2 HarfBuzz)
   string(TOUPPER "${d}" D)
 
   if (DEFINED WITH_${d} OR DEFINED WITH_${D})
