@@ -35,7 +35,7 @@ void RtAudioServer::close() {
 void RtAudioServer::work() {
 }
 
-void RtAudioServer::work(float** OutAudio, int nFrames) {
+void RtAudioServer::work(float** InAudio, float** OutAudio, int nFrames, int inputChannels, int outputChannels) {
 	auto activeInputs = getActiveInputs();
 	if (activeInputs.size() != 0) {
 		activeInputs.at(0)->localBuffer.clear();
