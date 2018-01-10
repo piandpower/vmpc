@@ -126,7 +126,7 @@ void AudioMidiServices::start(std::string mode) {
 	cac->add(sampler.get());
 	offlineServer->setWeakPtr(offlineServer);
 	offlineServer->setClient(cac);
-	offlineServer->resizeBuffers(8192);
+	offlineServer->resizeBuffers(8192*4);
 	offlineServer->start();
 	disabled = false;
 }
