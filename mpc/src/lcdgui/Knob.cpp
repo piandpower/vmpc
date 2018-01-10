@@ -14,7 +14,6 @@ using namespace std;
 Knob::Knob(MRECT rect) 
 {
 	this->rect = rect;
-	SetDirty();
 }
 
 void Knob::setValue(int value)

@@ -43,7 +43,7 @@ Sampler::Sampler(mpc::Mpc* mpc)
 	soundSortingType = 0;
 	abcd = vector<string>{ "A", "B", "C", "D" };
 	sortNames = vector<string>{ "MEMORY", "NAME", "SIZE" };
-	recordBuffer = make_unique<ctoot::audio::core::AudioBuffer>("record", 2, 4096, 44100);
+	recordBuffer = make_unique<ctoot::audio::core::AudioBuffer>("record", 2, 8192, 44100);
 	monitorOutput = make_shared<MonitorOutput>(mpc);
 	auto ud = mpc::StartUp::getUserDefaults().lock();
 	initMasterPadAssign = ud->getPadNotes();

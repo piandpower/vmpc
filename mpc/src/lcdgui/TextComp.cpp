@@ -11,7 +11,6 @@
 using namespace mpc::lcdgui;
 
 using namespace moduru::lang;
-
 using namespace std;
 
 #include <gui/BMFParser.hpp>

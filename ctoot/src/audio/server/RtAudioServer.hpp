@@ -35,6 +35,7 @@ namespace ctoot {
 
 			public:
 				void work() override;
+				void work(float** OutAudio, int nFrames);
 				void work(double** InAudio, double** OutAudio, int nFrames, int outputChannels);
 
 			public:

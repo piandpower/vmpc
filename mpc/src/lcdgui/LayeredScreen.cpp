@@ -340,6 +340,11 @@ void LayeredScreen::Draw() {
 			}
 		}
 
+		for (auto& k : knobs) {
+			if (k->NeedsClearing())
+				k->Clear(&pixels);
+		}
+
 		if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
 
 		if (i == currentLayer && envGraph->IsDirty() && !envGraph->IsHidden()) envGraph->Draw(&pixels);
@@ -364,40 +369,65 @@ void LayeredScreen::Draw() {
 		if (!twoDots->IsHidden()) twoDots->Draw(&pixels);
 		if (i == 1 && fineWave->IsDirty()) fineWave->Draw(&pixels);
 		if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
-		if (currentScreenName.compare("mixerv2") == 0) {
+		//if (currentScreenName.compare("mixerv2") == 0) {
 			for (auto& k : knobs) {
 				if (k->IsDirty())
 					k->Draw(&pixels);
 			}
-		}
+		//}
 	}
 }
 
 bool LayeredScreen::IsDirty() {
 	for (int i = 0; i <= currentLayer; i++) {
-		if (layers[i]->getBackground()->IsDirty() || layers[i]->getFunctionKeys()->IsDirty()) return true;
+		//MLOG("\n checking for dirty components in layer " + to_string(i));
+		if (layers[i]->getBackground()->IsDirty() || layers[i]->getFunctionKeys()->IsDirty()) {
+			//MLOG("background or fk is dirty");
+			return true;
+		}
 
 		auto components = layers[i]->getAllLabels();
 		for (auto& c : components) {
-			if (c.lock()->IsDirty()) return true;
+			if (c.lock()->IsDirty() && !(c.lock()->IsHidden() && !c.lock()->NeedsClearing())) {
+				//MLOG("label " + dynamic_pointer_cast<Label>(c.lock())->getName() + " is dirty");
+				return true;
+			}
 		}
 
 		components = layers[i]->getAllFields();
 		for (auto& c : components) {
-			if (c.lock()->IsDirty()) return true;
+			if (c.lock()->IsDirty() && !(c.lock()->IsHidden() && !c.lock()->NeedsClearing())) {
+				//MLOG("field " + dynamic_pointer_cast<Field>(c.lock())->getName() + " is dirty");
+				return true;
+			}
 		}
 		if (layers[i]->getFunctionKeys()->IsDirty()) return true;
 		for (auto& c : nonTextComps) {
-			if (c.lock()->IsDirty()) return true;
+			if (c.lock()->IsDirty() && !(c.lock()->IsHidden() && !c.lock()->NeedsClearing())) {
+				//MLOG("a nontextcomp is dirty");
+				return true;
+			}
 		}
 
-		if (underline->IsDirty() && i == 2) return true;
-		if (twoDots->IsDirty()) return true;
+		if (underline->IsDirty() && i == 2) {
+			//MLOG("underline in layer 2 is dirty");
+			return true;
+		}
+		if (twoDots->IsDirty() && !(twoDots->IsHidden() && !twoDots->NeedsClearing())) {
+			//MLOG("twodots is dirty");
+			return true;
+		}
 
 		for (auto& k : knobs) {
-			if (k->IsDirty()) return true;
+			if (k->IsDirty() && !(k->IsHidden() && !k->NeedsClearing())) {
+				//MLOG("a knob is dirty");
+				return true;
+			}
 		}
-		if (i == 1 && fineWave->IsDirty()) return true;
+		if (i == 1 && fineWave->IsDirty()) {
+			//MLOG("finewave is dirty");
+			return true;
+		}
 	}
 	return false;
 }
