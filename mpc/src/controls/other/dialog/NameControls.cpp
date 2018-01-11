@@ -1,6 +1,5 @@
 #include <controls/other/dialog/NameControls.hpp>
 
-#include <controls/KbMapping.hpp>
 #include <Mpc.hpp>
 #include <Util.hpp>
 #include <disk/AbstractDisk.hpp>
