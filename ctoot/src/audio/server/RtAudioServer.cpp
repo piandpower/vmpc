@@ -37,17 +37,16 @@ void RtAudioServer::work() {
 
 void RtAudioServer::work(float** InAudio, float** OutAudio, int nFrames, int inputChannels, int outputChannels) {
 	auto activeInputs = getActiveInputs();
-	if (activeInputs.size() != 0) {
+	if (activeInputs.size() != 0 && inputChannels >= 2) {
 		activeInputs.at(0)->localBuffer.clear();
-		//double* inputBufferL = (double*)InAudio[0];
-		//double* inputBufferR = (double*)InAudio[1];
-		//for (int i = 0; i < nFrames; i++) {
-			//activeInputs.at(0)->localBuffer.push_back(inputBufferL[i]);
-			//activeInputs.at(0)->localBuffer.push_back(inputBufferR[i]);
-		//}
+		float* inputBufferL = (float*)InAudio[0];
+		float* inputBufferR = (float*)InAudio[1];
+		for (int i = 0; i < nFrames; i++) {
+			activeInputs.at(0)->localBuffer.push_back(inputBufferL[i]);
+			activeInputs.at(0)->localBuffer.push_back(inputBufferR[i]);
+		}
 	}
-	//int channelsToProcess = activeOutputs.size() < (outputChannels / 2) ? activeOutputs.size() : (outputChannels / 2);
-	int channelsToProcess = 1;
+	int channelsToProcess = activeOutputs.size() < (outputChannels / 2) ? activeOutputs.size() : (outputChannels / 2);
 	client->work(nFrames);
 	for (int output = 0; output < channelsToProcess; output++) {
 		int counter = 0;

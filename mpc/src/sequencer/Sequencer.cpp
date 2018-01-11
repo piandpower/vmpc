@@ -3,6 +3,7 @@
 #include <Mpc.hpp>
 #include <hardware/Hardware.hpp>
 #include <hardware/Led.hpp>
+#include <hardware/HwPad.hpp>
 #include <ui/Uis.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <ui/sequencer/SongGui.hpp>
@@ -508,6 +509,9 @@ void Sequencer::stop(int tick)
     
     move(pos);
 	if (!lAms->isBouncing()) mpc->getSampler().lock()->stopAllVoices(frameOffset);
+	for (int i = 0; i < 16; i++) {
+		mpc->getHardware().lock()->getPad(i).lock()->notifyObservers(255);
+	}
     if(notifynextsq) {
         setChanged();
         notifyObservers(string("nextsqoff"));
