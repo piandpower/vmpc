@@ -4,18 +4,19 @@
 
 #include "IControl.h"
 
-#include "source/DataWheelControl.hpp"
-#include "source/KnobControl.hpp"
-#include "source/LedControl.hpp"
-#include "source/LCDControl.hpp"
-#include "source/InputCatcherControl.hpp"
-#include "source/PadControl.hpp"
-#include "source/SliderControl.hpp"
-#include "source/ButtonControl.hpp"
+//#include "source/DataWheelControl.hpp"
+//#include "source/KnobControl.hpp"
+//#include "source/LedControl.hpp"
+//#include "source/LCDControl.hpp"
+//#include "source/InputCatcherControl.hpp"
+//#include "source/PadControl.hpp"
+//#include "source/SliderControl.hpp"
+//#include "source/ButtonControl.hpp"
 
-#include "source/FTControl.hpp"
+//#include "source/FTControl.hpp"
 
 // mpc
+/*
 #include <sequencer/Sequencer.hpp>
 #include <sequencer/Sequence.hpp>
 
@@ -34,6 +35,7 @@
 
 // ctoot
 #include <midi/core/ShortMessage.hpp>
+*/
 
 const int kNumPrograms = 8;
 const int kNumParams = 1;
@@ -70,21 +72,22 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	: IPLUG_CTOR(kNumParams, kNumParams, kNumPrograms, instanceInfo),
 	mSampleRate(44100.)
 {   
-	mpc = new mpc::Mpc();
-	mpc->init("rtaudio");
-	MLOG("mpc initialized");
+	//mpc = new mpc::Mpc();
+	//mpc->init("rtaudio");
+//	MLOG("mpc initialized");
 	TRACE;
 
 	IGraphics* pGraphics = MakeGraphics(this, GUI_WIDTH, GUI_HEIGHT);
-	auto guiResize = new IPlugGUIResize(this, pGraphics, true, 25, 25);
-	AttachGUIResize(guiResize);
+	//auto guiResize = new IPlugGUIResize(this, pGraphics, true, 25, 25);
+	//AttachGUIResize(guiResize);
   
-	GetGUIResize()->UsingBitmaps();
-	GetGUIResize()->SelectViewMode(defaultView);
-	GetGUIResize()->SetGUIScaleLimits(50, 100);
-	GetGUIResize()->SetWindowSizeLimits(defaultView, 1298/2, 994/2, 1298, 994);
+	//GetGUIResize()->UsingBitmaps();
+	//GetGUIResize()->SelectViewMode(defaultView);
+	//GetGUIResize()->SetGUIScaleLimits(50, 100);
+	//GetGUIResize()->SetWindowSizeLimits(defaultView, 1298/2, 994/2, 1298, 994);
 
 	pGraphics->AttachBackground(BG_ID, BG_FN);
+	/*
 	mLedPanel = new LedControl(this, pGraphics);
 	for (auto& l : mpc->getHardware().lock()->getLeds()) {
 		l->addObserver(mLedPanel);
@@ -139,22 +142,23 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	//pGraphics->HandleMouseOver(true);
 	mLCDControl = new LCDControl(this, mpc->getLayeredScreen());
 	pGraphics->AttachControl(mLCDControl);
-	
-	GetGUIResize()->UseHandleForGUIScaling(true);
+	*/
+	//GetGUIResize()->UseHandleForGUIScaling(true);
 	AttachGraphics(pGraphics);
 	//MakePreset("preset 1", ... );
 	MakeDefaultPreset((char *) "-", kNumPrograms);
 
-	mpc->powerOn();
+//	mpc->powerOn();
 }
 
 VMPCWDL::~VMPCWDL()
 {
-	delete mpc;
+	//delete mpc;
 }
 
 void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames, int outputChannels)
 {
+/*
 	auto offlineServer = mpc->getAudioMidiServices().lock()->getOfflineServer();
 	if (!offlineServer->isRealTime()) return;
 	auto midiOutMsgQueues = mpc->getMidiPorts().lock()->getReceivers();
@@ -205,6 +209,7 @@ void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFra
 	}
 	auto server = mpc->getAudioMidiServices().lock()->getRtAudioServer();
 	server->work(inputs, outputs, nFrames, outputChannels);
+	*/
 }
 
 void VMPCWDL::Reset()
@@ -228,6 +233,7 @@ void VMPCWDL::OnParamChange(int paramIdx)
 
 void VMPCWDL::ProcessMidiMsg(IMidiMsg* pMsg)
 {
+	/*
   int status = pMsg->StatusMsg();
   int velocity = pMsg->Velocity();
   
@@ -253,6 +259,7 @@ void VMPCWDL::ProcessMidiMsg(IMidiMsg* pMsg)
 	default:
 		return;
   }
+  */
 }
 
 //Called by the standalone wrapper if someone clicks about

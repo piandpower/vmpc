@@ -2,7 +2,7 @@
 #define __VMPCWDL__
 
 #include "IPlug_include_in_plug_hdr.h"
-#include <Mpc.hpp>
+//#include <Mpc.hpp>
 
 #define MAX_VOICES 16
 #define ATTACK_DEFAULT 5.
@@ -35,7 +35,7 @@ public:
 	void ProcessMidiMsg(IMidiMsg* pMsg);
 
 private:
-	mpc::Mpc* mpc = nullptr;
+	//mpc::Mpc* mpc = nullptr;
 	
 private:
 	DataWheelControl* mDataWheel;
