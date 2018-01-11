@@ -523,6 +523,7 @@ WDL_DLGRET MainDlgProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
       gHWND=NULL;
 
 #ifdef _WIN32
+	  _CrtDumpMemoryLeaks();
       PostQuitMessage(0);
 #else
       SWELL_PostQuitMessage(hwndDlg);

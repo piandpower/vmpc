@@ -17,6 +17,7 @@ ButtonControl::ButtonControl(IPlugBase* pPlug, IGraphics* gui, IRECT rect, std::
 	: IPanelControl(pPlug, rect, Constants::LCD_OFF())
 {
 	this->button = button;
+	/*
 	mpc::controls::KbMapping kbMapping;
 	auto buttonLabel = button.lock()->getLabel();
 	int keyCode = kbMapping.getKeyCodeFromLabel(buttonLabel);
@@ -29,6 +30,7 @@ ButtonControl::ButtonControl(IPlugBase* pPlug, IGraphics* gui, IRECT rect, std::
 	kbLabel = new FTControl(pPlug, labelOffsetX, labelOffsetY, labelString);
 	kbLabel->Hide(true);
 	gui->AttachControl(kbLabel);
+	*/
 }
 std::unordered_map<std::string, IRECT*> ButtonControl::rects;
 IRECT ButtonControl::undoseq = IRECT(212, 652, 252, 669);

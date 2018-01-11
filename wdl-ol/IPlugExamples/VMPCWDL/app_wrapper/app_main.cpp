@@ -1,6 +1,9 @@
 #include "app_main.h"
 
 #ifdef OS_WIN
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
   #include <windows.h>
   #include <shlobj.h>
   #include <sys/stat.h>

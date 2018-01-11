@@ -85,7 +85,6 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	GetGUIResize()->SetWindowSizeLimits(defaultView, 1298/2, 994/2, 1298, 994);
 
 	pGraphics->AttachBackground(BG_ID, BG_FN);
-		
 	mLedPanel = new LedControl(this, pGraphics);
 	for (auto& l : mpc->getHardware().lock()->getLeds()) {
 		l->addObserver(mLedPanel);
@@ -137,12 +136,11 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 		auto bc = new ButtonControl(this, pGraphics, *ButtonControl::rects[l], mpc->getHardware().lock()->getButton(l));
 		pGraphics->AttachControl(bc);
 	}
-	pGraphics->HandleMouseOver(true);
+	//pGraphics->HandleMouseOver(true);
 	mLCDControl = new LCDControl(this, mpc->getLayeredScreen());
 	pGraphics->AttachControl(mLCDControl);
 	
 	GetGUIResize()->UseHandleForGUIScaling(true);
-
 	AttachGraphics(pGraphics);
 	//MakePreset("preset 1", ... );
 	MakeDefaultPreset((char *) "-", kNumPrograms);
