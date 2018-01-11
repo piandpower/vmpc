@@ -5,7 +5,6 @@
 #include <Mpc.hpp>
 #include <audiomidi/AudioMidiServices.hpp>
 #include <audiomidi/EventHandler.hpp>
-#include <controls/KbMapping.hpp>
 #include <ui/sequencer/StepEditorGui.hpp>
 #include <hardware/Hardware.hpp>
 #include <hardware/Led.hpp>
@@ -59,27 +58,6 @@ void GlobalReleaseControls::function(int i) {
 		break;
 	}
 }
-
-/*
-void GlobalReleaseControls::keyEvent(unsigned char kc)
-{
-	init();
-	auto lSequencer = sequencer.lock();
-	auto lLs = ls.lock();
-	if (kc == KbMapping::goTo())
-		KbMouseController::goToIsPressed() = false;
-
-	if (csn.compare("trackmute") == 0 && kc == KbMapping::f6() && !lSequencer->isSoloEnabled()) {
-		auto ls = lMainFrame->getLayeredScreen().lock();
-		ls->removeCurrentBackground();
-		ls->setCurrentBackground("trackmute");
-		//KbMouseController::f6IsPressed() = false;
-		return;
-	}
-	if ((kc == KbMapping::f6() || kc == KbMapping::f5()) && !lSequencer->isPlaying() && csn.compare("sequencer") != 0)
-		sampler.lock()->stopAllVoices();
-}
-*/
 
 void GlobalReleaseControls::pad(int i)
 {

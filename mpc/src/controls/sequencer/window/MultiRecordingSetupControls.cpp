@@ -5,7 +5,6 @@
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
 #include <sequencer/Sequence.hpp>
 #include <sequencer/Track.hpp>
-#include <controls/KbMapping.hpp>
 
 #include <lang/StrUtil.hpp>
 

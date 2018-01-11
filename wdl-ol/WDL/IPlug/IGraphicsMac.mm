@@ -8,6 +8,8 @@
 #endif
 #include "../swell/swell-internal.h"
 
+#include <Logger.hpp>
+
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 struct CocoaAutoReleasePool
@@ -336,6 +338,21 @@ bool IGraphicsMac::MeasureIText(IText* pTxt, char* str, IRECT* pR)
 
 void* IGraphicsMac::OpenWindow(void* pParent)
 {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+    (NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    
+    //make a file name to write the data to using the documents directory:
+    NSString *fileName = [NSString stringWithFormat:@"%@/textfile.txt",
+                          documentsDirectory];
+    //create content - four lines of text
+    NSString *content = @"OpenWindow\n";
+    //save content to the documents directory
+    [content writeToFile:fileName
+              atomically:NO
+                encoding:NSStringEncodingConversionAllowLossy
+                   error:nil];
+
   return OpenCocoaWindow(pParent);
 }
 
@@ -349,6 +366,7 @@ void* IGraphicsMac::OpenWindow(void* pWindow, void* pControl, short leftOffset, 
 void* IGraphicsMac::OpenCocoaWindow(void* pParentView)
 {
   TRACE;
+    
   CloseWindow();
   mGraphicsCocoa = (IGRAPHICS_COCOA*) [[IGRAPHICS_COCOA alloc] initWithIGraphics: this];
   
