@@ -9,6 +9,12 @@
 using namespace moduru::sys;
 using namespace std;
 
+
+#ifdef __linux__
+#include <unistd.h>
+#include <pwd.h>
+#endif
+
 #ifdef _WIN32
 string Home::get() {
 	auto homeDrive = string(getenv("HOMEDRIVE"));

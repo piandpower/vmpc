@@ -8,10 +8,14 @@
 #include <lang/StringBuilder.hpp>
 //#include <lang/System.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::lang;
 using namespace std;
 
-Integer::Integer(int32_t value) 
+Integer::Integer(int32_t value)
 {
 	this->value = value;
 }
@@ -222,7 +226,7 @@ int32_t Integer::parseInt(string s, int32_t radix)
 }
 
 int32_t Integer::parseInt(string s)
-{   
+{
     return parseInt(s, 10);
 }
 
@@ -232,7 +236,7 @@ Integer* Integer::valueOf(string s, int32_t radix)
 }
 
 Integer* Integer::valueOf(string s)
-{   
+{
     return new Integer(parseInt(s, 10));
 }
 
@@ -379,14 +383,14 @@ int32_t Integer::compareTo(Integer* anotherInteger)
 }
 
 int32_t Integer::compareTo(Object* o)
-{ 
+{
     return compareTo(dynamic_cast< Integer* >(o));
 }
 
 constexpr int32_t Integer::SIZE;
 
 int32_t Integer::highestOneBit(int32_t i)
-{   
+{
     i |= (i >> int32_t(1));
     i |= (i >> int32_t(2));
     i |= (i >> int32_t(4));
@@ -396,12 +400,12 @@ int32_t Integer::highestOneBit(int32_t i)
 }
 
 int32_t Integer::lowestOneBit(int32_t i)
-{   
+{
     return i & -i;
 }
 
 int32_t Integer::numberOfLeadingZeros(int32_t i)
-{   
+{
     if(i == 0)
         return 32;
 
@@ -427,7 +431,7 @@ int32_t Integer::numberOfLeadingZeros(int32_t i)
 }
 
 int32_t Integer::numberOfTrailingZeros(int32_t i)
-{   
+{
     int32_t y;
     if(i == 0)
         return 32;
@@ -457,7 +461,7 @@ int32_t Integer::numberOfTrailingZeros(int32_t i)
 }
 
 int32_t Integer::bitCount(int32_t i)
-{  
+{
     i = i - ((static_cast<int32_t>(static_cast<uint32_t>(i) >> int32_t(1))) & int32_t(1431655765));
     i = (i & int32_t(858993459)) + ((static_cast<int32_t>(static_cast<uint32_t>(i) >> int32_t(2))) & int32_t(858993459));
     i = (i + (static_cast<int32_t>(static_cast<uint32_t>(i) >> int32_t(4)))) & int32_t(252645135);
@@ -467,12 +471,12 @@ int32_t Integer::bitCount(int32_t i)
 }
 
 int32_t Integer::rotateLeft(int32_t i, int32_t distance)
-{   
+{
     return (i << distance) | (static_cast<int32_t>(static_cast<uint32_t>(i) >> -distance));
 }
 
 int32_t Integer::rotateRight(int32_t i, int32_t distance)
-{   
+{
     return (static_cast<int32_t>(static_cast<uint32_t>(i) >> distance)) | (i << -distance);
 }
 
@@ -492,6 +496,6 @@ int32_t Integer::signum(int32_t i)
 
 int32_t Integer::reverseBytes(int32_t i)
 {
-    
+
     return ((static_cast<int32_t>(static_cast<uint32_t>(i) >> int32_t(24)))) | ((i >> int32_t(8)) & int32_t(65280)) | ((i << int32_t(8)) & int32_t(16711680))| ((i << int32_t(24)));
 }

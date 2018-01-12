@@ -1,5 +1,9 @@
 #include <io/InputStream.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::io;
 using namespace std;
 
@@ -59,7 +63,7 @@ int InputStream::available() {
 	return 0;
 }
 
-//synchronized 
+//synchronized
 void InputStream::reset() {
 	throw std::invalid_argument("mark/reset not supported");
 }

@@ -17,10 +17,15 @@
 #include <math.h>
 #endif
 
+#ifdef __linux__
+#include <stdexcept>
+#include <math.h>
+#endif
+
 using namespace moduru::gui::geom;
 using namespace std;
 
-Curve::Curve(int direction) 
+Curve::Curve(int direction)
 {
 	this->direction = direction;
 }
@@ -45,7 +50,7 @@ void Curve::insertLine(vector<Curve*>* curves, double x0, double y0, double x1, 
 
 void Curve::insertQuad(vector<Curve*>* curves, double x0, double y0, vector<double>* coords)
 {
-    
+
     auto y1 = (*coords)[3];
     if(y0 > y1) {
         Order2::insert(curves, coords, (*coords)[2], y1, (*coords)[0], (*coords)[1], x0, y0, DECREASING);
@@ -58,7 +63,7 @@ void Curve::insertQuad(vector<Curve*>* curves, double x0, double y0, vector<doub
 
 void Curve::insertCubic(vector<Curve*>* curves, double x0, double y0, vector<double>* coords)
 {
-    
+
     auto y1 = (*coords)[5];
     if(y0 > y1) {
         Order3::insert(curves, coords, (*coords)[4], y1, (*coords)[2], (*coords)[3], (*coords)[0], (*coords)[1], x0, y0, DECREASING);
@@ -197,7 +202,7 @@ int Curve::pointCrossingsForQuad(double px, double py, double x0, double y0, dou
 
 int Curve::pointCrossingsForCubic(double px, double py, double x0, double y0, double xc0, double yc0, double xc1, double yc1, double x1, double y1, int level)
 {
-    
+
     if(py < y0 && py < yc0 && py < yc1 && py < y1)
         return 0;
 
@@ -244,7 +249,7 @@ const int Curve::RECT_INTERSECTS;
 
 int Curve::rectCrossingsForPath(PathIterator* pi, double rxmin, double rymin, double rxmax, double rymax)
 {
-    
+
     if(rxmax <= rxmin || rymax <= rymin) {
         return 0;
     }
@@ -309,7 +314,7 @@ int Curve::rectCrossingsForPath(PathIterator* pi, double rxmin, double rymin, do
 
 int Curve::rectCrossingsForLine(int crossings, double rxmin, double rymin, double rxmax, double rymax, double x0, double y0, double x1, double y1)
 {
-    
+
     if(y0 >= rymax && y1 >= rymax)
         return crossings;
 
@@ -378,7 +383,7 @@ int Curve::rectCrossingsForLine(int crossings, double rxmin, double rymin, doubl
 
 int Curve::rectCrossingsForQuad(int crossings, double rxmin, double rymin, double rxmax, double rymax, double x0, double y0, double xc, double yc, double x1, double y1, int level)
 {
-    
+
     if(y0 >= rymax && yc >= rymax && y1 >= rymax)
         return crossings;
 
@@ -430,7 +435,7 @@ int Curve::rectCrossingsForQuad(int crossings, double rxmin, double rymin, doubl
 
 int Curve::rectCrossingsForCubic(int crossings, double rxmin, double rymin, double rxmax, double rymax, double x0, double y0, double xc0, double yc0, double xc1, double yc1, double x1, double y1, int level)
 {
-    
+
     if(y0 >= rymax && yc0 >= rymax && yc1 >= rymax && y1 >= rymax) {
         return crossings;
     }
@@ -498,13 +503,13 @@ Curve* Curve::getWithDirection(int direction)
 
 double Curve::round(double v)
 {
-    
+
     return v;
 }
 
 int Curve::orderof(double x1, double x2)
 {
-    
+
     if(x1 < x2) {
         return -1;
     }
@@ -516,25 +521,25 @@ int Curve::orderof(double x1, double x2)
 
 int64_t Curve::signeddiffbits(double y1, double y2)
 {
-    
+
     return (moduru::lang::Double::doubleToLongBits(y1) - moduru::lang::Double::doubleToLongBits(y2));
 }
 
 int64_t Curve::diffbits(double y1, double y2)
 {
-    
+
     return abs(moduru::lang::Double::doubleToLongBits(y1) - moduru::lang::Double::doubleToLongBits(y2));
 }
 
 double Curve::prev(double v)
 {
-    
+
     return moduru::lang::Double::longBitsToDouble(moduru::lang::Double::doubleToLongBits(v) - 1);
 }
 
 double Curve::next(double v)
 {
-    
+
     return moduru::lang::Double::longBitsToDouble(moduru::lang::Double::doubleToLongBits(v) + 1);
 }
 

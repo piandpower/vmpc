@@ -41,6 +41,10 @@
 //#include <SubArray.hpp>
 //#include <ObjectArray.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::nio::charset;
 using namespace std;
 
@@ -56,7 +60,7 @@ Charset::Charset(moduru::lang::String* canonicalName, vector<moduru::lang::Strin
 }
 
 moduru::lang::String*& Charset::bugLevel()
-{   
+{
     return bugLevel_;
 }
 
@@ -115,7 +119,7 @@ void Charset::checkName(moduru::lang::String* s)
 /*
 moduru::nio::charset::spi::CharsetProvider*& Charset::standardProvider()
 {
-    
+
     return standardProvider_;
 }
 moduru::nio::charset::spi::CharsetProvider* Charset::standardProvider_;
@@ -124,14 +128,14 @@ moduru::nio::charset::spi::CharsetProvider* Charset::standardProvider_;
 
 vector<moduru::lang::Object*>& Charset::cache1()
 {
-    
+
     return cache1_;
 }
 vector<moduru::lang::Object*> Charset::cache1_;
 
 vector<moduru::lang::Object*>& Charset::cache2()
 {
-    
+
     return cache2_;
 }
 vector<moduru::lang::Object*> Charset::cache2_;
@@ -149,13 +153,13 @@ void Charset::cache(moduru::lang::String* charsetName, Charset* cs)
 /*
 java::util::Iterator* Charset::providers()
 {
-    
+
     return new Charset_providers_1();
 }
 
 java::lang::ThreadLocal*& Charset::gate()
 {
-    
+
     return gate_;
 }
 java::lang::ThreadLocal* Charset::gate_;
@@ -186,21 +190,21 @@ Charset* Charset::lookupViaProviders(moduru::lang::String* charsetName)
 /*
 java::lang::Object*& Charset::extendedProviderLock()
 {
-    
+
     return extendedProviderLock_;
 }
 java::lang::Object* Charset::extendedProviderLock_;
 
 bool& Charset::extendedProviderProbed()
 {
-    
+
     return extendedProviderProbed_;
 }
 bool Charset::extendedProviderProbed_;
 
 moduru::nio::charset::spi::CharsetProvider*& Charset::extendedProvider()
 {
-    
+
     return extendedProvider_;
 }
 moduru::nio::charset::spi::CharsetProvider* Charset::extendedProvider_;
@@ -208,13 +212,13 @@ moduru::nio::charset::spi::CharsetProvider* Charset::extendedProvider_;
 
 void Charset::probeExtendedProvider()
 {
-    
+
     //::java::security::AccessController::doPrivileged(static_cast< ::java::security::PrivilegedAction* >(new Charset_probeExtendedProvider_3()));
 }
 
 Charset* Charset::lookupExtendedCharset(moduru::lang::String* charsetName)
 {
-/*    
+/*
     ::moduru::nio::charset::spi::CharsetProvider* ecp = nullptr;
     {
         synchronized synchronized_0(extendedProviderLock_);
@@ -267,13 +271,13 @@ Charset* Charset::lookup2(moduru::lang::String* charsetName)
 
 bool Charset::isSupported(moduru::lang::String* charsetName)
 {
-    
+
     return (lookup(charsetName) != nullptr);
 }
 
 Charset* Charset::forName(moduru::lang::String* charsetName)
 {
-    
+
     auto cs = lookup(charsetName);
     if(cs != nullptr)
         return cs;
@@ -285,7 +289,7 @@ Charset* Charset::forName(moduru::lang::String* charsetName)
 /*
 void Charset::put(::java::util::Iterator* i, ::java::util::Map* m)
 {
-    
+
     while (npc(i)->hasNext()) {
         auto cs = dynamic_cast< Charset* >(dynamic_cast< moduru::lang::Object* >(npc(i)->next()));
         if(!npc(m)->containsKey(npc(cs)->name()))
@@ -296,14 +300,14 @@ void Charset::put(::java::util::Iterator* i, ::java::util::Map* m)
 
 java::util::SortedMap* Charset::availableCharsets()
 {
-    
+
     return dynamic_cast< ::java::util::SortedMap* >(::java::security::AccessController::doPrivileged(static_cast< ::java::security::PrivilegedAction* >(new Charset_availableCharsets_4())));
 }
 */
 
 Charset*& Charset::defaultCharset_()
 {
-    
+
     return defaultCharset__;
 }
 Charset* Charset::defaultCharset__;

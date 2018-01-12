@@ -26,16 +26,20 @@
 
 #include <VecUtil.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::util;
 using namespace std;
 
-Arrays::Arrays() 
+Arrays::Arrays()
 {
 }
 
 void Arrays::sort(vector<int64_t>* a)
 {
-    
+
     sort1(a, int32_t(0), a->size());
 }
 
@@ -48,85 +52,85 @@ void Arrays::sort(vector<int64_t>* a, int32_t fromIndex, int32_t toIndex)
 
 void Arrays::sort(vector<int32_t>* a)
 {
-    
+
     sort1(a, int32_t(0), a->size());
 }
 
 void Arrays::sort(vector<int32_t>* a, int32_t fromIndex, int32_t toIndex)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     sort1(a, fromIndex, toIndex - fromIndex);
 }
 
 void Arrays::sort(vector<int16_t>* a)
 {
-    
+
     sort1(a, int32_t(0), a->size());
 }
 
 void Arrays::sort(vector<int16_t>* a, int32_t fromIndex, int32_t toIndex)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     sort1(a, fromIndex, toIndex - fromIndex);
 }
 
 void Arrays::sort(vector<char16_t>* a)
 {
-    
+
     sort1(a, int32_t(0), a->size());
 }
 
 void Arrays::sort(vector<char16_t>* a, int32_t fromIndex, int32_t toIndex)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     sort1(a, fromIndex, toIndex - fromIndex);
 }
 
 void Arrays::sort(vector<int8_t>* a)
 {
-    
+
     sort1(a, int32_t(0), a->size());
 }
 
 void Arrays::sort(vector<int8_t>* a, int32_t fromIndex, int32_t toIndex)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     sort1(a, fromIndex, toIndex - fromIndex);
 }
 
 void Arrays::sort(vector<double>* a)
 {
-    
+
     sort2(a, int32_t(0), a->size());
 }
 
 void Arrays::sort(vector<double>* a, int32_t fromIndex, int32_t toIndex)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     sort2(a, fromIndex, toIndex);
 }
 
 void Arrays::sort(vector<float>* a)
 {
-    
+
     sort2(a, int32_t(0), a->size());
 }
 
 void Arrays::sort(vector<float>* a, int32_t fromIndex, int32_t toIndex)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     sort2(a, fromIndex, toIndex);
 }
 
 void Arrays::sort2(vector<double>* a, int32_t fromIndex, int32_t toIndex)
 {
-    
+
     auto const NEG_ZERO_BITS = moduru::lang::Double::doubleToLongBits(-0.0);
     auto numNegZeros = int32_t(0);
     int32_t i = fromIndex, n = toIndex;
@@ -147,7 +151,7 @@ void Arrays::sort2(vector<double>* a, int32_t fromIndex, int32_t toIndex)
         do {
             j--;
         } while (j >= fromIndex && (*a)[j] == 0.0);
-        for (auto k = int32_t(0); k < numNegZeros; k++) 
+        for (auto k = int32_t(0); k < numNegZeros; k++)
                         (*a)[++j] = -0.0;
 
     }
@@ -155,7 +159,7 @@ void Arrays::sort2(vector<double>* a, int32_t fromIndex, int32_t toIndex)
 
 void Arrays::sort2(vector<float>* a, int32_t fromIndex, int32_t toIndex)
 {
-    
+
     auto const NEG_ZERO_BITS = moduru::lang::Float::floatToIntBits(-0.0f);
     auto numNegZeros = int32_t(0);
     int32_t i = fromIndex, n = toIndex;
@@ -176,7 +180,7 @@ void Arrays::sort2(vector<float>* a, int32_t fromIndex, int32_t toIndex)
         do {
             j--;
         } while (j >= fromIndex && (*a)[j] == 0.0f);
-        for (auto k = int32_t(0); k < numNegZeros; k++) 
+        for (auto k = int32_t(0); k < numNegZeros; k++)
                         (*a)[++j] = -0.0f;
 
     }
@@ -184,10 +188,10 @@ void Arrays::sort2(vector<float>* a, int32_t fromIndex, int32_t toIndex)
 
 void Arrays::sort1(vector<int64_t>* x, int32_t off, int32_t len)
 {
-    
+
     if(len < 7) {
-        for (auto i = off; i < len + off; i++) 
-                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--) 
+        for (auto i = off; i < len + off; i++)
+                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--)
                                 swap(x, j, j - int32_t(1));
 
 
@@ -240,7 +244,7 @@ void Arrays::sort1(vector<int64_t>* x, int32_t off, int32_t len)
 
 void Arrays::swap(vector<int64_t>* x, int32_t a, int32_t b)
 {
-    
+
     auto t = (*x)[a];
     (*x)[a] = (*x)[b];
     (*x)[b] = t;
@@ -248,24 +252,24 @@ void Arrays::swap(vector<int64_t>* x, int32_t a, int32_t b)
 
 void Arrays::vecswap(vector<int64_t>* x, int32_t a, int32_t b, int32_t n)
 {
-    
-    for (auto i = int32_t(0); i < n; i++, a++, b++) 
+
+    for (auto i = int32_t(0); i < n; i++, a++, b++)
                 swap(x, a, b);
 
 }
 
 int32_t Arrays::med3(vector<int64_t>* x, int32_t a, int32_t b, int32_t c)
 {
-    
+
     return ((*x)[a] < (*x)[b] ? ((*x)[b] < (*x)[c] ? b : (*x)[a] < (*x)[c] ? c : a) : ((*x)[b] > (*x)[c] ? b : (*x)[a] > (*x)[c] ? c : a));
 }
 
 void Arrays::sort1(vector<int32_t>* x, int32_t off, int32_t len)
 {
-    
+
     if(len < 7) {
-        for (auto i = off; i < len + off; i++) 
-                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--) 
+        for (auto i = off; i < len + off; i++)
+                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--)
                                 swap(x, j, j - int32_t(1));
 
 
@@ -318,7 +322,7 @@ void Arrays::sort1(vector<int32_t>* x, int32_t off, int32_t len)
 
 void Arrays::swap(vector<int32_t>* x, int32_t a, int32_t b)
 {
-    
+
     auto t = (*x)[a];
     (*x)[a] = (*x)[b];
     (*x)[b] = t;
@@ -326,24 +330,24 @@ void Arrays::swap(vector<int32_t>* x, int32_t a, int32_t b)
 
 void Arrays::vecswap(vector<int32_t>* x, int32_t a, int32_t b, int32_t n)
 {
-    
-    for (auto i = int32_t(0); i < n; i++, a++, b++) 
+
+    for (auto i = int32_t(0); i < n; i++, a++, b++)
                 swap(x, a, b);
 
 }
 
 int32_t Arrays::med3(vector<int32_t>* x, int32_t a, int32_t b, int32_t c)
 {
-    
+
     return ((*x)[a] < (*x)[b] ? ((*x)[b] < (*x)[c] ? b : (*x)[a] < (*x)[c] ? c : a) : ((*x)[b] > (*x)[c] ? b : (*x)[a] > (*x)[c] ? c : a));
 }
 
 void Arrays::sort1(vector<int16_t>* x, int32_t off, int32_t len)
 {
-    
+
     if(len < 7) {
-        for (auto i = off; i < len + off; i++) 
-                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--) 
+        for (auto i = off; i < len + off; i++)
+                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--)
                                 swap(x, j, j - int32_t(1));
 
 
@@ -396,7 +400,7 @@ void Arrays::sort1(vector<int16_t>* x, int32_t off, int32_t len)
 
 void Arrays::swap(vector<int16_t>* x, int32_t a, int32_t b)
 {
-    
+
     auto t = (*x)[a];
     (*x)[a] = (*x)[b];
     (*x)[b] = t;
@@ -404,24 +408,24 @@ void Arrays::swap(vector<int16_t>* x, int32_t a, int32_t b)
 
 void Arrays::vecswap(vector<int16_t>* x, int32_t a, int32_t b, int32_t n)
 {
-    
-    for (auto i = int32_t(0); i < n; i++, a++, b++) 
+
+    for (auto i = int32_t(0); i < n; i++, a++, b++)
                 swap(x, a, b);
 
 }
 
 int32_t Arrays::med3(vector<int16_t>* x, int32_t a, int32_t b, int32_t c)
 {
-    
+
     return ((*x)[a] < (*x)[b] ? ((*x)[b] < (*x)[c] ? b : (*x)[a] < (*x)[c] ? c : a) : ((*x)[b] > (*x)[c] ? b : (*x)[a] > (*x)[c] ? c : a));
 }
 
 void Arrays::sort1(vector<char16_t>* x, int32_t off, int32_t len)
 {
-    
+
     if(len < 7) {
-        for (auto i = off; i < len + off; i++) 
-                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--) 
+        for (auto i = off; i < len + off; i++)
+                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--)
                                 swap(x, j, j - int32_t(1));
 
 
@@ -474,7 +478,7 @@ void Arrays::sort1(vector<char16_t>* x, int32_t off, int32_t len)
 
 void Arrays::swap(vector<char16_t>* x, int32_t a, int32_t b)
 {
-    
+
     auto t = (*x)[a];
     (*x)[a] = (*x)[b];
     (*x)[b] = t;
@@ -482,24 +486,24 @@ void Arrays::swap(vector<char16_t>* x, int32_t a, int32_t b)
 
 void Arrays::vecswap(vector<char16_t>* x, int32_t a, int32_t b, int32_t n)
 {
-    
-    for (auto i = int32_t(0); i < n; i++, a++, b++) 
+
+    for (auto i = int32_t(0); i < n; i++, a++, b++)
                 swap(x, a, b);
 
 }
 
 int32_t Arrays::med3(vector<char16_t>* x, int32_t a, int32_t b, int32_t c)
 {
-    
+
     return ((*x)[a] < (*x)[b] ? ((*x)[b] < (*x)[c] ? b : (*x)[a] < (*x)[c] ? c : a) : ((*x)[b] > (*x)[c] ? b : (*x)[a] > (*x)[c] ? c : a));
 }
 
 void Arrays::sort1(vector<int8_t>* x, int32_t off, int32_t len)
 {
-    
+
     if(len < 7) {
-        for (auto i = off; i < len + off; i++) 
-                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--) 
+        for (auto i = off; i < len + off; i++)
+                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--)
                                 swap(x, j, j - int32_t(1));
 
 
@@ -552,7 +556,7 @@ void Arrays::sort1(vector<int8_t>* x, int32_t off, int32_t len)
 
 void Arrays::swap(vector<int8_t>* x, int32_t a, int32_t b)
 {
-    
+
     auto t = (*x)[a];
     (*x)[a] = (*x)[b];
     (*x)[b] = t;
@@ -560,24 +564,24 @@ void Arrays::swap(vector<int8_t>* x, int32_t a, int32_t b)
 
 void Arrays::vecswap(vector<int8_t>* x, int32_t a, int32_t b, int32_t n)
 {
-    
-    for (auto i = int32_t(0); i < n; i++, a++, b++) 
+
+    for (auto i = int32_t(0); i < n; i++, a++, b++)
                 swap(x, a, b);
 
 }
 
 int32_t Arrays::med3(vector<int8_t>* x, int32_t a, int32_t b, int32_t c)
 {
-    
+
     return ((*x)[a] < (*x)[b] ? ((*x)[b] < (*x)[c] ? b : (*x)[a] < (*x)[c] ? c : a) : ((*x)[b] > (*x)[c] ? b : (*x)[a] > (*x)[c] ? c : a));
 }
 
 void Arrays::sort1(vector<double>* x, int32_t off, int32_t len)
 {
-    
+
     if(len < 7) {
-        for (auto i = off; i < len + off; i++) 
-                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--) 
+        for (auto i = off; i < len + off; i++)
+                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--)
                                 swap(x, j, j - int32_t(1));
 
 
@@ -630,29 +634,29 @@ void Arrays::sort1(vector<double>* x, int32_t off, int32_t len)
 
 void Arrays::swap(vector<double>* x, int32_t a, int32_t b)
 {
-    
+
     auto t = (*x)[a];
     (*x)[a] = (*x)[b];
     (*x)[b] = t;
 }
 
 void Arrays::vecswap(vector<double>* x, int32_t a, int32_t b, int32_t n)
-{   
-    for (auto i = int32_t(0); i < n; i++, a++, b++) 
+{
+    for (auto i = int32_t(0); i < n; i++, a++, b++)
                 swap(x, a, b);
 
 }
 
 int32_t Arrays::med3(vector<double>* x, int32_t a, int32_t b, int32_t c)
-{   
+{
     return ((*x)[a] < (*x)[b] ? ((*x)[b] < (*x)[c] ? b : (*x)[a] < (*x)[c] ? c : a) : ((*x)[b] > (*x)[c] ? b : (*x)[a] > (*x)[c] ? c : a));
 }
 
 void Arrays::sort1(vector<float>* x, int32_t off, int32_t len)
 {
     if(len < 7) {
-        for (auto i = off; i < len + off; i++) 
-                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--) 
+        for (auto i = off; i < len + off; i++)
+                        for (auto j = i; j > off && (*x)[j - int32_t(1)] > (*x)[j]; j--)
                                 swap(x, j, j - int32_t(1));
 
 
@@ -704,20 +708,20 @@ void Arrays::sort1(vector<float>* x, int32_t off, int32_t len)
 }
 
 void Arrays::swap(vector<float>* x, int32_t a, int32_t b)
-{   
+{
     auto t = (*x)[a];
     (*x)[a] = (*x)[b];
     (*x)[b] = t;
 }
 
 void Arrays::vecswap(vector<float>* x, int32_t a, int32_t b, int32_t n)
-{   
-    for (auto i = int32_t(0); i < n; i++, a++, b++) 
+{
+    for (auto i = int32_t(0); i < n; i++, a++, b++)
                 swap(x, a, b);
 }
 
 int32_t Arrays::med3(vector<float>* x, int32_t a, int32_t b, int32_t c)
-{   
+{
     return ((*x)[a] < (*x)[b] ? ((*x)[b] < (*x)[c] ? b : (*x)[a] < (*x)[c] ? c : a) : ((*x)[b] > (*x)[c] ? b : (*x)[a] > (*x)[c] ? c : a));
 }
 
@@ -731,7 +735,7 @@ void Arrays::sort(vector<moduru::lang::Object*>* a)
 
 void Arrays::sort(vector<moduru::lang::Object*>* a, int32_t fromIndex, int32_t toIndex)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     auto aux = dynamic_cast< vector<moduru::lang::Object*>* >(copyOfRange(static_cast< vector<moduru::lang::Object*>* >(a), fromIndex, toIndex));
     mergeSort(aux, a, fromIndex, toIndex, -fromIndex);
@@ -786,7 +790,7 @@ void Arrays::sort(vector<moduru::lang::Object*>* a, Comparator* c)
 }
 
 void Arrays::sort(vector<moduru::lang::Object*>* a, int32_t fromIndex, int32_t toIndex, Comparator* c)
-{   
+{
     rangeCheck(a->size(), fromIndex, toIndex);
     auto aux = dynamic_cast< vector<moduru::lang::Object*>* >(dynamic_cast< vector<moduru::lang::Object*>* >(copyOfRange(static_cast< vector<moduru::lang::Object*>* >(a), fromIndex, toIndex)));
     if(c == nullptr)
@@ -842,20 +846,20 @@ void Arrays::rangeCheck(int32_t arrayLen, int32_t fromIndex, int32_t toIndex)
 
 int32_t Arrays::binarySearch(vector<int64_t>* a, int64_t key)
 {
-    
+
     return binarySearch0(a, int32_t(0), a->size(), key);
 }
 
 int32_t Arrays::binarySearch(vector<int64_t>* a, int32_t fromIndex, int32_t toIndex, int64_t key)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     return binarySearch0(a, fromIndex, toIndex, key);
 }
 
 int32_t Arrays::binarySearch0(vector<int64_t>* a, int32_t fromIndex, int32_t toIndex, int64_t key)
 {
-    
+
     auto low = fromIndex;
     auto high = toIndex - int32_t(1);
     while (low <= high) {
@@ -873,20 +877,20 @@ int32_t Arrays::binarySearch0(vector<int64_t>* a, int32_t fromIndex, int32_t toI
 
 int32_t Arrays::binarySearch(vector<int32_t>* a, int32_t key)
 {
-    
+
     return binarySearch0(a, int32_t(0), a->size(), key);
 }
 
 int32_t Arrays::binarySearch(vector<int32_t>* a, int32_t fromIndex, int32_t toIndex, int32_t key)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     return binarySearch0(a, fromIndex, toIndex, key);
 }
 
 int32_t Arrays::binarySearch0(vector<int32_t>* a, int32_t fromIndex, int32_t toIndex, int32_t key)
 {
-    
+
     auto low = fromIndex;
     auto high = toIndex - int32_t(1);
     while (low <= high) {
@@ -904,20 +908,20 @@ int32_t Arrays::binarySearch0(vector<int32_t>* a, int32_t fromIndex, int32_t toI
 
 int32_t Arrays::binarySearch(vector<int16_t>* a, int16_t key)
 {
-    
+
     return binarySearch0(a, int32_t(0), a->size(), key);
 }
 
 int32_t Arrays::binarySearch(vector<int16_t>* a, int32_t fromIndex, int32_t toIndex, int16_t key)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     return binarySearch0(a, fromIndex, toIndex, key);
 }
 
 int32_t Arrays::binarySearch0(vector<int16_t>* a, int32_t fromIndex, int32_t toIndex, int16_t key)
 {
-    
+
     auto low = fromIndex;
     auto high = toIndex - int32_t(1);
     while (low <= high) {
@@ -935,20 +939,20 @@ int32_t Arrays::binarySearch0(vector<int16_t>* a, int32_t fromIndex, int32_t toI
 
 int32_t Arrays::binarySearch(vector<char16_t>* a, char16_t key)
 {
-    
+
     return binarySearch0(a, int32_t(0), a->size(), key);
 }
 
 int32_t Arrays::binarySearch(vector<char16_t>* a, int32_t fromIndex, int32_t toIndex, char16_t key)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     return binarySearch0(a, fromIndex, toIndex, key);
 }
 
 int32_t Arrays::binarySearch0(vector<char16_t>* a, int32_t fromIndex, int32_t toIndex, char16_t key)
 {
-    
+
     auto low = fromIndex;
     auto high = toIndex - int32_t(1);
     while (low <= high) {
@@ -966,20 +970,20 @@ int32_t Arrays::binarySearch0(vector<char16_t>* a, int32_t fromIndex, int32_t to
 
 int32_t Arrays::binarySearch(vector<int8_t>* a, int8_t key)
 {
-    
+
     return binarySearch0(a, int32_t(0), a->size(), key);
 }
 
 int32_t Arrays::binarySearch(vector<int8_t>* a, int32_t fromIndex, int32_t toIndex, int8_t key)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     return binarySearch0(a, fromIndex, toIndex, key);
 }
 
 int32_t Arrays::binarySearch0(vector<int8_t>* a, int32_t fromIndex, int32_t toIndex, int8_t key)
 {
-    
+
     auto low = fromIndex;
     auto high = toIndex - int32_t(1);
     while (low <= high) {
@@ -997,20 +1001,20 @@ int32_t Arrays::binarySearch0(vector<int8_t>* a, int32_t fromIndex, int32_t toIn
 
 int32_t Arrays::binarySearch(vector<double>* a, double key)
 {
-    
+
     return binarySearch0(a, int32_t(0), a->size(), key);
 }
 
 int32_t Arrays::binarySearch(vector<double>* a, int32_t fromIndex, int32_t toIndex, double key)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     return binarySearch0(a, fromIndex, toIndex, key);
 }
 
 int32_t Arrays::binarySearch0(vector<double>* a, int32_t fromIndex, int32_t toIndex, double key)
 {
-    
+
     auto low = fromIndex;
     auto high = toIndex - int32_t(1);
     while (low <= high) {
@@ -1036,20 +1040,20 @@ int32_t Arrays::binarySearch0(vector<double>* a, int32_t fromIndex, int32_t toIn
 
 int32_t Arrays::binarySearch(vector<float>* a, float key)
 {
-    
+
     return binarySearch0(a, int32_t(0), a->size(), key);
 }
 
 int32_t Arrays::binarySearch(vector<float>* a, int32_t fromIndex, int32_t toIndex, float key)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     return binarySearch0(a, fromIndex, toIndex, key);
 }
 
 int32_t Arrays::binarySearch0(vector<float>* a, int32_t fromIndex, int32_t toIndex, float key)
 {
-    
+
     auto low = fromIndex;
     auto high = toIndex - int32_t(1);
     while (low <= high) {
@@ -1075,20 +1079,20 @@ int32_t Arrays::binarySearch0(vector<float>* a, int32_t fromIndex, int32_t toInd
 
 int32_t Arrays::binarySearch(vector<moduru::lang::Object*>* a, moduru::lang::Object* key)
 {
-    
+
     return binarySearch0(a, int32_t(0), a->size(), key);
 }
 
 int32_t Arrays::binarySearch(vector<moduru::lang::Object*>* a, int32_t fromIndex, int32_t toIndex, moduru::lang::Object* key)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     return binarySearch0(a, fromIndex, toIndex, key);
 }
 
 int32_t Arrays::binarySearch0(vector<moduru::lang::Object*>* a, int32_t fromIndex, int32_t toIndex, moduru::lang::Object* key)
 {
-    
+
     auto low = fromIndex;
     auto high = toIndex - int32_t(1);
     while (low <= high) {
@@ -1107,20 +1111,20 @@ int32_t Arrays::binarySearch0(vector<moduru::lang::Object*>* a, int32_t fromInde
 
 int32_t Arrays::binarySearch(vector<moduru::lang::Object*>* a, moduru::lang::Object* key, Comparator* c)
 {
-    
+
     return binarySearch0(a, int32_t(0), a->size(), key, c);
 }
 
 int32_t Arrays::binarySearch(vector<moduru::lang::Object*>* a, int32_t fromIndex, int32_t toIndex, moduru::lang::Object* key, Comparator* c)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
     return binarySearch0(a, fromIndex, toIndex, key, c);
 }
 
 int32_t Arrays::binarySearch0(vector<moduru::lang::Object*>* a, int32_t fromIndex, int32_t toIndex, moduru::lang::Object* key, Comparator* c)
 {
-    
+
     if(c == nullptr) {
         return binarySearch0(static_cast< vector<moduru::lang::Object*>* >(a), fromIndex, toIndex, static_cast< moduru::lang::Object* >(key));
     }
@@ -1142,7 +1146,7 @@ int32_t Arrays::binarySearch0(vector<moduru::lang::Object*>* a, int32_t fromInde
 
 bool Arrays::equals(vector<int64_t>* a, vector<int64_t>* a2)
 {
-    
+
     if(a == a2)
         return true;
 
@@ -1153,7 +1157,7 @@ bool Arrays::equals(vector<int64_t>* a, vector<int64_t>* a2)
     if(a2->size() != length)
         return false;
 
-    for (auto i = int32_t(0); i < length; i++) 
+    for (auto i = int32_t(0); i < length; i++)
                 if((*a)[i] != (*a2)[i])
             return false;
 
@@ -1163,7 +1167,7 @@ bool Arrays::equals(vector<int64_t>* a, vector<int64_t>* a2)
 
 bool Arrays::equals(vector<int32_t>* a, vector<int32_t>* a2)
 {
-    
+
     if(a == a2)
         return true;
 
@@ -1174,7 +1178,7 @@ bool Arrays::equals(vector<int32_t>* a, vector<int32_t>* a2)
     if(a2->size() != length)
         return false;
 
-    for (auto i = int32_t(0); i < length; i++) 
+    for (auto i = int32_t(0); i < length; i++)
                 if((*a)[i] != (*a2)[i])
             return false;
 
@@ -1202,7 +1206,7 @@ bool Arrays::equals(vector<int16_t>* a, vector<int16_t>* a2)
 
 bool Arrays::equals(vector<char16_t>* a, vector<char16_t>* a2)
 {
-    
+
     if(a == a2)
         return true;
 
@@ -1213,7 +1217,7 @@ bool Arrays::equals(vector<char16_t>* a, vector<char16_t>* a2)
     if(a2->size() != length)
         return false;
 
-    for (auto i = int32_t(0); i < length; i++) 
+    for (auto i = int32_t(0); i < length; i++)
                 if((*a)[i] != (*a2)[i])
             return false;
 
@@ -1223,7 +1227,7 @@ bool Arrays::equals(vector<char16_t>* a, vector<char16_t>* a2)
 
 bool Arrays::equals(vector<int8_t>* a, vector<int8_t>* a2)
 {
-    
+
     if(a == a2)
         return true;
 
@@ -1234,7 +1238,7 @@ bool Arrays::equals(vector<int8_t>* a, vector<int8_t>* a2)
     if(a2->size() != length)
         return false;
 
-    for (auto i = int32_t(0); i < length; i++) 
+    for (auto i = int32_t(0); i < length; i++)
                 if((*a)[i] != (*a2)[i])
             return false;
 
@@ -1244,7 +1248,7 @@ bool Arrays::equals(vector<int8_t>* a, vector<int8_t>* a2)
 
 bool Arrays::equals(vector<bool>* a, vector<bool>* a2)
 {
-    
+
     if(a == a2)
         return true;
 
@@ -1255,7 +1259,7 @@ bool Arrays::equals(vector<bool>* a, vector<bool>* a2)
     if(a2->size() != length)
         return false;
 
-    for (auto i = int32_t(0); i < length; i++) 
+    for (auto i = int32_t(0); i < length; i++)
                 if((*a)[i] != (*a2)[i])
             return false;
 
@@ -1265,7 +1269,7 @@ bool Arrays::equals(vector<bool>* a, vector<bool>* a2)
 
 bool Arrays::equals(vector<double>* a, vector<double>* a2)
 {
-    
+
     if(a == a2)
         return true;
 
@@ -1276,7 +1280,7 @@ bool Arrays::equals(vector<double>* a, vector<double>* a2)
     if(a2->size() != length)
         return false;
 
-    for (auto i = int32_t(0); i < length; i++) 
+    for (auto i = int32_t(0); i < length; i++)
                 if(moduru::lang::Double::doubleToLongBits((*a)[i]) != moduru::lang::Double::doubleToLongBits((*a2)[i]))
             return false;
 
@@ -1286,7 +1290,7 @@ bool Arrays::equals(vector<double>* a, vector<double>* a2)
 
 bool Arrays::equals(vector<float>* a, vector<float>* a2)
 {
-    
+
     if(a == a2)
         return true;
 
@@ -1297,7 +1301,7 @@ bool Arrays::equals(vector<float>* a, vector<float>* a2)
     if(a2->size() != length)
         return false;
 
-    for (auto i = int32_t(0); i < length; i++) 
+    for (auto i = int32_t(0); i < length; i++)
                 if(moduru::lang::Float::floatToIntBits((*a)[i]) != moduru::lang::Float::floatToIntBits((*a2)[i]))
             return false;
 
@@ -1330,68 +1334,68 @@ bool Arrays::equals(vector<moduru::lang::Object*>* a, vector<moduru::lang::Objec
 
 void Arrays::fill(vector<int64_t>* a, int64_t val)
 {
-    
-    for (int32_t i = int32_t(0), len = a->size(); i < len; i++) 
+
+    for (int32_t i = int32_t(0), len = a->size(); i < len; i++)
                 (*a)[i] = val;
 
 }
 
 void Arrays::fill(vector<int64_t>* a, int32_t fromIndex, int32_t toIndex, int64_t val)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
-    for (auto i = fromIndex; i < toIndex; i++) 
+    for (auto i = fromIndex; i < toIndex; i++)
                 (*a)[i] = val;
 
 }
 
 void Arrays::fill(vector<int32_t>* a, int32_t val)
 {
-    
-    for (int32_t i = int32_t(0), len = a->size(); i < len; i++) 
+
+    for (int32_t i = int32_t(0), len = a->size(); i < len; i++)
                 (*a)[i] = val;
 
 }
 
 void Arrays::fill(vector<int32_t>* a, int32_t fromIndex, int32_t toIndex, int32_t val)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
-    for (auto i = fromIndex; i < toIndex; i++) 
+    for (auto i = fromIndex; i < toIndex; i++)
                 (*a)[i] = val;
 
 }
 
 void Arrays::fill(vector<int16_t>* a, int16_t val)
 {
-    
-    for (int32_t i = int32_t(0), len = a->size(); i < len; i++) 
+
+    for (int32_t i = int32_t(0), len = a->size(); i < len; i++)
                 (*a)[i] = val;
 
 }
 
 void Arrays::fill(vector<int16_t>* a, int32_t fromIndex, int32_t toIndex, int16_t val)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
-    for (auto i = fromIndex; i < toIndex; i++) 
+    for (auto i = fromIndex; i < toIndex; i++)
                 (*a)[i] = val;
 
 }
 
 void Arrays::fill(vector<char16_t>* a, char16_t val)
 {
-    
-    for (int32_t i = int32_t(0), len = a->size(); i < len; i++) 
+
+    for (int32_t i = int32_t(0), len = a->size(); i < len; i++)
                 (*a)[i] = val;
 
 }
 
 void Arrays::fill(vector<char16_t>* a, int32_t fromIndex, int32_t toIndex, char16_t val)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
-    for (auto i = fromIndex; i < toIndex; i++) 
+    for (auto i = fromIndex; i < toIndex; i++)
                 (*a)[i] = val;
 
 }
@@ -1417,43 +1421,43 @@ void Arrays::fill(vector<bool>* a, bool val)
 
 void Arrays::fill(vector<bool>* a, int32_t fromIndex, int32_t toIndex, bool val)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
-    for (auto i = fromIndex; i < toIndex; i++) 
+    for (auto i = fromIndex; i < toIndex; i++)
                 (*a)[i] = val;
 
 }
 
 void Arrays::fill(vector<double>* a, double val)
 {
-    
-    for (int32_t i = int32_t(0), len = a->size(); i < len; i++) 
+
+    for (int32_t i = int32_t(0), len = a->size(); i < len; i++)
                 (*a)[i] = val;
 
 }
 
 void Arrays::fill(vector<double>* a, int32_t fromIndex, int32_t toIndex, double val)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
-    for (auto i = fromIndex; i < toIndex; i++) 
+    for (auto i = fromIndex; i < toIndex; i++)
                 (*a)[i] = val;
 
 }
 
 void Arrays::fill(vector<float>* a, float val)
 {
-    
-    for (int32_t i = int32_t(0), len = a->size(); i < len; i++) 
+
+    for (int32_t i = int32_t(0), len = a->size(); i < len; i++)
                 (*a)[i] = val;
 
 }
 
 void Arrays::fill(vector<float>* a, int32_t fromIndex, int32_t toIndex, float val)
 {
-    
+
     rangeCheck(a->size(), fromIndex, toIndex);
-    for (auto i = fromIndex; i < toIndex; i++) 
+    for (auto i = fromIndex; i < toIndex; i++)
                 (*a)[i] = val;
 
 }
@@ -1484,7 +1488,7 @@ vector<moduru::lang::Object*>* Arrays::copyOf(vector<moduru::lang::Object*>* ori
 /*
 vector<moduru::lang::Object*>* Arrays::copyOf(vector<moduru::lang::Object*>* original, int32_t newLength, moduru::lang::Class* newType)
 {
-    
+
     auto copy = (dynamic_cast< moduru::lang::Object* >(newType) == dynamic_cast< moduru::lang::Object* >(moduru::lang::ObjectArray::class_())) ? dynamic_cast< vector<moduru::lang::Object*>* >(new moduru::lang::ObjectArray(newLength)) : dynamic_cast< vector<moduru::lang::Object*>* >(moduru::lang::reflect::Array_::newInstance(static_cast< moduru::lang::Class* >(npc(newType)->getComponentType()), newLength));
     moduru::lang::System::arraycopy(original, 0, copy, 0, moduru::math::Math::min(original->size(), newLength));
     return copy;
@@ -1557,7 +1561,7 @@ vector<bool>* Arrays::copyOf(vector<bool>* original, int32_t newLength)
 
 vector<moduru::lang::Object*>* Arrays::copyOfRange(vector<moduru::lang::Object*>* original, int32_t from, int32_t to)
 {
-    
+
     //return dynamic_cast< vector<moduru::lang::Object*>* >(copyOfRange(original, from, to, dynamic_cast< moduru::lang::Class* >(original->getClass())));
 	return nullptr;
 }
@@ -1565,7 +1569,7 @@ vector<moduru::lang::Object*>* Arrays::copyOfRange(vector<moduru::lang::Object*>
 /*
 vector<moduru::lang::Object*>* Arrays::copyOfRange(vector<moduru::lang::Object*>* original, int32_t from, int32_t to, moduru::lang::Class* newType)
 {
-    
+
     auto newLength = to - from;
     if(newLength < 0)
         throw new moduru::lang::IllegalArgumentException(moduru::lang::StringBuilder().append(from)->append(u" > "_j)
@@ -1621,7 +1625,7 @@ vector<int32_t>* Arrays::copyOfRange(vector<int32_t>* original, int32_t from, in
 
 vector<int64_t>* Arrays::copyOfRange(vector<int64_t>* original, int32_t from, int32_t to)
 {
-    
+
     auto newLength = to - from;
 	if (newLength < 0)
 		//throw new moduru::lang::IllegalArgumentException(moduru::lang::StringBuilder().append(from)->append(u" > "_j)
@@ -1692,7 +1696,7 @@ vector<bool>* Arrays::copyOfRange(vector<bool>* original, int32_t from, int32_t 
 /*
 java::util::List* Arrays::asList(vector<moduru::lang::Object*>* a)
 {
-    
+
     return new Arrays_ArrayList(a);
 }
 */
@@ -1712,12 +1716,12 @@ int32_t Arrays::hashCode(vector<int64_t>* a)
 
 int32_t Arrays::hashCode(vector<int32_t>* a)
 {
-    
+
     if(a == nullptr)
         return 0;
 
     auto result = int32_t(1);
-    for(auto element : *a) 
+    for(auto element : *a)
                 result = int32_t(31) * result + element;
 
     return result;
@@ -1725,12 +1729,12 @@ int32_t Arrays::hashCode(vector<int32_t>* a)
 
 int32_t Arrays::hashCode(vector<int16_t>* a)
 {
-    
+
     if(a == nullptr)
         return 0;
 
     auto result = int32_t(1);
-    for(auto element : *a) 
+    for(auto element : *a)
                 result = int32_t(31) * result + element;
 
     return result;
@@ -1738,12 +1742,12 @@ int32_t Arrays::hashCode(vector<int16_t>* a)
 
 int32_t Arrays::hashCode(vector<char16_t>* a)
 {
-    
+
     if(a == nullptr)
         return 0;
 
     auto result = int32_t(1);
-    for(auto element : *a) 
+    for(auto element : *a)
                 result = int32_t(31) * result + element;
 
     return result;
@@ -1751,12 +1755,12 @@ int32_t Arrays::hashCode(vector<char16_t>* a)
 
 int32_t Arrays::hashCode(vector<int8_t>* a)
 {
-    
+
     if(a == nullptr)
         return 0;
 
     auto result = int32_t(1);
-    for(auto element : *a) 
+    for(auto element : *a)
                 result = int32_t(31) * result + element;
 
     return result;
@@ -1764,12 +1768,12 @@ int32_t Arrays::hashCode(vector<int8_t>* a)
 
 int32_t Arrays::hashCode(vector<bool>* a)
 {
-    
+
     if(a == nullptr)
         return 0;
 
     auto result = int32_t(1);
-    for(auto element : *a) 
+    for(auto element : *a)
                 result = int32_t(31) * result + (element ? int32_t(1231) : int32_t(1237));
 
     return result;
@@ -1777,12 +1781,12 @@ int32_t Arrays::hashCode(vector<bool>* a)
 
 int32_t Arrays::hashCode(vector<float>* a)
 {
-    
+
     if(a == nullptr)
         return 0;
 
     auto result = int32_t(1);
-    for(auto element : *a) 
+    for(auto element : *a)
                 result = int32_t(31) * result + moduru::lang::Float::floatToIntBits(element);
 
     return result;
@@ -1790,7 +1794,7 @@ int32_t Arrays::hashCode(vector<float>* a)
 
 int32_t Arrays::hashCode(vector<double>* a)
 {
-    
+
     if(a == nullptr)
         return 0;
 
@@ -1804,12 +1808,12 @@ int32_t Arrays::hashCode(vector<double>* a)
 
 int32_t Arrays::hashCode(vector<moduru::lang::Object*>* a)
 {
-    
+
     if(a == nullptr)
         return 0;
 
     auto result = int32_t(1);
-    for(auto element : *a) 
+    for(auto element : *a)
                 result = int32_t(31) * result + (element == nullptr ? int32_t(0) : element->hashCode());
 
     return result;
@@ -1817,7 +1821,7 @@ int32_t Arrays::hashCode(vector<moduru::lang::Object*>* a)
 
 int32_t Arrays::deepHashCode(vector<moduru::lang::Object*>* a)
 {
-    
+
     if(a == nullptr)
         return 0;
 
@@ -1852,7 +1856,7 @@ int32_t Arrays::deepHashCode(vector<moduru::lang::Object*>* a)
 
 bool Arrays::deepEquals(vector<moduru::lang::Object*>* a1, vector<moduru::lang::Object*>* a2)
 {
-    
+
     if(a1 == a2)
         return true;
 
@@ -1903,7 +1907,7 @@ bool Arrays::deepEquals(vector<moduru::lang::Object*>* a1, vector<moduru::lang::
 /*
 moduru::lang::String* Arrays::toString(vector<int64_t>* a)
 {
-    
+
 	if (a == nullptr)
 		return new moduru::lang::String("null");
 
@@ -1924,7 +1928,7 @@ moduru::lang::String* Arrays::toString(vector<int64_t>* a)
 
 java::lang::String* Arrays::toString(vector<int32_t>* a)
 {
-    
+
     if(a == nullptr)
         return u"null"_j;
 
@@ -1945,7 +1949,7 @@ java::lang::String* Arrays::toString(vector<int32_t>* a)
 
 java::lang::String* Arrays::toString(vector<int16_t>* a)
 {
-    
+
     if(a == nullptr)
         return u"null"_j;
 
@@ -1966,7 +1970,7 @@ java::lang::String* Arrays::toString(vector<int16_t>* a)
 
 java::lang::String* Arrays::toString(vector<char16_t>* a)
 {
-    
+
     if(a == nullptr)
         return u"null"_j;
 
@@ -1987,7 +1991,7 @@ java::lang::String* Arrays::toString(vector<char16_t>* a)
 
 java::lang::String* Arrays::toString(vector<int8_t>* a)
 {
-    
+
     if(a == nullptr)
         return u"null"_j;
 
@@ -2008,7 +2012,7 @@ java::lang::String* Arrays::toString(vector<int8_t>* a)
 
 java::lang::String* Arrays::toString(vector<bool>* a)
 {
-    
+
     if(a == nullptr)
         return u"null"_j;
 
@@ -2029,7 +2033,7 @@ java::lang::String* Arrays::toString(vector<bool>* a)
 
 java::lang::String* Arrays::toString(vector<float>* a)
 {
-    
+
     if(a == nullptr)
         return u"null"_j;
 
@@ -2050,7 +2054,7 @@ java::lang::String* Arrays::toString(vector<float>* a)
 
 java::lang::String* Arrays::toString(vector<double>* a)
 {
-    
+
     if(a == nullptr)
         return u"null"_j;
 
@@ -2071,7 +2075,7 @@ java::lang::String* Arrays::toString(vector<double>* a)
 
 java::lang::String* Arrays::toString(vector<moduru::lang::Object*>* a)
 {
-    
+
     if(a == nullptr)
         return u"null"_j;
 
@@ -2092,7 +2096,7 @@ java::lang::String* Arrays::toString(vector<moduru::lang::Object*>* a)
 
 java::lang::String* Arrays::deepToString(vector<moduru::lang::Object*>* a)
 {
-    
+
     if(a == nullptr)
         return u"null"_j;
 
@@ -2107,7 +2111,7 @@ java::lang::String* Arrays::deepToString(vector<moduru::lang::Object*>* a)
 
 void Arrays::deepToString(vector<moduru::lang::Object*>* a, moduru::lang::StringBuilder* buf, Set* dejaVu)
 {
-    
+
     if(a == nullptr) {
         buf->append(u"null"_j);
         return;

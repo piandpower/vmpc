@@ -3,10 +3,14 @@
 #include <gui/geom/AffineTransform.hpp>
 #include <gui/geom/CubicCurve2D.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::gui::geom;
 using namespace std;
 
-CubicIterator::CubicIterator(CubicCurve2D* q, AffineTransform* at) 
+CubicIterator::CubicIterator(CubicCurve2D* q, AffineTransform* at)
 {
     this->cubic = q;
     this->affine = at;

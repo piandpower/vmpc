@@ -36,6 +36,11 @@
 #include<iostream>
 #include<sstream>
 
+
+#ifdef __linux__
+#include <climits>
+#endif
+
 class BCMath {
 
 public:

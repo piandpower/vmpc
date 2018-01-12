@@ -9,9 +9,13 @@
 
 #include <cmath>
 
+#ifdef __linux__
+#include <cstdint>
+#endif
+
 using namespace moduru::gui::geom;
 
-RectangularShape::RectangularShape() 
+RectangularShape::RectangularShape()
 {
 }
 

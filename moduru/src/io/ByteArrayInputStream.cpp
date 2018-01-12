@@ -1,6 +1,10 @@
 #include <io/ByteArrayInputStream.hpp>
 #include <VecUtil.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::io;
 using namespace std;
 
@@ -36,7 +40,7 @@ void ByteArrayInputStream::mark(int readAheadLimit)
 }
 
 bool ByteArrayInputStream::markSupported()
-{ 
+{
     return true;
 }
 
@@ -46,7 +50,7 @@ char ByteArrayInputStream::read()
 }
 
 int ByteArrayInputStream::read(vector<char>* b, int off, int len)
-{ 
+{
 	if (b == nullptr) {
 		throw std::invalid_argument("ByteArrayInputStream::read(b, off, len) b == null pointer!!\n");
 	}
@@ -73,7 +77,7 @@ void ByteArrayInputStream::reset()
 }
 
 long ByteArrayInputStream::skip(long n)
-{ 
+{
 	if (pos + n > count) {
 		n = count - pos;
 	}

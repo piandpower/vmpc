@@ -3,10 +3,14 @@
 #include <gui/geom/AffineTransform.hpp>
 #include <gui/geom/Line2D.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::gui::geom;
 using namespace std;
 
-LineIterator::LineIterator(Line2D* l, AffineTransform* at) 
+LineIterator::LineIterator(Line2D* l, AffineTransform* at)
 {
 	this->line = l;
 	this->affine = at;

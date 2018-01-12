@@ -39,6 +39,10 @@
 #include <VecUtil.hpp>
 #include <math/Math.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::lang;
 using namespace std;
 
@@ -186,7 +190,7 @@ String::String(vector<int8_t> bytes, int32_t offset, int32_t length, String* cha
 	//this->value = v;
 }
 
-String::String(vector<int8_t> bytes, int32_t offset, int32_t length, moduru::nio::charset::Charset* charset) 
+String::String(vector<int8_t> bytes, int32_t offset, int32_t length, moduru::nio::charset::Charset* charset)
 {
 	if (charset == nullptr)
 		//throw new NullPointerException(u"charset"_j);
@@ -207,7 +211,7 @@ String::String(vector<int8_t> bytes, moduru::nio::charset::Charset* charset) : S
 {
 }
 
-String::String(vector<int8_t> bytes, int32_t offset, int32_t length) 
+String::String(vector<int8_t> bytes, int32_t offset, int32_t length)
 {
 	checkBounds(bytes, offset, length);
 	//auto v = StringCoding::decode(bytes, offset, length);
@@ -499,7 +503,7 @@ int32_t String::compareTo(Object* o)
 
 moduru::util::Comparator*& String::CASE_INSENSITIVE_ORDER()
 {
-    
+
     return CASE_INSENSITIVE_ORDER_;
 }
 moduru::util::Comparator* String::CASE_INSENSITIVE_ORDER_ = new CaseInsensitiveComparator();
@@ -1083,7 +1087,7 @@ String* String::format(String* format, vector<moduru::lang::Object*> args)
 /*
 String* String::format(moduru::util::Locale* l, String* format, ObjectArray args)
 {
-    
+
     return npc((new moduru::util::Formatter(l))->format(format, args))->toString();
 }
 */
@@ -1102,19 +1106,19 @@ String* String::valueOf(vector<char16_t> data)
 
 String* String::valueOf(vector<char16_t> data, int32_t offset, int32_t count)
 {
-    
+
     return new String(data, offset, count);
 }
 
 String* String::copyValueOf(vector<char16_t> data, int32_t offset, int32_t count)
 {
-    
+
     return new String(data, offset, count);
 }
 
 String* String::copyValueOf(vector<char16_t> data)
 {
-    
+
     return copyValueOf(data, 0, data.size());
 }
 
@@ -1152,7 +1156,7 @@ String* String::valueOf(float f)
 
 String* String::valueOf(double d)
 {
-    
+
     //return Double::toString(d);
 	return nullptr;
 }

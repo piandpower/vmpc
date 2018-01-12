@@ -13,6 +13,10 @@
 
 #include <VecUtil.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::gui::geom;
 using namespace std;
 

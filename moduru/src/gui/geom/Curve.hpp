@@ -2,6 +2,10 @@
 
 #include <vector>
 
+#ifdef __linux__
+#include <cstdint>
+#endif
+
 namespace moduru {
 	namespace gui {
 		namespace geom {

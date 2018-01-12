@@ -14,6 +14,10 @@
 #include <limits.h>
 #endif
 
+#ifdef __linux__
+#include <climits>
+#endif
+
 using namespace moduru::gui;
 
 Rectangle::Rectangle() : Rectangle(0, 0, 0, 0)

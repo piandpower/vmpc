@@ -6,6 +6,10 @@
 #include <string>
 #include <cstdint>
 
+#ifdef __linux__
+#include <limits>
+#endif
+
 namespace moduru {
 	namespace lang {
 

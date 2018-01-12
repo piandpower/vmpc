@@ -1,11 +1,9 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <file/File.hpp>
 
-#include <file/FileHandle.hpp>
-
 #include <fstream>
 
-#ifdef __APPLE__
+#if defined (__APPLE__) || defined(__linux__)
 #include <sys/stat.h>
 #endif
 

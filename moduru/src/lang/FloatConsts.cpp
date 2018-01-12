@@ -4,9 +4,13 @@
 #include <cfloat>
 #endif
 
+#ifdef __linux__
+#include <cfloat>
+#endif
+
 using namespace moduru::lang;
 
-FloatConsts::FloatConsts() 
+FloatConsts::FloatConsts()
 {
 }
 

@@ -8,14 +8,18 @@
 
 #include <cmath>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::gui::geom;
 using namespace std;
 
-FlatteningPathIterator::FlatteningPathIterator(PathIterator* src, double flatness) 
+FlatteningPathIterator::FlatteningPathIterator(PathIterator* src, double flatness)
 {
 }
 
-FlatteningPathIterator::FlatteningPathIterator(PathIterator* src, double flatness, int limit) 
+FlatteningPathIterator::FlatteningPathIterator(PathIterator* src, double flatness, int limit)
 {
 	if (flatness < 0.0) {
 		throw std::invalid_argument("flatness must be >= 0");

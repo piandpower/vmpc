@@ -8,6 +8,10 @@
 
 #include <lang/Double.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::gui::geom;
 using namespace std;
 
@@ -43,7 +47,7 @@ const int Path2D::WIND_EVEN_ODD;
 const int Path2D::WIND_NON_ZERO;
 
 Path2D::Path2D(int rule, int initialTypes)
-{ 
+{
 	setWindingRule(rule);
 	this->pointTypes = vector<int8_t>(initialTypes);
 }
@@ -194,7 +198,7 @@ bool Path2D::contains(Rectangle2D* r)
 }
 
 bool Path2D::intersects(PathIterator* pi, double x, double y, double w, double h)
-{	
+{
 	if (moduru::lang::Double::isNaN(x + w) || moduru::lang::Double::isNaN(y + h)) {
 		return false;
 	}
@@ -207,7 +211,7 @@ bool Path2D::intersects(PathIterator* pi, double x, double y, double w, double h
 }
 
 bool Path2D::intersects(PathIterator* pi, Rectangle2D* r)
-{	
+{
 	return intersects(pi, r->getX(), r->getY(), r->getWidth(), r->getHeight());
 }
 

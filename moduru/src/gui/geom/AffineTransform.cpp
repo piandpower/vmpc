@@ -17,10 +17,15 @@
 #include <cfloat>
 #endif
 
+#ifdef __linux__
+#include <stdexcept>
+#include <cfloat>
+#endif
+
 using namespace moduru::gui::geom;
 using namespace std;
 
-AffineTransform::AffineTransform(double m00, double m10, double m01, double m11, double m02, double m12, int state) 
+AffineTransform::AffineTransform(double m00, double m10, double m01, double m11, double m02, double m12, int state)
 {
 	this->m00 = m00;
 	this->m10 = m10;
@@ -32,12 +37,12 @@ AffineTransform::AffineTransform(double m00, double m10, double m01, double m11,
 	this->type = TYPE_UNKNOWN;
 }
 
-AffineTransform::AffineTransform() 
+AffineTransform::AffineTransform()
 {
 	m00 = m11 = 1.0;
 }
 
-AffineTransform::AffineTransform(AffineTransform* Tx) 
+AffineTransform::AffineTransform(AffineTransform* Tx)
 {
 	this->m00 = Tx->m00;
 	this->m10 = Tx->m10;
@@ -49,7 +54,7 @@ AffineTransform::AffineTransform(AffineTransform* Tx)
 	this->type = Tx->type;
 }
 
-AffineTransform::AffineTransform(float m00, float m10, float m01, float m11, float m02, float m12) 
+AffineTransform::AffineTransform(float m00, float m10, float m01, float m11, float m02, float m12)
 {
 	this->m00 = m00;
 	this->m10 = m10;
@@ -60,7 +65,7 @@ AffineTransform::AffineTransform(float m00, float m10, float m01, float m11, flo
 	updateState();
 }
 
-AffineTransform::AffineTransform(vector<float>* flatmatrix) 
+AffineTransform::AffineTransform(vector<float>* flatmatrix)
 {
 	m00 = (*flatmatrix)[0];
 	m10 = (*flatmatrix)[1];
@@ -73,7 +78,7 @@ AffineTransform::AffineTransform(vector<float>* flatmatrix)
 	updateState();
 }
 
-AffineTransform::AffineTransform(double m00, double m10, double m01, double m11, double m02, double m12) 
+AffineTransform::AffineTransform(double m00, double m10, double m01, double m11, double m02, double m12)
 {
 	this->m00 = m00;
 	this->m10 = m10;
@@ -84,7 +89,7 @@ AffineTransform::AffineTransform(double m00, double m10, double m01, double m11,
 	updateState();
 }
 
-AffineTransform::AffineTransform(vector<double>* flatmatrix) 
+AffineTransform::AffineTransform(vector<double>* flatmatrix)
 {
 	m00 = (*flatmatrix)[0];
 	m10 = (*flatmatrix)[1];
@@ -133,7 +138,7 @@ AffineTransform* AffineTransform::getRotateInstance(double theta)
 }
 
 AffineTransform* AffineTransform::getRotateInstance(double theta, double anchorx, double anchory)
-{   
+{
     auto Tx = new AffineTransform();
     Tx->setToRotation(theta, anchorx, anchory);
     return Tx;
@@ -141,7 +146,7 @@ AffineTransform* AffineTransform::getRotateInstance(double theta, double anchorx
 
 AffineTransform* AffineTransform::getRotateInstance(double vecx, double vecy)
 {
-    
+
     auto Tx = new AffineTransform();
     Tx->setToRotation(vecx, vecy);
     return Tx;
@@ -149,7 +154,7 @@ AffineTransform* AffineTransform::getRotateInstance(double vecx, double vecy)
 
 AffineTransform* AffineTransform::getRotateInstance(double vecx, double vecy, double anchorx, double anchory)
 {
-    
+
     auto Tx = new AffineTransform();
     Tx->setToRotation(vecx, vecy, anchorx, anchory);
     return Tx;
@@ -157,7 +162,7 @@ AffineTransform* AffineTransform::getRotateInstance(double vecx, double vecy, do
 
 AffineTransform* AffineTransform::getQuadrantRotateInstance(int numquadrants)
 {
-    
+
     auto Tx = new AffineTransform();
     Tx->setToQuadrantRotation(numquadrants);
     return Tx;
@@ -165,7 +170,7 @@ AffineTransform* AffineTransform::getQuadrantRotateInstance(int numquadrants)
 
 AffineTransform* AffineTransform::getQuadrantRotateInstance(int numquadrants, double anchorx, double anchory)
 {
-    
+
     auto Tx = new AffineTransform();
     Tx->setToQuadrantRotation(numquadrants, anchorx, anchory);
     return Tx;
@@ -173,7 +178,7 @@ AffineTransform* AffineTransform::getQuadrantRotateInstance(int numquadrants, do
 
 AffineTransform* AffineTransform::getScaleInstance(double sx, double sy)
 {
-    
+
     auto Tx = new AffineTransform();
     Tx->setToScale(sx, sy);
     return Tx;
@@ -181,7 +186,7 @@ AffineTransform* AffineTransform::getScaleInstance(double sx, double sy)
 
 AffineTransform* AffineTransform::getShearInstance(double shx, double shy)
 {
-    
+
     auto Tx = new AffineTransform();
     Tx->setToShear(shx, shy);
     return Tx;
@@ -1974,7 +1979,7 @@ void AffineTransform::transform(vector<double> srcPts, int srcOff, vector<float>
 
 }
 
-Point2D* AffineTransform::inverseTransform(::Point2D* ptSrc, ::Point2D* ptDst) 
+Point2D* AffineTransform::inverseTransform(::Point2D* ptSrc, ::Point2D* ptDst)
 {
     if(ptDst == nullptr) {
         if(dynamic_cast< ::Point2D_Double* >(ptSrc) != nullptr) {
@@ -2244,7 +2249,7 @@ moduru::gui::Shape* AffineTransform::createTransformedShape(moduru::gui::Shape* 
 
 double AffineTransform::_matround(double matval)
 {
-    
+
     return rint(matval * 1.0E15) / 1.0E15;
 }
 

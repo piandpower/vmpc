@@ -8,15 +8,19 @@
 
 #include <cmath>
 
+#ifdef __linux__
+#include <cstring>
+#endif
+
 using namespace moduru::lang;
 using namespace std;
 
-Double::Double(double value) 
+Double::Double(double value)
 {
 	this->value = value;
 }
 
-Double::Double(string s) 
+Double::Double(string s)
 {
 	value = stod(s);
 }
@@ -91,7 +95,7 @@ bool Double::isNaN(double v)
 
 bool Double::isInfinite(double v)
 {
-    
+
     return (v == POSITIVE_INFINITY) || (v == NEGATIVE_INFINITY);
 }
 
@@ -184,7 +188,7 @@ int32_t Double::compareTo(Double* anotherDouble)
 
 /*
 int32_t Double::compareTo(Object* o)
-{ 
+{
     return compareTo(dynamic_cast< Double* >(o));
 }
 */

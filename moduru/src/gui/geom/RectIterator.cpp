@@ -3,10 +3,14 @@
 #include <gui/geom/AffineTransform.hpp>
 #include <gui/geom/Rectangle2D.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::gui::geom;
 using namespace std;
 
-RectIterator::RectIterator(Rectangle2D* r, AffineTransform* at) 
+RectIterator::RectIterator(Rectangle2D* r, AffineTransform* at)
 {
     this->x = r->getX();
     this->y = r->getY();

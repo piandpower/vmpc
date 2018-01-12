@@ -1,5 +1,9 @@
 #include <lang/StrUtil.hpp>
 
+#ifdef __linux__
+#include <cstring>
+#endif
+
 using namespace moduru::lang;
 using namespace std;
 

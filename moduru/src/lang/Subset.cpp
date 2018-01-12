@@ -3,6 +3,10 @@
 #include <lang/Object.hpp>
 #include <lang/String.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::lang;
 using namespace std;
 

@@ -7,6 +7,10 @@
 
 #include <math/Math.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::gui::geom;
 using namespace std;
 

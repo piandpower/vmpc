@@ -2,18 +2,24 @@
 #include <file/FileUtil.hpp>
 
 
-#ifdef _WIN32
+#if defined (_WIN32)
 #include <thirdp/dirent.h>
-#else
+#endif
+
+#if defined (__APPLE__)
 #include <sys/dirent.h>
 #include <sys/dir.h>
+#endif
+
+#if defined (__linux__)
+#include <dirent.h>
 #endif
 
 using namespace moduru::file;
 using namespace std;
 
 bool FileUtil::Exists(std::string path) {
-	
+
 	DIR* dir = opendir(path.c_str());
 	FILE* file = fopen(path.c_str(), "r");
 	if (dir != NULL) {
@@ -23,7 +29,7 @@ bool FileUtil::Exists(std::string path) {
 		fclose(file);
 		return true;
 
-	}	
+	}
 	return false;
 }
 

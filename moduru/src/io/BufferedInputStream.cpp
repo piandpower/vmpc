@@ -1,6 +1,10 @@
 #include <io/BufferedInputStream.hpp>
 #include <VecUtil.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::io;
 using namespace std;
 
@@ -19,7 +23,7 @@ const int BufferedInputStream::MAX_BUFFER_SIZE;
 /*
 java::util::concurrent::atomic::AtomicReferenceFieldUpdater*& BufferedInputStream::bufUpdater()
 {
-    
+
     return bufUpdater_;
 }
 java::util::concurrent::atomic::AtomicReferenceFieldUpdater* BufferedInputStream::bufUpdater_;
@@ -31,24 +35,24 @@ int BufferedInputStream::available()
 }
 
 void BufferedInputStream::close()
-{ 
+{
 	buf.clear();
 	in->close();
 }
 
 void BufferedInputStream::mark(int readlimit)
-{ 
+{
 	marklimit = readlimit;
 	markpos = pos;
 }
 
 bool BufferedInputStream::markSupported()
-{ 
+{
     return true;
 }
 
 char BufferedInputStream::read()
-{ 
+{
 	if (pos >= count) {
 		fill();
 		if (pos >= count)
@@ -155,7 +159,7 @@ void BufferedInputStream::fill() {
 }
 
 void BufferedInputStream::reset()
-{ 
+{
 	getBufIfOpen();
 	if (markpos < 0)
 		throw std::invalid_argument("Resetting to invalid mark.\n");
@@ -163,7 +167,7 @@ void BufferedInputStream::reset()
 }
 
 long BufferedInputStream::skip(long n)
-{ 
+{
 	getBufIfOpen(); // Check for closed stream
 	if (n <= 0) {
 		return 0;

@@ -23,6 +23,10 @@
 //#include <SubArray.hpp>
 //#include <ObjectArray.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::lang;
 using namespace std;
 
@@ -347,7 +351,7 @@ String* StringBuffer::toString()
 /*
 java::io::ObjectStreamFieldArray*& StringBuffer::serialPersistentFields()
 {
-    
+
     return serialPersistentFields_;
 }
 java::io::ObjectStreamFieldArray* StringBuffer::serialPersistentFields_;

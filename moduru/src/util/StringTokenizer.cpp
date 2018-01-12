@@ -6,10 +6,14 @@
 //#include <util/NoSuchElementException.hpp>
 //#include <Array.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::util;
 using namespace std;
 
-moduru::util::StringTokenizer::StringTokenizer(moduru::lang::String* str, moduru::lang::String* delim, bool returnDelims) 
+moduru::util::StringTokenizer::StringTokenizer(moduru::lang::String* str, moduru::lang::String* delim, bool returnDelims)
 {
 	currentPosition = 0;
 	newPosition = -int32_t(1);

@@ -3,10 +3,14 @@
 #include <gui/geom/AffineTransform.hpp>
 #include <gui/geom/QuadCurve2D.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::gui::geom;
 using namespace std;
 
-QuadIterator::QuadIterator(QuadCurve2D* q, AffineTransform* at) 
+QuadIterator::QuadIterator(QuadCurve2D* q, AffineTransform* at)
 {
     this->quad = q;
     this->affine = at;

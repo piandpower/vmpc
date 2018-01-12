@@ -1,5 +1,9 @@
 #include <io/OutputStream.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::io;
 using namespace std;
 

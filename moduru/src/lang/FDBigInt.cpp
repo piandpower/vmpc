@@ -7,17 +7,21 @@
 
 #include <VecUtil.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::lang;
 using namespace std;
 
-FDBigInt::FDBigInt(int32_t v) 
+FDBigInt::FDBigInt(int32_t v)
 {
 	nWords = 1;
 	data = vector<int32_t>(1);
 	data[0] = v;
 }
 
-FDBigInt::FDBigInt(int64_t v) 
+FDBigInt::FDBigInt(int64_t v)
 {
 	data = vector<int32_t>(2);
 	data[0] = static_cast< int32_t >(v);
@@ -25,19 +29,19 @@ FDBigInt::FDBigInt(int64_t v)
 	nWords = (data[1] == 0) ? 1 : 2;
 }
 
-FDBigInt::FDBigInt(FDBigInt* other) 
+FDBigInt::FDBigInt(FDBigInt* other)
 {
 	data = vector<int32_t>(nWords = other->nWords);
 	moduru::VecUtil::VecCopy(&other->data, 0, &data, 0, nWords);
 }
 
-FDBigInt::FDBigInt(vector<int32_t> d, int32_t n) 
+FDBigInt::FDBigInt(vector<int32_t> d, int32_t n)
 {
 	data = d;
 	nWords = n;
 }
 
-FDBigInt::FDBigInt(int64_t seed, vector<char16_t> digit, int32_t nd0, int32_t nd) 
+FDBigInt::FDBigInt(int64_t seed, vector<char16_t> digit, int32_t nd0, int32_t nd)
 {
 	auto n = (nd + int32_t(8)) / int32_t(9);
 	if (n < 2)

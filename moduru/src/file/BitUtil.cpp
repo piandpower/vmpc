@@ -1,7 +1,7 @@
 #include <file/BitUtil.hpp>
 
 #include <bitset>
-
+#include <stdexcept>
 using namespace moduru::file;
 using namespace std;
 

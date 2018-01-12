@@ -25,10 +25,14 @@
 #include <cfloat>
 #endif
 
+#ifdef __linux__
+#include <cfloat>
+#endif
+
 using namespace moduru::gui::geom;
 using namespace std;
 
-CubicCurve2D::CubicCurve2D() 
+CubicCurve2D::CubicCurve2D()
 {
 }
 

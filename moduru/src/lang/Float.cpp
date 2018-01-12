@@ -14,10 +14,15 @@
 #include <cfloat>
 #endif
 
+#ifdef __linux__
+#include <cfloat>
+#include <cstring>
+#endif
+
 using namespace moduru::lang;
 using namespace std;
 
-Float::Float(float value) 
+Float::Float(float value)
 {
 	this->value = value;
 }
@@ -175,7 +180,7 @@ int32_t Float::compareTo(Float* anotherFloat)
 
 /*
 int32_t Float::compareTo(Object* o)
-{ 
+{
     return compareTo(dynamic_cast< Float* >(o));
 }
 */

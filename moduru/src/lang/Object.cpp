@@ -7,6 +7,11 @@
 #include <lang/String.hpp>
 #include <lang/StringBuilder.hpp>
 
+#ifdef __linux__
+#include <typeinfo>
+#include <stdexcept>
+#endif
+
 using namespace moduru::lang;
 using namespace std;
 

@@ -13,16 +13,22 @@
 
 #include <VecUtil.hpp>
 
+#ifdef __linux__
+#include <climits>
+#include <stdexcept>
+#endif
+
+
 using namespace moduru::gui;
 using namespace std;
 
-Polygon::Polygon() 
+Polygon::Polygon()
 {
 	xpoints = vector<int>(MIN_LENGTH);
 	ypoints = vector<int>(MIN_LENGTH);
 }
 
-Polygon::Polygon(vector<int> xpoints, vector<int> ypoints, int npoints) 
+Polygon::Polygon(vector<int> xpoints, vector<int> ypoints, int npoints)
 {
 	if (npoints > xpoints.size() || npoints > ypoints.size()) {
 		throw std::invalid_argument("npoints > xpoints.length || npoints > ypoints.length");

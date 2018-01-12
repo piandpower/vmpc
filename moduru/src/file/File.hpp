@@ -1,5 +1,6 @@
 #pragma once
 #include <file/FsNode.hpp>
+#include <file/FileHandle.hpp>
 
 #include <memory>
 #include <vector>
@@ -9,7 +10,6 @@ namespace moduru {
 	namespace file {
 
 		class Directory;
-		class FileHandle;
 
 		class File final
 			: public FsNode {
@@ -35,7 +35,7 @@ namespace moduru {
 			bool isFile() override;
 			bool isDirectory() override;
 			bool create() override;
-	
+
 		public:
 			int getLength() override;
 

@@ -19,14 +19,18 @@
 
 #include <VecUtil.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif
+
 using namespace moduru::lang;
 using namespace std;
 
-AbstractStringBuilder::AbstractStringBuilder() 
+AbstractStringBuilder::AbstractStringBuilder()
 {
 }
 
-AbstractStringBuilder::AbstractStringBuilder(int32_t capacity) 
+AbstractStringBuilder::AbstractStringBuilder(int32_t capacity)
 {
     value = vector<char16_t>(capacity);
 }
@@ -76,7 +80,7 @@ void AbstractStringBuilder::setLength(int32_t newLength)
         expandCapacity(newLength);
 
     if(count < newLength) {
-        for (; count < newLength; count++) 
+        for (; count < newLength; count++)
                         value[count] = char16_t(0x0000);
 
     } else {
@@ -557,7 +561,7 @@ AbstractStringBuilder* AbstractStringBuilder::insert(int32_t dstOffset, CharSequ
         expandCapacity(newCount);
 
     moduru::VecUtil::VecCopy(&value, dstOffset, &value, dstOffset + len, count - dstOffset);
-    for (auto i = start; i < end; i++) 
+    for (auto i = start; i < end; i++)
                 value[dstOffset++] = s->charAt(i);
 
     count = newCount;
