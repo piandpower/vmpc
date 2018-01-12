@@ -43,6 +43,7 @@ if (LINUX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+target_compile_features(cpp-snippets PRIVATE cxx_std_14)
 endif()
 
 foreach(_source IN ITEMS ${_source_list})
