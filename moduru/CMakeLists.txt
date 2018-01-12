@@ -31,15 +31,10 @@ if(UNIX AND NOT APPLE)
         set(LINUX TRUE)
 endif()
 
-if (LINUX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSIONS OFF)
-endif()
 
 add_library(moduru ${_source_list})
-
-set_property(TARGET moduru PROPERTY CXX_STANDARD 14)
 
 if(MSVC)
 	#set_target_properties(moduru PROPERTIES COMPILE_FLAGS_RELEASE "/MD /MP")
