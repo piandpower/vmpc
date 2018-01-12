@@ -26,14 +26,6 @@ if(APPLE)
   set(CMAKE_CXX_STANDARD 14)
 endif(APPLE)
 
-add_library(moduru ${_source_list})
-
-if(MSVC)
-	#set_target_properties(moduru PROPERTIES COMPILE_FLAGS_RELEASE "/MD /MP")
-	#set_target_properties(moduru PROPERTIES COMPILE_FLAGS_DEBUG "/MDd /MP")
-    target_compile_options(mpc PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
-	#configure_msvc_runtime()
-endif(MSVC)
 
 if(UNIX AND NOT APPLE)
         set(LINUX TRUE)
@@ -43,8 +35,16 @@ if (LINUX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-target_compile_features(cpp-snippets PRIVATE cxx_std_14)
 endif()
+
+add_library(moduru ${_source_list})
+
+if(MSVC)
+	#set_target_properties(moduru PROPERTIES COMPILE_FLAGS_RELEASE "/MD /MP")
+	#set_target_properties(moduru PROPERTIES COMPILE_FLAGS_DEBUG "/MDd /MP")
+    target_compile_options(mpc PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
+	#configure_msvc_runtime()
+endif(MSVC)
 
 foreach(_source IN ITEMS ${_source_list})
     get_filename_component(_source_path "${_source}" PATH)
