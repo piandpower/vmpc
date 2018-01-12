@@ -39,6 +39,8 @@ endif()
 
 add_library(moduru ${_source_list})
 
+set_property(TARGET moduru PROPERTY CXX_STANDARD 14)
+
 if(MSVC)
 	#set_target_properties(moduru PROPERTIES COMPILE_FLAGS_RELEASE "/MD /MP")
 	#set_target_properties(moduru PROPERTIES COMPILE_FLAGS_DEBUG "/MDd /MP")
