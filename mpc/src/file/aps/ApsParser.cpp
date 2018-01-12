@@ -2,11 +2,7 @@
 
 #include <Mpc.hpp>
 #include <disk/MpcFile.hpp>
-#include <file/aps/ApsAssignTable.hpp>
-#include <file/aps/ApsGlobalParameters.hpp>
-#include <file/aps/ApsHeader.hpp>
-#include <file/aps/ApsName.hpp>
-#include <file/aps/ApsSoundNames.hpp>
+
 #include <sampler/Program.hpp>
 #include <sampler/Sampler.hpp>
 #include <ctootextensions/MpcSoundPlayerChannel.hpp>

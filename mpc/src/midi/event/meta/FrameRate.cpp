@@ -1,9 +1,13 @@
 #include <midi/event/meta/FrameRate.hpp>
 
+#ifdef __linux__
+#include <stdexcept>
+#endif // __linux__
+
 using namespace mpc::midi::event::meta;
 using namespace std;
 
-FrameRate::FrameRate(string name, int ordinal, int v) 
+FrameRate::FrameRate(string name, int ordinal, int v)
 {
 	this->name = name;
 	this->ordinal = ordinal;

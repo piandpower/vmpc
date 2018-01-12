@@ -2,6 +2,7 @@
 
 #include <io/InputStream.hpp>
 
+#include <string>
 #include <vector>
 
 namespace mpc {

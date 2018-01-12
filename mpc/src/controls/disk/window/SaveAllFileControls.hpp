@@ -1,15 +1,10 @@
 #pragma once
 #include <controls/disk/AbstractDiskControls.hpp>
+#include <file/all/AllParser.hpp>
 
 #include <memory>
 
 namespace mpc {
-
-	namespace file {
-		namespace all {
-			class AllParser;
-		}
-	}
 
 	namespace controls {
 		namespace disk {

@@ -7,10 +7,10 @@
 #include <lcdgui/LayeredScreen.hpp>
 #include <ui/Uis.hpp>
 #include <Logger.hpp>
+#include <disk/ProgramLoader.hpp>
+#include "DiskController.hpp"
 
 namespace mpc {
-
-	class DiskController;
 
 	namespace ui {
 		class UserDefaults;
@@ -24,7 +24,6 @@ namespace mpc {
 	namespace disk {
 		class Stores;
 		class AbstractDisk;
-		class ProgramLoader;
 	}
 
 	namespace controls {
@@ -60,7 +59,7 @@ namespace mpc {
 
 	class Mpc
 	{
-	
+
 	private:
 		std::thread loadSoundThread{};
 		std::unique_ptr<mpc::disk::ProgramLoader> programLoader{};

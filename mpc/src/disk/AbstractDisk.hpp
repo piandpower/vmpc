@@ -1,5 +1,6 @@
 #pragma once
 #include <observer/Observable.hpp>
+#include <disk/device/Device.hpp>
 
 #include <vector>
 #include <string>
@@ -23,17 +24,13 @@ namespace mpc {
 
 	namespace disk {
 
-		namespace device {
-			class Device;
-		}
-
 		class MpcFile;
 		class Store;
 
 		class AbstractDisk
 			: public moduru::observer::Observable
 		{
-		
+
 		private:
 			bool busy{ false };
 			std::weak_ptr<Store> store{};
@@ -42,7 +39,7 @@ namespace mpc {
 			mpc::ui::disk::DiskGui* diskGui;
 			std::unique_ptr<mpc::disk::device::Device> device{};
 			mpc::Mpc* mpc;
-			
+
 
 		public:
 			std::vector<std::string> extensions{};

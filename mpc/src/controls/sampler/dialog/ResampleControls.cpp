@@ -11,10 +11,14 @@
 #include <Logger.hpp>
 #include <thirdp/libsamplerate/samplerate.h>
 
+#ifdef __linux__
+#include <cmath>
+#endif
+
 using namespace mpc::controls::sampler::dialog;
 using namespace std;
 
-ResampleControls::ResampleControls(mpc::Mpc* mpc) 
+ResampleControls::ResampleControls(mpc::Mpc* mpc)
 	: AbstractSamplerControls(mpc)
 {
 }
@@ -22,7 +26,7 @@ ResampleControls::ResampleControls(mpc::Mpc* mpc)
 void ResampleControls::turnWheel(int i)
 {
 	init();
-	auto lLs = ls.lock(); 
+	auto lLs = ls.lock();
 	if (param.compare("newfs") == 0) {
 		soundGui->setNewFs(soundGui->getNewFs() + i);
 	}

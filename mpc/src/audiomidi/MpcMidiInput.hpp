@@ -4,6 +4,8 @@
 #include <sequencer/Event.hpp>
 #include <sequencer/Track.hpp>
 #include <midi/core/MidiInput.hpp>
+#include <sequencer/EventAdapter.hpp>
+#include <sequencer/MidiAdapter.hpp>
 
 #include <memory>
 
@@ -21,11 +23,6 @@ namespace mpc {
 		namespace midisync {
 			class MidiSyncGui;
 		}
-	}
-
-	namespace sequencer {
-		class EventAdapter;
-		class MidiAdapter;
 	}
 
 	namespace audiomidi {

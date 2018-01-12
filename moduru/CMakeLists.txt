@@ -31,8 +31,11 @@ if(UNIX AND NOT APPLE)
         set(LINUX TRUE)
 endif()
 
+if (LINUX)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+endif()
 
 add_library(moduru ${_source_list})
 

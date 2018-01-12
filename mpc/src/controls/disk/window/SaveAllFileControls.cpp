@@ -4,7 +4,6 @@
 #include <Util.hpp>
 #include <disk/MpcFile.hpp>
 #include <disk/AbstractDisk.hpp>
-#include <file/all/AllParser.hpp>
 #include <ui/NameGui.hpp>
 
 using namespace mpc::controls::disk::window;

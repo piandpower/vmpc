@@ -3,6 +3,11 @@
 #include <file/aps/ApsMixer.hpp>
 #include <file/aps/ApsProgram.hpp>
 #include <file/aps/ApsDrumConfiguration.hpp>
+#include <file/aps/ApsAssignTable.hpp>
+#include <file/aps/ApsGlobalParameters.hpp>
+#include <file/aps/ApsHeader.hpp>
+#include <file/aps/ApsName.hpp>
+#include <file/aps/ApsSoundNames.hpp>
 
 #include <memory>
 #include <vector>
@@ -18,15 +23,6 @@ namespace mpc {
 
 	namespace file {
 		namespace aps {
-
-			class ApsHeader;
-			class ApsSoundNames;
-			class ApsGlobalParameters;
-			class ApsAssignTable;
-//			class ApsMixer;
-//			class ApsDrumConfiguration;
-//			class ApsProgram;
-			class ApsName;
 
 			class ApsParser
 

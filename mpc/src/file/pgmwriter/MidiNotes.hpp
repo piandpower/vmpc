@@ -2,6 +2,10 @@
 
 #include <vector>
 
+#ifdef __linux__
+#include <cstdint>
+#endif // __linux__
+
 namespace mpc {
 
 	namespace sampler {

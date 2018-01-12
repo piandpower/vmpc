@@ -27,7 +27,7 @@ namespace WonderRabbitProject
   {
     struct writer_t
 #if __GNUC__ == 4 &&  __GNUC_MINOR__ < 7
-      
+
 #else
       final
 #endif
@@ -38,10 +38,10 @@ namespace WonderRabbitProject
       , up    = 2
       , press = down_and_up
       };
-      
+
       void operator()( const std::string& name, const state_t = state_t::press ) const
       { operator()(key_helper_t::instance().code(name)); }
-      
+
       void operator()( const int code, const state_t state = state_t::press ) const
       {
         if(!key_helper_t::instance().is_valid(code))
@@ -89,21 +89,21 @@ namespace WonderRabbitProject
       static writer_t i;
       return i;
     }
-    
+
     ~writer_t()
     {
 #ifdef __linux
       finalize();
 #endif
     }
-    
+
   private:
-    
+
     writer_t(const writer_t&) = delete;
     writer_t(writer_t&&) = delete;
     void operator=(const writer_t&) = delete;
     void operator=(writer_t&&) = delete;
-    
+
     writer_t()
 #ifdef __linux
       : fd(0)
@@ -113,9 +113,9 @@ namespace WonderRabbitProject
       initialize();
 #endif
     }
-    
+
 #ifdef __linux
-    static const const char* const default_device_name = "libWRP-key::writer";
+    static const constexpr char* const default_device_name = "libWRP-key::writer";
     static const int default_device_vendor_id  = 0x0000;
     static const int default_device_product_id = 0x0000;
     static const int default_device_version    = 0;
@@ -125,19 +125,19 @@ namespace WonderRabbitProject
       initialize_open_device();
       initialize_create_device();
     }
-    
+
     void initialize_open_device()
     {
       fd = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
       if(fd < 0)
       { throw std::runtime_error("/dev/uinput open error"); }
     }
-    
+
     void initialize_create_device()
     {
       if(ioctl(fd, UI_SET_EVBIT , EV_KEY) < 0)
       { throw std::runtime_error("create device ioctl UI_SET_EVIT error"); }
-      
+
       auto set_keybit = [&](const int code)
       {
         if(ioctl(fd, UI_SET_KEYBIT, code) < 0)
@@ -146,22 +146,22 @@ namespace WonderRabbitProject
 
       for(auto code = 0; code < 256; ++code)
         set_keybit(code);
-      
+
       struct uinput_user_dev dev;
       memset(&dev, 0, sizeof(dev));
-      
+
       snprintf(dev.name, UINPUT_MAX_NAME_SIZE, default_device_name);
       dev.id.bustype = BUS_USB;
       dev.id.vendor  = default_device_vendor_id;
       dev.id.product = default_device_product_id;
       dev.id.version = default_device_version;
-      
+
       if(write(fd, &dev, sizeof(dev)) < 0)
       { throw std::runtime_error("write error"); }
       if(ioctl(fd, UI_DEV_CREATE) < 0)
       { throw std::runtime_error("ioctl error"); }
     }
-    
+
     void finalize()
     {
       if(fd >= 0)
@@ -171,28 +171,28 @@ namespace WonderRabbitProject
         fd = 0;
       }
     }
-    
+
     void finalize_uinput_device()
     {
       if (ioctl(fd, UI_DEV_DESTROY) < 0)
       { throw std::runtime_error("finalize error"); }
     }
-    
+
     void send_event(const int type, const int code, const int value) const
     {
       struct input_event e;
       memset(&e, 0, sizeof(e));
-      
+
       gettimeofday(&e.time, nullptr);
-      
+
       e.type = type;
       e.code = code;
       e.value = value;
-      
+
       if(write(fd, &e, sizeof(e)) < 0)
       { throw std::runtime_error("send event write error"); }
     }
-    
+
     int fd;
 #endif
     };

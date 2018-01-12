@@ -15,6 +15,10 @@
 
 #include <file/File.hpp>
 
+#ifdef __linux__
+#include <climits>
+#endif // __linux__
+
 using namespace mpc::lcdgui;
 using namespace std;
 
@@ -33,7 +37,7 @@ void Field::initialize(std::string name, int x, int y, int columns) {
 	Hide(false);
 	this->name = name;
 	this->columns = columns;
-	
+
 	setText("");
 	setSize(columns * TEXT_WIDTH + 1, TEXT_HEIGHT + 1);
 	setLocation(x, y);
@@ -117,7 +121,7 @@ void Field::takeFocus(string prev)
 		//		//if (!lGui->getNameGui()->isNameBeingEdited()) {
 		//focusField.lock()->setOpaque(true);
 	//}
-	//if (!(csn.compare("name") == 0 && nameGui->isNameBeingEdited())) {	
+	//if (!(csn.compare("name") == 0 && nameGui->isNameBeingEdited())) {
 	//		focusField.lock()->setForeground(false);
 	//}
 	//	}
@@ -163,8 +167,8 @@ void Field::loseFocus(string next)
 			layeredScreen->getTwoDots().lock()->setSelected(3, false);
 		}
 	}
-	
-	
+
+
 	//if (csn.compare("tempochange") == 0) {
 	//	setOpaque(false);
 	//	setForeground(false);

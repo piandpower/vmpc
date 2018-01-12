@@ -15,8 +15,6 @@
 #include <sampler/Program.hpp>
 #include <sampler/Sampler.hpp>
 #include <sequencer/Event.hpp>
-#include <sequencer/EventAdapter.hpp>
-#include <sequencer/MidiAdapter.hpp>
 #include <sequencer/MidiClockEvent.hpp>
 #include <sequencer/Sequence.hpp>
 #include <sequencer/Track.hpp>
@@ -29,7 +27,7 @@
 using namespace mpc::audiomidi;
 using namespace std;
 
-MpcMidiInput::MpcMidiInput(int index, mpc::Mpc* mpc) 
+MpcMidiInput::MpcMidiInput(int index, mpc::Mpc* mpc)
 {
 	this->mpc = mpc;
 	sequencer = mpc->getSequencer();
@@ -91,13 +89,13 @@ void MpcMidiInput::transport(ctoot::midi::core::MidiMessage* msg, int timestamp)
 			}
 		}
 	}
-	
+
 	auto event = eventAdapter->get().lock();
 
 	if (!event) {
 		return;
 	}
-	
+
 	auto mce = dynamic_pointer_cast<mpc::sequencer::MidiClockEvent>(event);
 	auto note = dynamic_pointer_cast<mpc::sequencer::NoteEvent>(event);
 
@@ -128,7 +126,7 @@ void MpcMidiInput::transport(ctoot::midi::core::MidiMessage* msg, int timestamp)
 		auto pad = p->getPadNumberFromNote(note->getNote());
 		mpc->getUis().lock()->getSamplerGui()->setPadAndNote(pad, note->getNote());
 		mpc->getEventHandler().lock()->handleNoThru(note, track.get());
-		
+
 		if (lSequencer->isRecordingOrOverdubbing()) {
 			note->setDuration(note->getVelocity() == 0 ? 0 : -1);
 			note->setTick(lSequencer->getTickPosition());

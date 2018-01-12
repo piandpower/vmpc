@@ -19,21 +19,24 @@
 
 #include <file/File.hpp>
 
+#ifdef __linux__
+#include <climits>
+#endif
+
 using namespace mpc::ctootextensions;
-using namespace std;
 
 Voice::Voice(int stripNumber, bool basic)
 {
-	EMPTY_FRAME = vector<float>{ 0.f, 0.f };
-	tempFrame = vector<float>{ 0.f, 0.f };
+	EMPTY_FRAME = std::vector<float>{ 0.f, 0.f };
+	tempFrame = std::vector<float>{ 0.f, 0.f };
 	muteInfo = new mpc::ctootextensions::MuteInfo();
 	this->stripNumber = stripNumber;
 	this->basic = basic;
 	staticEnvControls = new mpc::ctootextensions::MpcEnvelopeControls(0, "StaticAmpEnv", AMPENV_OFFSET);
 	staticEnv = new mpc::ctootextensions::MpcEnvelopeGenerator(staticEnvControls);
-	sattack = dynamic_pointer_cast<ctoot::control::FloatControl>(staticEnvControls->getControls()[ATTACK_INDEX]).get();
-	shold = dynamic_pointer_cast<ctoot::control::FloatControl>(staticEnvControls->getControls()[HOLD_INDEX]).get();
-	sdecay = dynamic_pointer_cast<ctoot::control::FloatControl>(staticEnvControls->getControls()[DECAY_INDEX]).get();
+	sattack = std::dynamic_pointer_cast<ctoot::control::FloatControl>(staticEnvControls->getControls()[ATTACK_INDEX]).get();
+	shold = std::dynamic_pointer_cast<ctoot::control::FloatControl>(staticEnvControls->getControls()[HOLD_INDEX]).get();
+	sdecay = std::dynamic_pointer_cast<ctoot::control::FloatControl>(staticEnvControls->getControls()[DECAY_INDEX]).get();
 
 	if (!basic) {
 		ampEnvControls = new mpc::ctootextensions::MpcEnvelopeControls(0, "AmpEnv", AMPENV_OFFSET);
@@ -44,15 +47,15 @@ Voice::Voice(int stripNumber, bool basic)
 		svfControls->createControls();
 		svf0 = new ctoot::synth::modules::filter::StateVariableFilter(svfControls);
 		svf1 = new ctoot::synth::modules::filter::StateVariableFilter(svfControls);
-		fattack = dynamic_pointer_cast<ctoot::control::FloatControl>(filterEnvControls->getControls()[ATTACK_INDEX]).get();
-		fhold = dynamic_pointer_cast<ctoot::control::FloatControl>(filterEnvControls->getControls()[HOLD_INDEX]).get();
-		fdecay = dynamic_pointer_cast<ctoot::control::FloatControl>(filterEnvControls->getControls()[DECAY_INDEX]).get();
-		attack = dynamic_pointer_cast<ctoot::control::FloatControl>(ampEnvControls->getControls()[ATTACK_INDEX]).get();
-		hold = dynamic_pointer_cast<ctoot::control::FloatControl>(ampEnvControls->getControls()[HOLD_INDEX]).get();
-		decay = dynamic_pointer_cast<ctoot::control::FloatControl>(ampEnvControls->getControls()[DECAY_INDEX]).get();
-		reso = dynamic_pointer_cast< ctoot::control::FloatControl>(svfControls->getControls()[RESO_INDEX]).get();
-		mix = dynamic_pointer_cast< ctoot::control::FloatControl>(svfControls->getControls()[MIX_INDEX]).get();
-		bandpass = dynamic_pointer_cast<ctoot::control::BooleanControl>(svfControls->getControls()[BANDPASS_INDEX]).get();
+		fattack = std::dynamic_pointer_cast<ctoot::control::FloatControl>(filterEnvControls->getControls()[ATTACK_INDEX]).get();
+		fhold = std::dynamic_pointer_cast<ctoot::control::FloatControl>(filterEnvControls->getControls()[HOLD_INDEX]).get();
+		fdecay = std::dynamic_pointer_cast<ctoot::control::FloatControl>(filterEnvControls->getControls()[DECAY_INDEX]).get();
+		attack = std::dynamic_pointer_cast<ctoot::control::FloatControl>(ampEnvControls->getControls()[ATTACK_INDEX]).get();
+		hold = std::dynamic_pointer_cast<ctoot::control::FloatControl>(ampEnvControls->getControls()[HOLD_INDEX]).get();
+		decay = std::dynamic_pointer_cast<ctoot::control::FloatControl>(ampEnvControls->getControls()[DECAY_INDEX]).get();
+		reso = std::dynamic_pointer_cast< ctoot::control::FloatControl>(svfControls->getControls()[RESO_INDEX]).get();
+		mix = std::dynamic_pointer_cast< ctoot::control::FloatControl>(svfControls->getControls()[MIX_INDEX]).get();
+		bandpass = std::dynamic_pointer_cast<ctoot::control::BooleanControl>(svfControls->getControls()[BANDPASS_INDEX]).get();
 	}
 }
 
@@ -76,7 +79,7 @@ void Voice::init(
 	int track,
 	int velocity,
 	int padNumber,
-	weak_ptr<mpc::sampler::Sound> oscVars,
+	std::weak_ptr<mpc::sampler::Sound> oscVars,
 	mpc::sampler::NoteParameters* np,
 	int varType,
 	int varValue,
@@ -91,7 +94,7 @@ void Voice::init(
 	this->np = np;
 	this->padNumber = padNumber;
 	this->oscVars = oscVars;
-	
+
 	finished = false;
     readyToPlay = false;
 	staticDecay = false;
@@ -182,7 +185,7 @@ void Voice::init(
     readyToPlay = true;
 }
 
-vector<float> Voice::getFrame()
+std::vector<float> Voice::getFrame()
 {
     if (!readyToPlay || finished) return EMPTY_FRAME;
 
@@ -193,7 +196,7 @@ vector<float> Voice::getFrame()
     envAmplitude = basic ? 1.0f : ampEnv->getEnvelope(false);
     staticEnvAmp = enableEnvs ? staticEnv->getEnvelope(staticDecay) : 1.0f;
     envAmplitude *= staticEnvAmp;
-	
+
     float filterEnvFactor = 0;
     float filterFreq = 0;
     if(!basic) {

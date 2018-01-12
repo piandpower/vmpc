@@ -3,11 +3,8 @@
 #include "StartUp.hpp"
 #include <nvram/NvRam.hpp>
 
-#include "DiskController.hpp"
-
 #include <disk/AbstractDisk.hpp>
 #include <disk/SoundLoader.hpp>
-#include <disk/ProgramLoader.hpp>
 
 #include <ui/Uis.hpp>
 #include <ui/disk/DiskGui.hpp>

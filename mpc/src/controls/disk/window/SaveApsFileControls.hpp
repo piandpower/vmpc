@@ -2,14 +2,9 @@
 #include <controls/disk/AbstractDiskControls.hpp>
 
 #include <memory>
+#include <file/aps/ApsSaver.hpp>
 
 namespace mpc {
-
-	namespace file {
-		namespace aps {
-			class ApsSaver;
-		}
-	}
 
 	namespace controls {
 		namespace disk {

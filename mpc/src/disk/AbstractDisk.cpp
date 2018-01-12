@@ -5,7 +5,6 @@
 #include <disk/MpcFile.hpp>
 #include <file/wav/WavFile.hpp>
 #include <disk/SoundSaver.hpp>
-#include <disk/device/Device.hpp>
 #include <file/mid/MidiWriter.hpp>
 #include <file/pgmwriter/PgmWriter.hpp>
 #include <file/sndwriter/SndWriter.hpp>
@@ -211,7 +210,7 @@ void AbstractDisk::writeWavToTemp(mpc::sampler::Sound* s)
         ->append(".WAV")->toString());
     auto fa = s->getSampleData();
     auto faDouble = new ::doubleArray(fa->length);
-    for (int i = 0; i < faDouble.size(); i++) 
+    for (int i = 0; i < faDouble.size(); i++)
                 (*faDouble)[i] = (*fa)[i];
 
     try {

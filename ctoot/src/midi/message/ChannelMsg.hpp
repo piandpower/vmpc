@@ -1,6 +1,10 @@
 #pragma once
 #include <midi/message/ShortMsg.hpp>
 
+#ifdef __linux__
+#include <cstdint>>
+#endif // __linux__
+
 namespace ctoot {
 	namespace midi {
 		namespace message {
