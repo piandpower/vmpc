@@ -35,6 +35,16 @@ if(MSVC)
 	#configure_msvc_runtime()
 endif(MSVC)
 
+if(UNIX AND NOT APPLE)
+        set(LINUX TRUE)
+endif()
+
+if (LINUX)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+endif()
+
 foreach(_source IN ITEMS ${_source_list})
     get_filename_component(_source_path "${_source}" PATH)
     string(REPLACE "/" "\\" _source_path_msvc "${_source_path}")
