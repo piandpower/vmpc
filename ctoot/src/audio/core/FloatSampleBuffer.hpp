@@ -55,8 +55,8 @@ namespace ctoot {
 
 				void setSamplesFromBytes(std::vector<char> input, int inByteOffset, AudioFormat* format, int floatOffset, int frameCount);
 				void changeSampleCount(int newSampleCount, bool keepOldSamples);
-				void makeSilence();
-				void makeSilence(int channel);
+				void makeSilenceFrames(int nFrames);
+				void makeSilence(int channel, int nFrames);
 				void addChannel(bool silent);
 				void expandChannel(int targetChannelCount);
 				void mixDownChannels();

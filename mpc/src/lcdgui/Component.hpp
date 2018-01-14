@@ -11,6 +11,7 @@ namespace mpc {
 
 		protected:
 			MRECT rect;
+			MRECT dirtyRect;
 			std::vector<MRECT> clearRects;
 			bool hidden = false;
 
@@ -24,6 +25,7 @@ namespace mpc {
 			bool IsHidden();
 			bool IsDirty();
 			bool NeedsClearing();
+			MRECT* getDirtyArea();
 
 		public:
 			virtual void Draw(std::vector<std::vector<bool> >* pixels) {}

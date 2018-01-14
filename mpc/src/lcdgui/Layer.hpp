@@ -28,8 +28,8 @@ namespace mpc {
 			std::vector<std::unique_ptr<lcdgui::Parameter>> params{};
 			std::vector<std::unique_ptr<lcdgui::Info>> infos{};
 			//std::vector<std::shared_ptr<mpc::lcdgui::Component>> nonTextComps;
-			mpc::lcdgui::Background* bg{ nullptr };
-			FunctionKeys* fk{ nullptr };
+			std::shared_ptr<mpc::lcdgui::Background> bg;
+			std::shared_ptr<FunctionKeys> fk;
 			std::shared_ptr<mpc::lcdgui::BlinkLabel> blinkLabel{};
 
 		private:
@@ -46,6 +46,8 @@ namespace mpc {
 			void setDirty();
 			mpc::lcdgui::Background* getBackground();
 			mpc::lcdgui::FunctionKeys* getFunctionKeys();
+			std::weak_ptr<mpc::lcdgui::Background> getBackgroundWk();
+			std::weak_ptr<mpc::lcdgui::FunctionKeys> getFunctionKeysWk();
 			std::vector<mpc::lcdgui::Parameter*> getParameters();
 			std::vector<mpc::lcdgui::Info*> getInfos();
 			std::vector<std::weak_ptr<mpc::lcdgui::Component>> getAllFields();

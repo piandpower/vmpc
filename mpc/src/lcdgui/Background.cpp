@@ -6,6 +6,7 @@ using namespace std;
 
 Background::Background() 
 {
+	rect = MRECT(0, 0, 247, 59);
 }
 
 void Background::setName(std::string name)

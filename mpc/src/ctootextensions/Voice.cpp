@@ -262,19 +262,17 @@ void Voice::open()
 
 int Voice::processAudio(ctoot::audio::core::AudioBuffer* buffer, int nFrames)
 {
-	buffer->makeSilence();
 	if (finished) {
-		return AUDIO_OK;
+		buffer->makeSilenceFrames(nFrames);
+		return AUDIO_SILENCE;
 		// maybe should be AUDIO_SILENCE
 	}
-	left = buffer->getChannel(0);
-	right = buffer->getChannel(1);
-	count = nFrames;
-	for (int i = 0; i < count; i++) {
+	auto left = buffer->getChannel(0);
+	auto right = buffer->getChannel(1);
+	for (int i = 0; i < nFrames; i++) {
 		frame = getFrame();
 		(*left)[i] = frame[0];
 		(*right)[i] = frame[1];
-
 		if (decayCounter != 0) {
 			if (decayCounter == 1) startDecay();
 			decayCounter--;

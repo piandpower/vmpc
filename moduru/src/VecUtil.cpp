@@ -37,6 +37,17 @@ bool VecUtil::Equals(vector<char> a, vector<char> b) {
 	return true;
 }
 
+/*
+template<typename T>
+void VecUtil::VecCopy(vector<T>* src, int srcPos, vector<T>* dest, int destPos, int length) {
+	if (destPos + length > dest->size()) throw std::invalid_argument("Destination out of bounds!\n");
+	if (srcPos + length > src->size()) throw std::invalid_argument("Source out of bounds!\n");
+	if (src == dest) dest = new vector<unsigned char>(src->size());
+	for (int i = 0; i < length; i++)
+		(*dest)[i + destPos] = (*src)[i + srcPos];
+}
+*/
+/*
 void VecUtil::VecCopy(vector<unsigned char>* src, int srcPos, vector<unsigned char>* dest, int destPos, int length) {
 	if (destPos + length > dest->size()) throw std::invalid_argument("Destination out of bounds!\n");
 	if (srcPos + length > src->size()) throw std::invalid_argument("Source out of bounds!\n");
@@ -134,6 +145,7 @@ void VecUtil::VecCopy(vector<moduru::lang::Object*>* src, int64_t srcPos, vector
 	for (int i = 0; i < length; i++)
 		(*dest)[i + destPos] = (*src)[i + srcPos];
 }
+*/
 
 vector<int8_t> VecUtil::CopyOf(vector<int8_t> src, int newLength) {
 	while (src.size() < newLength) {

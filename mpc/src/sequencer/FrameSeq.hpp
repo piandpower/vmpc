@@ -16,6 +16,7 @@ namespace mpc {
 
 		private:
 			mpc::Mpc* mpc;
+			int frameCounter = 0;
 			bool running{ false };
 			bool metronome{ false };
 			Clock clock;
@@ -27,7 +28,6 @@ namespace mpc {
 			void checkNextSq();
 
 		public:
-
 			void start();
 			void startMetronome();
 			void work(int nFrames) override;

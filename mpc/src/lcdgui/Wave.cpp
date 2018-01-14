@@ -16,6 +16,7 @@ using namespace std;
 
 Wave::Wave()
 {
+	rect = MRECT(0, 0, 247, 59);
 }
 
 void Wave::setFine(bool fine) {

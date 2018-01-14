@@ -14,6 +14,7 @@ FunctionKeys::FunctionKeys()
 {
 	enabled = vector<bool>{ false, false, false, false, false, false };
 	names = vector<string>{ "", "", "", "", "", "" };
+	rect = MRECT(0, 30, 247, 59);
 }
 
 void FunctionKeys::initialize(rapidjson::Value& fbLabels, rapidjson::Value& fbTypes) {

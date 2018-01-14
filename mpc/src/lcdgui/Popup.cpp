@@ -17,6 +17,7 @@ Popup::Popup()
 	int textWidth = 200;
 	int textHeight = 8;
 	//textRect = IRECT(x, y, x + textWidth, y + textHeight);
+	rect = MRECT(0, 10, 247, 50);
 }
 
 void Popup::setText(string text, int pos)

@@ -39,6 +39,7 @@ namespace mpc {
 		{
 
 		private:
+			MRECT dirtyArea;
 			std::vector<std::vector<bool> > pixels;
 			std::unique_ptr<moduru::observer::Observer> activeObserver;
 
@@ -137,6 +138,7 @@ namespace mpc {
 		public:
 			std::vector<std::vector<bool> >* getPixels();
 			bool IsDirty();
+			MRECT* getDirtyArea();
 			void Draw();
 
 		public:

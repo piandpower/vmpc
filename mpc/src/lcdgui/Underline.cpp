@@ -8,6 +8,7 @@ using namespace std;
 Underline::Underline()
 {
 	states = vector<bool>(16);
+	rect = MRECT(0, 0, 247, 50);
 }
 
 void Underline::Draw(vector<vector<bool> >* pixels)

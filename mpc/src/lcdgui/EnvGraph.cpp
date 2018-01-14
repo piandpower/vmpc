@@ -13,6 +13,7 @@ using namespace std;
 EnvGraph::EnvGraph(mpc::Mpc* mpc)
 {
 	this->mpc = mpc;
+	rect = MRECT(10, 10, 200, 50);
 }
 
 void EnvGraph::setCoordinates(vector<vector<int> > ia)

@@ -27,7 +27,7 @@ namespace ctoot {
 				virtual void setMeterProcess(ctoot::audio::core::AudioProcess* meter);
 				virtual ctoot::audio::core::AudioBuffer* getBuffer();
 				virtual std::string getName();
-				virtual void silence();
+				virtual void silence(int nFrames);
 				virtual void write(int nFrames);
 				virtual void close();
 

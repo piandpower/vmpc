@@ -36,9 +36,9 @@ string AudioMixerBus::getName()
     return name;
 }
 
-void AudioMixerBus::silence()
+void AudioMixerBus::silence(int nFrames)
 {
-    buffer->makeSilence();
+    buffer->makeSilenceFrames(nFrames);
 }
 
 void AudioMixerBus::write(int nFrames)

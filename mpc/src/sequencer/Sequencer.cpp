@@ -485,7 +485,9 @@ void Sequencer::stop(int tick)
             setBar(0);
         return;
     }
-
+	lastNotifiedBar = -1;
+	lastNotifiedBeat = -1;
+	lastNotifiedClock = -1;
     //mpc->getEventHandler()->handle(MidiClockEvent(ctoot::midi::core::ShortMessage::STOP), Track(mpc, 999));
 	auto s1 = getActiveSequence().lock();
 	auto s2 = getCurrentlyPlayingSequence().lock();
@@ -1010,10 +1012,32 @@ void Sequencer::notifyTimeDisplay()
 {
     setChanged();
 	notifyObservers(string("bar"));
-    setChanged();
-    notifyObservers(string("beat"));
-    setChanged();
+	setChanged();
+	notifyObservers(string("beat"));
+	setChanged();
 	notifyObservers(string("clock"));
+}
+
+void Sequencer::notifyTimeDisplayRealtime()
+{
+	int bar = getCurrentBarNumber();
+	int beat = getCurrentBeatNumber();
+	int clock = getCurrentClockNumber();
+	if (lastNotifiedBar != bar) {
+		setChanged();
+		notifyObservers(string("bar"));
+		lastNotifiedBar = bar;
+	}
+	if (lastNotifiedBeat != beat) {
+		setChanged();
+		notifyObservers(string("beat"));
+		lastNotifiedBeat = beat;
+	}
+	if (lastNotifiedClock != clock) {
+		setChanged();
+		notifyObservers(string("clock"));
+		lastNotifiedClock = clock;
+	}
 }
 
 void Sequencer::goToPreviousStep()

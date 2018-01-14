@@ -13,8 +13,8 @@ InterconnectionInputProcess::InterconnectionInputProcess(MpcMixerInterconnection
 int InterconnectionInputProcess::processAudio(ctoot::audio::core::AudioBuffer* buffer, int nFrames)
 {
 	sharedBuffer->copyFrom(buffer, nFrames);
-	if (!mmi->leftEnabled) sharedBuffer->makeSilence(0);
-	if (!mmi->rightEnabled) sharedBuffer->makeSilence(1);
+	if (!mmi->leftEnabled) sharedBuffer->makeSilence(0, nFrames);
+	if (!mmi->rightEnabled) sharedBuffer->makeSilence(1, nFrames);
 	return AUDIO_OK;
 }
 

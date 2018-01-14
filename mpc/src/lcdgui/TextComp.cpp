@@ -26,6 +26,7 @@ void TextComp::Hide(bool b) {
 	if (b) {
 		MRECT clearRect(x, y, x + (TEXT_WIDTH * columns) + margin, y + TEXT_HEIGHT + 1);
 		clearRects.push_back(clearRect);
+		dirtyRect = dirtyRect.Union(&clearRect);
 	}
 	Component::Hide(b);
 }
@@ -67,27 +68,17 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 			next = utf8_decode_next();
 		}
 		delete tempText;
-
-		//if (name.compare("dummy") == 0) return;
-		//bool res = true;
-		//if (opaque) {
-		//res = IPanelControl::Draw(g);
-		//textControl->Draw(g);
-		//}
-		//else {
-		//res = textControl->Draw(g);
-		//}
 	}
+	dirtyRect = dirtyRect.Union(&rect);
 	dirty = false;
 }
 
 void TextComp::setSize(int w, int h) {
 	const int margin = noLeftMargin ? 0 : 1;
-	//MRECT clearRect(x, y, x + (TEXT_WIDTH * columns) + margin, y + TEXT_HEIGHT + 1);
 	MRECT clearRect(x, y, x + this->w + margin, y + TEXT_HEIGHT + 1);
 	clearRects.push_back(clearRect);
+	dirtyRect = dirtyRect.Union(&clearRect);
 
-	//columns = w / TEXT_WIDTH;
 	this->w = w;
 	this->h = h;
 	initRECT();
@@ -96,9 +87,9 @@ void TextComp::setSize(int w, int h) {
 
 void TextComp::setLocation(int x, int y) {
 	const int margin = noLeftMargin ? 0 : 1;
-	//MRECT clearRect(this->x, this->y, this->x + (TEXT_WIDTH * columns) + margin, this->y + TEXT_HEIGHT + 1);
 	MRECT clearRect(this->x, this->y, this->x + w + margin, this->y + TEXT_HEIGHT + 1);
 	clearRects.push_back(clearRect);
+	dirtyRect = dirtyRect.Union(&clearRect);
 
 	this->x = x;
 	this->y = y;
@@ -108,6 +99,7 @@ void TextComp::setLocation(int x, int y) {
 
 void TextComp::initRECT() {
 	rect = MRECT(x, y, x + w, y + h);
+	dirtyRect = dirtyRect.Union(&rect);
 }
 
 int TextComp::getX() {

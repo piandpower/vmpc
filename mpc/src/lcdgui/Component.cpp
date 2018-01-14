@@ -14,12 +14,18 @@ void Component::Hide(bool b)
 		SetDirty();
 		if (!rect.Empty()) {
 			clearRects.push_back(rect);
+			dirtyRect = dirtyRect.Union(&rect);
 		}
 	} 
 }
 
+MRECT* Component::getDirtyArea() {
+	return &dirtyRect;
+}
+
 void Component::SetDirty() 
 { 
+	dirtyRect = dirtyRect.Union(&rect);
 	dirty = true; 
 }
 

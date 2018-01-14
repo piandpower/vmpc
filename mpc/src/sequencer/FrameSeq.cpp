@@ -50,8 +50,14 @@ void FrameSeq::work(int nFrames) {
 	auto swGui = mpc->getUis().lock()->getSequencerWindowGui();
 	auto songGui = mpc->getUis().lock()->getSongGui();
 	auto lSequencer = sequencer.lock();
-	if (!lSequencer->isCountingIn()) lSequencer->notifyTimeDisplay();
-
+	
+	frameCounter += nFrames;
+	if (frameCounter > 2048) {
+		if (!lSequencer->isCountingIn()) {
+			lSequencer->notifyTimeDisplayRealtime();
+		}
+		frameCounter = 0;
+	}
 	auto seq = lSequencer->getCurrentlyPlayingSequence().lock();
 	double tempo = lSequencer->getTempo().toDouble();
 	if (tempo != clock.getBpm()) {
@@ -60,7 +66,6 @@ void FrameSeq::work(int nFrames) {
 	}
 
 	for (int i = 0; i < nFrames; i++) {
-
 		if (clock.proc()) {
 			tickFrameOffset = i;
 

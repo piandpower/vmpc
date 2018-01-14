@@ -203,10 +203,9 @@ void AudioBuffer::copyFrom(AudioBuffer* src, int nFrames)
     for (auto c = 0; c < nc; c++) {
         auto from = src->getChannel(c);
         auto to = getChannel(c);
-		(*to) = (*from);
-        //for (auto s = 0; s < ns; s++) {
-        //   (*to)[s] = (*from)[s];
-        //}
+        for (auto s = 0; s < ns; s++) {
+           (*to)[s] = (*from)[s];
+        }
     }
 }
 

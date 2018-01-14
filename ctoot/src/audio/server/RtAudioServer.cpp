@@ -38,12 +38,14 @@ void RtAudioServer::work() {
 void RtAudioServer::work(float** InAudio, float** OutAudio, int nFrames, int inputChannels, int outputChannels) {
 	auto activeInputs = getActiveInputs();
 	if (activeInputs.size() != 0 && inputChannels >= 2) {
-		activeInputs.at(0)->localBuffer.clear();
 		float* inputBufferL = (float*)InAudio[0];
 		float* inputBufferR = (float*)InAudio[1];
-		for (int i = 0; i < nFrames; i++) {
-			activeInputs.at(0)->localBuffer.push_back(inputBufferL[i]);
-			activeInputs.at(0)->localBuffer.push_back(inputBufferR[i]);
+		if (activeInputs[0]->localBuffer.size() != nFrames * 2);
+		activeInputs[0]->localBuffer.resize(nFrames * 2);
+		int frameCounter = 0;
+		for (int i = 0; i < nFrames * 2; i += 2) {
+			activeInputs[0]->localBuffer[i] = inputBufferL[frameCounter];
+			activeInputs[0]->localBuffer[i + 1] = inputBufferR[frameCounter++];
 		}
 	}
 	int channelsToProcess = activeOutputs.size() < (outputChannels / 2) ? activeOutputs.size() : (outputChannels / 2);
@@ -62,12 +64,14 @@ void RtAudioServer::work(float** InAudio, float** OutAudio, int nFrames, int inp
 void RtAudioServer::work(double** InAudio, double** OutAudio, int nFrames, int outputChannels) {
 	auto activeInputs = getActiveInputs();
 	if (activeInputs.size() != 0) {
-		activeInputs.at(0)->localBuffer.clear();
 		double* inputBufferL = (double*)InAudio[0];
 		double* inputBufferR = (double*)InAudio[1];
-		for (int i = 0; i < nFrames; i++) {
-			activeInputs.at(0)->localBuffer.push_back(inputBufferL[i]);
-			activeInputs.at(0)->localBuffer.push_back(inputBufferR[i]);
+		if (activeInputs[0]->localBuffer.size() != nFrames * 2);
+			activeInputs[0]->localBuffer.resize(nFrames * 2);
+		int frameCounter = 0;
+		for (int i = 0; i < nFrames * 2; i += 2) {
+			activeInputs[0]->localBuffer[i] = inputBufferL[frameCounter];
+			activeInputs[0]->localBuffer[i + 1] = inputBufferR[frameCounter++];
 		}
 	}
 	int channelsToProcess = activeOutputs.size() < (outputChannels / 2) ? activeOutputs.size() : (outputChannels / 2);

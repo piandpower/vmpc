@@ -13,8 +13,8 @@ using namespace std;
 Layer::Layer(mpc::lcdgui::LayeredScreen* ls)
 {
 	this->ls = ls;
-	bg = new Background();
-	fk = new FunctionKeys();
+	bg = std::make_shared<Background>();
+	fk = std::make_shared<FunctionKeys>();
 	for (int i = 0; i < 100; i++) {
 		unusedFields.push_back(make_shared<mpc::lcdgui::Field>(ls));
 	}
@@ -76,11 +76,11 @@ vector<mpc::lcdgui::Info*> Layer::getInfos() {
 }
 
 mpc::lcdgui::Background* Layer::getBackground() {
-	return bg;
+	return bg.get();
 }
 
 mpc::lcdgui::FunctionKeys* Layer::getFunctionKeys() {
-	return fk;
+	return fk.get();
 }
 
 void Layer::setFocus(string textFieldName) {
@@ -244,7 +244,15 @@ vector<weak_ptr<mpc::lcdgui::Component>> Layer::getAllLabels() {
 	return result;
 }
 
+std::weak_ptr<mpc::lcdgui::Background> Layer::getBackgroundWk() {
+	return bg;
+}
+
+std::weak_ptr<mpc::lcdgui::FunctionKeys> Layer::getFunctionKeysWk() {
+	return fk;
+}
+
 Layer::~Layer() {
-	if (bg != nullptr) delete bg;
-	if (fk != nullptr) delete fk;
+	//if (bg != nullptr) delete bg;
+	//if (fk != nullptr) delete fk;
 }

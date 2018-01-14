@@ -81,10 +81,10 @@ void AudioMixerStrip::setDirectOutputProcess(AudioProcess* output)
 	if (oldOutput != nullptr) oldOutput->close();
 }
 
-void AudioMixerStrip::silence()
+void AudioMixerStrip::silence(int nFrames)
 {
     if(nmixed > 0) {
-		buffer->makeSilence();
+		buffer->makeSilenceFrames(nFrames);
 		nmixed = 0;
    }
 }

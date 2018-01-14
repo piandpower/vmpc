@@ -32,7 +32,7 @@ namespace ctoot {
 				virtual void setInputProcess(AudioProcess* input);
 				virtual AudioProcess* getDirectOutputProcess();
 				virtual void setDirectOutputProcess(AudioProcess* output);
-				virtual void silence();
+				virtual void silence(int nFrames);
 
 			public:
 				virtual ctoot::audio::core::AudioBuffer* createBuffer();

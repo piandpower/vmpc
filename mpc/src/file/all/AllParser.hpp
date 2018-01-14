@@ -52,17 +52,17 @@ namespace mpc {
 				static const int SEQUENCE_NAMES_OFFSET{ 2064 };
 				static const int SONGS_OFFSET{ 3846 };
 				static const int SEQUENCES_OFFSET{ 14406 };
-				Header* header{};
-				Defaults* defaults{};
-				Sequencer* sequencer{};
-				Count* count{};
-				MidiInput* midiInput{};
-				MidiSyncMisc* midiSyncMisc{};
-				Misc* misc{};
-				SequenceNames* seqNames{};
-				std::vector<Sequence*> sequences{};
-				std::vector<Song*> songs{};
-				std::vector<char> saveBytes{};
+				Header* header = nullptr;
+				Defaults* defaults = nullptr;
+				Sequencer* sequencer = nullptr;
+				Count* count = nullptr;
+				MidiInput* midiInput = nullptr;
+				MidiSyncMisc* midiSyncMisc = nullptr;
+				Misc* misc = nullptr;
+				SequenceNames* seqNames = nullptr;
+				std::vector<Sequence*> sequences;
+				std::vector<Song*> songs;
+				std::vector<char> saveBytes;
 
 			public:
 				std::vector<Sequence*> getAllSequences();
@@ -81,8 +81,10 @@ namespace mpc {
 			public:
 				std::vector<char> getBytes();
 
+			public:
 				AllParser(mpc::disk::MpcFile* file);
 				AllParser(mpc::Mpc* mpc, std::string allName);
+				~AllParser();
 
 			};
 

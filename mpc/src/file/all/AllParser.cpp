@@ -177,4 +177,23 @@ vector<char> AllParser::getBytes()
     return saveBytes;
 }
 
+AllParser::~AllParser() {
+	/*
+	if (header != nullptr) delete header;
+	if (defaults != nullptr) delete defaults;
+	if (sequencer != nullptr) delete sequencer;
+	if (count != nullptr) delete count;
+	if (midiInput != nullptr) delete midiInput;
+	if (midiSyncMisc != nullptr) delete midiSyncMisc;
+	if (misc != nullptr) delete misc;
+	if (seqNames != nullptr) delete seqNames;
+	for (auto s : sequences) {
+		if (s != nullptr) delete s;
+	}
+	for (auto s : songs) {
+		if (s != nullptr) delete s;
+	}
+	*/
+}
+
 vector<char> AllParser::UNKNOWN_CHUNK = vector<char>(64);

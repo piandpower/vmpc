@@ -41,6 +41,9 @@ namespace mpc {
 		{
 
 		private:
+			int lastNotifiedBar = -1;
+			int lastNotifiedBeat = -1;
+			int lastNotifiedClock = -1;
 			std::shared_ptr<Sequence> placeHolder{};
 			bool metronomeOnly{ false };
 			std::unique_ptr<mpc::sequencer::Sequence> metronomeSeq{};
@@ -116,6 +119,7 @@ namespace mpc {
 
 		public:
 			void notifyTimeDisplay();
+			void notifyTimeDisplayRealtime();
 			void init();
 			void setTempo(BCMath t);
 			BCMath getTempo();

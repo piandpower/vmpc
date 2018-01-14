@@ -28,7 +28,7 @@ AudioMixerStrip* MixProcess::getRoutedStrip()
 int MixProcess::processAudio(AudioBuffer* buffer, int nFrames)
 {
 	if (!vars->isEnabled() && vars->isMaster()) {
-		buffer->makeSilence();
+		buffer->makeSilenceFrames(nFrames);
 	}
 	else if (vars->isEnabled()) {
 		gain = vars->getGain();

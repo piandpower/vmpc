@@ -144,7 +144,7 @@ void Sampler::work(int nFrames)
 
 				levelL = highestl;
 				levelR = highestr;
-				mpc->getUis().lock()->getSamplerGui()->notify("vumeter");
+				//mpc->getUis().lock()->getSamplerGui()->notify("vumeter");
 				vuBufferL = vector<float>(VU_BUFFER_SIZE);
 				vuBufferR = vector<float>(VU_BUFFER_SIZE);
 			}
@@ -1068,7 +1068,7 @@ void Sampler::setActiveInput(ctoot::audio::server::IOAudioProcess* input)
 }
 
 void Sampler::silenceRecordBuffer() {
-	recordBuffer->makeSilence();
+	recordBuffer->makeSilenceFrames(recordBuffer->getSampleCount());
 	levelL = 0;
 	levelR = 0;
 	resetPeak();

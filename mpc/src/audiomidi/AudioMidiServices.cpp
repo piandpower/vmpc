@@ -122,7 +122,7 @@ void AudioMidiServices::start(std::string mode) {
 	cac = make_shared<ctoot::audio::server::CompoundAudioClient>();
 	cac->add(frameSeq.get());
 	cac->add(mixer.get());
-	cac->add(midiSystem.get());
+	//cac->add(midiSystem.get());
 	cac->add(sampler.get());
 	offlineServer->setWeakPtr(offlineServer);
 	offlineServer->setClient(cac);

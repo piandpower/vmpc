@@ -82,6 +82,7 @@
 #include <rapidjson/filereadstream.h>
 
 #include <cmath>
+#include <set>
 
 using namespace std;
 
@@ -319,63 +320,111 @@ std::vector<std::vector<bool> >* LayeredScreen::getPixels() {
 }
 
 void LayeredScreen::Draw() {
-
+	std::set<std::shared_ptr<mpc::lcdgui::Component>> dirtyComponents;
 	for (int i = 0; i <= currentLayer; i++) {
 
 		auto components = layers[i]->getComponentsThatNeedClearing();
 		for (auto& c : components) {
 			c.lock()->Clear(&pixels);
+			dirtyComponents.insert(c.lock());
 		}
 
-		if (envGraph->NeedsClearing()) envGraph->Clear(&pixels);
+		if (envGraph->NeedsClearing()) {
+			envGraph->Clear(&pixels);
+			dirtyComponents.insert(envGraph);
+		}
 
 		for (auto& c : nonTextComps) {
-			if (c.lock()->NeedsClearing()) c.lock()->Clear(&pixels);
+			if (c.lock()->NeedsClearing()) {
+				c.lock()->Clear(&pixels);
+				dirtyComponents.insert(c.lock());
+			}
 		}
 
 
 		if (i == 1) {
 			for (auto& hbar : horizontalBarsTempoChangeEditor) {
-				if (hbar->NeedsClearing()) hbar->Clear(&pixels);
+				if (hbar->NeedsClearing()) {
+					hbar->Clear(&pixels);
+					dirtyComponents.insert(hbar);
+				}
 			}
 		}
 
 		for (auto& k : knobs) {
-			if (k->NeedsClearing())
+			if (k->NeedsClearing()) {
 				k->Clear(&pixels);
+				dirtyComponents.insert(k);
+			}
 		}
 
-		if (layers[i]->getBackground()->IsDirty()) layers[i]->getBackground()->Draw(&pixels);
+		if (layers[i]->getBackground()->IsDirty()) {
+			layers[i]->getBackground()->Draw(&pixels);
+			dirtyComponents.insert(layers[i]->getBackgroundWk().lock());
+		}
 
-		if (i == currentLayer && envGraph->IsDirty() && !envGraph->IsHidden()) envGraph->Draw(&pixels);
+		if (i == currentLayer && envGraph->IsDirty() && !envGraph->IsHidden()) {
+			envGraph->Draw(&pixels);
+			dirtyComponents.insert(envGraph);
+		}
 
 		for (auto& c : nonTextComps) {
-			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
+			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) {
+				c.lock()->Draw(&pixels);
+				dirtyComponents.insert(c.lock());
+			}
 		}
-
 
 		if (i == 1) {
 			for (auto& hbar : horizontalBarsTempoChangeEditor) {
-				if (hbar->IsDirty() && !hbar->IsHidden()) hbar->Draw(&pixels);
+				if (hbar->IsDirty() && !hbar->IsHidden()) {
+					hbar->Draw(&pixels);
+					dirtyComponents.insert(hbar);
+				}
 			}
 		}
 
 		components = layers[i]->getAllLabelsAndFields();
 		for (auto& c : components) {
-			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) c.lock()->Draw(&pixels);
+			if (c.lock()->IsDirty() && !c.lock()->IsHidden()) {
+				c.lock()->Draw(&pixels);
+				dirtyComponents.insert(c.lock());
+			}
 		}
 
-		if (!underline->IsHidden() && i == 2) underline->Draw(&pixels);
-		if (!twoDots->IsHidden()) twoDots->Draw(&pixels);
-		if (i == 1 && fineWave->IsDirty()) fineWave->Draw(&pixels);
-		if (layers[i]->getFunctionKeys()->IsDirty()) layers[i]->getFunctionKeys()->Draw(&pixels);
+		if (!underline->IsHidden() && i == 2) {
+			underline->Draw(&pixels);
+			dirtyComponents.insert(underline);
+		}
+		if (!twoDots->IsHidden()) {
+			twoDots->Draw(&pixels);
+			dirtyComponents.insert(twoDots);
+		}
+		if (i == 1 && fineWave->IsDirty()) {
+			fineWave->Draw(&pixels);
+			dirtyComponents.insert(fineWave);
+		}
+		if (layers[i]->getFunctionKeys()->IsDirty()) {
+			layers[i]->getFunctionKeys()->Draw(&pixels);
+			dirtyComponents.insert(layers[i]->getFunctionKeysWk().lock());
+		}
 		//if (currentScreenName.compare("mixerv2") == 0) {
 			for (auto& k : knobs) {
-				if (k->IsDirty())
+				if (k->IsDirty()) {
 					k->Draw(&pixels);
+					dirtyComponents.insert(k);
+				}
 			}
 		//}
 	}
+	for (auto& c : dirtyComponents) {
+		dirtyArea = dirtyArea.Union(c->getDirtyArea());
+		c->getDirtyArea()->Clear();
+	}
+}
+
+MRECT* LayeredScreen::getDirtyArea() {
+	return &dirtyArea;
 }
 
 bool LayeredScreen::IsDirty() {

@@ -15,6 +15,7 @@ TwoDots::TwoDots()
 //	for (int i = 0; i < 4; i++)
 		//visible[i] = true;
 	//SetDirty();
+	rect = MRECT(0, 0, 247, 50);
 }
 
 void TwoDots::setInverted(bool b)

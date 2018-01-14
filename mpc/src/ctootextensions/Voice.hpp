@@ -127,11 +127,6 @@ namespace mpc {
 			float frac{ 0 };
 			int k{ 0 };
 			int j{ 0 };
-			std::vector<int> leftPairs{};
-			std::vector<int> rightPairs{};
-			std::vector<float>* left{};
-			std::vector<float>* right{};
-			int count{ 0 };
 			std::vector<float> frame;
 
 		public:

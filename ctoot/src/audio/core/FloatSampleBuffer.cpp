@@ -171,24 +171,24 @@ void FloatSampleBuffer::changeSampleCount(int newSampleCount, bool keepOldSample
 	}
 }
 
-void FloatSampleBuffer::makeSilence()
+void FloatSampleBuffer::makeSilenceFrames(int nFrames)
 {
 	if (getChannelCount() > 0) {
-		makeSilence(0);
+		makeSilence(0, nFrames);
 		for (int ch = 1; ch < getChannelCount(); ch++) {
 			//copyChannel(0, ch);
-			makeSilence(ch);
+			makeSilence(ch, nFrames);
 		}
 	}
 }
 
-void FloatSampleBuffer::makeSilence(int channel)
+void FloatSampleBuffer::makeSilence(int channel, int nFrames)
 {
-	//vector<float>* samples = getChannel(channel);
-	//for (int i = 0; i < samples->size(); i++) {
-//		(*samples)[i] = 0;
-//	}
-	channels[channel] = vector<float>(getSampleCount());
+	vector<float>* samples = getChannel(channel);
+	for (int i = 0; i < nFrames; i++) {
+		(*samples)[i] = 0;
+	}
+	//channels[channel] = vector<float>(getSampleCount());
 }
 
 void FloatSampleBuffer::addChannel(bool silent)
@@ -224,7 +224,7 @@ void FloatSampleBuffer::insertChannel(int index, bool silent, bool lazy)
 	channels.push_back(newChannel);
 	this->channelCount++;
 	if (silent) {
-		makeSilence(index);
+		makeSilence(index, getSampleCount());
 	}
 }
 
