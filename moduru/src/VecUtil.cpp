@@ -1,7 +1,7 @@
 #include <VecUtil.hpp>
 
 #include <file/ByteUtil.hpp>
-#include <stdexcept>
+
 using namespace moduru;
 using namespace std;
 
