@@ -16,6 +16,7 @@ namespace ctoot {
 			{
 
 			protected:
+				float sampleRate{ 44100.0 };
 				unsigned int bufferSize{ 512 };
 				AudioClient* client{ nullptr };
 				bool running{ false };
@@ -44,7 +45,8 @@ namespace ctoot {
 				virtual IOAudioProcess* openAudioInput(std::string name, std::string label) = 0;
 				virtual void closeAudioOutput(IOAudioProcess* output) = 0;
 				virtual void closeAudioInput(IOAudioProcess* input) = 0;
-				virtual float getSampleRate() = 0;
+				virtual float getSampleRate();
+				virtual void setSampleRate(int rate);
 				virtual float getLoad() = 0;
 				virtual int getInputLatencyFrames() = 0;
 				virtual int getOutputLatencyFrames() = 0;
@@ -54,7 +56,6 @@ namespace ctoot {
 			public:
 				virtual ctoot::audio::core::AudioBuffer* createAudioBuffer(std::string name);
 				virtual void removeAudioBuffer(ctoot::audio::core::AudioBuffer* buffer);
-				//virtual void setRequestedBufferSize(const unsigned int nFrames);
 
 			public:
 				virtual ~AudioServer();

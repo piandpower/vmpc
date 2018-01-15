@@ -72,10 +72,10 @@ AudioMidiServices::AudioMidiServices(mpc::Mpc* mpc)
 	this->mpc = mpc;
 	frameSeq = make_shared<mpc::sequencer::FrameSeq>(mpc);
 	disabled = true;
-	format = make_shared<ctoot::audio::core::AudioFormat>(44100, 16, 2, true, false);
 }
 
-void AudioMidiServices::start(std::string mode) {
+void AudioMidiServices::start(std::string mode, int sampleRate) {
+	format = make_shared<ctoot::audio::core::AudioFormat>(sampleRate, 16, 2, true, false);
 	setupMidi();
 
 	if (mode.compare("rtaudio") == 0) {
@@ -84,6 +84,7 @@ void AudioMidiServices::start(std::string mode) {
 	else if (mode.compare("unreal") == 0) {
 		server = make_shared<ctoot::audio::server::UnrealAudioServer>();
 	}
+	server->setSampleRate(sampleRate);
 	offlineServer = make_shared<ctoot::audio::server::NonRealTimeAudioServer>(server);
 	setupMixer();
 	inputProcesses = vector<ctoot::audio::server::IOAudioProcess*>(1);
@@ -103,7 +104,7 @@ void AudioMidiServices::start(std::string mode) {
 		outputProcesses[i] = server->openAudioOutput(getOutputNames()[i], "mpc_out" + to_string(i));
 	}
 
-	createSynth();
+	createSynth(sampleRate);
 	if (oldPrograms.size() != 0) {
 		for (int i = 0; i < 4; i++) {
 			mpc->getDrum(i)->setProgram(oldPrograms[i]);
@@ -123,12 +124,14 @@ void AudioMidiServices::start(std::string mode) {
 	cac->add(frameSeq.get());
 	cac->add(mixer.get());
 	//cac->add(midiSystem.get());
+	sampler->setSampleRate(sampleRate);
 	cac->add(sampler.get());
 	offlineServer->setWeakPtr(offlineServer);
 	offlineServer->setClient(cac);
 	offlineServer->resizeBuffers(8192*4);
 	offlineServer->start();
 	disabled = false;
+	MLOG("audio midi services started");
 }
 
 void AudioMidiServices::setupMidi()
@@ -210,11 +213,12 @@ weak_ptr<mpc::ctootextensions::MpcMultiMidiSynth> AudioMidiServices::getMms()
 	return mms;
 }
 
-void AudioMidiServices::createSynth()
+void AudioMidiServices::createSynth(int sampleRate)
 {
 	synthRackControls = make_shared<ctoot::synth::SynthRackControls>(1);
 	synthRack = make_shared<ctoot::synth::SynthRack>(synthRackControls, midiSystem, audioSystem);
 	msc = make_shared<ctootextensions::MpcMultiSynthControls>();
+	msc->setSampleRate(sampleRate);
 	synthRackControls->setSynthControls(0, msc);
 	mms = dynamic_pointer_cast<mpc::ctootextensions::MpcMultiMidiSynth>(synthRack->getMidiSynth(0).lock());
 	for (int i = 0; i < 4; i++) {
@@ -222,7 +226,7 @@ void AudioMidiServices::createSynth()
 		msc->setChannelControls(i, m);
 		synthChannelControls.push_back(m);
 	}
-	basicVoice = make_shared<mpc::ctootextensions::Voice>(65, true);
+	basicVoice = make_shared<mpc::ctootextensions::Voice>(65, true, sampleRate);
 	auto m = make_shared<mpc::ctootextensions::MpcBasicSoundPlayerControls>(mpc->getSampler(), mixer, basicVoice);
 	msc->setChannelControls(4, m);
 	synthChannelControls.push_back(std::move(m));
@@ -258,31 +262,47 @@ void AudioMidiServices::destroyServices()
 	if (disabled) {
 		return;
 	}
+	disabled = true;
 	offlineServer->stop();
+	MLOG("Offline server stopped");
 	cac.reset();
+	MLOG("cac reset");
 	destroyDiskWriter();
+	MLOG("disk writer destroyed");
 	mpc->getSampler().lock()->setActiveInput(nullptr);
 	mixer->getStrip("66").lock()->setInputProcess(nullptr);
+	MLOG("sampler unhooked");
 	mpcMidiPorts->close();
 	mpcMidiPorts.reset();
+	MLOG("midi ports closed");
 	destroySynth();
+	MLOG("synth destroyed");
 	closeIO();
+	MLOG("io closed");
 	inputProcesses.clear();
 	outputProcesses.clear();
+	MLOG("io processes cleared");
 
 	if (audioSystem) {
 		audioSystem->close();
 		audioSystem.reset();
+		MLOG("audio system closed/reset");
 	}
 
 	mixer->close();
 	mixer.reset();
+	MLOG("mixer closed");
 	mixerControls.reset();
+	MLOG("mixer closed");
 	offlineServer->close();
+	MLOG("offline server closed");
 	offlineServer.reset();
+	MLOG("offline server reset");
 	server.reset();
+	MLOG("server reset");
 	midiSystem->close();
 	midiSystem.reset();
+	MLOG("midi system closed");
 }
 
 void AudioMidiServices::destroySynth() {

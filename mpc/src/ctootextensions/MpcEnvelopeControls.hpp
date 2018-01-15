@@ -17,7 +17,7 @@ namespace mpc {
 			ctoot::control::FloatControl* attackControl{ nullptr };
 			ctoot::control::FloatControl* holdControl{ nullptr };
 			ctoot::control::FloatControl* decayControl{ nullptr };
-			int sampleRate{ 44100 };
+			float sampleRate{ 44100 };
 			float attack{}, decay{}, hold{ 0 };
 			int idOffset{ 0 };
 
@@ -27,6 +27,7 @@ namespace mpc {
 			void deriveSampleRateIndependentVariables();
 			void deriveSampleRateDependentVariables();
 			float deriveHold();
+			void setSampleRate(int rate);
 
 		private:
 			static float LOG_0_01_;

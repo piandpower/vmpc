@@ -29,6 +29,8 @@
 
 #include <file/File.hpp>
 
+#include <thirdp/libsamplerate/samplerate.h>
+
 using namespace mpc::sampler;
 using namespace std;
 
@@ -38,17 +40,21 @@ Sampler::Sampler(mpc::Mpc* mpc)
 	vuCounter = 0;
 	vuBufferL = vector<float>(VU_BUFFER_SIZE);
 	vuBufferR = vector<float>(VU_BUFFER_SIZE);
-	preRecBufferL = boost::circular_buffer<float>(4410);
-	preRecBufferR = boost::circular_buffer<float>(4410);
 	soundSortingType = 0;
 	abcd = vector<string>{ "A", "B", "C", "D" };
 	sortNames = vector<string>{ "MEMORY", "NAME", "SIZE" };
-	recordBuffer = make_unique<ctoot::audio::core::AudioBuffer>("record", 2, 8192, 44100);
 	monitorOutput = make_shared<MonitorOutput>(mpc);
 	auto ud = mpc::StartUp::getUserDefaults().lock();
 	initMasterPadAssign = ud->getPadNotes();
 
 	programs = vector<shared_ptr<Program>>(24);
+}
+
+void Sampler::setSampleRate(int rate) {
+	sampleRate = rate;
+	recordBuffer = make_unique<ctoot::audio::core::AudioBuffer>("record", 2, 8192*4, rate);
+	preRecBufferL = boost::circular_buffer<float>(rate / 10);
+	preRecBufferR = boost::circular_buffer<float>(rate / 10);
 }
 
 void Sampler::setInputLevel(int i) {
@@ -144,7 +150,7 @@ void Sampler::work(int nFrames)
 
 				levelL = highestl;
 				levelR = highestr;
-				//mpc->getUis().lock()->getSamplerGui()->notify("vumeter");
+				mpc->getUis().lock()->getSamplerGui()->notify("vumeter");
 				vuBufferL = vector<float>(VU_BUFFER_SIZE);
 				vuBufferR = vector<float>(VU_BUFFER_SIZE);
 			}
@@ -848,7 +854,7 @@ void Sampler::record()
 {
 	int recSize = 0;
 	auto samplerGui = mpc->getUis().lock()->getSamplerGui();
-	recSize = samplerGui->getTime() * 4410;
+	recSize = samplerGui->getTime() * (sampleRate/10);
 	mpc->getLayeredScreen().lock()->getCurrentBackground()->setName("recording");
 	auto components = mpc->getLayeredScreen().lock()->getLayer(0)->getAllLabelsAndFields();
 	for (auto& c : components) {
@@ -861,15 +867,45 @@ void Sampler::record()
 	recording = true;
 }
 
+void Sampler::resample(std::vector<float>* src, int srcRate, std::vector<float>* dest, int destRate) {
+
+	float* srcArray = &(*src)[0];
+
+	SRC_DATA srcData;
+	srcData.data_in = srcArray;
+	srcData.input_frames = src->size();
+	srcData.src_ratio = (double)(destRate) / (double)(srcRate);
+	srcData.output_frames = (floor)(src->size() * srcData.src_ratio);
+
+	dest->resize(srcData.output_frames);
+
+	float* destArray = &(*dest)[0];
+	srcData.data_out = destArray;
+
+	auto error = src_simple(&srcData, 0, 1);
+	if (error != 0) {
+		const char* errormsg = src_strerror(error);
+		string errorStr(errormsg);
+		MLOG("libsamplerate error: " + errorStr);
+	}
+	for (auto& f : *dest) {
+		if (f > 1) {
+			f = 1;
+		}
+		else if (f < -1) {
+			f = -1;
+		}
+	}
+}
+
 void Sampler::stopRecordingEarlier()
 {
-	auto stopFrameIndex = recordFrame + preRecBufferL.size();
 	stopRecordingBasic();
 	auto s = getPreviewSound().lock();
+	auto stopFrameIndex = (floor)(recordFrame + preRecBufferL.size()) * (44100.0 / sampleRate);
 	int newSize = s->isMono() ? stopFrameIndex : stopFrameIndex * 2;
 	auto sampleData = s->getSampleData();
 	sampleData->resize(newSize);
-	s->setEnd(stopFrameIndex);
 	mpc->getLayeredScreen().lock()->openScreen("keeporretry");
 }
 
@@ -889,7 +925,7 @@ void Sampler::stopRecordingBasic()
 	auto sampleDataR = vector<float>(preRecBufferR.size() + recordBufferR.size());
 	auto preRecCounter = 0;
 	for (float f : preRecBufferL) {
-		while (preRecCounter != 4410 - (samplerGui->getPreRec() * 44.1)) {
+		while (preRecCounter != (sampleRate/10) - (samplerGui->getPreRec() * (sampleRate/1000.0))) {
 			preRecCounter++;
 		}
 		sampleDataL[counter++] = f;
@@ -900,7 +936,7 @@ void Sampler::stopRecordingBasic()
 	counter = 0;
 	preRecCounter = 0;
 	for (float f : preRecBufferR) {
-		while (preRecCounter != 4410 - (samplerGui->getPreRec() * 44.1)) {
+		while (preRecCounter != (sampleRate/10) - (samplerGui->getPreRec() * (sampleRate/1000.0))) {
 			preRecCounter++;
 		}
 
@@ -914,8 +950,8 @@ void Sampler::stopRecordingBasic()
 	if (mode == 2) {
 		data->resize(sampleDataL.size() * 2);
 		for (int i = 0; i < sampleDataL.size(); i++) {
-			data->at(i) = sampleDataL[i];
-			data->at(i + sampleDataL.size()) = sampleDataR[i];
+			(*data)[i] = sampleDataL[i];
+			(*data)[i + sampleDataL.size()] = sampleDataR[i];
 		}
 		s->setMono(false);
 	}
@@ -923,9 +959,16 @@ void Sampler::stopRecordingBasic()
 		data->resize(sampleDataL.size());
 		auto src = mode == 0 ? &sampleDataL : &sampleDataR;
 		for (int i = 0; i < src->size(); i++)
-			data->at(i) = src->at(i);
+			(*data)[i] = (*src)[i];
 		s->setMono(true);
 	}
+
+	vector<float> resampled;
+	resample(s->getSampleData(), sampleRate, &resampled, 44100.0);
+	s->getSampleData()->swap(resampled);
+	int lastFrameIndex = s->isMono() ? s->getSampleData()->size() : s->getSampleData()->size() / 2;
+	s->setEnd(lastFrameIndex + 1);
+
 	recording = false;
 }
 

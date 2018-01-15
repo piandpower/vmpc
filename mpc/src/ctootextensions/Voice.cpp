@@ -19,31 +19,41 @@
 
 #include <file/File.hpp>
 
+#include <Mpc.hpp>
+
 #ifdef __linux__
 #include <climits>
 #endif
 
 using namespace mpc::ctootextensions;
 
-Voice::Voice(int stripNumber, bool basic)
+Voice::Voice(int stripNumber, bool basic, int hostSampleRate)
 {
+	this->hostSampleRate = hostSampleRate;
+	inverseNyquist = 2.f / hostSampleRate;
 	EMPTY_FRAME = std::vector<float>{ 0.f, 0.f };
 	tempFrame = std::vector<float>{ 0.f, 0.f };
 	muteInfo = new mpc::ctootextensions::MuteInfo();
 	this->stripNumber = stripNumber;
 	this->basic = basic;
 	staticEnvControls = new mpc::ctootextensions::MpcEnvelopeControls(0, "StaticAmpEnv", AMPENV_OFFSET);
+	staticEnvControls->setSampleRate(hostSampleRate);
 	staticEnv = new mpc::ctootextensions::MpcEnvelopeGenerator(staticEnvControls);
 	sattack = std::dynamic_pointer_cast<ctoot::control::FloatControl>(staticEnvControls->getControls()[ATTACK_INDEX]).get();
 	shold = std::dynamic_pointer_cast<ctoot::control::FloatControl>(staticEnvControls->getControls()[HOLD_INDEX]).get();
 	sdecay = std::dynamic_pointer_cast<ctoot::control::FloatControl>(staticEnvControls->getControls()[DECAY_INDEX]).get();
 
+	timeRatio = 5.46f * (44100.0 / hostSampleRate);
+
 	if (!basic) {
 		ampEnvControls = new mpc::ctootextensions::MpcEnvelopeControls(0, "AmpEnv", AMPENV_OFFSET);
+		ampEnvControls->setSampleRate(hostSampleRate);
 		filterEnvControls = new mpc::ctootextensions::MpcEnvelopeControls(0, "StaticAmpEnv", AMPENV_OFFSET);
+		filterEnvControls->setSampleRate(hostSampleRate);
 		ampEnv = new mpc::ctootextensions::MpcEnvelopeGenerator(ampEnvControls);
 		filterEnv = new mpc::ctootextensions::MpcEnvelopeGenerator(filterEnvControls);
 		svfControls = new ctoot::synth::modules::filter::StateVariableFilterControls(0, "Filter", SVF_OFFSET);
+		svfControls->setSampleRate(hostSampleRate);
 		svfControls->createControls();
 		svf0 = new ctoot::synth::modules::filter::StateVariableFilter(svfControls);
 		svf1 = new ctoot::synth::modules::filter::StateVariableFilter(svfControls);
@@ -59,7 +69,6 @@ Voice::Voice(int stripNumber, bool basic)
 	}
 }
 
-const float Voice::TIME_RATIO{ 5.46f };
 const float Voice::STATIC_ATTACK_LENGTH{ 10.92f };
 const float Voice::STATIC_DECAY_LENGTH{ 109.2f };
 const int Voice::MAX_ATTACK_LENGTH_MS;
@@ -132,7 +141,8 @@ void Voice::init(
         break;
     }
 
-	increment = pow(2.0, tune / 120.0);
+	increment = pow(2.0, ((double)(tune) / 120.0)) * (44100.0 / hostSampleRate);
+
 	start = lOscVars->getStart() + (veloFactor * (veloToStart / 100.0) * lOscVars->getLastFrameIndex());
     end = lOscVars->getEnd();
 	position = start;
@@ -142,8 +152,8 @@ void Voice::init(
     attackMs += (float)((veloToAttack / 100.0) * MAX_ATTACK_LENGTH_MS * veloFactor);
     finalDecayValue = decayValue < 2 ? 2 : decayValue;
     decayMs = (float)((finalDecayValue / 100.0) * MAX_DECAY_LENGTH_MS);
-    attackLengthSamples = (int)(attackMs * 44.1);
-    decayLengthSamples = (int)(decayMs * 44.1);
+    attackLengthSamples = (int)(attackMs * (hostSampleRate/1000.0));
+    decayLengthSamples = (int)(decayMs * (hostSampleRate/1000.0));
 	if (attackLengthSamples > MAX_ATTACK_LENGTH_SAMPLES) {
 		attackLengthSamples = (int)(MAX_ATTACK_LENGTH_SAMPLES);
 	}
@@ -153,7 +163,7 @@ void Voice::init(
 	}
 
     holdLengthSamples = playableSampleLength - attackLengthSamples - decayLengthSamples;
-    staticEnvHoldSamples = (int)(playableSampleLength - (((STATIC_ATTACK_LENGTH + STATIC_DECAY_LENGTH) / TIME_RATIO) * 44.1));
+    staticEnvHoldSamples = (int)(playableSampleLength - (((STATIC_ATTACK_LENGTH + STATIC_DECAY_LENGTH) / timeRatio) * (hostSampleRate/1000.0)));
     staticEnv->reset();
     sattack->setValue(STATIC_ATTACK_LENGTH);
     shold->setValue(staticEnvHoldSamples);
@@ -163,9 +173,9 @@ void Voice::init(
     amplitude *= (lOscVars->getSndLevel() / 100.0);
     if(!basic) {
         ampEnv->reset();
-        attack->setValue(decayMode == 1 ? (float)(0) : attackMs * TIME_RATIO);
+        attack->setValue(decayMode == 1 ? (float)(0) : attackMs * timeRatio);
         hold->setValue(decayMode == 1 ? 0 : holdLengthSamples);
-        decay->setValue(decayMs * TIME_RATIO);
+        decay->setValue(decayMs * timeRatio);
         filtParam = np->getFilterFrequency();
         if(varType == 3) filtParam = varValue;
 
@@ -238,7 +248,7 @@ void Voice::readFrame() {
 	j = k - 1;
 	if (j == -1) j = 0;
 
-	frac = position - j;
+	frac = position - (double)(j);
 
 	if (oscVars.lock()->isMono()) {
 		tempFrame[0] = ((*sampleData)[j] * (1.0f - frac)) + ((*sampleData)[k] * frac);

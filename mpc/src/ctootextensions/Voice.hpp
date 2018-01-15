@@ -36,7 +36,9 @@ namespace mpc {
 		{
 
 		private:
-			static const float TIME_RATIO;
+			float hostSampleRate = 44100.0;
+			float timeRatio;
+			
 			static const float STATIC_ATTACK_LENGTH;
 			static const float STATIC_DECAY_LENGTH;
 			static const int MAX_ATTACK_LENGTH_MS{ 3000 };
@@ -52,8 +54,8 @@ namespace mpc {
 
 			std::weak_ptr<mpc::sampler::Sound> oscVars{};
 			int tune{ 0 };
-			float increment{ 0 };
-			float position{ 0 };
+			double increment{ 0 };
+			double position{ 0 };
 			std::vector<float>* sampleData;
 			int padNumber{ -1 };
 			mpc::ctootextensions::MpcEnvelopeGenerator* staticEnv{ nullptr };
@@ -124,7 +126,7 @@ namespace mpc {
 			int filtParam{ 0 };
 			float envAmplitude{ 0 };
 			float staticEnvAmp{ 0 };
-			float frac{ 0 };
+			double frac{ 0 };
 			int k{ 0 };
 			int j{ 0 };
 			std::vector<float> frame;
@@ -147,7 +149,7 @@ namespace mpc {
 			void finish();
 
 		public:
-			Voice(int stripNumber, bool basic);
+			Voice(int stripNumber, bool basic, int sampleRate);
 			~Voice();
 		};
 

@@ -5,6 +5,14 @@
 using namespace ctoot::audio::server;
 using namespace std;
 
+float AudioServer::getSampleRate() {
+	return sampleRate;
+}
+
+void AudioServer::setSampleRate(int rate) {
+	sampleRate = rate;
+}
+
 const std::vector<IOAudioProcess*>& AudioServer::getActiveInputs() {
 	return activeInputs;
 }
@@ -22,7 +30,7 @@ const unsigned int AudioServer::getBufferSize() {
 }
 
 ctoot::audio::core::AudioBuffer* AudioServer::createAudioBuffer(string name) {
-	buffers.push_back(new ctoot::audio::core::AudioBuffer(name, 2, bufferSize, 44100));
+	buffers.push_back(new ctoot::audio::core::AudioBuffer(name, 2, bufferSize, sampleRate));
 	return buffers.back();
 }
 

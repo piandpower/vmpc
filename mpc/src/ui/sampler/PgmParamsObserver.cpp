@@ -19,6 +19,7 @@ using namespace std;
 
 PgmParamsObserver::PgmParamsObserver(mpc::Mpc* mpc) 
 {
+	this->mpc = mpc;
 	decayModes = { "END", "START" };
 	voiceOverlapModes = { "POLY", "MONO", "NOTE OFF" };
 	samplerGui = mpc->getUis().lock()->getSamplerGui();
@@ -56,12 +57,15 @@ void PgmParamsObserver::update(moduru::observer::Observable* o, boost::any arg)
 {
 	string s = boost::any_cast<string>(arg);
 	auto lProgram = program.lock();
+	auto lSampler = sampler.lock();
 	lProgram->deleteObserver(this);
 	mpcSoundPlayerChannel->deleteObserver(this);
-	auto lSampler = sampler.lock();
+	lSampler->getLastNp(lProgram.get())->deleteObserver(this);
+
+	mpcSoundPlayerChannel = lSampler->getDrum(samplerGui->getSelectedDrum());
 	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
 	lProgram = program.lock();
-	lSampler->getLastNp(lProgram.get())->deleteObserver(this);
+
 	lSampler->getLastNp(lProgram.get())->addObserver(this);
 	lProgram->addObserver(this);
 	mpcSoundPlayerChannel->addObserver(this);
@@ -175,5 +179,7 @@ PgmParamsObserver::~PgmParamsObserver() {
 	samplerGui->deleteObserver(this);
 	sampler.lock()->getLastNp(program.lock().get())->deleteObserver(this);
 	sampler.lock()->getLastPad(program.lock().get())->deleteObserver(this);
-	ls->getEnvGraph().lock()->Hide(true);
+	if (mpc->getLayeredScreen().lock()) {
+		mpc->getLayeredScreen().lock()->getEnvGraph().lock()->Hide(true);
+	}
 }

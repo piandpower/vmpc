@@ -119,7 +119,7 @@ void ButtonControl::initRects() {
 
 void ButtonControl::OnMouseDown(int x, int y, IMouseMod* pMod) {
 	button.lock()->push();
-	kbLabel->Hide(true);
+	//kbLabel->Hide(true);
 }
 
 void ButtonControl::OnMouseUp(int x, int y, IMouseMod* pMod) {
@@ -129,12 +129,12 @@ void ButtonControl::OnMouseUp(int x, int y, IMouseMod* pMod) {
 void ButtonControl::OnMouseOver(int x, int y, IMouseMod *pMod) {
 	if (mouseEntered) return;
 	mouseEntered = true;
-	kbLabel->Hide(false);
+	//kbLabel->Hide(false);
 }
 
 void ButtonControl::OnMouseOut() {
 	mouseEntered = false;
-	kbLabel->Hide(true);
+	//kbLabel->Hide(true);
 }
 
 bool ButtonControl::Draw(IGraphics* g) {

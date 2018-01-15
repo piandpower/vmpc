@@ -1,5 +1,7 @@
 #include <controls/sampler/window/KeepOrRetryControls.hpp>
 
+#include <Mpc.hpp>
+#include <controls/Controls.hpp>
 #include <ui/NameGui.hpp>
 #include <ui/sampler/SoundGui.hpp>
 #include <sampler/NoteParameters.hpp>
@@ -31,6 +33,8 @@ void KeepOrRetryControls::function(int i)
 		lLs->openScreen("sample");
 		break;
 	case 3 :
+		if (mpc->getControls().lock()->isF4Pressed()) return;
+		mpc->getControls().lock()->setF4Pressed(true);
 		lSampler->playPreviewSample(0, lSampler->getPreviewSound().lock()->getLastFrameIndex(), 0, 2);
 		break;
 	case 4:

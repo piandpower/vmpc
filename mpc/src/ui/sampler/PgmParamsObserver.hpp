@@ -34,6 +34,7 @@ namespace mpc {
 			{
 
 			private:
+				mpc::Mpc* mpc;
 				std::vector<std::string> decayModes{};
 				std::vector<std::string> voiceOverlapModes{};
 				std::weak_ptr<mpc::sampler::Sampler> sampler{ };

@@ -42,6 +42,12 @@ void GlobalReleaseControls::function(int i) {
 			sampler.lock()->finishBasicVoice();
 		}
 		break;
+	case 3:
+		controls->setF4Pressed(false);
+		if (csn.compare("keeporretry") == 0) {
+			sampler.lock()->finishBasicVoice();
+		}
+		break;
 	case 4:
 		controls->setF5Pressed(false);
 	case 5:

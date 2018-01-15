@@ -24,6 +24,13 @@ ZoneObserver::ZoneObserver(mpc::Mpc* mpc)
 	auto ls = mpc->getLayeredScreen().lock();
 	csn = ls->getCurrentScreenName();
 	auto lSampler = sampler.lock();
+	twoDots = ls->getTwoDots();
+	twoDots.lock()->setVisible(0, true);
+	twoDots.lock()->setVisible(1, true);
+	twoDots.lock()->setVisible(2, false);
+	twoDots.lock()->setVisible(3, false);
+	wave = ls->getWave();
+	wave.lock()->Hide(false);
 	if (lSampler->getSoundCount() != 0) {
 		sound = lSampler->getSound(soundGui->getSoundIndex());
 		auto lSound = sound.lock();
@@ -31,13 +38,7 @@ ZoneObserver::ZoneObserver(mpc::Mpc* mpc)
 		lSound->getMsoc()->addObserver(this);
 		waveformLoadData();
 	}
-	twoDots = ls->getTwoDots();
-	twoDots.lock()->setVisible(0, true);
-	twoDots.lock()->setVisible(1, true);
-	twoDots.lock()->setVisible(2, false);
-	twoDots.lock()->setVisible(3, false);
-	wave= ls->getWave();
-	wave.lock()->Hide(false);
+	
 	if (csn.compare("zone") == 0) {
 		twoDots.lock()->Hide(false);
 		sndField = ls->lookupField("snd");

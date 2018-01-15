@@ -118,5 +118,12 @@ float MpcEnvelopeControls::getDecayCoeff()
     return decay;
 }
 
+void MpcEnvelopeControls::setSampleRate(int rate) {
+	if (sampleRate != rate) {
+		sampleRate = rate;
+		deriveSampleRateDependentVariables();
+	}
+}
+
 MpcEnvelopeControls::~MpcEnvelopeControls() {
 }

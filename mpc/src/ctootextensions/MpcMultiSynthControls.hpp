@@ -10,9 +10,12 @@ namespace mpc {
 			: public MultiSynthControls {
 
 			int MPC_MULTI_SYNTH_ID{ 5 };
+			int sampleRate = 44100;
 
 		public:
 			std::string getName();
+			void setSampleRate(int sampleRate);
+			int getSampleRate();
 
 		public:
 			int ID = MPC_MULTI_SYNTH_ID;

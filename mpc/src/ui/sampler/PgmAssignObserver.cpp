@@ -109,14 +109,17 @@ void PgmAssignObserver::update(moduru::observer::Observable* o, boost::any arg)
 {
 	auto lSampler = sampler.lock();
 	auto lProgram = program.lock();
+
+	lSampler->getLastNp(lProgram.get())->deleteObserver(this);
+	lSampler->getLastPad(lProgram.get())->deleteObserver(this);
 	lProgram->deleteObserver(this);
 	mpcSoundPlayerChannel->deleteObserver(this);
+
 	mpcSoundPlayerChannel = lSampler->getDrum(samplerGui->getSelectedDrum());
 	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
 	lProgram = program.lock();
-	lSampler->getLastNp(lProgram.get())->deleteObserver(this);
+
 	lSampler->getLastNp(lProgram.get())->addObserver(this);
-	lSampler->getLastPad(lProgram.get())->deleteObserver(this);
 	lSampler->getLastPad(lProgram.get())->addObserver(this);
 	lProgram->addObserver(this);
 	mpcSoundPlayerChannel->addObserver(this);
@@ -251,9 +254,6 @@ void PgmAssignObserver::displaySelectedPadName()
 PgmAssignObserver::~PgmAssignObserver() {
 	samplerGui->deleteObserver(this);
 	program.lock()->deleteObserver(this);
-	/*
-	* Probably add observer to all pads and note parameters of current program during update(), after removing this observer from previous pads and note parameters of previous program, then remove observer from all pads and note parameters of last used program in this destructor.
-	*/
 	sampler.lock()->getLastNp(program.lock().get())->deleteObserver(this);
 	sampler.lock()->getLastPad(program.lock().get())->deleteObserver(this);
 	mpcSoundPlayerChannel->deleteObserver(this);

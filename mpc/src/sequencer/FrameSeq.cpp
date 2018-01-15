@@ -15,6 +15,7 @@
 
 #include <ui/sequencer/SongGui.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
+
 //#include <controls/AbstractControls.hpp>
 
 using namespace mpc::sequencer;
@@ -25,21 +26,21 @@ FrameSeq::FrameSeq(mpc::Mpc* mpc) {
 	sequencer = mpc->getSequencer();
 }
 
-void FrameSeq::start() {
+void FrameSeq::start(float sampleRate) {
 	if (running) {
 		return;
 	}
-	clock.init(44100.0);
+	clock.init(sampleRate);
 	clock.setTick(sequencer.lock()->getPlayStartTick());
 	running = true;
 }
 
-void FrameSeq::startMetronome() {
+void FrameSeq::startMetronome(int sampleRate) {
 	if (running) {
 		return;
 	}
 	metronome = true;
-	start();
+	start(sampleRate);
 }
 
 void FrameSeq::work(int nFrames) {

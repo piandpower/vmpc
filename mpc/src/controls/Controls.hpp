@@ -34,6 +34,7 @@ namespace mpc {
 			bool goToPressed{ false };
 			bool erasePressed{ false };
 			bool f3Pressed{ false };
+			bool f4Pressed{ false };
 			bool f5Pressed{ false };
 			bool f6Pressed{ false };
 			std::set<int> pressedPads;
@@ -47,6 +48,7 @@ namespace mpc {
 			void setGoToPressed(bool b);
 			void setShiftPressed(bool b);
 			void setF3Pressed(bool b);
+			void setF4Pressed(bool b);
 			void setF5Pressed(bool b);
 			void setF6Pressed(bool b);
 
@@ -57,6 +59,7 @@ namespace mpc {
 			bool isGoToPressed();
 			bool isShiftPressed();
 			bool isF3Pressed();
+			bool isF4Pressed();
 			bool isF5Pressed();
 			bool isF6Pressed();
 

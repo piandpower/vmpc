@@ -99,7 +99,7 @@ namespace mpc {
 			void setupMidi();
 			void setupMixer();
 			void setGroupLevel(int i);
-			void createSynth();
+			void createSynth(int sampleRate);
 
 		public:
 			std::weak_ptr<ctoot::audio::server::AudioServer> getAudioServer();
@@ -130,7 +130,7 @@ namespace mpc {
 			int getBufferSize();
 
 		public:
-			void start(std::string mode);
+			void start(std::string mode, int sampleRate);
 
 		public:
 			AudioMidiServices(Mpc* mpc);

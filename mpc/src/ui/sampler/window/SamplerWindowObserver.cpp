@@ -579,7 +579,9 @@ void SamplerWindowObserver::displayMidiProgramChange()
 }
 
 SamplerWindowObserver::~SamplerWindowObserver() {
-	mpc->getLayeredScreen().lock()->getEnvGraph().lock()->Hide(true);
+	if (mpc->getLayeredScreen().lock()) {
+		mpc->getLayeredScreen().lock()->getEnvGraph().lock()->Hide(true);
+	}
 	samplerGui->deleteObserver(this);
 	swGui->deleteObserver(this);
 	sampler.lock()->getLastNp(program.lock().get())->deleteObserver(this);

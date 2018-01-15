@@ -391,7 +391,7 @@ void Sequencer::play(bool fromStart)
 	}
 	hw->getLed("play").lock()->light(true);
 	auto lAms = mpc->getAudioMidiServices().lock();
-	lAms->getFrameSequencer().lock()->start();
+	lAms->getFrameSequencer().lock()->start(lAms->getOfflineServer()->getSampleRate());
 	if (lAms->isBouncePrepared()) {
 		lAms->startBouncing();
 	}
@@ -1356,7 +1356,8 @@ void Sequencer::playMetronomeTrack()
 	metronomeSeq->setTimeSignature(0, 3, s->getNumerator(getCurrentBarNumber()), s->getDenominator(getCurrentBarNumber()));
 	metronomeSeq->setInitialTempo(getTempo());
 	metronomeSeq->removeFirstMetronomeClick();
-	mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->startMetronome();
+	auto lAms = mpc->getAudioMidiServices().lock();
+	lAms->getFrameSequencer().lock()->startMetronome(lAms->getOfflineServer()->getSampleRate());
 }
 
 void Sequencer::stopMetronomeTrack()

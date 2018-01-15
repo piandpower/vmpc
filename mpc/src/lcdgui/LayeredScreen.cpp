@@ -1012,5 +1012,4 @@ void LayeredScreen::setFocus(string focus) {
 }
 
 LayeredScreen::~LayeredScreen() {
-	activeObserver.reset();
 }

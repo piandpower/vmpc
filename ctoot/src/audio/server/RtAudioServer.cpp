@@ -35,13 +35,26 @@ void RtAudioServer::close() {
 void RtAudioServer::work() {
 }
 
+void RtAudioServer::work(const float** InAudio, float** OutAudio, int nFrames, int inputChannels, int outputChannels) {
+	std::vector<float> tempInL(nFrames);
+	std::vector<float> tempInR(nFrames);
+	std::vector<float*> tempInLR = { &tempInL[0], &tempInR[0] };
+	if (inputChannels >= 2) {
+		for (int i = 0; i < nFrames; i++) {
+			tempInL[i] = InAudio[0][i];
+			tempInR[i] = InAudio[1][i];
+		}
+	}
+	work(&tempInLR[0], OutAudio, nFrames, inputChannels, outputChannels);
+}
+
 void RtAudioServer::work(float** InAudio, float** OutAudio, int nFrames, int inputChannels, int outputChannels) {
 	auto activeInputs = getActiveInputs();
 	if (activeInputs.size() != 0 && inputChannels >= 2) {
 		float* inputBufferL = (float*)InAudio[0];
 		float* inputBufferR = (float*)InAudio[1];
-		if (activeInputs[0]->localBuffer.size() != nFrames * 2);
-		activeInputs[0]->localBuffer.resize(nFrames * 2);
+		if (activeInputs[0]->localBuffer.size() != nFrames * 2)
+			activeInputs[0]->localBuffer.resize(nFrames * 2);
 		int frameCounter = 0;
 		for (int i = 0; i < nFrames * 2; i += 2) {
 			activeInputs[0]->localBuffer[i] = inputBufferL[frameCounter];
@@ -66,7 +79,7 @@ void RtAudioServer::work(double** InAudio, double** OutAudio, int nFrames, int o
 	if (activeInputs.size() != 0) {
 		double* inputBufferL = (double*)InAudio[0];
 		double* inputBufferR = (double*)InAudio[1];
-		if (activeInputs[0]->localBuffer.size() != nFrames * 2);
+		if (activeInputs[0]->localBuffer.size() != nFrames * 2)
 			activeInputs[0]->localBuffer.resize(nFrames * 2);
 		int frameCounter = 0;
 		for (int i = 0; i < nFrames * 2; i += 2) {
@@ -130,10 +143,6 @@ void RtAudioServer::closeAudioInput(ctoot::audio::server::IOAudioProcess* input)
 			break;
 		}
 	}
-}
-
-float RtAudioServer::getSampleRate() {
-	return 44100.0f;
 }
 
 float RtAudioServer::getLoad() {

@@ -71,7 +71,7 @@ VMPCWDL::VMPCWDL(IPlugInstanceInfo instanceInfo)
 	mSampleRate(44100.)
 {   
 	mpc = new mpc::Mpc();
-	mpc->init("rtaudio");
+	mpc->init("rtaudio", mSampleRate);
 	MLOG("mpc initialized");
 	TRACE;
 
@@ -154,8 +154,11 @@ VMPCWDL::~VMPCWDL()
 
 void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFrames, int outputChannels)
 {
+	if (mpc->getAudioMidiServices().lock()->isDisabled()) return;
 	auto offlineServer = mpc->getAudioMidiServices().lock()->getOfflineServer();
 	if (!offlineServer->isRealTime()) return;
+	auto server = mpc->getAudioMidiServices().lock()->getRtAudioServer();
+
 	auto midiOutMsgQueues = mpc->getMidiPorts().lock()->getReceivers();
 
 	for (auto& queue : *midiOutMsgQueues) {
@@ -202,7 +205,7 @@ void VMPCWDL::ProcessDoubleReplacing(double** inputs, double** outputs, int nFra
 		}
 		m_WasPlaying = isPlaying;
 	}
-	auto server = mpc->getAudioMidiServices().lock()->getRtAudioServer();
+
 	server->work(inputs, outputs, nFrames, outputChannels);
 }
 
@@ -212,6 +215,12 @@ void VMPCWDL::Reset()
   IMutexLock lock(this);
 
   mSampleRate = GetSampleRate();
+  auto server = mpc->getAudioMidiServices().lock()->getRtAudioServer();
+  if (GetSampleRate() != server->getSampleRate()) {
+	  MLOG("Changing sample rate to " + to_string(GetSampleRate()));
+	  mpc->getAudioMidiServices().lock()->destroyServices();
+	  mpc->getAudioMidiServices().lock()->start("rtaudio", GetSampleRate());
+  }
 }
 
 void VMPCWDL::OnParamChange(int paramIdx)

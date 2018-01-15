@@ -43,7 +43,7 @@ Mpc::Mpc()
 	MLOG("Mpc constructor");
 }
 
-void Mpc::init(std::string mode)
+void Mpc::init(std::string mode, int sampleRate)
 {
 
 	uis = make_shared<ui::Uis>(this);
@@ -72,7 +72,7 @@ void Mpc::init(std::string mode)
 	eventHandler = make_shared<mpc::audiomidi::EventHandler>(this);
 	MLOG("eventhandler created.");
 
-	audioMidiServices->start(mode);
+	audioMidiServices->start(mode, sampleRate);
 	MLOG("audioMidiServices test mode started.");
 
 	controls = make_shared<controls::Controls>(this);

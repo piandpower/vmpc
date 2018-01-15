@@ -28,8 +28,8 @@ namespace mpc {
 			void checkNextSq();
 
 		public:
-			void start();
-			void startMetronome();
+			void start(float sampleRate);
+			void startMetronome(int sampleRate);
 			void work(int nFrames) override;
 			void setEnabled(bool b) override {};
 			int getEventFrameOffset(int tick);

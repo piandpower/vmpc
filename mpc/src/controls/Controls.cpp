@@ -339,6 +339,10 @@ bool Controls::isF3Pressed() {
 	return f3Pressed;
 }
 
+bool Controls::isF4Pressed() {
+	return f4Pressed;
+}
+
 bool Controls::isF5Pressed() {
 	return f5Pressed;
 }
@@ -381,6 +385,10 @@ void Controls::setShiftPressed(bool b) {
 
 void Controls::setF3Pressed(bool b) {
 	f3Pressed = b;
+}
+
+void Controls::setF4Pressed(bool b) {
+	f4Pressed = b;
 }
 
 void Controls::setF5Pressed(bool b) {

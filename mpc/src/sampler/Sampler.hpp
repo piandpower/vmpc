@@ -38,6 +38,7 @@ namespace mpc {
 
 		private:
 			int inputLevel = 0;
+			float sampleRate;
 
 		protected:
 			std::vector<float>* monitorBufferL{ nullptr };
@@ -89,6 +90,7 @@ namespace mpc {
 		public:
 			void work(int nFrames) override;
 			void setEnabled(bool b) override;
+			void setSampleRate(int rate);
 
 		public:
 			void silenceRecordBuffer();
@@ -134,6 +136,7 @@ namespace mpc {
 			void deleteAllSamples();
 			void process12Bit(std::vector<float>* fa);
 			void process8Bit(std::vector<float>* fa);
+			void resample(std::vector<float>*, int srcRate, std::vector<float>* dest, int destRate);
 			std::weak_ptr<Sound> createZone(std::weak_ptr<Sound> source, int start, int end, int endMargin);
 			void stopAllVoices();
 			void stopAllVoices(int frameOffset);
