@@ -196,7 +196,7 @@ void ExportAudioProcessAdapter::writeWav()
 		moduru::io::FileOutputStream wavFos(&resultWavFile);
 		wavFos.write(wavBytes);
 		wavFos.close();
-		resultWavFile.close();
+		//resultWavFile.close();
 	}
 	//MLOG("finished writing wav for " + file->getName());
 }
