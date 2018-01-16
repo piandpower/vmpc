@@ -556,6 +556,7 @@ void Sequencer::runStopBounceThread() {
 		ams->getOfflineServer()->setRealTime(true);
 	}
 	if (preBounceRate != mpc->getAudioMidiServices().lock()->getOfflineServer()->getSampleRate()) {
+		MLOG("Trying to change sample rate from " + to_string(mpc->getAudioMidiServices().lock()->getOfflineServer()->getSampleRate()) + " back to " + to_string(preBounceRate));
 		ams->setDisabled(true);
 		std::this_thread::sleep_for(chrono::milliseconds(1000));
 		ams->destroyServices();
