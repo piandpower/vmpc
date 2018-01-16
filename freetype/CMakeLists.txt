@@ -345,6 +345,13 @@ add_library(freetype
   ${BASE_SRCS}
 )
 
+if(WIN32)
+	if (BUILD_DYNAMIC)
+		target_compile_options(freetype PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+	else()
+		target_compile_options(freetype PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+	endif(BUILD_DYNAMIC)
+endif(WIN32)
 
 if (BUILD_SHARED_LIBS)
   set_target_properties(freetype PROPERTIES

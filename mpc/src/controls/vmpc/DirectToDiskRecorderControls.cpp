@@ -25,6 +25,9 @@ void DirectToDiskRecorderControls::turnWheel(int i)
 {
     init();
 	checkAllTimes(i);
+	if (param.compare("rate") == 0) {
+		d2dRecorderGui->setSampleRate(d2dRecorderGui->getSampleRate() + i);
+	}
 	if (param.compare("record") == 0) {
 		d2dRecorderGui->setRecord(d2dRecorderGui->getRecord() + i);
 	}
@@ -67,7 +70,8 @@ void DirectToDiskRecorderControls::function(int i)
 	case 4:
 		seq = d2dRecorderGui->getSq();
 		outputFolder = d2dRecorderGui->getOutputfolder();
-		rate = d2dRecorderGui->getSampleRate();
+		vector<int> rates{ 44100, 48000, 88200 };
+		rate = rates[d2dRecorderGui->getSampleRate()];
 		if (!d2dRecorderGui->isOffline()) rate = lAms->getOfflineServer()->getSampleRate();
 		split = false;
 		sequence = lSequencer->getSequence(seq).lock();

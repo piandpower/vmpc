@@ -14,7 +14,9 @@ DirectToDiskRecorderGui::DirectToDiskRecorderGui(mpc::Mpc* mpc)
 }
 
 void DirectToDiskRecorderGui::setSampleRate(int rate) {
-	this->sampleRate = rate;
+	if (rate < 0 || rate > 2) return;
+	sampleRate = rate;
+	notifyObservers(string("rate"));
 }
 
 int DirectToDiskRecorderGui::getSampleRate() {

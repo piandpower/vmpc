@@ -24,7 +24,7 @@ namespace mpc {
 				std::string outputFolder{ "" };
 				bool offline{ false };
 				bool splitLR{ true };
-				int sampleRate{ 44100 };
+				int sampleRate{ 0 };
 
 			public:
 				int getTime0();

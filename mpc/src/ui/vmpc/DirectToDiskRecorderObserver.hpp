@@ -37,9 +37,11 @@ namespace mpc {
 				std::weak_ptr<mpc::lcdgui::Field> outputFolderField{};
 				std::weak_ptr<mpc::lcdgui::Field> offlineField{};
 				std::weak_ptr<mpc::lcdgui::Field> splitLRField{};
+				std::weak_ptr<mpc::lcdgui::Field> rateField{};
 				DirectToDiskRecorderGui* d2dRecorderGui{};
 
 			private:
+				void displayRate();
 				void displaySong();
 				void displayOffline();
 				void displaySplitLR();

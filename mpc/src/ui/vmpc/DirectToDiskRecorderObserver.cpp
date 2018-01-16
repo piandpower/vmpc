@@ -18,7 +18,6 @@ DirectToDiskRecorderObserver::DirectToDiskRecorderObserver(mpc::Mpc* mpc)
 	this->mpc = mpc;
 	recordNames = vector<string>{ "SEQUENCE", "LOOP", "CUSTOM RANGE", "SONG", "JAM" };
 	d2dRecorderGui = mpc->getUis().lock()->getD2DRecorderGui();
-	//d2dRecorderGui->deleteObservers();
 	d2dRecorderGui->addObserver(this);
 	auto ls = mpc->getLayeredScreen().lock();
 	recordField = ls->lookupField("record");
@@ -32,6 +31,7 @@ DirectToDiskRecorderObserver::DirectToDiskRecorderObserver(mpc::Mpc* mpc)
 	time5Field = ls->lookupField("time5");
 	outputFolderField = ls->lookupField("outputfolder");
 	offlineField = ls->lookupField("offline");
+	rateField = ls->lookupField("rate");
 	splitLRField = ls->lookupField("splitlr");
 	displayRecord();
 	displaySq();
@@ -40,6 +40,17 @@ DirectToDiskRecorderObserver::DirectToDiskRecorderObserver(mpc::Mpc* mpc)
 	displayOutputFolder();
 	displayOffline();
 	displaySplitLR();
+	displayRate();
+}
+
+void DirectToDiskRecorderObserver::displayRate() {
+	bool offline = d2dRecorderGui->isOffline();
+	rateField.lock()->Hide(!offline);
+	mpc->getLayeredScreen().lock()->lookupLabel("rate").lock()->Hide(!offline);
+	if (!offline) return;
+	vector<string> rates{ "44.1", "48.0", "88.2" };
+	string rate = Util::replaceDotWithSmallSpaceDot(rates[d2dRecorderGui->getSampleRate()]);
+	rateField.lock()->setText(rate);
 }
 
 void DirectToDiskRecorderObserver::displaySong()
@@ -103,9 +114,14 @@ void DirectToDiskRecorderObserver::displayTime()
 
 void DirectToDiskRecorderObserver::update(moduru::observer::Observable* o, boost::any a)
 {
+	mpc->getLayeredScreen().lock()->lookupLabel("sq").lock()->SetDirty();
 	string param = boost::any_cast<string>(a);
-	if (param.compare("offline") == 0) {
+	if (param.compare("rate") == 0) {
+		displayRate();
+	}
+	else if (param.compare("offline") == 0) {
 		displayOffline();
+		displayRate();
 	}
 	else if (param.compare("splitlr") == 0) {
 		displaySplitLR();
