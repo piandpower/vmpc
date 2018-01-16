@@ -131,12 +131,12 @@ void ExportAudioProcessAdapter::startWriting()
 		}
 		tempFileRaf.seekp(written);
 		tempFileRaf.write(&ba[0], ba.size());
+		tempFileRaf.flush();
 		if (close) {
 			break;
 		}
 		written += ba.size();
 	}
-	tempFileRaf.flush();
 	writing = false;
 	reading = false;
 	//MLOG("eapa " + file->getName() + " startWriting() thread stopped");
