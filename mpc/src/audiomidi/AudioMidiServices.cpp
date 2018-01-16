@@ -131,7 +131,7 @@ void AudioMidiServices::start(std::string mode, int sampleRate) {
 	offlineServer->setClient(cac);
 	offlineServer->resizeBuffers(8192*4);
 	offlineServer->start();
-	disabled = false;
+	//disabled = false;
 	MLOG("audio midi services started");
 }
 
@@ -257,13 +257,14 @@ void AudioMidiServices::initializeDiskWriter()
 	}
 }
 
+void AudioMidiServices::setDisabled(bool b) {
+	disabled = b;
+}
+
 void AudioMidiServices::destroyServices()
 {
-	MLOG("Trying to destroy services...");
-	if (disabled) {
-		return;
-	}
 	disabled = true;
+	MLOG("Trying to destroy services...");
 	offlineServer->stop();
 	//MLOG("Offline server stopped");
 	cac.reset();
@@ -355,7 +356,7 @@ void AudioMidiServices::prepareBouncing(DirectToDiskSettings* settings)
 	for (int i = 0; i < 5; i++) {
 		auto eapa = exportProcesses[i];
 		auto file = new moduru::file::File(mpc::StartUp::home + sep + "vMPC" + sep + "recordings" + sep + indivFileNames[i], nullptr);
-		eapa->prepare(file, settings->lengthInFrames);
+		eapa->prepare(file, settings->lengthInFrames, settings->sampleRate);
 	}
 	bouncePrepared = true;
 }

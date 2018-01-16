@@ -45,13 +45,14 @@ namespace mpc {
 			std::fstream tempFileRaf{};
 			std::thread writeThread;
 			int lengthInBytes{};
+			int sampleRate;
 
 		private:
 			static void static_startWriting(void * args);
 			void startWriting();
 
 		public:
-			void prepare(moduru::file::File* file, int lengthInFrames);
+			void prepare(moduru::file::File* file, int lengthInFrames, int sampleRate);
 			void start();
 			int processAudio(ctoot::audio::core::AudioBuffer* buf, int nFrames) override;
 			virtual void stop();

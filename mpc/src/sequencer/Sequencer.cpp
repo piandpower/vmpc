@@ -41,6 +41,10 @@ Sequencer::Sequencer(mpc::Mpc* mpc)
 	this->mpc = mpc;
 }
 
+void Sequencer::setPreBounceRate(int rate) {
+	this->preBounceRate = rate;
+}
+
 void Sequencer::init()
 {
 	TICK_VALUES = vector<int>{ 0, 48, 32, 24, 16, 12, 8 };
@@ -550,6 +554,13 @@ void Sequencer::runStopBounceThread() {
 	ams->stopBouncing();
 	if (mpc->getUis().lock()->getD2DRecorderGui()->isOffline()) {
 		ams->getOfflineServer()->setRealTime(true);
+	}
+	if (preBounceRate != mpc->getAudioMidiServices().lock()->getOfflineServer()->getSampleRate()) {
+		ams->setDisabled(true);
+		std::this_thread::sleep_for(chrono::milliseconds(1000));
+		ams->destroyServices();
+		ams->start("rtaudio", preBounceRate);
+		ams->setDisabled(false);
 	}
 }
 

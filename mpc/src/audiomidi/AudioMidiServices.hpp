@@ -131,6 +131,7 @@ namespace mpc {
 
 		public:
 			void start(std::string mode, int sampleRate);
+			void setDisabled(bool b);
 
 		public:
 			AudioMidiServices(Mpc* mpc);

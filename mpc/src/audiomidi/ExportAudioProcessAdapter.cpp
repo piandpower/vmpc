@@ -49,15 +49,16 @@ void ExportAudioProcessAdapter::static_startWriting(void * args)
 	static_cast<ExportAudioProcessAdapter*>(args)->startWriting();
 }
 
-void ExportAudioProcessAdapter::prepare(moduru::file::File* file, int lengthInFrames)
+void ExportAudioProcessAdapter::prepare(moduru::file::File* file, int lengthInFrames, int sampleRate)
 {
+	this->sampleRate = sampleRate;
 	if (reading || writing) {
 		throw std::invalid_argument("Can't setFile() when already exporting");
 	}
 	this->file = file;
 	//MLOG("Preparing eapa " + file->getName());
 	circularBuffer->reset();
-	lengthInBytes = lengthInFrames * 2 * 2;
+	lengthInBytes = lengthInFrames * 2 * 2; // assume 16 bit stereo for now
 
 	if (file->exists()) file->del();
 
@@ -91,7 +92,7 @@ void ExportAudioProcessAdapter::start()
 	if (file == nullptr) {
 		throw std::invalid_argument("null export file");
 	}
-    
+
 	if (reading || writing) return;
 
 	if (writeThread.joinable()) writeThread.join();
@@ -102,17 +103,17 @@ void ExportAudioProcessAdapter::start()
 
 void ExportAudioProcessAdapter::stop()
 {
-    if (!reading) return;
-    reading = false;
+	if (!reading) return;
+	reading = false;
 }
 
 void ExportAudioProcessAdapter::startWriting()
 {
 	//MLOG("eapa " + file->getName() + " startWriting() thread started");
 	//circularBuffer.clear();
-	
+
 	int written = 0;
-    writing = true;
+	writing = true;
 	// how to set thread priority to low?
 	while (reading || !circularBuffer->empty()) {
 		auto close = false;
@@ -137,7 +138,7 @@ void ExportAudioProcessAdapter::startWriting()
 	}
 	tempFileRaf.flush();
 	writing = false;
-    reading = false;
+	reading = false;
 	//MLOG("eapa " + file->getName() + " startWriting() thread stopped");
 }
 
@@ -169,7 +170,7 @@ void ExportAudioProcessAdapter::writeWav()
 	tempFileRaf.seekg(read);
 	tempFileRaf.read(&remainder[0], remain);
 	tempFileRaf.close();
-//	tempFileFos->close();
+	//	tempFileFos->close();
 	file->del();
 	for (int i = 0; i < remain; i += 2) {
 		auto ba = vector<char>{ remainder[i], remainder[i + 1] };
@@ -183,12 +184,12 @@ void ExportAudioProcessAdapter::writeWav()
 
 	if (nonZeroDetected) {
 		string sep = FileUtil::getSeparator();
-		string wavFileName = StartUp::home + sep + "vMPC" + sep + "recordings" + sep  + file->getName() + ".WAV";
+		string wavFileName = StartUp::home + sep + "vMPC" + sep + "recordings" + sep + file->getName() + ".WAV";
 		moduru::file::File resultWavFile(wavFileName, nullptr);
 		if (resultWavFile.exists()) resultWavFile.del();
 		resultWavFile.create();
 		auto wavFile = mpc::file::wav::WavFile();
-		wavFile.newWavFile(2, ints.size() / 2, 16, 44100);
+		wavFile.newWavFile(2, ints.size() / 2, 16, sampleRate);
 		wavFile.writeFrames(&ints, ints.size() / 2);
 		wavFile.close();
 		auto wavBytes = wavFile.getResult();

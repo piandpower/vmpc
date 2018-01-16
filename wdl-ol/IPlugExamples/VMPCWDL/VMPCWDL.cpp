@@ -220,6 +220,7 @@ void VMPCWDL::Reset()
 	  MLOG("Changing sample rate to " + to_string(GetSampleRate()));
 	  mpc->getAudioMidiServices().lock()->destroyServices();
 	  mpc->getAudioMidiServices().lock()->start("rtaudio", GetSampleRate());
+	  mpc->getAudioMidiServices().lock()->setDisabled(false);
   }
 }
 
