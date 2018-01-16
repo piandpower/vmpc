@@ -24,6 +24,7 @@ namespace mpc {
 				std::string outputFolder{ "" };
 				bool offline{ false };
 				bool splitLR{ true };
+				int sampleRate{ 44100 };
 
 			public:
 				int getTime0();
@@ -42,6 +43,8 @@ namespace mpc {
 				bool isOffline();
 				void setSplitLR(bool b);
 				bool isSplitLR();
+				void setSampleRate(int rate);
+				int getSampleRate();
 
 				DirectToDiskRecorderGui(mpc::Mpc* mpc);
 

@@ -133,17 +133,17 @@ double SeqUtil::ticksPerSecond(BCMath tempo)
     return bps * 96.0;
 }
 
-double SeqUtil::ticksToFrames(double ticks, BCMath tempo)
+double SeqUtil::ticksToFrames(double ticks, BCMath tempo, float sr)
 {   
-	return (ticks * secondsPerTick(tempo) * 44100.0);
+	return (ticks * secondsPerTick(tempo) * sr);
 }
 
-double SeqUtil::framesToTicks(double d, BCMath tempo)
+double SeqUtil::framesToTicks(double d, BCMath tempo, float sr)
 {
-	return (d / 44100.0) * (ticksPerSecond(tempo));
+	return (d / sr) * (ticksPerSecond(tempo));
 }
 
-double SeqUtil::sequenceFrameLength(Sequence* seq, int firstTick, int lastTick)
+double SeqUtil::sequenceFrameLength(Sequence* seq, int firstTick, int lastTick, float sr)
 {
 	double result = 0;
 	auto lastTceTick = firstTick;
@@ -151,13 +151,13 @@ double SeqUtil::sequenceFrameLength(Sequence* seq, int firstTick, int lastTick)
 	weak_ptr<TempoChangeEvent> lastTce;
 
 	if (tceSize == 0) {
-		result = ticksToFrames(lastTick - firstTick, seq->getInitialTempo());
+		result = ticksToFrames(lastTick - firstTick, seq->getInitialTempo(), sr);
 		return result;
 	}
 	else {
 		auto firstTceTick = seq->getTempoChangeEvents()[0].lock()->getTick();
 		if (firstTick < firstTceTick) {
-			result = ticksToFrames(firstTceTick - firstTick, seq->getInitialTempo());
+			result = ticksToFrames(firstTceTick - firstTick, seq->getInitialTempo(), sr);
 		}
 	}
 
@@ -170,7 +170,7 @@ double SeqUtil::sequenceFrameLength(Sequence* seq, int firstTick, int lastTick)
 			break;
 		}
 		auto tce = seq->getTempoChangeEvents()[i].lock();
-		result += ticksToFrames(nextTce->getTick() - lastTceTick, tce->getTempo());
+		result += ticksToFrames(nextTce->getTick() - lastTceTick, tce->getTempo(), sr);
 		lastTceTick = nextTce->getTick();
 	}
 	auto lLastTce = lastTce.lock();
@@ -179,24 +179,24 @@ double SeqUtil::sequenceFrameLength(Sequence* seq, int firstTick, int lastTick)
 		lLastTce = lastTce.lock();
 	}
 
-	result += ticksToFrames(lastTick - lLastTce->getTick(), lLastTce->getTempo());
+	result += ticksToFrames(lastTick - lLastTce->getTick(), lLastTce->getTempo(), sr);
 	return (int)(ceil(result));
 	return 0;
 }
 
-int SeqUtil::loopFrameLength(Sequence* seq)
+int SeqUtil::loopFrameLength(Sequence* seq, float sr)
 {
-    return static_cast< int >(sequenceFrameLength(seq, seq->getLoopStart(), seq->getLoopEnd()));
+    return static_cast<int>(sequenceFrameLength(seq, seq->getLoopStart(), seq->getLoopEnd(), sr));
 }
 
-int SeqUtil::songFrameLength(Song* song, mpc::sequencer::Sequencer* sequencer)
+int SeqUtil::songFrameLength(Song* song, mpc::sequencer::Sequencer* sequencer, float sr)
 {
 	double result = 0;
 	auto steps = song->getStepAmount();
 	for (int i = 0; i < steps; i++) {
 		for (int j = 0; j < song->getStep(i)->getRepeats(); j++) {
 			auto seq = sequencer->getSequence(song->getStep(i)->getSequence()).lock().get();
-			result += sequenceFrameLength(seq, 0, seq->getLastTick());
+			result += sequenceFrameLength(seq, 0, seq->getLastTick(), sr);
 		}
 	}
 	return static_cast<int>(result);

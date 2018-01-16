@@ -9,12 +9,13 @@ namespace mpc {
 		{
 
 		public:
+			int sampleRate;
 			int lengthInFrames{};
 			std::string outputFolder{};
 			bool split{};
 
 		public:
-			DirectToDiskSettings(int lengthInFrames, std::string outputFolder, bool split);
+			DirectToDiskSettings(int lengthInFrames, std::string outputFolder, bool split, int sampleRate);
 
 		};
 	}

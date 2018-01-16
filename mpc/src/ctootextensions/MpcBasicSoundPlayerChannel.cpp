@@ -14,6 +14,8 @@
 
 #include <sampler/Sampler.hpp>
 
+#include <Mpc.hpp>
+
 using namespace mpc::ctootextensions;
 using namespace std;
 

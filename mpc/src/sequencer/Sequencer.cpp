@@ -6,6 +6,7 @@
 #include <hardware/HwPad.hpp>
 #include <ui/Uis.hpp>
 #include <ui/sequencer/window/SequencerWindowGui.hpp>
+#include <ui/vmpc/DirectToDiskRecorderGui.hpp>
 #include <ui/sequencer/SongGui.hpp>
 #include <StartUp.hpp>
 #include <ui/UserDefaults.hpp>
@@ -391,14 +392,16 @@ void Sequencer::play(bool fromStart)
 	}
 	hw->getLed("play").lock()->light(true);
 	auto lAms = mpc->getAudioMidiServices().lock();
-	lAms->getFrameSequencer().lock()->start(lAms->getOfflineServer()->getSampleRate());
+	bool offline = mpc->getUis().lock()->getD2DRecorderGui()->isOffline();
+	int rate = lAms->getOfflineServer()->getSampleRate();
+	lAms->getFrameSequencer().lock()->start(rate);
 	if (lAms->isBouncePrepared()) {
 		lAms->startBouncing();
 	}
 	else {
 		lAms->getOfflineServer()->setRealTime(true);
 	}
-    setChanged();
+	setChanged();
     notifyObservers(string("play"));
 }
 
@@ -545,7 +548,9 @@ void Sequencer::runStopBounceThread() {
 	this_thread::sleep_for(chrono::milliseconds(100));
 	auto ams = mpc->getAudioMidiServices().lock();
 	ams->stopBouncing();
-	ams->getOfflineServer()->setRealTime(true);
+	if (mpc->getUis().lock()->getD2DRecorderGui()->isOffline()) {
+		ams->getOfflineServer()->setRealTime(true);
+	}
 }
 
 void Sequencer::static_stopSong(void * args)

@@ -26,15 +26,15 @@ namespace mpc {
 			static double ticksPerSecond(BCMath tempo);
 
 		public:
-			static double ticksToFrames(double ticks, BCMath tempo);
+			static double ticksToFrames(double ticks, BCMath tempo, float sr);
 
 		public:
-			static double framesToTicks(double d, BCMath tempo);
+			static double framesToTicks(double d, BCMath tempo, float sr);
 
 		public:
-			static double sequenceFrameLength(Sequence* seq, int firstTick, int lastTick);
-			static int loopFrameLength(Sequence* seq);
-			static int songFrameLength(Song* song, mpc::sequencer::Sequencer* sequencer);
+			static double sequenceFrameLength(Sequence* seq, int firstTick, int lastTick, float sr);
+			static int loopFrameLength(Sequence* seq, float sr);
+			static int songFrameLength(Song* song, mpc::sequencer::Sequencer* sequencer, float sr);
 
 			SeqUtil();
 

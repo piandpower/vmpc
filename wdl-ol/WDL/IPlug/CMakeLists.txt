@@ -73,5 +73,9 @@ add_library(iplug ${IPLUG_SRC} ${IPLUG_HEADERS} ${IPLUG_DOC_HEADERS} )
 
 
 if (WIN32)
-	target_compile_options(iplug PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+		if (BUILD_DYNAMIC)
+			target_compile_options(iplug PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+		else()
+			target_compile_options(iplug PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+		endif()
 endif(WIN32)

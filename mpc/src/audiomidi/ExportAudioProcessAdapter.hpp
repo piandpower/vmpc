@@ -34,7 +34,7 @@ namespace mpc {
 		private:
 			std::string name{ "" };
 			//std::unique_ptr<moduru::io::CircularBuffer> circularBuffer{};
-			circular_buffer<char>* circularBuffer = new circular_buffer<char>(100000);
+			circular_buffer<char>* circularBuffer = new circular_buffer<char>(2000000);
 			std::weak_ptr<ctoot::audio::core::AudioFormat> format{ };
 			bool reading{ false };
 			bool writing{ false };

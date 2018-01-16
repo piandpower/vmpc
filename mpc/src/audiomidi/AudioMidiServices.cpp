@@ -86,6 +86,7 @@ void AudioMidiServices::start(std::string mode, int sampleRate) {
 	}
 	server->setSampleRate(sampleRate);
 	offlineServer = make_shared<ctoot::audio::server::NonRealTimeAudioServer>(server);
+	MLOG("AMS start, samplerate " + std::to_string(offlineServer->getSampleRate()));
 	setupMixer();
 	inputProcesses = vector<ctoot::audio::server::IOAudioProcess*>(1);
 	outputProcesses = vector<ctoot::audio::server::IOAudioProcess*>(5);
@@ -264,45 +265,45 @@ void AudioMidiServices::destroyServices()
 	}
 	disabled = true;
 	offlineServer->stop();
-	MLOG("Offline server stopped");
+	//MLOG("Offline server stopped");
 	cac.reset();
-	MLOG("cac reset");
+	//MLOG("cac reset");
 	destroyDiskWriter();
-	MLOG("disk writer destroyed");
+	//MLOG("disk writer destroyed");
 	mpc->getSampler().lock()->setActiveInput(nullptr);
 	mixer->getStrip("66").lock()->setInputProcess(nullptr);
-	MLOG("sampler unhooked");
+	//MLOG("sampler unhooked");
 	mpcMidiPorts->close();
 	mpcMidiPorts.reset();
-	MLOG("midi ports closed");
+	//MLOG("midi ports closed");
 	destroySynth();
-	MLOG("synth destroyed");
+	//MLOG("synth destroyed");
 	closeIO();
-	MLOG("io closed");
+	//MLOG("io closed");
 	inputProcesses.clear();
 	outputProcesses.clear();
-	MLOG("io processes cleared");
+	//MLOG("io processes cleared");
 
 	if (audioSystem) {
 		audioSystem->close();
 		audioSystem.reset();
-		MLOG("audio system closed/reset");
+		//MLOG("audio system closed/reset");
 	}
 
 	mixer->close();
 	mixer.reset();
-	MLOG("mixer closed");
+	//MLOG("mixer closed");
 	mixerControls.reset();
-	MLOG("mixer closed");
+	//MLOG("mixer closed");
 	offlineServer->close();
-	MLOG("offline server closed");
+	//MLOG("offline server closed");
 	offlineServer.reset();
-	MLOG("offline server reset");
+	//MLOG("offline server reset");
 	server.reset();
-	MLOG("server reset");
+	//MLOG("server reset");
 	midiSystem->close();
 	midiSystem.reset();
-	MLOG("midi system closed");
+	//MLOG("midi system closed");
 }
 
 void AudioMidiServices::destroySynth() {

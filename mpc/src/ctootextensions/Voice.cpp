@@ -193,6 +193,8 @@ void Voice::init(
     }
     decayCounter = 0;
     readyToPlay = true;
+
+	//MLOG("Voice with strip number " + std::to_string(stripNumber) + " initialized");
 }
 
 std::vector<float> Voice::getFrame()
@@ -272,6 +274,8 @@ void Voice::open()
 
 int Voice::processAudio(ctoot::audio::core::AudioBuffer* buffer, int nFrames)
 {
+	//if (stripNumber == 65)
+		//MLOG("strip number " + std::to_string(stripNumber) + " processing " + std::to_string(nFrames));
 	if (finished) {
 		buffer->makeSilenceFrames(nFrames);
 		return AUDIO_SILENCE;

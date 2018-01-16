@@ -43,8 +43,11 @@ endif()
 
 add_library(ctoot ${_source_list})
 if(MSVC)
-  target_compile_options(ctoot PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
-	#configure_msvc_runtime()
+		if (BUILD_DYNAMIC)
+			target_compile_options(ctoot PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+		else()
+			target_compile_options(ctoot PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+		endif()
 endif(MSVC)
 
 foreach(_source IN ITEMS ${_source_list})

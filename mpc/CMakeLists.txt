@@ -41,15 +41,13 @@ endif()
 
 add_library(mpc ${_source_list})
 
-if(MSVC)
-  #add_definitions(-DMSVC_RUNTIME=static)
-	#set_target_properties(mpc PROPERTIES COMPILE_FLAGS_RELEASE "/MD")
-	#set_target_properties(mpc PROPERTIES COMPILE_FLAGS_DEBUG "/MDd")
-  target_compile_options(mpc PRIVATE "/MD$<$<CONFIG:Debug>:d> /MP")
-  #add_compile_options(/MP)
-
-#configure_msvc_runtime()
-endif(MSVC)
+if(WIN32)
+	if (BUILD_DYNAMIC)
+		target_compile_options(mpc PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+	else()
+		target_compile_options(mpc PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+	endif(BUILD_DYNAMIC)
+endif(WIN32)
 
 foreach(_source IN ITEMS ${_source_list})
     get_filename_component(_source_path "${_source}" PATH)

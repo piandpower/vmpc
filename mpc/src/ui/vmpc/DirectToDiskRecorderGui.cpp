@@ -13,6 +13,14 @@ DirectToDiskRecorderGui::DirectToDiskRecorderGui(mpc::Mpc* mpc)
 	outputFolder = "DEFAULT";
 }
 
+void DirectToDiskRecorderGui::setSampleRate(int rate) {
+	this->sampleRate = rate;
+}
+
+int DirectToDiskRecorderGui::getSampleRate() {
+	return sampleRate;
+}
+
 int DirectToDiskRecorderGui::getTime0()
 {
     return time0;

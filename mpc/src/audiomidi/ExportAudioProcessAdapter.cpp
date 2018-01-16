@@ -114,33 +114,28 @@ void ExportAudioProcessAdapter::startWriting()
 	int written = 0;
     writing = true;
 	// how to set thread priority to low?
-	while ((reading || !circularBuffer->empty()) && writing) {
+	while (reading || !circularBuffer->empty()) {
 		auto close = false;
 		vector<char> ba;
 		while (!circularBuffer->empty()) {
 			ba.push_back(circularBuffer->get());
 		}
-		if (ba.size() + written > lengthInBytes) {
+		if (ba.size() + written >= lengthInBytes) {
 			ba.resize(lengthInBytes - written);
 			close = true;
 		}
 		if (ba.size() == 0) {
-			this_thread::sleep_for(chrono::milliseconds(1));
+			this_thread::sleep_for(chrono::milliseconds(2));
 			continue;
 		}
-		//for (int i = 0; i < ba.size(); i++) {
-			//ba[i] = circularBuffer.front();
-			//circularBuffer.pop_front();
-			//ba[i] = circularBuffer.receive();
-		//}
 		tempFileRaf.seekp(written);
 		tempFileRaf.write(&ba[0], ba.size());
-		tempFileRaf.flush();
 		if (close) {
 			break;
 		}
 		written += ba.size();
 	}
+	tempFileRaf.flush();
 	writing = false;
     reading = false;
 	//MLOG("eapa " + file->getName() + " startWriting() thread stopped");
@@ -212,5 +207,5 @@ ExportAudioProcessAdapter::~ExportAudioProcessAdapter() {
 		delete file;
 	}
 	if (writeThread.joinable()) writeThread.join();
-	//if (tempFileFos != nullptr) delete tempFileFos;
+	delete circularBuffer;
 }

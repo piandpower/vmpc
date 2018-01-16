@@ -33,6 +33,8 @@
 #include <midi/core/ShortMessage.hpp>
 #include <midi/core/MidiInput.hpp>
 
+#include <audio/server/NonRealTimeAudioServer.hpp>
+
 #include <file/File.hpp>
 #include <thirdp/bcmath/bcmath_stl.h>
 
@@ -77,6 +79,7 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 
 		auto fs = mpc->getAudioMidiServices().lock()->getFrameSequencer().lock();
 		auto eventFrame = fs->getEventFrameOffset(event->getTick());
+		//MLOG("\neventFrame: " + to_string(eventFrame));
 		sampler.lock()->playMetronome(ne.get(), eventFrame);
 		return;
 	}
@@ -123,15 +126,17 @@ void EventHandler::handleNoThru(weak_ptr<mpc::sequencer::Event> e, mpc::sequence
 					auto eventFrame = mpc->getAudioMidiServices().lock()->getFrameSequencer().lock()->getEventFrameOffset(event->getTick());
 					mpc->getMms()->mpcTransport(track->getTrackIndex(), midiAdapter.get().lock().get(), 0, ne->getVariationTypeNumber(), ne->getVariationValue(), eventFrame);
 					
-					auto note = ne->getNote();
-					auto program = mpc->getSampler().lock()->getProgram(mpc->getDrum(drum)->getProgram());
-					int pad = program.lock()->getPadNumberFromNote(note);
-					int bank = mpc->getUis().lock()->getSamplerGui()->getBank();
-					pad -= bank * 16;
-					if (pad >= 0 && pad <= 15) {
-						int notifyVelo = ne->getVelocity();
-						if (notifyVelo == 0) notifyVelo = 255;
-						mpc->getHardware().lock()->getPad(pad).lock()->notifyObservers(notifyVelo);
+					if (mpc->getAudioMidiServices().lock()->getOfflineServer()->isRealTime()) {
+						auto note = ne->getNote();
+						auto program = mpc->getSampler().lock()->getProgram(mpc->getDrum(drum)->getProgram());
+						int pad = program.lock()->getPadNumberFromNote(note);
+						int bank = mpc->getUis().lock()->getSamplerGui()->getBank();
+						pad -= bank * 16;
+						if (pad >= 0 && pad <= 15) {
+							int notifyVelo = ne->getVelocity();
+							if (notifyVelo == 0) notifyVelo = 255;
+							mpc->getHardware().lock()->getPad(pad).lock()->notifyObservers(notifyVelo);
+						}
 					}
 				}
 			}

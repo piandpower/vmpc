@@ -138,8 +138,9 @@ void NonRealTimeAudioServer::run()
 {
     isRunning_ = true;
     while (isRunning_) {
-        work(server.lock()->getBuffers().at(0)->getSampleCount());
-		//thread.yield();
+        //work(server.lock()->getBuffers().at(0)->getSampleCount());
+		work(512);
+		//std::this_thread::yield();
     }
 }
 void NonRealTimeAudioServer::removeAudioBuffer(ctoot::audio::core::AudioBuffer* buffer) {
