@@ -10,18 +10,18 @@ using namespace rapidjson;
 using namespace mpc::lcdgui;
 using namespace std;
 
-Layer::Layer(mpc::lcdgui::LayeredScreen* ls)
+Layer::Layer(mpc::lcdgui::LayeredScreen* ls, std::vector<std::vector<bool>>* atlas, moduru::gui::bmfont* font)
 {
 	this->ls = ls;
 	bg = std::make_shared<Background>();
-	fk = std::make_shared<FunctionKeys>();
+	fk = std::make_shared<FunctionKeys>(atlas, font);
 	for (int i = 0; i < 100; i++) {
-		unusedFields.push_back(make_shared<mpc::lcdgui::Field>(ls));
+		unusedFields.push_back(make_shared<mpc::lcdgui::Field>(ls, atlas, font));
 	}
 	for (int i = 0; i < 100; i++) {
-		unusedLabels.push_back(make_shared<mpc::lcdgui::Label>());
+		unusedLabels.push_back(make_shared<mpc::lcdgui::Label>(atlas, font));
 	}
-	blinkLabel = make_shared<mpc::lcdgui::BlinkLabel>("SOLO");
+	blinkLabel = make_shared<mpc::lcdgui::BlinkLabel>("SOLO", atlas, font);
 	blinkLabel->initialize("soloblink", "SOLO", 133, 51, 4);
 }
 

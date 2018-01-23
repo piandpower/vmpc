@@ -78,6 +78,7 @@
 #include <ui/vmpc/MidiObserver.hpp>
 #include <ui/vmpc/VmpcDiskObserver.hpp>
 
+#include <file/FileUtil.hpp>
 
 #include <rapidjson/filereadstream.h>
 
@@ -122,9 +123,13 @@ static vector<string> soundGuiNames = vector<string>{ "trim", "loop", "zone" };
 
 LayeredScreen::LayeredScreen(mpc::Mpc* mpc) 
 {
+	moduru::gui::BMFParser bmfParser(mpc::StartUp::resPath + moduru::file::FileUtil::getSeparator() + "font.fnt");
+	atlas = bmfParser.getAtlas();
+	font = bmfParser.getLoadedFont();
+
 	this->mpc = mpc;
 	pixels = std::vector < std::vector <bool>>(248, std::vector<bool>(60));
-	popup = make_unique<mpc::lcdgui::Popup>();
+	popup = make_unique<mpc::lcdgui::Popup>(&atlas, &font);
 	popup->Hide(true);
 
 	nonTextComps.push_back(popup);
@@ -234,7 +239,7 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 
 	for (int i = 0; i < LAYER_COUNT; i++) {
 		char readBuffer[65536 * 2];
-		layers[i] = make_unique<Layer>(this);
+		layers[i] = make_unique<Layer>(this, &atlas, &font);
 		FileReadStream is(fPointers[i], readBuffer, sizeof(readBuffer));
 		layerJsons[i].ParseStream(is);
 		fclose(fPointers[i]);

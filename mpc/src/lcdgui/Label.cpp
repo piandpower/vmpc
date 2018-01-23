@@ -3,8 +3,8 @@
 using namespace mpc::lcdgui;
 using namespace std;
 
-Label::Label()
-	: TextComp()
+Label::Label(std::vector<std::vector<bool>>* atlas, moduru::gui::bmfont* font)
+	: TextComp(atlas, font)
 {
 }
 

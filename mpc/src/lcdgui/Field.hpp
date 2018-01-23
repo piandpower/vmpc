@@ -1,6 +1,6 @@
 #pragma once
 
-//#include <IControl.h>
+#include <gui/BMFParser.hpp>
 #include "TextComp.hpp"
 
 #include <memory>
@@ -64,7 +64,7 @@ namespace mpc {
 			void initialize(std::string name, int x, int y, int columns);
 
 		public:
-			Field(mpc::lcdgui::LayeredScreen* layeredScreen);
+			Field(mpc::lcdgui::LayeredScreen* layeredScreen, std::vector<std::vector<bool>>* atlas, moduru::gui::bmfont* font);
 			~Field();
 
 		};

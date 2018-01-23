@@ -9,9 +9,10 @@
 using namespace mpc::lcdgui;
 using namespace std;
 
-FunctionKeys::FunctionKeys() 
-	//: IPanelControl(pPlug, *Constants::FB_RECT(), Constants::LCD_OFF())
+FunctionKeys::FunctionKeys(std::vector<std::vector<bool>>* atlas, moduru::gui::bmfont* font)
 {
+	this->atlas = atlas;
+	this->font = font;
 	enabled = vector<bool>{ false, false, false, false, false, false };
 	names = vector<string>{ "", "", "", "", "", "" };
 	rect = MRECT(0, 30, 247, 59);
@@ -131,7 +132,7 @@ void FunctionKeys::Draw(std::vector<std::vector<bool> >* pixels) {
 				pixels->at(xPos[i] + j).at(k) = bg;
 			}
 		}
-		lcdgui::Label l;
+		lcdgui::Label l(atlas, font);
 		l.initialize("fk" + to_string(i), names[i], xPos[i] + offsetx, 51, stringSize);
 		l.setInverted(!label);
 		l.setOpaque(false);

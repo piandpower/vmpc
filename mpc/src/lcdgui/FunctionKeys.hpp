@@ -2,6 +2,8 @@
 
 #include <lcdgui/Component.hpp>
 
+#include <gui/BMFParser.hpp>
+
 #include <rapidjson/document.h>
 
 #include <string>
@@ -13,6 +15,9 @@ namespace mpc {
 		class FunctionKeys
 			: public Component
 		{
+		private:
+			std::vector<std::vector<bool>>* atlas;
+			moduru::gui::bmfont* font;
 
 		public:
 			std::string name0{ "" };
@@ -35,7 +40,7 @@ namespace mpc {
 			void Draw(std::vector<std::vector<bool> >* pixels) override;
 
 		public:
-			FunctionKeys();
+			FunctionKeys(std::vector<std::vector<bool>>* atlas, moduru::gui::bmfont* font);
 			~FunctionKeys();
 
 		};

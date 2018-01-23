@@ -1,6 +1,8 @@
 #pragma once
 #include <lcdgui/Label.hpp>
 
+#include <gui/BMFParser.hpp>
+
 #include <thread>
 #include <string>
 
@@ -28,7 +30,7 @@ namespace mpc {
 			void initialize(std::string name, std::string text, int x, int y, int columns) override;
 
 		public:
-			BlinkLabel(std::string text);
+			BlinkLabel(std::string text, std::vector<std::vector<bool>>* atlas, moduru::gui::bmfont* font);
 			~BlinkLabel();
 
 		};

@@ -22,8 +22,8 @@
 using namespace mpc::lcdgui;
 using namespace std;
 
-Field::Field(LayeredScreen* layeredScreen)
-	: TextComp() {
+Field::Field(LayeredScreen* layeredScreen, std::vector<std::vector<bool>>* atlas, moduru::gui::bmfont* font)
+	: TextComp(atlas, font) {
 	this->layeredScreen = layeredScreen;
 }
 

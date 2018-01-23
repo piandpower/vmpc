@@ -3,7 +3,6 @@
 #include <Mpc.hpp>
 #include <StartUp.hpp>
 
-#include <file/FileUtil.hpp>
 #include <lang/StrUtil.hpp>
 #include <lang/utf8_decode.h>
 
@@ -13,11 +12,10 @@ using namespace mpc::lcdgui;
 using namespace moduru::lang;
 using namespace std;
 
-#include <gui/BMFParser.hpp>
-
-TextComp::TextComp()
+TextComp::TextComp(std::vector<std::vector<bool>>* atlas, moduru::gui::bmfont* font)
 {
-	bmfParser = new moduru::gui::BMFParser(mpc::StartUp::resPath + moduru::file::FileUtil::getSeparator() + "font.fnt");
+	this->atlas = atlas;
+	this->font = font;
 }
 
 void TextComp::Hide(bool b) {
@@ -35,9 +33,6 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 	int textx = x;
 	int texty = y;
 
-	auto atlas = bmfParser->getAtlas();
-	auto font = bmfParser->getLoadedFont();
-
 	int atlasx, atlasy;
 
 	char* tempText = new char[text.length() + 1];
@@ -49,12 +44,12 @@ void TextComp::Draw(std::vector<std::vector<bool> >* pixels) {
 	if (!IsHidden()) {
 		while (next != UTF8_END && next >= 0) {
 			moduru::gui::bmfont_char current_char;
-			current_char = font.chars[next];
+			current_char = font->chars[next];
 			atlasx = current_char.x;
 			atlasy = current_char.y;
 			for (int x1 = 0; x1 < current_char.width; x1++) {
 				for (int y1 = 0; y1 < current_char.height; y1++) {
-					bool on = atlas[atlasx + x1][atlasy + y1 + 1];
+					bool on = (*atlas)[atlasx + x1][atlasy + y1 + 1];
 					if (on) {
 						int xpos = textx + x1 + current_char.xoffset;
 						int ypos = texty + y1 + current_char.yoffset;

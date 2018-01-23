@@ -8,8 +8,10 @@
 using namespace mpc::lcdgui;
 using namespace std;
 
-Popup::Popup() 
+Popup::Popup(std::vector<std::vector<bool>>* atlas, moduru::gui::bmfont* font)
 {
+	this->atlas = atlas;
+	this->font = font;
 	bg = make_unique<Background>();
 	bg->setName("popup");
 	//int x = maingui::Constants::POPUP_RECT()->L + 20;
@@ -32,7 +34,7 @@ void Popup::Draw(std::vector<std::vector<bool> >* pixels)
 {
 	if (IsHidden()) return;
 	bg->Draw(pixels);
-	lcdgui::Label l;
+	lcdgui::Label l(atlas, font);
 	l.initialize("popup", text, 43, 23, text.size());
 	l.setOpaque(true);
 	l.setInverted(true);

@@ -6,7 +6,10 @@
 #include "FunctionKeys.hpp"
 #include <lcdgui/BlinkLabel.hpp>
 
+#include <gui/BMFParser.hpp>
+
 #include <rapidjson/document.h>
+
 
 #include <string>
 #include <memory>
@@ -58,7 +61,7 @@ namespace mpc {
 			std::string getFocus();
 			
 		public:
-			Layer(mpc::lcdgui::LayeredScreen* ls);
+			Layer(mpc::lcdgui::LayeredScreen* ls, std::vector<std::vector<bool>>* atlas, moduru::gui::bmfont* font);
 			~Layer();
 
 		private:

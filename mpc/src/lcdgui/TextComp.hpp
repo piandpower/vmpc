@@ -1,16 +1,11 @@
 #pragma once
 #include "Component.hpp"
+#include <gui/BMFParser.hpp>
 
 #include <string>
 #include <vector>
 #include <memory>
 #include <thread>
-
-namespace moduru {
-	namespace gui {
-		class BMFParser;
-	}
-}
 
 namespace mpc {
 	namespace lcdgui {
@@ -19,7 +14,8 @@ namespace mpc {
 
 		{
 		private:
-			moduru::gui::BMFParser* bmfParser;
+			std::vector<std::vector<bool>>* atlas;
+			moduru::gui::bmfont* font;
 
 		protected:
 			bool inverted{ false };
@@ -78,7 +74,7 @@ namespace mpc {
 			void Hide(bool b) override;
 
 		public:
-			TextComp();
+			TextComp(std::vector<std::vector<bool>>* atlas,	moduru::gui::bmfont* font);
 			virtual ~TextComp();
 
 		};

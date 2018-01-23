@@ -8,6 +8,8 @@
 #include <vector>
 #include <string>
 
+#include <gui/BMFParser.hpp>
+
 namespace moduru {
 	namespace observer {
 		class Observer;
@@ -42,6 +44,8 @@ namespace mpc {
 			MRECT dirtyArea;
 			std::vector<std::vector<bool> > pixels;
 			std::unique_ptr<moduru::observer::Observer> activeObserver;
+			std::vector<std::vector<bool>> atlas;
+			moduru::gui::bmfont font;
 
 		private:
 			void initObserver();

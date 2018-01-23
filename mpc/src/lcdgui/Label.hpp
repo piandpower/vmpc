@@ -2,6 +2,7 @@
 #include <string>
 
 #include "TextComp.hpp"
+#include <gui/BMFParser.hpp>
 
 namespace mpc {
 	namespace lcdgui {
@@ -23,7 +24,7 @@ namespace mpc {
 			void Draw(std::vector<std::vector<bool> >* pixels) override;
 
 		public:
-			Label();
+			Label(std::vector<std::vector<bool>>* atlas, moduru::gui::bmfont* font);
 			~Label() override;
 
 		};
