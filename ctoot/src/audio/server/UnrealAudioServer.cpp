@@ -93,10 +93,6 @@ void UnrealAudioServer::closeAudioInput(ctoot::audio::server::IOAudioProcess* in
 	}
 }
 
-float UnrealAudioServer::getSampleRate() {
-	return 44100.0f;
-}
-
 float UnrealAudioServer::getLoad() {
 	return 0;
 }

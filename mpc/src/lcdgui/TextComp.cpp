@@ -15,10 +15,9 @@ using namespace std;
 
 #include <gui/BMFParser.hpp>
 
-moduru::gui::BMFParser* TextComp::bmfParser = new moduru::gui::BMFParser(mpc::StartUp::resPath + moduru::file::FileUtil::getSeparator() + "font.fnt");
-
 TextComp::TextComp()
 {
+	bmfParser = new moduru::gui::BMFParser(mpc::StartUp::resPath + moduru::file::FileUtil::getSeparator() + "font.fnt");
 }
 
 void TextComp::Hide(bool b) {

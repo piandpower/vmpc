@@ -11,6 +11,8 @@
 using namespace moduru::gui;
 using namespace std;
 
+#include <Logger.hpp>
+
 BMFParser::BMFParser(string fontPath) {
 
 	size_t fileSize = 0;

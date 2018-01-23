@@ -82,6 +82,7 @@ void NvRam::saveKnobPositions(mpc::Mpc* mpc)
         auto fos = new moduru::io::FileOutputStream(file);
         char recordb = ams->getRecordLevel();
         char volumeb = ams->getMasterLevel();
+		if (volumeb == 0) MLOG("Volume is 0!");
         char sliderb = static_cast< int8_t >(slider->getValue());
         auto bytes = vector<char>{ recordb, volumeb, sliderb };
         fos->write(bytes);

@@ -27,7 +27,6 @@ namespace ctoot {
 				IOAudioProcess* openAudioInput(std::string name, std::string glabel) override;
 				void closeAudioOutput(ctoot::audio::server::IOAudioProcess* output) override;
 				void closeAudioInput(ctoot::audio::server::IOAudioProcess* input) override;
-				float getSampleRate() override;
 				float getLoad() override;
 				int getInputLatencyFrames() override;
 				int getOutputLatencyFrames() override;

@@ -177,7 +177,7 @@ int AudioMidiServices::getMasterLevel() {
 	auto sc = mixer->getMixerControls()->getStripControls("L-R");
 	auto cc = dynamic_pointer_cast<ctoot::control::CompoundControl>(sc->getControls()[0]);
 	auto val = dynamic_pointer_cast<ctootextensions::MpcFaderControl>(cc->getControls()[2])->getValue();
-	return (int)dynamic_pointer_cast<ctootextensions::MpcFaderControl>(cc->getControls()[2])->getValue();
+	return (int)(val);
 }
 
 void AudioMidiServices::setRecordLevel(int i) {

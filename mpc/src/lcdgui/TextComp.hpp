@@ -19,7 +19,7 @@ namespace mpc {
 
 		{
 		private:
-			static moduru::gui::BMFParser* bmfParser;
+			moduru::gui::BMFParser* bmfParser;
 
 		protected:
 			bool inverted{ false };
