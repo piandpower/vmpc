@@ -674,6 +674,7 @@ int Sampler::getUnusedSampleAmount()
 {
 	vector<weak_ptr<Sound>> soundSet;
 	for (auto& p : programs) {
+		if (!p) continue;
 		for (auto& nn : p->getNotesParameters()) {
 			if (nn->getSndNumber() != -1) {
 				auto candidate = sounds[nn->getSndNumber()];
