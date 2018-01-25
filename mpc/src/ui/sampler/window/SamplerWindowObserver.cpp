@@ -86,11 +86,8 @@ SamplerWindowObserver::SamplerWindowObserver(mpc::Mpc* mpc)
 		info0Label.lock()->setOpaque(false);
 		info1Label.lock()->setOpaque(true);
 		info1Label.lock()->setInverted(true);
-		info1Label.lock()->setSize(26, 18);
+		info1Label.lock()->setSize(13, 9);
 		auto pads = vector <weak_ptr<mpc::lcdgui::Field>> { a3Field, b3Field, c3Field, d3Field, a2Field, b2Field, c2Field, d2Field, a1Field, b1Field, c1Field, d1Field, a0Field, b0Field, c0Field, d0Field };
-
-		for (auto tf : pads) tf.lock()->setOpaque(false);
-
 		ls->setFocus(swGui->getFocusFromPadNumber(samplerGui->getPad()));
 		displayAssignmentView();
 	}
@@ -307,8 +304,8 @@ void SamplerWindowObserver::displayNote0()
 	auto prog = csn.compare("muteassign") == 0 ? program.lock() : lSampler->getProgram(swGui->getProg0()).lock();
 	auto nn = csn.compare("muteassign") == 0 ? lSampler->getLastNp(prog.get())->getMuteAssignA() : swGui->getNote0();
 	auto pn = prog->getPadNumberFromNote(nn);
-	auto sn = nn != -1 ? prog->getNoteParameters(nn)->getSndNumber() : -1;
-	auto nnName = nn == -1 ? "--" : to_string(nn);
+	auto sn = nn != 34 ? prog->getNoteParameters(nn)->getSndNumber() : -1;
+	auto nnName = nn == 34 ? "--" : to_string(nn);
 	auto padName = pn != -1 ? lSampler->getPadName(pn) : "OFF";
 	auto sampleName = sn != -1 ? "-" + lSampler->getSoundName(sn) : "-OFF";
 	if (nn == -1) sampleName = "";
@@ -327,11 +324,11 @@ void SamplerWindowObserver::displayNote1()
 	auto prog = csn.compare("muteassign") == 0 ? program.lock() : lSampler->getProgram(swGui->getProg1()).lock();
 	auto nn = csn.compare("muteassign") == 0 ? lSampler->getLastNp(prog.get())->getMuteAssignB() : swGui->getNote1();
 	auto pn = prog->getPadNumberFromNote(nn);
-	auto sn = nn != -1 ? prog->getNoteParameters(nn)->getSndNumber() : -1;
-	auto nnName = nn == -1 ? "--" : to_string(nn);
+	auto sn = nn != 34 ? prog->getNoteParameters(nn)->getSndNumber() : -1;
+	auto nnName = nn == 34 ? "--" : to_string(nn);
 	auto padName = pn != -1 ? lSampler->getPadName(pn) : "OFF";
 	auto sampleName = sn != -1 ? "-" + lSampler->getSoundName(sn) : "-OFF";
-	if (nn == -1) sampleName = "";
+	if (nn == 34) sampleName = "";
 	note1Field.lock()->setText(nnName + "/" + padName + sampleName);
 }
 
@@ -380,8 +377,8 @@ void SamplerWindowObserver::update(moduru::observer::Observable* o, boost::any a
 			displayAssignToPad();
 		}
 		else if (csn.compare("assignmentview") == 0) {
-			displayInfo1();
-			displayInfo2();
+			mpc->getLayeredScreen().lock()->setFocus(swGui->getFocusFromPadNumber(samplerGui->getPad()));
+			displayAssignmentView();
 		}
 		else if (csn.compare("velocitymodulation") == 0) {
 			displayNote();
@@ -513,7 +510,7 @@ void SamplerWindowObserver::displayInfo1()
 	auto focus = mpc->getLayeredScreen().lock()->getFocus();
 	auto pn = swGui->getPadNumberFromFocus(focus, samplerGui->getBank());
 	int nn = program.lock()->getPad(pn)->getNote();
-	info1Label.lock()->setText(nn != -1 ? to_string(nn) : "--");
+	info1Label.lock()->setText(nn != 34 ? to_string(nn) : "--");
 }
 
 void SamplerWindowObserver::displayInfo2()
@@ -522,7 +519,7 @@ void SamplerWindowObserver::displayInfo2()
 	auto pn = swGui->getPadNumberFromFocus(focus, samplerGui->getBank());
 	int nn = program.lock()->getPad(pn)->getNote();
 
-	if (nn == -1) {
+	if (nn == 34) {
 		info2Label.lock()->setText("=");
 		return;
 	}
@@ -544,9 +541,9 @@ void SamplerWindowObserver::displayPad(int i)
 	auto lSampler = sampler.lock();
 	auto pads = vector<weak_ptr<Field>>{ a3Field, b3Field, c3Field, d3Field, a2Field, b2Field, c2Field, d2Field, a1Field, b1Field, c1Field, d1Field, a0Field, b0Field, c0Field, d0Field };
 	auto lProgram = program.lock();
-	auto nn = lProgram->getPad((i + 16) * samplerGui->getBank())->getNote();
+	auto nn = lProgram->getPad(i + (16 * samplerGui->getBank()))->getNote();
 	string sampleName = "";
-	if (nn != -1) {
+	if (nn != 34) {
 		auto sampleNumber = lProgram->getNoteParameters(nn)->getSndNumber();
 		sampleName = sampleNumber != -1 ? lSampler->getSoundName(sampleNumber) : "--";
 		if (sampleName.length() > 8) {
