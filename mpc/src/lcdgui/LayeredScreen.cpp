@@ -132,8 +132,6 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 	popup = make_unique<mpc::lcdgui::Popup>(&atlas, &font);
 	popup->Hide(true);
 
-	nonTextComps.push_back(popup);
-
 	horizontalBarsTempoChangeEditor = vector<shared_ptr<HorizontalBar>>(4);
 	horizontalBarsStepEditor = vector<shared_ptr<HorizontalBar>>(4);
 	selectedEventBarsStepEditor = vector<shared_ptr<mpc::lcdgui::SelectedEventBar>>(4);
@@ -342,6 +340,10 @@ void LayeredScreen::Draw() {
 			}
 		}
 
+		if (popup->NeedsClearing()) {
+			popup->Clear(&pixels);
+			dirtyComponents.insert(popup);
+		}
 
 		if (i == 1) {
 			for (auto& hbar : horizontalBarsTempoChangeEditor) {
@@ -393,10 +395,11 @@ void LayeredScreen::Draw() {
 			}
 		}
 
-		if (!underline->IsHidden() && i == 2) {
+		if (!underline->IsHidden() && underline->IsDirty() && i == 2) {
 			underline->Draw(&pixels);
 			dirtyComponents.insert(underline);
 		}
+
 		if (!twoDots->IsHidden()) {
 			twoDots->Draw(&pixels);
 			dirtyComponents.insert(twoDots);
@@ -418,6 +421,9 @@ void LayeredScreen::Draw() {
 			}
 		//}
 	}
+
+	if (popup->IsDirty() && !popup->IsHidden()) popup->Draw(&pixels);
+
 	for (auto& c : dirtyComponents) {
 		dirtyArea = dirtyArea.Union(c->getDirtyArea());
 		c->getDirtyArea()->Clear();
@@ -479,6 +485,8 @@ bool LayeredScreen::IsDirty() {
 			return true;
 		}
 	}
+	if (popup->IsDirty() && !(popup->IsHidden() && !popup->NeedsClearing())) return true;
+
 	return false;
 }
 
