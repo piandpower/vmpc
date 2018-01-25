@@ -173,10 +173,10 @@ void MpcSoundPlayerChannel::mpcNoteOn(int track, int note, int velo, int varType
 		int optA = np->getOptionalNoteA();
 		int optB = np->getOptionalNoteB();
 		if (optA != 34) {
-			mpcNoteOn(track, optA, velo, varType, varValue, frameOffset);
+			//mpcNoteOn(track, optA, velo, varType, varValue, frameOffset);
 		}
 		if (optB != 34) {
-			mpcNoteOn(track, optB, velo, varType, varValue, frameOffset);
+			//mpcNoteOn(track, optB, velo, varType, varValue, frameOffset);
 		}
 	}
 }
