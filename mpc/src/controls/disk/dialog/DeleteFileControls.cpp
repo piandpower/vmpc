@@ -20,9 +20,6 @@ void DeleteFileControls::function(int i)
 	case 1:
 		ls.lock()->openScreen("deleteallfiles");
 		break;
-	case 3:
-		ls.lock()->openScreen("directory");
-		break;
 	case 4:
 		ls.lock()->createPopup("Delete:" + directoryGui->getSelectedFile()->getName(), 85);
 		if (deleteThread.joinable()) deleteThread.join();

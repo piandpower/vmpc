@@ -38,10 +38,6 @@ SamplerWindowObserver::SamplerWindowObserver(mpc::Mpc* mpc)
 	auto lProgram = program.lock();
 	lSampler->getLastNp(lProgram.get())->addObserver(this);
 	lSampler->getLastPad(lProgram.get())->addObserver(this);
-	lProgram->deleteObservers();
-	lProgram->addObserver(this);
-	mpcSoundPlayerChannel->addObserver(this);
-	lProgram->deleteObservers();
 	lProgram->addObserver(this);
 	mpcSoundPlayerChannel->addObserver(this);
 
@@ -96,7 +92,7 @@ SamplerWindowObserver::SamplerWindowObserver(mpc::Mpc* mpc)
 		for (auto tf : pads) tf.lock()->setOpaque(false);
 
 		ls->setFocus(swGui->getFocusFromPadNumber(samplerGui->getPad()));
-		//::javax::swing::SwingUtilities::invokeLater(new SamplerWindowObserver_SamplerWindowObserver_1(this));
+		displayAssignmentView();
 	}
 	else if (csn.compare("keeporretry") == 0) {
 		nameForNewSoundField = ls->lookupField("namefornewsound");
@@ -348,14 +344,16 @@ void SamplerWindowObserver::update(moduru::observer::Observable* o, boost::any a
 {
 	auto lSampler = sampler.lock();
 	auto lProgram = program.lock();
-	lProgram->deleteObservers();
-	mpcSoundPlayerChannel->deleteObservers();
-	sampler = mpc->getSampler();
+
+	lSampler->getLastNp(lProgram.get())->deleteObserver(this);
+	lSampler->getLastPad(lProgram.get())->deleteObserver(this);
+	lProgram->deleteObserver(this);
+	mpcSoundPlayerChannel->deleteObserver(this);
+
 	mpcSoundPlayerChannel = lSampler->getDrum(samplerGui->getSelectedDrum());
 	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
-	lSampler->getLastNp(lProgram.get())->deleteObservers();
+
 	lSampler->getLastNp(lProgram.get())->addObserver(this);
-	lSampler->getLastPad(lProgram.get())->deleteObserver(this);
 	lSampler->getLastPad(lProgram.get())->addObserver(this);
 	lProgram->addObserver(this);
 	mpcSoundPlayerChannel->addObserver(this);
@@ -512,12 +510,33 @@ void SamplerWindowObserver::displayInfo0()
 
 void SamplerWindowObserver::displayInfo1()
 {
-    //::javax::swing::SwingUtilities::invokeLater(new SamplerWindowObserver_displayInfo1_2(this));
+	auto focus = mpc->getLayeredScreen().lock()->getFocus();
+	auto pn = swGui->getPadNumberFromFocus(focus, samplerGui->getBank());
+	int nn = program.lock()->getPad(pn)->getNote();
+	info1Label.lock()->setText(nn != -1 ? to_string(nn) : "--");
 }
 
 void SamplerWindowObserver::displayInfo2()
 {
-    //::javax::swing::SwingUtilities::invokeLater(new SamplerWindowObserver_displayInfo2_3(this));
+	auto focus = mpc->getLayeredScreen().lock()->getFocus();
+	auto pn = swGui->getPadNumberFromFocus(focus, samplerGui->getBank());
+	int nn = program.lock()->getPad(pn)->getNote();
+
+	if (nn == -1) {
+		info2Label.lock()->setText("=");
+		return;
+	}
+
+	int sampleNumber = program.lock()->getNoteParameters(nn)->getSndNumber();
+
+	string sampleName = sampleNumber != -1 ? sampler.lock()->getSoundName(sampleNumber) : "";
+
+	string stereo = "";
+	auto lastPad = sampler.lock()->getLastPad(program.lock().get());
+	if (sampleNumber != -1 && lastPad->getStereoMixerChannel().lock()->isStereo() && sampleName.compare("") != 0) {
+		stereo = "(ST)";
+	}
+	info2Label.lock()->setText("=" + sampleName + stereo);
 }
 
 void SamplerWindowObserver::displayPad(int i)
@@ -584,8 +603,8 @@ SamplerWindowObserver::~SamplerWindowObserver() {
 	}
 	samplerGui->deleteObserver(this);
 	swGui->deleteObserver(this);
+	program.lock()->deleteObserver(this);
 	sampler.lock()->getLastNp(program.lock().get())->deleteObserver(this);
 	sampler.lock()->getLastPad(program.lock().get())->deleteObserver(this);
-	mpcSoundPlayerChannel->deleteObserver(this);
 	mpcSoundPlayerChannel->deleteObserver(this);
 }

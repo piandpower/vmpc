@@ -148,8 +148,9 @@ void AbstractControls::function(int i)
 					mpc->getUis().lock()->getDiskGui()->setFileLoad(0);
 				}
 			}
-			lsLocked->openScreen(lsLocked->getPreviousScreenName());
 		}
+		lsLocked->openScreen(lsLocked->getPreviousScreenName());
+		break;
 	case 5:
 		mpc->getControls().lock()->setF6Pressed(true);
 		break;
