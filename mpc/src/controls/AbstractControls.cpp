@@ -224,6 +224,7 @@ void AbstractControls::generateNoteOn(int nn, int padVelo, int tick)
 	bool slider = lProgram && nn == lProgram->getSlider()->getNote();
 	bool step = csn.compare("sequencer_step") == 0;
 	auto lSequencer = sequencer.lock();
+	bool recMainWithoutPlaying = csn.compare("sequencer") == 0 && !lSequencer->isPlaying();
 	shared_ptr<mpc::sequencer::NoteEvent> n;
 	if (lSequencer->isRecordingOrOverdubbing() || step) {
 		if (step) {

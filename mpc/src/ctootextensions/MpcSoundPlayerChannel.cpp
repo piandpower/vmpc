@@ -168,6 +168,17 @@ void MpcSoundPlayerChannel::mpcNoteOn(int track, int note, int velo, int varType
 	}
 	stopPad(padNumber, 1);
 	voice->init(track, velo, padNumber, vars, np, varType, varValue, note, index, frameOffset, true);
+
+	if (np->getSoundGenerationMode() == 1) {
+		int optA = np->getOptionalNoteA();
+		int optB = np->getOptionalNoteB();
+		if (optA != 34) {
+			mpcNoteOn(track, optA, velo, varType, varValue, frameOffset);
+		}
+		if (optB != 34) {
+			mpcNoteOn(track, optB, velo, varType, varValue, frameOffset);
+		}
+	}
 }
 
 void MpcSoundPlayerChannel::checkForMutes(mpc::sampler::NoteParameters* np)
