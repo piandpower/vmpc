@@ -16,6 +16,7 @@ namespace mpc {
 	namespace sampler {
 		class Sampler;
 		class Program;
+		class NoteParameters;
 	}
 
 	namespace lcdgui {
@@ -34,6 +35,7 @@ namespace mpc {
 			{
 
 			private:
+				mpc::sampler::NoteParameters* lastNp = nullptr;
 				mpc::Mpc* mpc;
 				std::vector<std::string> decayModes{};
 				std::vector<std::string> voiceOverlapModes{};

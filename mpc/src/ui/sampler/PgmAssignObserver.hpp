@@ -16,6 +16,8 @@ namespace mpc {
 	namespace sampler {
 		class Sampler;
 		class Program;
+		class NoteParameters;
+		class Pad;
 	}
 
 	namespace lcdgui {
@@ -34,7 +36,8 @@ namespace mpc {
 
 			private:
 				const std::vector<std::string> soundGenerationModes{ "NORMAL", "SIMULT", "VEL SW", "DCY SW" };
-
+				mpc::sampler::NoteParameters* lastNp = nullptr;
+				mpc::sampler::Pad* lastPad = nullptr;
 				std::weak_ptr<mpc::sampler::Sampler> sampler{ };
 				SamplerGui* samplerGui{ nullptr };
 				mpc::ctootextensions::MpcSoundPlayerChannel* mpcSoundPlayerChannel{ nullptr };

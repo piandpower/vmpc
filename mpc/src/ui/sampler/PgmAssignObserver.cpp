@@ -28,8 +28,10 @@ PgmAssignObserver::PgmAssignObserver(mpc::Mpc* mpc)
 	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
 	auto lProgram = program.lock();
 	lProgram->addObserver(this);
-	lSampler->getLastNp(lProgram.get())->addObserver(this);
-	lSampler->getLastPad(lProgram.get())->addObserver(this);
+	lastNp = lSampler->getLastNp(lProgram.get());
+	lastNp->addObserver(this);
+	lastPad = lSampler->getLastPad(lProgram.get());
+	lastPad->addObserver(this);
 	mpcSoundPlayerChannel->addObserver(this);
 	auto ls = mpc->getLayeredScreen().lock();
 	velocityRangeLowerLabel = ls->lookupLabel("velocityrangelower");
@@ -110,8 +112,8 @@ void PgmAssignObserver::update(moduru::observer::Observable* o, boost::any arg)
 	auto lSampler = sampler.lock();
 	auto lProgram = program.lock();
 
-	lSampler->getLastNp(lProgram.get())->deleteObserver(this);
-	lSampler->getLastPad(lProgram.get())->deleteObserver(this);
+	lastNp->deleteObserver(this);
+	lastPad->deleteObserver(this);
 	lProgram->deleteObserver(this);
 	mpcSoundPlayerChannel->deleteObserver(this);
 
@@ -119,8 +121,10 @@ void PgmAssignObserver::update(moduru::observer::Observable* o, boost::any arg)
 	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
 	lProgram = program.lock();
 
-	lSampler->getLastNp(lProgram.get())->addObserver(this);
-	lSampler->getLastPad(lProgram.get())->addObserver(this);
+	lastNp = lSampler->getLastNp(lProgram.get());
+	lastNp->addObserver(this);
+	lastPad = lSampler->getLastPad(lProgram.get());
+	lastPad->addObserver(this);
 	lProgram->addObserver(this);
 	mpcSoundPlayerChannel->addObserver(this);
 
@@ -254,7 +258,7 @@ void PgmAssignObserver::displaySelectedPadName()
 PgmAssignObserver::~PgmAssignObserver() {
 	samplerGui->deleteObserver(this);
 	program.lock()->deleteObserver(this);
-	sampler.lock()->getLastNp(program.lock().get())->deleteObserver(this);
-	sampler.lock()->getLastPad(program.lock().get())->deleteObserver(this);
+	lastNp->deleteObserver(this);
+	lastPad->deleteObserver(this);
 	mpcSoundPlayerChannel->deleteObserver(this);
 }

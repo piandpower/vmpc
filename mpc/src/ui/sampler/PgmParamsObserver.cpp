@@ -32,7 +32,8 @@ PgmParamsObserver::PgmParamsObserver(mpc::Mpc* mpc)
 	auto lProgram = program.lock();
 	lProgram->addObserver(this);
 	mpcSoundPlayerChannel->addObserver(this);
-	lSampler->getLastNp(lProgram.get())->addObserver(this);
+	lastNp = lSampler->getLastNp(lProgram.get());
+	lastNp->addObserver(this);
 	pgmField = ls->lookupField("pgm");
 	noteField = ls->lookupField("note");
 	attackField = ls->lookupField("attack");
@@ -60,13 +61,14 @@ void PgmParamsObserver::update(moduru::observer::Observable* o, boost::any arg)
 	auto lSampler = sampler.lock();
 	lProgram->deleteObserver(this);
 	mpcSoundPlayerChannel->deleteObserver(this);
-	lSampler->getLastNp(lProgram.get())->deleteObserver(this);
+	lastNp->deleteObserver(this);
 
 	mpcSoundPlayerChannel = lSampler->getDrum(samplerGui->getSelectedDrum());
 	program = lSampler->getProgram(mpcSoundPlayerChannel->getProgram());
 	lProgram = program.lock();
 
-	lSampler->getLastNp(lProgram.get())->addObserver(this);
+	lastNp = lSampler->getLastNp(lProgram.get());
+	lastNp->addObserver(this);
 	lProgram->addObserver(this);
 	mpcSoundPlayerChannel->addObserver(this);
 
@@ -176,9 +178,8 @@ PgmParamsObserver::~PgmParamsObserver() {
 	samplerGui->deleteObserver(this);
 	program.lock()->deleteObserver(this);
 	mpcSoundPlayerChannel->deleteObserver(this);
-	samplerGui->deleteObserver(this);
-	sampler.lock()->getLastNp(program.lock().get())->deleteObserver(this);
-	sampler.lock()->getLastPad(program.lock().get())->deleteObserver(this);
+	lastNp->deleteObserver(this);
+
 	if (mpc->getLayeredScreen().lock()) {
 		mpc->getLayeredScreen().lock()->getEnvGraph().lock()->Hide(true);
 	}
