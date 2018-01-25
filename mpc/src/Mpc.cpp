@@ -82,6 +82,7 @@ void Mpc::init(std::string mode, int sampleRate)
 
 	diskController = make_unique<DiskController>(this);
 	diskController->initDisks();
+
 	/*
 	getDisk().lock()->moveForward("TEST2");
 	getDisk().lock()->initFiles();

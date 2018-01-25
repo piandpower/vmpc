@@ -31,4 +31,5 @@ void DeleteAllFilesObserver::update(moduru::observer::Observable* o, boost::any 
 }
 
 DeleteAllFilesObserver::~DeleteAllFilesObserver() {
+	diskWindowGui->deleteObserver(this);
 }

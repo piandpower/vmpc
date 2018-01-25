@@ -11,7 +11,7 @@ namespace mpc {
 				{
 
 				public:
-					typedef mpc::controls::disk::AbstractDiskControls super;
+					void turnWheel(int i) override;
 					void function(int i) override;
 
 					DeleteAllFilesControls(mpc::Mpc* mpc);

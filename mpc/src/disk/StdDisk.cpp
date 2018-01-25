@@ -160,9 +160,11 @@ bool StdDisk::deleteAllFiles(int dwGuiDelete)
 	try {
 		parentDirectory = getParentDir();
 	}
-	catch (exception e1) {
+	catch (const exception& e1) {
 		return false;
 	}
+	if (!parentDirectory.lock()) return false;
+
 	auto success = false;
 	auto files = parentDirectory.lock()->listFiles();
 	for (auto& f : files) {

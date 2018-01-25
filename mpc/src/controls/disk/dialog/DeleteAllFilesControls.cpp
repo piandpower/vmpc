@@ -13,6 +13,11 @@ DeleteAllFilesControls::DeleteAllFilesControls(mpc::Mpc* mpc)
 {
 }
 
+void DeleteAllFilesControls::turnWheel(int i) {
+	init();
+	diskWindowGui->setDelete(diskWindowGui->getDelete() + i);
+}
+
 void DeleteAllFilesControls::function(int i)
 {
 	init();

@@ -112,7 +112,7 @@ static vector<string> seqWindowNames = vector<string>{ "copysequence", "copytrac
 "transmitprogramchanges", "multirecordingsetup", "midiinput", "midioutput", "editvelocity", "sequence",
 "deletesequence", "track", "deletetrack", "deleteallsequences", "deletealltracks", "loopbarswindow" };
 
-static vector<string> diskNames = vector<string>{ "load", "save", "format", "setup", "device", "deleteallfiles", "loadaprogram",
+static vector<string> diskNames = vector<string>{ "load", "save", "format", "setup", "device", "loadaprogram",
 "saveaprogram", "loadasound", "saveasound", "cantfindfile", "filealreadyexists", "loadasequence",
 "saveasequence", "saveapsfile" };
 
@@ -146,7 +146,6 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 
 	underline = make_shared<mpc::lcdgui::Underline>();
 	envGraph = make_shared<mpc::lcdgui::EnvGraph>(mpc);
-	//nonTextComps.push_back(envGraph);
 
 	int x, y, w, h;
 	MRECT rect;
@@ -167,7 +166,6 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		rect = MRECT(x, y, x + w, y + h);
 		horizontalBarsTempoChangeEditor[i] = make_shared<HorizontalBar>(rect, 0);
 		horizontalBarsTempoChangeEditor[i]->Hide(true);
-		//nonTextComps.push_back(horizontalBarsTempoChangeEditor[i]);
 
 		w = 50;
 		x = 198;
@@ -214,13 +212,11 @@ LayeredScreen::LayeredScreen(mpc::Mpc* mpc)
 		rect = MRECT(x, y, x + w, y + h);
 		knobs[i] = make_shared<Knob>(rect);
 		knobs[i]->Hide(true);
-		//nonTextComps.push_back(knobs[i]);
 	}
 
 	fineWave = make_shared <mpc::lcdgui::Wave>();
 	fineWave->setFine(true);
 	fineWave->Hide(true);
-	//nonTextComps.push_back(fineWave);
 
 	wave = make_shared<mpc::lcdgui::Wave>();
 	wave->Hide(true);
